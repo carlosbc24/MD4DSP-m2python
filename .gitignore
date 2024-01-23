@@ -34,6 +34,7 @@ __pycache__/
 
 # Carpeta de registros
 *.log
+logs/
 
 
 /.idea/
