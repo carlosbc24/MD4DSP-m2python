@@ -1,0 +1,39 @@
+# Archivos temporales y de respaldo
+*~
+*.swp
+*.swo
+*.swn
+*.bak
+*.backup
+
+# Archivos del entorno virtual
+venv/
+env/
+
+# Archivos de compilación
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de configuración
+*.ini
+*.log
+*.conf
+
+# Carpeta de resultados y cache para herramientas de construcción
+/build/
+/dist/
+/.cache/
+
+# Dependencias específicas del sistema operativo
+*.pyc
+
+# Carpeta de archivos generados automáticamente
+__pycache__/
+
+# Carpeta de registros
+*.log
+
+
+/.idea/
