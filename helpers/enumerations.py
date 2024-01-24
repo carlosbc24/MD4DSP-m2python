@@ -14,7 +14,7 @@ class Operator(Enum):
 
 
 class Closure(Enum):
-    openOpen = 0
+    openOpen= 0
     openClosed = 1
     closedOpen = 2
     closedClosed = 3

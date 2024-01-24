@@ -350,7 +350,7 @@ class ContractsPrePost:
 
     def checkIntervalRangeFloat(leftMargin:float, rightMargin:float, dataDictionary: pd.DataFrame, closureType:Closure, belongOp:Belong,  field:str=None)->bool:
         """
-        :param rightMargin:
+        :param rightMargin: 
         :param dataDictionary:
         :param closureType:
         :param belongOp:
