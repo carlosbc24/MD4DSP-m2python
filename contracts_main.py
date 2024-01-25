@@ -10,3 +10,4 @@ if __name__ == "__main__":
     contract_test.execute_CheckFixValueRangeString_Tests()
     contract_test.execute_CheckFixValueRangeFloat_Tests()
     contract_test.execute_CheckFixValueRangeDateTime_Tests()
+    contract_test.execute_checkIntervalRangeFloat_Tests()

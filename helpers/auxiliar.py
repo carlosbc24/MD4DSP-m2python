@@ -1,8 +1,8 @@
 from helpers.enumerations import Operator
 
 
-def comparar_numeros(rel_number, quant_rel, quant_op) -> bool:
-    '''
+def compare_numbers(rel_number, quant_rel, quant_op) -> bool:
+    """
     Compare two numbers with the operator quant_op
 
     :param rel_number: relative number to compare
@@ -10,7 +10,7 @@ def comparar_numeros(rel_number, quant_rel, quant_op) -> bool:
     :param quant_op: quantifier operator to compare the two numbers
 
     :return: if rel_number meets the condition of quant_op with quant_rel
-    '''
+    """
     if quant_op == Operator.GREATEREQUAL:
         return rel_number >= quant_rel
     elif quant_op == Operator.GREATER:
