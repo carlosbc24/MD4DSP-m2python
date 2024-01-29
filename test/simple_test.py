@@ -16,9 +16,9 @@ class ContractTest(unittest.TestCase):
 
     Methods:
     execute_CheckFieldRange_Tests: execute the simple tests of the function checkFieldRange
-    execute_CheckFixValueRangeString_Tests: execute the simple tests of the function checkFixValueRangeString
-    execute_CheckFixValueRangeFloat_Tests: execute the simple tests of the function checkFixValueRangeFloat
-    execute_CheckFixValueRangeDateTime_Tests: execute the simple tests of the function checkFixValueRangeDateTime
+    execute_CheckFixValueRangeString_Tests: execute the simple tests of the function checkFixValueRange
+    execute_CheckFixValueRangeFloat_Tests: execute the simple tests of the function checkFixValueRange
+    execute_CheckFixValueRangeDateTime_Tests: execute the simple tests of the function checkFixValueRange
     """
     def __init__(self):
         """
@@ -89,14 +89,14 @@ class ContractTest(unittest.TestCase):
 
     def execute_CheckFixValueRangeString_Tests(self):
         """
-        Execute the simple tests of the function checkFixValueRangeString
+        Execute the simple tests of the function checkFixValueRange
         """
         print_and_log("Testing CheckFixValueRangeString Function")
 
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
-        # Example 13 of checkFixValueRangeString
+        # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
         value = None
@@ -105,13 +105,13 @@ class ContractTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
-        # Example 14 of checkFixValueRangeString
+        # Example 14 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
         value = None
@@ -120,24 +120,24 @@ class ContractTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
-        # Example 18 of checkFixValueRangeString
+        # Example 18 of checkFixValueRange
         # Check that value 1 doesn't belong to the data dictionary in field 'c1'
         value = '1'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # NotBelong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
-        # Example 14.5 of checkFixValueRangeString
+        # Example 14.5 of checkFixValueRange
         # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
@@ -148,7 +148,7 @@ class ContractTest(unittest.TestCase):
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                    belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                    quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
@@ -158,20 +158,20 @@ class ContractTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos añadidos:")
 
-        # Example 1 of checkFixValueRangeString
+        # Example 1 of checkFixValueRange
         value = '3'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '3', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
-        # Example 2 of checkFixValueRangeString
+        # Example 2 of checkFixValueRange
         value = '3'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -179,13 +179,13 @@ class ContractTest(unittest.TestCase):
         quant_op = None  # None
         quant_rel = 0.3
         # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
-        # Example 3 of checkFixValueRangeString
+        # Example 3 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -193,13 +193,13 @@ class ContractTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.1
 
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
-        # Example 4 of checkFixValueRangeString
+        # Example 4 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -207,13 +207,13 @@ class ContractTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.7
 
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
-        # Example 5 of checkFixValueRangeString
+        # Example 5 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -221,13 +221,13 @@ class ContractTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 3
 
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
-        # Example 6 of checkFixValueRangeString
+        # Example 6 of checkFixValueRange
         value = None
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -235,55 +235,55 @@ class ContractTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 5
 
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
-        # Example 8 of checkFixValueRangeString
+        # Example 8 of checkFixValueRange
         value = '3'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
         # # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
-        # Example 9 of checkFixValueRangeString
+        # Example 9 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
         # # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
-        # Example 11 of checkFixValueRangeString
+        # Example 11 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
         # # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                         belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
-        # Example 12 of checkFixValueRangeString
+        # Example 12 of checkFixValueRange
         value = '5'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
         # # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
-        # Example 15 of checkFixValueRangeString
+        # Example 15 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -291,13 +291,13 @@ class ContractTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 3
         # # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                         quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                         belongOp=Belong(belongOp))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
-        # Example 16 of checkFixValueRangeString
+        # Example 16 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -305,28 +305,28 @@ class ContractTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 10
         # # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                         quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
-        # Example 18 of checkFixValueRangeString
+        # Example 18 of checkFixValueRange
         value = '3'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                         belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
-        # Example 19 of checkFixValueRangeString
+        # Example 19 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
@@ -337,7 +337,7 @@ class ContractTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos de error añadidos:")
 
-        # Example 4.5 of checkFixValueRangeString
+        # Example 4.5 of checkFixValueRange
         # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
@@ -348,13 +348,13 @@ class ContractTest(unittest.TestCase):
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                    belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                    quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
-        # Example 7 of checkFixValueRangeString
+        # Example 7 of checkFixValueRange
         # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
@@ -363,24 +363,24 @@ class ContractTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                    belongOp=Belong(belongOp), field=field,
                                                    quant_op=Operator(quant_op))
 
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
-        # # Example 10 of checkFixValueRangeString
+        # # Example 10 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
         quant_op = 3
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                    belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
-        # Example 17 of checkFixValueRangeString
+        # Example 17 of checkFixValueRange
         # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
@@ -389,11 +389,11 @@ class ContractTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary,
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                    belongOp=Belong(belongOp), field=field, quant_op=Operator(quant_op))
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
 
-        # Example 20 of checkFixValueRangeString
+        # Example 20 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
@@ -401,21 +401,21 @@ class ContractTest(unittest.TestCase):
         quant_op = 3
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRangeString(value=value, dataDictionary=dataDictionary, field=field,
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                    belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
         print_and_log("")
 
     def execute_CheckFixValueRangeFloat_Tests(self):
         """
-        Execute the simple tests of the function checkFixValueRangeFloat
+        Execute the simple tests of the function checkFixValueRange
         """
         print_and_log("Testing CheckFixValueRangeFloat Function")
 
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
-        # Example 13 of checkFixValueRangeFloat
+        # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
         value = None
@@ -424,13 +424,13 @@ class ContractTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                        quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
-        # Example 14 of checkFixValueRangeFloat
+        # Example 14 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
         value = None
@@ -439,24 +439,24 @@ class ContractTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                        quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
-        # Example 18 of checkFixValueRangeFloat
+        # Example 18 of checkFixValueRange
         # Check that value 1 doesn't belong to the data dictionary in field 'c1'
         value = 1
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # NotBelong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
-        # Example 14.5 of checkFixValueRangeFloat
+        # Example 14.5 of checkFixValueRange
         # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
@@ -467,7 +467,7 @@ class ContractTest(unittest.TestCase):
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                            belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                            quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
@@ -477,164 +477,164 @@ class ContractTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos añadidos:")
 
-        # Example 1 of checkFixValueRangeFloat
+        # Example 1 of checkFixValueRange
         value = 3
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 3, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                        quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
-        # Example 2 of checkFixValueRangeFloat
+        # Example 2 of checkFixValueRange
         value = 3.5
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                        quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
-        # Example 3 of checkFixValueRangeFloat
+        # Example 3 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_rel = 0.1
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                        quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
-        # Example 4 of checkFixValueRangeFloat
+        # Example 4 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_rel = 0.7
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                        quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
-        # Example 5 of checkFixValueRangeFloat
+        # Example 5 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_abs = 3
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                        quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
-        # Example 6 of checkFixValueRangeFloat
+        # Example 6 of checkFixValueRange
         value = None
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_abs = 5
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                        quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
-        # Example 8 of checkFixValueRangeFloat
+        # Example 8 of checkFixValueRange
         value = 3.8
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
-        # Example 9 of checkFixValueRangeFloat
+        # Example 9 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                        belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
-        # Example 11 of checkFixValueRangeFloat
+        # Example 11 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                        belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
-        # Example 12 of checkFixValueRangeFloat
+        # Example 12 of checkFixValueRange
         value = 5
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                        belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
-        # Example 15 of checkFixValueRangeFloat
+        # Example 15 of checkFixValueRange
         value = None
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
         quant_op = 1  # greater
         quant_abs = 2
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                        quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                        belongOp=Belong(belongOp))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
-        # Example 16 of checkFixValueRangeFloat
+        # Example 16 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
         quant_op = 1  # greater
         quant_abs = 10
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                        quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                        belongOp=Belong(belongOp))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
-        # Example 18 of checkFixValueRangeFloat
+        # Example 18 of checkFixValueRange
         value = 7.45
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                        belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
-        # Example 19 of checkFixValueRangeFloat
+        # Example 19 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                        belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
@@ -645,7 +645,7 @@ class ContractTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos de error añadidos:")
 
-        # Example 4.5 of checkFixValueRangeFloat
+        # Example 4.5 of checkFixValueRange
         # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
@@ -656,12 +656,12 @@ class ContractTest(unittest.TestCase):
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                            belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                            quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
-        # Example 7 of checkFixValueRangeFloat
+        # Example 7 of checkFixValueRange
         # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
@@ -670,23 +670,23 @@ class ContractTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                            belongOp=Belong(belongOp), field=field,
                                                            quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
-        # # Example 10 of checkFixValueRangeFloat
+        # # Example 10 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
         quant_op = 3
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                            belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
-        # Example 17 of checkFixValueRangeFloat
+        # Example 17 of checkFixValueRange
         # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
@@ -695,12 +695,12 @@ class ContractTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                            belongOp=Belong(belongOp), field=field,
                                                            quant_op=Operator(quant_op))
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
 
-        # Example 20 of checkFixValueRangeFloat
+        # Example 20 of checkFixValueRange
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
@@ -708,20 +708,20 @@ class ContractTest(unittest.TestCase):
         quant_op = 3
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeFloat(value=value, dataDictionary=dataDictionary, field=field,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                            belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
         print_and_log("")
 
     def execute_CheckFixValueRangeDateTime_Tests(self):
         """
-        Execute the simple tests of the function checkFixValueRangeDateTime
+        Execute the simple tests of the function checkFixValueRange
         """
         print_and_log("Testing CheckFixValueRangeDateTime Function")
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
-        # Example 13 of checkFixValueRangeDateTime
+        # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
         value = None
@@ -734,13 +734,13 @@ class ContractTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                           quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
-        # Example 14 of checkFixValueRangeDateTime
+        # Example 14 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
         value = None
@@ -752,23 +752,23 @@ class ContractTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary1,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary1,
                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                           quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
-        # Example 18 of checkFixValueRangeDateTime
+        # Example 18 of checkFixValueRange
         # Check that value 1 doesn't belong to the data dictionary in field 'c1'
         value = pd.Timestamp('20240310')
         belongOp = 1  # NotBelong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
-        # Example 14.5 of checkFixValueRangeDateTime
+        # Example 14.5 of checkFixValueRange
         # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
         belongOp = 0  # Belong
@@ -778,7 +778,7 @@ class ContractTest(unittest.TestCase):
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                               belongOp=Belong(belongOp), field=field,
                                                               quant_rel=quant_rel,
                                                               quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -789,7 +789,7 @@ class ContractTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos añadidos:")
 
-        # Example 1 of checkFixValueRangeDateTime
+        # Example 1 of checkFixValueRange
         value = pd.Timestamp('20110814')
         dataDictionary2 = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
                                                    pd.Timestamp('20110814'), pd.Timestamp('20180310'),
@@ -799,144 +799,144 @@ class ContractTest(unittest.TestCase):
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary2,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary2,
                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                           quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
-        # Example 2 of checkFixValueRangeDateTime
+        # Example 2 of checkFixValueRange
         value = pd.Timestamp('20171115')
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                           quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
-        # Example 3 of checkFixValueRangeDateTime
+        # Example 3 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_rel = 0.1
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                           quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
-        # Example 4 of checkFixValueRangeDateTime
+        # Example 4 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_rel = 0.7
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                           quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
-        # Example 5 of checkFixValueRangeDateTime
+        # Example 5 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_abs = 3
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                           quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
-        # Example 6 of checkFixValueRangeDateTime
+        # Example 6 of checkFixValueRange
         value = None
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_abs = 5
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                           quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
-        # Example 8 of checkFixValueRangeDateTime
+        # Example 8 of checkFixValueRange
         value = pd.Timestamp('20161108')
         belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
-        # Example 9 of checkFixValueRangeDateTime
+        # Example 9 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                           belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
-        # Example 11 of checkFixValueRangeDateTime
+        # Example 11 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                           belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
-        # Example 12 of checkFixValueRangeDateTime
+        # Example 12 of checkFixValueRange
         value = pd.Timestamp('20101225')
         belongOp = 0  # Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                           belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
-        # Example 15 of checkFixValueRangeDateTime
+        # Example 15 of checkFixValueRange
         value = None
         belongOp = 0  # Belong
         field = 'c1'
         quant_op = 1  # greater
         quant_abs = 2
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                           quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                           belongOp=Belong(belongOp))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
-        # Example 16 of checkFixValueRangeDateTime
+        # Example 16 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = 'c1'
         quant_op = 1  # greater
         quant_abs = 10
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                           quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                           belongOp=Belong(belongOp))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
-        # Example 18 of checkFixValueRangeDateTime
+        # Example 18 of checkFixValueRange
         value = pd.Timestamp('20150815')
         belongOp = 1  # Not Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                           belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
-        # Example 19 of checkFixValueRangeDateTime
+        # Example 19 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 1  # Not Belong
         field = 'c1'
-        result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                           belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
@@ -947,7 +947,7 @@ class ContractTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos de error añadidos:")
 
-        # Example 4.5 of checkFixValueRangeDateTime
+        # Example 4.5 of checkFixValueRange
         # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         belongOp = 0  # Belong
@@ -957,13 +957,13 @@ class ContractTest(unittest.TestCase):
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                               belongOp=Belong(belongOp), field=field,
                                                               quant_rel=quant_rel,
                                                               quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
-        # Example 7 of checkFixValueRangeDateTime
+        # Example 7 of checkFixValueRange
         # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
@@ -971,22 +971,22 @@ class ContractTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                               belongOp=Belong(belongOp), field=field,
                                                               quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
-        # # Example 10 of checkFixValueRangeDateTime
+        # # Example 10 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 1  # Not Belong
         quant_op = 3
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                               belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
-        # Example 17 of checkFixValueRangeDateTime
+        # Example 17 of checkFixValueRange
         # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
@@ -994,19 +994,19 @@ class ContractTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                               belongOp=Belong(belongOp), field=field,
                                                               quant_op=Operator(quant_op))
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
 
-        # Example 20 of checkFixValueRangeDateTime
+        # Example 20 of checkFixValueRange
         value = pd.Timestamp('20180310')
         belongOp = 1  # Not Belong
         field = 'c1'
         quant_op = 3
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRangeDateTime(value=value, dataDictionary=dataDictionary, field=field,
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                               belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
         print_and_log("")

@@ -1,3 +1,5 @@
+import os
+
 from helpers.logger import set_logger
 from test.simple_test import ContractTest
 from test.tests_spotify_dataset import ContractTestWithDatasets
@@ -15,3 +17,5 @@ if __name__ == "__main__":
 
     ContractTestWithDatasets= ContractTestWithDatasets()
     ContractTestWithDatasets.execute_CheckFieldRange_Tests()
+    #ContractTestWithDatasets.execute_CheckFixValueRangeString_Tests() #Este método falla y hay que implementarlo, ahora solo esta copiado del otro test. Los otros dos están igual que este.
+    ContractTestWithDatasets.execute_checkIntervalRangeFloat_Tests()
