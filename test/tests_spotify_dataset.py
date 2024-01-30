@@ -82,11 +82,11 @@ class ContractTestWithDatasets(unittest.TestCase):
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
-    #def execute_CheckFixValueRangeString_Tests(self):
+    #ef execute_CheckFixValueRangeString_Tests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
-        """print_and_log("Testing CheckFixValueRangeString Function")
+        print_and_log("Testing CheckFixValueRangeString Function")
 
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
@@ -135,7 +135,7 @@ class ContractTestWithDatasets(unittest.TestCase):
                                                         belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
-
+        """
         # Example 14.5 of checkFixValueRange
         # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
@@ -1009,12 +1009,8 @@ class ContractTestWithDatasets(unittest.TestCase):
         # Construye la ruta al archivo CSV
         ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
         #Crea el dataframe a partir del archivo CSV
-        data_dictionary = pd.read_csv(ruta_csv)
-
-        columnasNecesarias=['track_popularity', 'acousticness', 'danceability', 'duration_ms', 'energy', 'instrumentalness', 'key',
-                            'liveness', 'loudness', 'mode', 'speechiness', 'tempo', 'valence']
-        dataDictionary=data_dictionary[columnasNecesarias]      #Se hace para que el dataframe tenga solo las columnas que contienen floats (doubles) y descartar los strings, que en este metodo dan error
-
+        dataDictionary = pd.read_csv(ruta_csv)
+        
         #Example 0 of checkIntervalRangeFloat
         #Check that the left margin is not bigger than the right margin
         left0=20

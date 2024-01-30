@@ -145,17 +145,19 @@ class ContractsPrePost:
             else:
                 raise ValueError("Error: closureType should be openOpen, openClosed, closedOpen, or closedClosed")
 
-        if field is None:
+        if field is None:   #Hcer un if en el que se descarten todos los campos que no sean float o int o double
             return check_condition(dataDictionary.min().min(),
                                    dataDictionary.max().max()) if belongOp == Belong.BELONG else not check_condition(
                                    dataDictionary.min().min(), dataDictionary.max().max())
         else:
             if field not in dataDictionary.columns:     # Se comprueba que la columna exista en el dataframe
                 raise ValueError(f"Column '{field}' not found in dataDictionary.")
-
-            return check_condition(dataDictionary[field].min(),
-                                   dataDictionary[field].max()) if belongOp == Belong.BELONG else not check_condition(
-                                   dataDictionary[field].min(), dataDictionary[field].max())
+            if type(field) is int or type(field) is float:
+                return check_condition(dataDictionary[field].min(),
+                                       dataDictionary[field].max()) if belongOp == Belong.BELONG else not check_condition(
+                                       dataDictionary[field].min(), dataDictionary[field].max())
+            else:
+                raise ValueError("Error: field should be a float")
 
 
     def checkMissingRange(missing_values: list, belongOp: Belong, dataDictionary:pd.DataFrame, field:str=None): #TODO: Revisar cuando Fran pase el pseudocodigo

@@ -17,5 +17,5 @@ if __name__ == "__main__":
 
     ContractTestWithDatasets= ContractTestWithDatasets()
     ContractTestWithDatasets.execute_CheckFieldRange_Tests()
-    #ContractTestWithDatasets.execute_CheckFixValueRangeString_Tests() #Este método falla y hay que implementarlo, ahora solo esta copiado del otro test. Los otros dos están igual que este.
+    #ContractTestWithDatasets.execute_CheckFixValueRangeString_Tests() #Este metodo falla y hay que implementarlo, ahora solo esta copiado del otro test. Los otros dos estan igual que este.
     ContractTestWithDatasets.execute_checkIntervalRangeFloat_Tests()
