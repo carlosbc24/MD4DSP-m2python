@@ -20,20 +20,44 @@ class ContractSimpleTest(unittest.TestCase):
     execute_CheckFixValueRangeFloat_Tests: execute the simple tests of the function checkFixValueRange
     execute_CheckFixValueRangeDateTime_Tests: execute the simple tests of the function checkFixValueRange
     """
+
     def __init__(self):
         """
         Constructor of the class
 
         Attributes:
         pre_post (ContractsPrePost): instance of the class ContractsPrePost
+
+        Functions:
+        executeAll_SimpleTests: execute all the simple tests of the functions of the class
+        execute_CheckFieldRange_SimpleTests: execute the simple tests of the function checkFieldRange
+        execute_CheckFixValueRangeString_SimpleTests: execute the simple tests of the function checkFixValueRange
+        execute_CheckFixValueRangeFloat_SimpleTests: execute the simple tests of the function checkFixValueRange
+        execute_CheckFixValueRangeDateTime_SimpleTests: execute the simple tests of the function checkFixValueRange
+        execute_CheckIntervalRangeFloat_SimpleTests: execute the simple tests of the function checkIntervalRange
+        execute_CheckMissingRange_SimpleTests: execute the simple tests of the function checkMissingRange
+        execute_CheckInvalidValues_SimpleTests: execute the simple tests of the function checkInvalidValues
         """
         self.pre_post = ContractsPrePost()
         print_and_log("")
         print_and_log("--------------------------------------------------")
         print_and_log("----------- STARTING SIMPLE TEST CASES -----------")
         print_and_log("--------------------------------------------------")
+        print_and_log("")
 
-    def execute_CheckFieldRange_Tests(self):
+    def executeAll_SimpleTests(self):
+        """
+        Execute all the simple tests of the functions of the class
+        """
+        self.execute_CheckFieldRange_SimpleTests()
+        self.execute_CheckFixValueRangeString_SimpleTests()
+        self.execute_CheckFixValueRangeFloat_SimpleTests()
+        self.execute_CheckFixValueRangeDateTime_SimpleTests()
+        self.execute_CheckIntervalRangeFloat_SimpleTests()
+        self.execute_CheckMissingRange_SimpleTests()
+        self.execute_CheckInvalidValues_SimpleTests()
+
+    def execute_CheckFieldRange_SimpleTests(self):
         """
         Execute the simple tests of the function checkFieldRange
         """
@@ -91,7 +115,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 5 Passed: Expected True, got True")
         print_and_log("")
 
-    def execute_CheckFixValueRangeString_Tests(self):
+    def execute_CheckFixValueRangeString_SimpleTests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
@@ -110,8 +134,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                        quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
@@ -125,8 +149,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                        quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
@@ -137,12 +161,12 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # NotBelong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field)
+                                                  belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
-        # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
+        # ValueError if quant_rel and quant_abs are not None at the same time
         value = None
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -153,8 +177,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                   belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                   quant_abs=quant_abs, quant_op=Operator(quant_op))
+                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
         # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -170,8 +194,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = None  # None
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                        quant_op=quant_op)
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
@@ -184,8 +208,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_rel = 0.3
         # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                        quant_op=quant_op)
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
@@ -198,8 +222,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_rel = 0.1
 
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                        quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
@@ -212,8 +236,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_rel = 0.7
 
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                        quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
@@ -226,8 +250,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_abs = 3
 
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                        quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
@@ -240,8 +264,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_abs = 5
 
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                        quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
@@ -251,7 +275,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
@@ -261,7 +285,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                        belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
@@ -272,7 +296,7 @@ class ContractSimpleTest(unittest.TestCase):
         field = 'c1'
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                        belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
@@ -283,7 +307,7 @@ class ContractSimpleTest(unittest.TestCase):
         field = 'c1'
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                        belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
@@ -296,8 +320,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_abs = 3
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                        quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                        belongOp=Belong(belongOp))
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
@@ -310,8 +334,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_abs = 10
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                        quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                        belongOp=Belong(belongOp))
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
@@ -321,7 +345,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                        belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
@@ -331,7 +355,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                        belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
@@ -353,8 +377,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                   belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                   quant_abs=quant_abs, quant_op=Operator(quant_op))
+                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
@@ -368,8 +392,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                   belongOp=Belong(belongOp), field=field,
-                                                   quant_op=Operator(quant_op))
+                                             belongOp=Belong(belongOp), field=field,
+                                             quant_op=Operator(quant_op))
 
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
@@ -381,7 +405,7 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                   belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+                                             belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Example 17 of checkFixValueRange
@@ -394,7 +418,7 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                   belongOp=Belong(belongOp), field=field, quant_op=Operator(quant_op))
+                                             belongOp=Belong(belongOp), field=field, quant_op=Operator(quant_op))
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
 
         # Example 20 of checkFixValueRange
@@ -406,11 +430,11 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                   belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+                                             belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
         print_and_log("")
 
-    def execute_CheckFixValueRangeFloat_Tests(self):
+    def execute_CheckFixValueRangeFloat_SimpleTests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
@@ -429,8 +453,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                       quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
@@ -444,8 +468,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                       quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
@@ -456,7 +480,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # NotBelong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field)
+                                                  belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
@@ -472,8 +496,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                           quant_abs=quant_abs, quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                      quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
         # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -489,8 +513,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = None  # None
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                       quant_op=quant_op)
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
@@ -502,8 +526,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = None  # None
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                       quant_op=quant_op)
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
@@ -515,8 +539,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.1
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                       quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
@@ -528,8 +552,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.7
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                       quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
@@ -541,8 +565,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                       quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
@@ -554,8 +578,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 5
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                       quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
@@ -564,7 +588,7 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
@@ -573,7 +597,7 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 1  # Not Belong
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                       belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
@@ -583,7 +607,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 0  # Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                       belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
@@ -593,7 +617,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 0  # Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                       belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
@@ -605,8 +629,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 2
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                       quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                       belongOp=Belong(belongOp))
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
@@ -618,8 +642,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 10
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                       quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                       belongOp=Belong(belongOp))
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
@@ -629,7 +653,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                       belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
@@ -639,7 +663,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                       belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
@@ -661,8 +685,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                           belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                           quant_abs=quant_abs, quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                      quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
@@ -675,8 +699,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                           belongOp=Belong(belongOp), field=field,
-                                                           quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field,
+                                                      quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # # Example 10 of checkFixValueRange
@@ -687,7 +711,7 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                           belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Example 17 of checkFixValueRange
@@ -700,8 +724,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                           belongOp=Belong(belongOp), field=field,
-                                                           quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field,
+                                                      quant_op=Operator(quant_op))
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
 
         # Example 20 of checkFixValueRange
@@ -713,11 +737,11 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                           belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
         print_and_log("")
 
-    def execute_CheckFixValueRangeDateTime_Tests(self):
+    def execute_CheckFixValueRangeDateTime_SimpleTests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
@@ -729,7 +753,7 @@ class ContractSimpleTest(unittest.TestCase):
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
         value = None
-        #dataDictionary utilizado en casi todos los ejemplos de pruebas
+        # dataDictionary utilizado en casi todos los ejemplos de pruebas
         dataDictionary = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
@@ -739,8 +763,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                          quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
@@ -749,16 +773,16 @@ class ContractSimpleTest(unittest.TestCase):
         # it appears less or equal than 30% of the times
         value = None
         dataDictionary1 = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   None, None, None, None]})
+                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                    None, None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary1,
-                                                          belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                          quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
@@ -768,7 +792,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # NotBelong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp), field=field)
+                                                  belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
@@ -783,9 +807,9 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                              belongOp=Belong(belongOp), field=field,
-                                                              quant_rel=quant_rel,
-                                                              quant_abs=quant_abs, quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field,
+                                                      quant_rel=quant_rel,
+                                                      quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
         # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -796,16 +820,16 @@ class ContractSimpleTest(unittest.TestCase):
         # Example 1 of checkFixValueRange
         value = pd.Timestamp('20110814')
         dataDictionary2 = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20110814'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20180310'), None, None, None]})
+                                                    pd.Timestamp('20110814'), pd.Timestamp('20180310'),
+                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                    pd.Timestamp('20180310'), None, None, None]})
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary2,
-                                                          belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                          quant_op=quant_op)
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
@@ -816,8 +840,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = None  # None
         quant_rel = 0.3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                          quant_op=quant_op)
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
@@ -828,8 +852,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.1
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                          quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
@@ -840,8 +864,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.7
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                          quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
@@ -852,8 +876,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 3
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                          quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                  quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
@@ -864,8 +888,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 5
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                          quant_op=Operator(quant_op))
+                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                  quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
@@ -873,7 +897,7 @@ class ContractSimpleTest(unittest.TestCase):
         value = pd.Timestamp('20161108')
         belongOp = 1  # Not Belong
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
@@ -881,7 +905,7 @@ class ContractSimpleTest(unittest.TestCase):
         value = pd.Timestamp('20180310')
         belongOp = 1  # Not Belong
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                          belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
@@ -890,7 +914,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 0  # Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                          belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
@@ -899,7 +923,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 0  # Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                          belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
@@ -910,8 +934,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 2
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                          quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                          belongOp=Belong(belongOp))
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
@@ -922,8 +946,8 @@ class ContractSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 10
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                          quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                          belongOp=Belong(belongOp))
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
@@ -932,7 +956,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                          belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
@@ -941,7 +965,7 @@ class ContractSimpleTest(unittest.TestCase):
         belongOp = 1  # Not Belong
         field = 'c1'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                          belongOp=Belong(belongOp))
+                                                  belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
@@ -962,9 +986,9 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                              belongOp=Belong(belongOp), field=field,
-                                                              quant_rel=quant_rel,
-                                                              quant_abs=quant_abs, quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field,
+                                                      quant_rel=quant_rel,
+                                                      quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
@@ -976,8 +1000,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                              belongOp=Belong(belongOp), field=field,
-                                                              quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field,
+                                                      quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # # Example 10 of checkFixValueRange
@@ -987,7 +1011,7 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                              belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Example 17 of checkFixValueRange
@@ -999,8 +1023,8 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
-                                                              belongOp=Belong(belongOp), field=field,
-                                                              quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), field=field,
+                                                      quant_op=Operator(quant_op))
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
 
         # Example 20 of checkFixValueRange
@@ -1011,36 +1035,36 @@ class ContractSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
-                                                              belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
         print_and_log("")
 
-    def execute_checkIntervalRangeFloat_Tests(self):
+    def execute_CheckIntervalRangeFloat_SimpleTests(self):
         """
         Execute the simple tests of the function checkIntervalRangeFloat
         """
         print_and_log("Testing checkIntervalRangeFloat Function")
         print_and_log("")
-        #Rango de prueba utilizado en todas las llamadas
+        # Rango de prueba utilizado en todas las llamadas
         left = 0
         right = 70.4
-        #field = None
+        # field = None
         field = None
-        #belongOp = 0
+        # belongOp = 0
         belongOp = 0
 
-        #Example 0 of checkIntervalRangeFloat
-        #Check that the left margin is not bigger than the right margin
-        left0=20
-        right0=15
+        # Example 0 of checkIntervalRangeFloat
+        # Check that the left margin is not bigger than the right margin
+        left0 = 20
+        right0 = 15
         dataDictionary = pd.DataFrame(data={'c1': [0, 2.9, 5, 25.3, 4, 67.5, 0, 0.5, None, None],
                                             'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
         closure = 0  # OpenOpen
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkIntervalRangeFloat(left_margin=left0, right_margin=right0,
-                                                       dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+                                                           dataDictionary=dataDictionary, closureType=Closure(closure),
+                                                           belongOp=Belong(belongOp))
         print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
 
         # Example 1 of checkIntervalRangeFloat
@@ -1131,7 +1155,7 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, got False")
 
-        #belongOp = 1
+        # belongOp = 1
         belongOp = 1
 
         # Example 9 of checkIntervalRangeFloat
@@ -1222,9 +1246,9 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 16 Failed: Expected True, but got False"
         print_and_log("Test Case 16 Passed: Expected True, got True")
 
-        #field = 'c2'
+        # field = 'c2'
         field = 'c2'
-        #belongOp = 0
+        # belongOp = 0
         belongOp = 0
 
         # Example 17 of checkIntervalRangeFloat
@@ -1234,7 +1258,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 17 Failed: Expected False, but got True"
         print_and_log("Test Case 17 Passed: Expected False, got False")
 
@@ -1245,7 +1269,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
@@ -1256,7 +1280,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 19 Failed: Expected True, but got False"
         print_and_log("Test Case 19 Passed: Expected True, got True")
 
@@ -1267,7 +1291,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 20 Failed: Expected False, but got True"
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
@@ -1278,7 +1302,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 21 Failed: Expected True, but got False"
         print_and_log("Test Case 21 Passed: Expected True, got True")
 
@@ -1289,7 +1313,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 22 Failed: Expected False, but got True"
         print_and_log("Test Case 22 Passed: Expected False, got False")
 
@@ -1300,7 +1324,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 23 Failed: Expected True, but got False"
         print_and_log("Test Case 23 Passed: Expected True, got True")
 
@@ -1311,11 +1335,11 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, got False")
 
-        #belongOp = 1
+        # belongOp = 1
         belongOp = 1
 
         # Example 25 of checkIntervalRangeFloat
@@ -1325,7 +1349,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 25 Failed: Expected True, but got False"
         print_and_log("Test Case 25 Passed: Expected True, got True")
 
@@ -1336,7 +1360,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 26 Failed: Expected False, but got True"
         print_and_log("Test Case 26 Passed: Expected False, got False")
 
@@ -1347,7 +1371,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 27 Failed: Expected False, but got True"
         print_and_log("Test Case 27 Passed: Expected False, got False")
 
@@ -1358,7 +1382,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 28 Failed: Expected True, but got False"
         print_and_log("Test Case 28 Passed: Expected True, got True")
 
@@ -1369,7 +1393,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 29 Failed: Expected False, but got True"
         print_and_log("Test Case 29 Passed: Expected False, got False")
 
@@ -1380,7 +1404,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 30 Failed: Expected True, but got False"
         print_and_log("Test Case 30 Passed: Expected True, got True")
 
@@ -1391,7 +1415,7 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 31 Failed: Expected False, but got True"
         print_and_log("Test Case 31 Passed: Expected False, got False")
 
@@ -1402,8 +1426,68 @@ class ContractSimpleTest(unittest.TestCase):
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp),field=field)
+                                                       belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 32 Failed: Expected True, but got False"
         print_and_log("Test Case 32 Passed: Expected True, got True")
 
+    # TODO: Realizar los tests simples de la función checkMissingRange (FALTAN PROBAR MÁS CASOS)
+    def execute_CheckMissingRange_SimpleTests(self):
+        """
+        Execute the simple tests of the function checkMissingRange
+        """
+        print_and_log("Testing checkMissingRange Function")
+        print_and_log("")
 
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        # Caso 1 Solicitado
+
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[None, None, 'Blue', 'Green']})
+        field = 'colour'
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2 Solicitado
+        belong = 0
+        dataDictionary =  pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
+        field = 'colour'
+        missing_values = [-1]
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel, missing_values=missing_values)
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3 Solicitado
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
+        field = 'colour'
+        missing_values = [-1]
+        quant_op = 2 # lessEqual
+        quant_abs = 2
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_abs=quant_abs, missing_values=missing_values)
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+
+
+    # TODO: Realizar los tests simples de la función checkInvalidValues
+    def execute_CheckInvalidValues_SimpleTests(self):
+        """
+        Execute the simple tests of the function checkInvalidValues
+        """
+        print_and_log("Testing checkInvalidValues Function")
+        print_and_log("")

@@ -33,8 +33,9 @@ class ContractsPrePost:
                     return True
             return False
 
-    def checkFixValueRange(self, value: Union [str, float, datetime], dataDictionary: pd.DataFrame, belongOp: Belong, field: str = None,
-                                quant_abs: int = None, quant_rel: float = None, quant_op: Operator = None) -> bool:
+    def checkFixValueRange(self, value: Union[str, float, datetime], dataDictionary: pd.DataFrame, belongOp: Belong,
+                           field: str = None,
+                           quant_abs: int = None, quant_rel: float = None, quant_op: Operator = None) -> bool:
         """
         Check if fields meets the condition of belongOp in dataDictionary
 
@@ -52,9 +53,12 @@ class ContractsPrePost:
         :return: if fields meets the condition of belongOp in dataDictionary and field
         :rtype: bool
         """
-        dataDictionary = dataDictionary.replace({np.nan: None})  # Se sustituyen los NaN por None para que no de error al hacer la comparacion de None con NaN. Como el dataframe es de floats, los None se convierten en NaN
-        if value is not None and type(value) is not str and type(value) is not pd.Timestamp:  #Antes del casteo se debe comprobar que value no sea None, str o datetime(Timestamp), para que solo se casteen los int
-            value = float(value)    # Se castea el valor a float para que no de error al hacer un get por valor, porque al hacer un get detecta el valor como int
+        dataDictionary = dataDictionary.replace({
+            np.nan: None})  # Se sustituyen los NaN por None para que no de error al hacer la comparacion de None con NaN. Como el dataframe es de floats, los None se convierten en NaN
+        if value is not None and type(value) is not str and type(
+                value) is not pd.Timestamp:  # Antes del casteo se debe comprobar que value no sea None, str o datetime(Timestamp), para que solo se casteen los int
+            value = float(
+                value)  # Se castea el valor a float para que no de error al hacer un get por valor, porque al hacer un get detecta el valor como int
 
         if field is None:
             if belongOp == Belong.BELONG:
@@ -63,18 +67,22 @@ class ContractsPrePost:
                 else:
                     if quant_rel is not None and quant_abs is None:  # Check if value is in dataDictionary and if it meets the condition of quant_rel
                         return True if value in dataDictionary.values and compare_numbers(
-                                count_abs_frequency(value, dataDictionary) / dataDictionary.size,
-                                quant_rel, quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
-                                # Importante el dropna=False para que cuente los valores NaN en caso de que value sea None
+                            count_abs_frequency(value, dataDictionary) / dataDictionary.size,
+                            quant_rel,
+                            quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
+                        # Importante el dropna=False para que cuente los valores NaN en caso de que value sea None
                     elif quant_rel is not None and quant_abs is not None:
                         # Si se proporcionan los dos, se lanza un ValueError
-                        raise ValueError("quant_rel and quant_abs can't have different values than None at the same time")
+                        raise ValueError(
+                            "quant_rel and quant_abs can't have different values than None at the same time")
                     elif quant_abs is not None:
                         return True if value in dataDictionary.values and compare_numbers(
-                                count_abs_frequency(value, dataDictionary),
-                                quant_abs, quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
+                            count_abs_frequency(value, dataDictionary),
+                            quant_abs,
+                            quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
                     else:
-                        raise ValueError("Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
+                        raise ValueError(
+                            "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
             else:
                 if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                     return True if value not in dataDictionary.values else False
@@ -82,7 +90,7 @@ class ContractsPrePost:
                     raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
         else:
             if field is not None:
-                if field not in dataDictionary.columns:     # Se comprueba que la columna exista en el dataframe
+                if field not in dataDictionary.columns:  # Se comprueba que la columna exista en el dataframe
                     raise ValueError(f"Column '{field}' not found in dataDictionary.")
                 if belongOp == Belong.BELONG:
                     if quant_op is None:
@@ -90,17 +98,20 @@ class ContractsPrePost:
                     else:
                         if quant_rel is not None and quant_abs is None:  # Añadido respecto a la especificacion inicial del contrato para test case 4
                             return True if value in dataDictionary[field].values and compare_numbers(
-                                    dataDictionary[field].value_counts(dropna=False).get(value, 0)
-                                    / dataDictionary.size, quant_rel, quant_op) else False  # Importante el dropna=False para que cuente los valores NaN en caso de que value sea None
+                                dataDictionary[field].value_counts(dropna=False).get(value, 0)
+                                / dataDictionary.size, quant_rel,
+                                quant_op) else False  # Importante el dropna=False para que cuente los valores NaN en caso de que value sea None
                         elif quant_rel is not None and quant_abs is not None:
                             # Si se proporcionan los dos, se lanza un ValueError
-                            raise ValueError("quant_rel and quant_abs can't have different values than None at the same time")
+                            raise ValueError(
+                                "quant_rel and quant_abs can't have different values than None at the same time")
                         elif quant_abs is not None:
                             return True if value in dataDictionary[field].values and compare_numbers(
-                                    dataDictionary[field].value_counts(dropna=False).get(value, 0),
-                                    quant_abs, quant_op) else False
+                                dataDictionary[field].value_counts(dropna=False).get(value, 0),
+                                quant_abs, quant_op) else False
                         else:  # quant_rel is None and quant_abs is None
-                            raise ValueError("Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
+                            raise ValueError(
+                                "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
                 else:
                     if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                         return True if value not in dataDictionary[field].values else False
@@ -133,7 +144,7 @@ class ContractsPrePost:
         if left_margin > right_margin:
             raise ValueError("Error: leftMargin should be less than or equal to rightMargin")
 
-        def check_condition(min_val: float, max_val: float)->bool:
+        def check_condition(min_val: float, max_val: float) -> bool:
             if closureType == Closure.openOpen:
                 return True if (min_val > left_margin) & (max_val < right_margin) else False
             elif closureType == Closure.openClosed:
@@ -146,22 +157,25 @@ class ContractsPrePost:
                 raise ValueError("Error: closureType should be openOpen, openClosed, closedOpen, or closedClosed")
 
         if field is None:
-            dataDictionary=dataDictionary.select_dtypes(include=['int','float'])         #Se descartan todos los campos que no sean float o int o double
+            dataDictionary = dataDictionary.select_dtypes(
+                include=['int', 'float'])  # Se descartan todos los campos que no sean float o int o double
             return check_condition(dataDictionary.min().min(),
                                    dataDictionary.max().max()) if belongOp == Belong.BELONG else not check_condition(
-                                   dataDictionary.min().min(), dataDictionary.max().max())
+                dataDictionary.min().min(), dataDictionary.max().max())
         else:
-            if field not in dataDictionary.columns:     # Se comprueba que la columna exista en el dataframe
+            if field not in dataDictionary.columns:  # Se comprueba que la columna exista en el dataframe
                 raise ValueError(f"Column '{field}' not found in dataDictionary.")
             if dataDictionary[field].dtype in ['int', 'float']:
                 return check_condition(dataDictionary[field].min(),
-                                       dataDictionary[field].max()) if belongOp == Belong.BELONG else not check_condition(
-                                       dataDictionary[field].min(), dataDictionary[field].max())
+                                       dataDictionary[
+                                           field].max()) if belongOp == Belong.BELONG else not check_condition(
+                    dataDictionary[field].min(), dataDictionary[field].max())
             else:
                 raise ValueError("Error: field should be a float")
 
-
-    def checkMissingRange(missing_values: list, belongOp: Belong, dataDictionary:pd.DataFrame, field:str=None): #TODO: Revisar cuando Fran pase el pseudocodigo
+    def checkMissingRange(self, belongOp: Belong, dataDictionary: pd.DataFrame, field: str = None,
+                          missing_values: list = None, quant_abs: int = None, quant_rel: float = None,
+                          quant_op: Operator = None) -> bool:
         """
         Check if the dataDictionary meets the condition of belongOp with respect to the missing values defined in missing_values.
         If field is None, it does the check in the whole dataDictionary. If not, it does the check in the column specified by field.
@@ -174,17 +188,183 @@ class ContractsPrePost:
         :return: if dataDictionary meets the condition of belongOp with respect to the missing values defined in missing_values
         """
         if field is None:
-            # Check in the whole dataDictionary
-            values_to_check = dataDictionary.values.flatten()
+            if belongOp == Belong.BELONG:
+                if quant_op is None:  # Check if there are any missing values in dataDictionary
+                    if dataDictionary.isnull().values.any():
+                        return True
+                    else:  # If there aren't null python values in dataDictionary, it checks if there are any of the
+                        # missing values in the list 'missing_values'
+                        if missing_values is not None:
+                            return True if any(
+                                value in missing_values for value in dataDictionary.values.flatten()) else False
+                else:
+                    if quant_rel is not None and quant_abs is None:  # Check there are any null python values or missing values from the list 'missing_values' in dataDictionary and if it meets the condition of quant_rel and quant_op
+                        if (dataDictionary.isnull().values.any() or (missing_values is not None and any(
+                                value in missing_values for value in
+                                dataDictionary.values.flatten()))) and compare_numbers(
+                            (dataDictionary.isnull().values.sum() + sum(
+                                [count_abs_frequency(value, dataDictionary) for value in
+                                 (missing_values if missing_values is not None else [])])) / dataDictionary.size,
+                            quant_rel,
+                            quant_op):
+                            return True
+                        else:
+                            return False
+                    elif quant_rel is not None and quant_abs is not None:
+                        # Si se proporcionan los dos, se lanza un ValueError
+                        raise ValueError(
+                            "quant_rel and quant_abs can't have different values than None at the same time")
+                    elif quant_abs is not None:  # Check there are any null python values or missing values from the
+                        # list 'missing_values' in dataDictionary and if it meets the condition of quant_abs and
+                        # quant_op
+                        if (dataDictionary.isnull().values.any() or (
+                                missing_values is not None and any(
+                            value in missing_values for value in dataDictionary.values.flatten()))) and compare_numbers(
+                            dataDictionary.isnull().values.sum() + sum(
+                                [count_abs_frequency(value, dataDictionary) for value in
+                                 (missing_values if missing_values is not None else [])]),
+                            quant_abs, quant_op):
+                            return True
+                        else:
+                            return False
+                    else:
+                        raise ValueError(
+                            "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is "
+                            "not None")
+            else:
+                if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                    # Check that there aren't any null python values or missing values from the list 'missing_values'
+                    # in dataDictionary
+                    return True if not dataDictionary.isnull().values.any() and not any(
+                        value in missing_values for value in dataDictionary.values.flatten()) else False
+                else:
+                    raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
         else:
-            # Check in the specified column
-            if field not in dataDictionary.columns:     # Se comprueba que la columna exista en el dataframe
-                raise ValueError(f"Column '{field}' not found in dataDictionary.")
-            values_to_check = dataDictionary[field].values
+            if field is not None:  # Comprobación de más añadida para que el código sea más legible
+                if field not in dataDictionary.columns:  # Se comprueba que la columna exista en el dataframe
+                    raise ValueError(f"Column '{field}' not found in dataDictionary.")
+                if belongOp == Belong.BELONG:
+                    if quant_op is None:  # Check that there are null python values or missing values from the list
+                        # 'missing_values' in the column specified by field
+                        return True if dataDictionary[field].isnull().values.any() or any(
+                            value in missing_values for value in dataDictionary[field].values) else False
+                    else:
+                        if quant_rel is not None and quant_abs is None:  # Check there are null python values or
+                            # missing values from the list 'missing_values' in the column specified by field and if it
+                            # meets the condition of quant_rel and quant_op
+                            if (dataDictionary[field].isnull().values.any() or (
+                                    missing_values is not None and any(value in missing_values for value in
+                                                                       dataDictionary[
+                                                                           field].values))) and compare_numbers(
+                                (dataDictionary[field].isnull().values.sum() + sum(
+                                    [count_abs_frequency(value, dataDictionary, field) for value in
+                                     (missing_values if missing_values is not None else [])])) / dataDictionary[
+                                    field].size,
+                                quant_rel,
+                                quant_op):
+                                return True
+                            else:
+                                return False
+                            # Importante destacar que es la cantidad relativa respecto a los valores de la columna
+                        elif quant_rel is not None and quant_abs is not None:
+                            # Si se proporcionan los dos, se lanza un ValueError
+                            raise ValueError(
+                                "quant_rel and quant_abs can't have different values than None at the same time")
+                        elif quant_abs is not None:  # Check there are null python values or missing values from the
+                            # list 'missing_values' in the column specified by field and if it meets the condition of
+                            # quant_abs and quant_op
+                            if (dataDictionary[field].isnull().values.any() or (
+                                    missing_values is not None and any(value in missing_values for value in
+                                                                       dataDictionary[
+                                                                           field].values))) and compare_numbers(
+                                dataDictionary[field].isnull().values.sum() + sum(
+                                    [count_abs_frequency(value, dataDictionary, field) for value in
+                                     (missing_values if missing_values is not None else [])]),
+                                quant_abs, quant_op):
+                                return True
+                            else:
+                                return False
+                        else:  # quant_rel is None and quant_abs is None
+                            raise ValueError(
+                                "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
+                else:
+                    if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                        # Check that there aren't any null python values or missing values from the list
+                        # 'missing_values' in the column specified by field
+                        return True if not dataDictionary[field].isnull().values.any() and not any(
+                            value in missing_values for value in dataDictionary[field].values) else False
+                    else:
+                        raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
 
-        if belongOp == Belong.BELONG:
-            return all(value in missing_values for value in values_to_check)
-        elif belongOp == Belong.NOTBELONG:
-            return all(value not in missing_values for value in values_to_check)
+    # TODO: Implementar función checkInvalidValues
+    def checkInvalidValues(self, belongOp: Belong, dataDictionary: pd.DataFrame, invalid_values: list,
+                           field: str = None, quant_abs: int = None, quant_rel: float = None,
+                           quant_op: Operator = None) -> bool:
+        """
+        Check if the dataDictionary meets the condition of belongOp with respect to the invalid values defined in invalid_values.
+        If field is None, it does the check in the whole dataDictionary. If not, it does the check in the column specified by field.
 
+        :param belongOp: enum operator which can be Belong.BELONG or Belong.NOTBELONG
+        :param dataDictionary: data dictionary
+        :param invalid_values: list of invalid values
+        :param field: dataset column in which value will be checked
+        :param quant_abs: integer which represents the absolute number of times that value should appear
+                            with respect the enum operator quant_op
+        :param quant_rel: float which represents the relative number of times that value should appear
+                            with respect the enum operator quant_op
+        :param quant_op: enum operator which can be Operator.GREATEREQUAL=0, Operator.GREATER=1, Operator.LESSEQUAL=2,
+               Operator.LESS=3, Operator.EQUAL=4
 
+        :return: if dataDictionary meets the condition of belongOp with respect to the invalid values defined in invalid_values
+        """
+        """
+        Descripción: 
+
+En esta función cuando hablamos de valores inválidos nos referimos a los valores establecidos en la lista invalid_values. 
+
+ 
+
+Si field es None: 
+
+ 
+
+    Si belongOp es BELONG 
+
+    Si quant_op es None: comprueba que hay valores inválidos en el dataset 
+
+    Si no:  
+
+    Si quant_rel no es None y quant_abs es None: comprueba que existen valores inválidos en el dataset y que además cumple lo que define el operador Operator sobre la cantidad relativa de veces que aparecen. 
+
+    Si no, si quant_abs no es None y quant_rel es None: comprueba que existen valores inválidos en el dataset y que además cumple lo que define el operador Operator sobre la cantidad absoluta de veces que aparecen. 
+
+    Si no: error 
+
+    Si belongOp es NOTBELONG  
+
+    Si quant_op, quant_rel y quant_abs son None: comprueba que no hay valores inválidos en el dataset 
+
+    Si no: error 
+
+ 
+
+Si field no es None:  
+
+    Si belongOp es BELONG 
+
+    Si quant_op es None: comprueba que hay valores inválidos en la columna especificada en field 
+
+    Si no:  
+
+    Si quant_rel no es None y quant_abs es None: comprueba que existen valores inválidos en la columna especificada en field y que además cumple lo que define el operador Operator sobre la cantidad relativa de veces que aparecen. 
+
+    Si no, si quant_abs no es None y quant_rel es None: comprueba que existen valores inválidos en la columna especificada en field y que además cumple lo que define el operador Operator sobre la cantidad absoluta de veces que aparecen. 
+
+    Si no: error 
+
+    Si belongOp es NOTBELONG  
+
+    Si quant_op, quant_rel y quant_abs son None: comprueba que no hay valores inválidos en la columna especificada en field 
+
+    Si no: error 
+        """

@@ -9,18 +9,16 @@ if __name__ == "__main__":
     set_logger("test")
 
     contract_test = ContractSimpleTest()
-    contract_test.execute_CheckFieldRange_Tests()
-    contract_test.execute_CheckFixValueRangeString_Tests()
-    contract_test.execute_CheckFixValueRangeFloat_Tests()
-    contract_test.execute_CheckFixValueRangeDateTime_Tests()
-    contract_test.execute_checkIntervalRangeFloat_Tests()
+    contract_test.executeAll_SimpleTests()
 
-    ContractTestWithDatasets= ContractWithDatasetTests()
-    ContractTestWithDatasets.execute_CheckFieldRange_Tests()
-    # ContractTestWithDatasets.execute_CheckFixValueRangeString_Tests()
-    # ContractTestWithDatasets.execute_CheckFixValueRangeFloat_Tests()
-    # ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_Tests()
-    # ContractTestWithDatasets.execute_checkIntervalRangeFloat_Tests()
+    ContractTestWithDatasets = ContractWithDatasetTests()
+    # ContractTestWithDatasets.execute_CheckFieldRange_DatasetTests()
+    # ContractTestWithDatasets.execute_CheckFixValueRangeString_DatasetTests()
+    # ContractTestWithDatasets.execute_CheckFixValueRangeFloat_DatasetTests()
+    # ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_DatasetTests()
+    # ContractTestWithDatasets.execute_CheckIntervalRangeFloat_DatasetTests()
+
+    # ContractTestWithDatasets.executeAll_DatasetTests()
 
 
 

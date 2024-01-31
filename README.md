@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Anaconda Environment
-- Python 3.11
+- Python 3.11 (as it is the used version in the project)
 - Libraries specified in `requirements.txt`
 
 ## Installation
