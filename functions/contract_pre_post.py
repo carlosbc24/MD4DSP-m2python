@@ -4,7 +4,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from helpers.auxiliar import compare_numbers
+from helpers.auxiliar import compare_numbers, count_abs_frequency
 from helpers.enumerations import Belong, Operator, Closure
 
 
@@ -56,9 +56,6 @@ class ContractsPrePost:
         if value is not None and type(value) is not str and type(value) is not pd.Timestamp:  #Antes del casteo se debe comprobar que value no sea None, str o datetime(Timestamp), para que solo se casteen los int
             value = float(value)    # Se castea el valor a float para que no de error al hacer un get por valor, porque al hacer un get detecta el valor como int
 
-        #TODO HACER METODO CONTAR PARA EL VALUE COUNTS DEL DATAFRAME COMPLETO
-
-
         if field is None:
             if belongOp == Belong.BELONG:
                 if quant_op is None:  # Check if value is in dataDictionary
@@ -66,15 +63,15 @@ class ContractsPrePost:
                 else:
                     if quant_rel is not None and quant_abs is None:  # Check if value is in dataDictionary and if it meets the condition of quant_rel
                         return True if value in dataDictionary.values and compare_numbers(
-                                dataDictionary.value_counts(dropna=False).get(value, 0)
-                                / dataDictionary.size, quant_rel, quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
+                                count_abs_frequency(value, dataDictionary) / dataDictionary.size,
+                                quant_rel, quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
                                 # Importante el dropna=False para que cuente los valores NaN en caso de que value sea None
                     elif quant_rel is not None and quant_abs is not None:
                         # Si se proporcionan los dos, se lanza un ValueError
                         raise ValueError("quant_rel and quant_abs can't have different values than None at the same time")
                     elif quant_abs is not None:
                         return True if value in dataDictionary.values and compare_numbers(
-                                dataDictionary.value_counts(dropna=False).get(value, 0),
+                                count_abs_frequency(value, dataDictionary),
                                 quant_abs, quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
                     else:
                         raise ValueError("Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")

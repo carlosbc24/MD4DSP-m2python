@@ -97,7 +97,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
         # Crea el dataframe a partir del archivo CSV
         dataDictionary = pd.read_csv(ruta_csv)
-        """
+
         # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
@@ -201,8 +201,6 @@ class ContractTestWithDatasets(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.4
 
-        print(dataDictionary)
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
@@ -214,7 +212,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
-        quant_abs = 3
+        quant_abs = 30
 
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
@@ -252,7 +250,7 @@ class ContractTestWithDatasets(unittest.TestCase):
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
-        """
+
 
         # Casos de error añadidos
         print_and_log("")
@@ -1046,28 +1044,6 @@ class ContractTestWithDatasets(unittest.TestCase):
                                                            belongOp=Belong(belongOp),field=field)
         print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
         print_and_log("")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

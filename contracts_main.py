@@ -16,8 +16,8 @@ if __name__ == "__main__":
     contract_test.execute_checkIntervalRangeFloat_Tests()"""
 
     ContractTestWithDatasets= ContractTestWithDatasets()
-    ContractTestWithDatasets.execute_CheckFieldRange_Tests()
+    #ContractTestWithDatasets.execute_CheckFieldRange_Tests()
     ContractTestWithDatasets.execute_CheckFixValueRangeString_Tests()
     #ContractTestWithDatasets.execute_CheckFixValueRangeFloat_Tests()
     #ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_Tests()
-    ContractTestWithDatasets.execute_checkIntervalRangeFloat_Tests()
+    #ContractTestWithDatasets.execute_checkIntervalRangeFloat_Tests()
