@@ -28,6 +28,7 @@ class ContractSimpleTest(unittest.TestCase):
         pre_post (ContractsPrePost): instance of the class ContractsPrePost
         """
         self.pre_post = ContractsPrePost()
+        print_and_log("")
         print_and_log("--------------------------------------------------")
         print_and_log("----------- STARTING SIMPLE TEST CASES -----------")
         print_and_log("--------------------------------------------------")

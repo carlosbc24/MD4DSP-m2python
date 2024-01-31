@@ -29,6 +29,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         pre_post (ContractsPrePost): instance of the class ContractsPrePost
         """
         self.pre_post = ContractsPrePost()
+        print_and_log("")
         print_and_log("--------------------------------------------------")
         print_and_log("---------- STARTING DATASETS TEST CASES ----------")
         print_and_log("--------------------------------------------------")
