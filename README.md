@@ -46,8 +46,13 @@ MD4DSP-m2python/
 │
 ├── test/
 │ ├── simple_test.py
-│ ├── 
+│ ├── tests_spotify_dataset.py
 │ └── ...
+│
+├── test_datasets/
+│ ├── spotify_songs
+│   ├── readme.md
+│   └── spotify_songs.csv
 │
 ├── .gitignore
 ├── contracts_main.py
@@ -62,11 +67,16 @@ MD4DSP-m2python/
 
 - **`test/`**: contains the tests to make exhaustive evaluations of the functions.
 
+- **`test_datasets/`**: contains the datasets used in the tests. We have decided to upload it to the repository to facilitate the execution of the tests, using the same version that the developers used to execute the tests.
+
 - **`requirements.txt`**: file that contains the libraries needed to run the project.
 
   ```bash
   conda create --name tu_entorno --file requirements.txt
     ```
+  
+## External Documentation
+The external documentation of the project is available in the following link: https://unexes.sharepoint.com/:w:/s/PDI_i3lab/EYNMm7pMsX1HuIKz_PMWCi8Bl_ssrzRnvp3hQHimY363ng?e=d8Cvvh
   
 ## Authors
 - Carlos Breuer Carrasco

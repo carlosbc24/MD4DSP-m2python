@@ -7,7 +7,7 @@ from helpers.enumerations import Belong, Operator, Closure
 from helpers.logger import print_and_log
 
 
-class ContractTest(unittest.TestCase):
+class ContractSimpleTest(unittest.TestCase):
     """
     Class to test the contracts with simple test cases
 
@@ -28,6 +28,9 @@ class ContractTest(unittest.TestCase):
         pre_post (ContractsPrePost): instance of the class ContractsPrePost
         """
         self.pre_post = ContractsPrePost()
+        print_and_log("--------------------------------------------------")
+        print_and_log("----------- STARTING SIMPLE TEST CASES -----------")
+        print_and_log("--------------------------------------------------")
 
     def execute_CheckFieldRange_Tests(self):
         """
