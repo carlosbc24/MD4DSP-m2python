@@ -145,14 +145,15 @@ class ContractsPrePost:
             else:
                 raise ValueError("Error: closureType should be openOpen, openClosed, closedOpen, or closedClosed")
 
-        if field is None:   #Hcer un if en el que se descarten todos los campos que no sean float o int o double
+        if field is None:
+            dataDictionary=dataDictionary.select_dtypes(include=['int','float'])         #Se descartan todos los campos que no sean float o int o double
             return check_condition(dataDictionary.min().min(),
                                    dataDictionary.max().max()) if belongOp == Belong.BELONG else not check_condition(
                                    dataDictionary.min().min(), dataDictionary.max().max())
         else:
             if field not in dataDictionary.columns:     # Se comprueba que la columna exista en el dataframe
                 raise ValueError(f"Column '{field}' not found in dataDictionary.")
-            if type(field) is int or type(field) is float:
+            if dataDictionary[field].dtype in ['int', 'float']:
                 return check_condition(dataDictionary[field].min(),
                                        dataDictionary[field].max()) if belongOp == Belong.BELONG else not check_condition(
                                        dataDictionary[field].min(), dataDictionary[field].max())

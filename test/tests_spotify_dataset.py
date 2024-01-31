@@ -1035,7 +1035,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 1 Passed: Expected False, got False")
 
         # Example 2 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810)
         left = -47.30
         right = 518000
         closure = 0  # OpenOpen
@@ -1046,7 +1046,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 2 Passed: Expected True, got True")
 
         # Example 3 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
         left = -47.30
         right = 517810
         closure = 1  # OpenClosed
@@ -1057,7 +1057,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Example 4 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
         left = -47.30
         right = 517809.99
         closure = 1  # OpenClosed
@@ -1068,7 +1068,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
         # Example 5 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
         left = -46.448
         right = 517811
         closure = 2  # ClosedOpen
@@ -1079,7 +1079,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Example 6 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
         left = -46.448
         right = 517810.0
         belongOp = 0
@@ -1091,7 +1091,7 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Example 7 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
         left = -46.448
         right = 517810
         closure = 3  # ClosedClosed
@@ -1102,7 +1102,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
         # Example 8 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
+        left = -46.447
+        right = 517810.0
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1114,7 +1116,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         belongOp = 1
 
         # Example 9 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810)
+        left = -46.448
+        right = 517811
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1123,7 +1127,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 9 Passed: Expected True, got True")
 
         # Example 10 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810)
+        left = -46.449
+        right = 517810.1
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1132,7 +1138,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected False, got False")
 
         # Example 11 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
+        left = -46.449
+        right = 517810
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1141,7 +1149,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 11 Passed: Expected False, got False")
 
         # Example 12 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
+        left = -46.448
+        right = 517810
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1150,7 +1160,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 12 Passed: Expected True, got True")
 
         # Example 13 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
+        left = -46.448
+        right = 517810.01
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1159,7 +1171,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected False, got False")
 
         # Example 14 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
+        left = -46.448
+        right = 517810
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1168,7 +1182,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected True, got True")
 
         # Example 15 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
+        left = -46.448
+        right = 517810
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1177,7 +1193,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 15 Passed: Expected False, got False")
 
         # Example 16 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
+        left = -46.448
+        right = 517809.9
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1185,13 +1203,15 @@ class ContractTestWithDatasets(unittest.TestCase):
         assert result is True, "Test Case 16 Failed: Expected True, but got False"
         print_and_log("Test Case 16 Passed: Expected True, got True")
 
-        #field = 'c2'
-        field = 'c2'
+        #field = 'loudness'
+        field = 'loudness'
         #belongOp = 0
         belongOp = 0
 
         # Example 17 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        left = -46.448
+        right = 1.275
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1200,7 +1220,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 17 Passed: Expected False, got False")
 
         # Example 18 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        left = -46.449
+        right = 1.276
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1209,7 +1231,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 19 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        left = -46.449
+        right = 1.275
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1218,7 +1242,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 19 Passed: Expected True, got True")
 
         # Example 20 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        left = -46.448
+        right = 1.275
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1227,7 +1253,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
         # Example 21 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        left = -46.448
+        right = 1.276
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1236,7 +1264,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 21 Passed: Expected True, got True")
 
         # Example 22 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        left = -46.448
+        right = 1.275
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1245,7 +1275,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 22 Passed: Expected False, got False")
 
         # Example 23 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        left = -46.448
+        right = 1.275
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1254,7 +1286,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 23 Passed: Expected True, got True")
 
         # Example 24 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        left = -46.448
+        right = 1.274
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1266,7 +1300,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         belongOp = 1
 
         # Example 25 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        left = -46.448
+        right = 1.276
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1275,7 +1311,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 25 Passed: Expected True, got True")
 
         # Example 26 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        left = -46.449
+        right = 1.276
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1284,7 +1322,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 26 Passed: Expected False, got False")
 
         # Example 27 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        left = -46.449
+        right = 1.275
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1293,7 +1333,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 27 Passed: Expected False, got False")
 
         # Example 28 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        left = -46.448
+        right = 1.275
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1302,7 +1344,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 28 Passed: Expected True, got True")
 
         # Example 29 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        left = -46.448
+        right = 1.276
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1311,7 +1355,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 29 Passed: Expected False, got False")
 
         # Example 30 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        left = -46.448
+        right = 1.275
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1320,7 +1366,9 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 30 Passed: Expected True, got True")
 
         # Example 31 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        left = -46.448
+        right = 1.275
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
@@ -1329,13 +1377,26 @@ class ContractTestWithDatasets(unittest.TestCase):
         print_and_log("Test Case 31 Passed: Expected False, got False")
 
         # Example 32 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
+        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        left = -46.447
+        right = 1.275
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        dataDictionary=dataDictionary, closureType=Closure(closure),
                                                        belongOp=Belong(belongOp),field=field)
         assert result is True, "Test Case 32 Failed: Expected True, but got False"
         print_and_log("Test Case 32 Passed: Expected True, got True")
+
+        # Example 33 of checkIntervalRangeFloat
+        field='playlist_name'
+        closure = 3  # ClosedClosed
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
+                                                           dataDictionary=dataDictionary, closureType=Closure(closure),
+                                                           belongOp=Belong(belongOp),field=field)
+        print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
+        print_and_log("")
 
 
 
