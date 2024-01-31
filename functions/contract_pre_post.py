@@ -56,6 +56,9 @@ class ContractsPrePost:
         if value is not None and type(value) is not str and type(value) is not pd.Timestamp:  #Antes del casteo se debe comprobar que value no sea None, str o datetime(Timestamp), para que solo se casteen los int
             value = float(value)    # Se castea el valor a float para que no de error al hacer un get por valor, porque al hacer un get detecta el valor como int
 
+        #TODO HACER METODO CONTAR PARA EL VALUE COUNTS DEL DATAFRAME COMPLETO
+
+
         if field is None:
             if belongOp == Belong.BELONG:
                 if quant_op is None:  # Check if value is in dataDictionary
