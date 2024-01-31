@@ -188,3 +188,4 @@ class ContractsPrePost:
             return all(value not in missing_values for value in values_to_check)
 
 
+    #TODO: Hacer las dos últimas funciones
