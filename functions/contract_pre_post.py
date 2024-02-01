@@ -53,12 +53,9 @@ class ContractsPrePost:
         :return: if fields meets the condition of belongOp in dataDictionary and field
         :rtype: bool
         """
-        dataDictionary = dataDictionary.replace({
-                                                    np.nan: None})  # Se sustituyen los NaN por None para que no de error al hacer la comparacion de None con NaN. Como el dataframe es de floats, los None se convierten en NaN
-        if value is not None and type(value) is not str and type(
-                value) is not pd.Timestamp:  # Antes del casteo se debe comprobar que value no sea None, str o datetime(Timestamp), para que solo se casteen los int
-            value = float(
-                value)  # Se castea el valor a float para que no de error al hacer un get por valor, porque al hacer un get detecta el valor como int
+        dataDictionary = dataDictionary.replace({np.nan: None})  # Se sustituyen los NaN por None para que no de error al hacer la comparacion de None con NaN. Como el dataframe es de floats, los None se convierten en NaN
+        if value is not None and type(value) is not str and type(value) is not pd.Timestamp:  # Antes del casteo se debe comprobar que value no sea None, str o datetime(Timestamp), para que solo se casteen los int
+            value = float(value)  # Se castea el valor a float para que no de error al hacer un get por valor, porque al hacer un get detecta el valor como int
 
         if field is None:
             if belongOp == Belong.BELONG:
@@ -197,6 +194,8 @@ class ContractsPrePost:
                         if missing_values is not None:
                             return True if any(
                                 value in missing_values for value in dataDictionary.values.flatten()) else False
+                        else:  # If the list is None, it returns False. It checks that in fact there aren't any missing values
+                            return False
                 else:
                     if quant_rel is not None and quant_abs is None:  # Check there are any null python values or missing values from the list 'missing_values' in dataDictionary and if it meets the condition of quant_rel and quant_op
                         if (dataDictionary.isnull().values.any() or (missing_values is not None and any(
@@ -205,8 +204,7 @@ class ContractsPrePost:
                             (dataDictionary.isnull().values.sum() + sum(
                                 [count_abs_frequency(value, dataDictionary) for value in
                                  (missing_values if missing_values is not None else [])])) / dataDictionary.size,
-                            quant_rel,
-                            quant_op):
+                                  quant_rel, quant_op):
                             return True
                         else:
                             return False
@@ -235,8 +233,11 @@ class ContractsPrePost:
                 if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                     # Check that there aren't any null python values or missing values from the list 'missing_values'
                     # in dataDictionary
-                    return True if not dataDictionary.isnull().values.any() and not any(
-                        value in missing_values for value in dataDictionary.values.flatten()) else False
+                    if missing_values is not None:
+                        return True if not dataDictionary.isnull().values.any() and not any(
+                            value in missing_values for value in dataDictionary.values.flatten()) else False
+                    else:
+                        return True
                 else:
                     raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
         else:
@@ -246,8 +247,15 @@ class ContractsPrePost:
                 if belongOp == Belong.BELONG:
                     if quant_op is None:  # Check that there are null python values or missing values from the list
                         # 'missing_values' in the column specified by field
-                        return True if dataDictionary[field].isnull().values.any() or any(
-                            value in missing_values for value in dataDictionary[field].values) else False
+                        if dataDictionary[field].isnull().values.any():
+                            return True
+                        else:  # If there aren't null python values in dataDictionary, it checks if there are any of the
+                            # missing values in the list 'missing_values'
+                            if missing_values is not None:
+                                return True if any(
+                                    value in missing_values for value in dataDictionary[field].values) else False
+                            else:  # If the list is None, it returns False. It checks that in fact there aren't any missing values
+                                return False
                     else:
                         if quant_rel is not None and quant_abs is None:  # Check there are null python values or
                             # missing values from the list 'missing_values' in the column specified by field and if it
@@ -259,9 +267,7 @@ class ContractsPrePost:
                                 (dataDictionary[field].isnull().values.sum() + sum(
                                     [count_abs_frequency(value, dataDictionary, field) for value in
                                      (missing_values if missing_values is not None else [])])) / dataDictionary[
-                                    field].size,
-                                quant_rel,
-                                quant_op):
+                                    field].size, quant_rel, quant_op):
                                 return True
                             else:
                                 return False
@@ -277,10 +283,10 @@ class ContractsPrePost:
                                     missing_values is not None and any(value in missing_values for value in
                                                                        dataDictionary[
                                                                            field].values))) and compare_numbers(
-                                dataDictionary[field].isnull().values.sum() + sum(
-                                    [count_abs_frequency(value, dataDictionary, field) for value in
-                                     (missing_values if missing_values is not None else [])]),
-                                quant_abs, quant_op):
+                                            dataDictionary[field].isnull().values.sum() + sum(
+                                                [count_abs_frequency(value, dataDictionary, field) for value in
+                                                 (missing_values if missing_values is not None else [])]),
+                                            quant_abs, quant_op):
                                 return True
                             else:
                                 return False
@@ -291,8 +297,11 @@ class ContractsPrePost:
                     if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                         # Check that there aren't any null python values or missing values from the list
                         # 'missing_values' in the column specified by field
-                        return True if not dataDictionary[field].isnull().values.any() and not any(
-                            value in missing_values for value in dataDictionary[field].values) else False
+                        if missing_values is not None: # Check that there are missing values in the list 'missing_values'
+                            return True if not dataDictionary[field].isnull().values.any() and not any(
+                                value in missing_values for value in dataDictionary[field].values) else False
+                        else: # If the list is None, it returns True because there aren't values from the list 'missing_values'
+                            return True
                     else:
                         raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
 
@@ -324,8 +333,8 @@ class ContractsPrePost:
                             return True
                         else:
                             return False
-                    else:  # If the list is None, it returns True
-                        return True
+                    else:  # If the list is None, it returns False. It checks that in fact there aren't any invalid values
+                        return False
                 else:
                     if quant_rel is not None and quant_abs is None:  # Check there are any invalid values in
                         # dataDictionary and if it meets the condition of quant_rel and quant_op (relative frequency)
@@ -337,8 +346,8 @@ class ContractsPrePost:
                                 return True
                             else:
                                 return False
-                        else:  # If the list is None, it returns True
-                            return True
+                        else:  # If the list is None, it returns False
+                            return False
                     elif quant_abs is not None and quant_rel is None:  # Check there are any invalid values in
                         # dataDictionary and if it meets the condition of quant_abs and quant_op (absolute frequency)
                         if invalid_values is not None:  # Check that there are invalid values in the list 'invalid_values'
@@ -349,8 +358,8 @@ class ContractsPrePost:
                                 return True
                             else:
                                 return False
-                        else:  # If the list is None, it returns True
-                            return True
+                        else:  # If the list is None, it returns False
+                            return False
                     elif quant_abs is not None and quant_rel is not None:
                         # Si se proporcionan los dos, se lanza un ValueError
                         raise ValueError(
@@ -377,8 +386,8 @@ class ContractsPrePost:
                                 return True
                             else:
                                 return False
-                        else:  # If the list is None, it returns True
-                            return True
+                        else:  # If the list is None, it returns False
+                            return False
                     else:
                         if quant_rel is not None and quant_abs is None:  # Check there are invalid values in the
                             # column specified by field and if it meets the condition of quant_rel and quant_op
@@ -391,8 +400,8 @@ class ContractsPrePost:
                                     return True
                                 else:
                                     return False
-                            else:  # If the list is None, it returns True
-                                return True
+                            else:  # If the list is None, it returns False
+                                return False
                         elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
                             # column specified by field and if it meets the condition of quant_abs and quant_op
                             # (absolute frequency)
@@ -404,8 +413,8 @@ class ContractsPrePost:
                                     return True
                                 else:
                                     return False
-                            else:  # If the list is None, it returns True
-                                return True
+                            else:  # If the list is None, it returns False
+                                return False
                         elif quant_abs is not None and quant_rel is not None:
                             # Si se proporcionan los dos, se lanza un ValueError
                             raise ValueError(

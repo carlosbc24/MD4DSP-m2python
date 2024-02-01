@@ -9,14 +9,14 @@ if __name__ == "__main__":
     set_logger("test")
 
     contract_test = ContractSimpleTest()
-    contract_test.executeAll_SimpleTests()
+    # contract_test.executeAll_SimpleTests()
 
     ContractTestWithDatasets = ContractWithDatasetTests()
-    ContractTestWithDatasets.executeAll_DatasetTests()
+    # ContractTestWithDatasets.executeAll_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFieldRange_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFixValueRangeString_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFixValueRangeFloat_DatasetTests()
-    # ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_DatasetTests()
+    ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_Tests()
     # ContractTestWithDatasets.execute_CheckIntervalRangeFloat_DatasetTests()
 
     # ContractTestWithDatasets.executeAll_DatasetTests()

@@ -651,6 +651,276 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+        # Obtiene la ruta del directorio actual del script
+        directorio_actual = os.path.dirname(os.path.abspath(__file__))
+        # Construye la ruta al archivo CSV
+        ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
+        # Crea el dataframe a partir del archivo CSV
+        dataDictionary = pd.read_csv(ruta_csv)
+
+        # Eliminar los guiones de la columna 'track_album_release_date'
+        # dataDictionary['track_album_release_date']=dataDictionary['track_album_release_date'].str.replace('-', '')
+        # Convertir la columna 'track_album_release_date' a tipo timestamp
+        dataDictionary['track_album_release_date'] = pd.to_datetime(dataDictionary['track_album_release_date'], errors='coerce')
+
+
+        # Example 13 of checkFixValueRange
+        # Check that value None belongs to the data dictionary in field 'track_album_release_date' and that
+        # it appears less or equal than 30% of the times
+        value = pd.Timestamp('20180310')
+        belongOp = 0  # Belong
+        field = 'track_album_release_date'
+        quant_op = 2  # lessEqual
+        quant_rel = 0.3
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                        quant_op=Operator(quant_op))
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        # Example 14 of checkFixValueRange
+        # Check that value None belongs to the data dictionary in field 'c1' and that
+        # it appears less or equal than 30% of the times
+        value = None
+        belongOp = 0  # Belong
+        field = 'track_album_release_date'
+        quant_op = 1  # greater
+        quant_rel = 0.3
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                        quant_op=Operator(quant_op))
+        assert result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, got False")
+
+        # Example 18 of checkFixValueRange
+        # Check that value 1 doesn't belong to the data dictionary in field 'track_album_release_date'
+        value = pd.Timestamp('20250310')
+        belongOp = 1  # NotBelong
+        field = 'track_album_release_date'
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field)
+        assert result is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, got True")
+
+        # Example 14.5 of checkFixValueRange
+        # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
+        value = None
+        belongOp = 0  # Belong
+        field = 'track_album_release_date'
+        quant_op = 2  # lessEqual
+        quant_rel = 0.4
+        quant_abs = 50
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                   belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                   quant_abs=quant_abs, quant_op=Operator(quant_op))
+        print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
+
+        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # TODO: HACER LOS CASOS AÑADIDOS
+        print_and_log("")
+        print_and_log("Casos añadidos:")
+
+        # Example 1 of checkFixValueRange
+        value = 2
+        belongOp = 0  # Belong
+        field = None  # None
+        quant_op = None  # None
+        quant_rel = 0.3
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                        quant_op=quant_op)
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Example 2 of checkFixValueRange
+        value = 400
+        belongOp = 0  # Belong
+        field = None  # None
+        quant_op = None  # None
+        quant_rel = 0.3
+        # Ejecutar la función y verificar que devuelve False
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                        quant_op=quant_op)
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
+
+        # Example 3 of checkFixValueRange
+        value = 1
+        belongOp = 0  # Belong
+        field = None
+        quant_op = 2  # lessEqual
+        quant_rel = 0.3
+
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                        quant_op=Operator(quant_op))
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Example 4 of checkFixValueRange
+        value = 1
+        belongOp = 0  # Belong
+        field = None
+        quant_op = 1  # greater
+        quant_rel = 0.4
+
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                                        quant_op=Operator(quant_op))
+        assert result is False, "Test Case 4 Failed: Expected False, but got True"
+        print_and_log("Test Case 4 Passed: Expected False, got False")
+
+        # Example 5 of checkFixValueRange
+        value = 1
+        belongOp = 0  # Belong
+        field = None
+        quant_op = 1  # greater
+        quant_abs = 30
+
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                        quant_op=Operator(quant_op))
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Example 6 of checkFixValueRange
+        value = None
+        belongOp = 0  # Belong
+        field = None
+        quant_op = 2  # lessEqual
+        quant_abs = 50
+
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
+                                                        quant_op=Operator(quant_op))
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
+
+        # Example 8 of checkFixValueRange
+        value = 804.8
+        belongOp = 1  # Not Belong
+        # # Ejecutar la función y verificar que devuelve False
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp))
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
+
+        # Example 9 of checkFixValueRange
+        value = 3
+        belongOp = 1  # Not Belong
+        # # Ejecutar la función y verificar que devuelve False
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                        belongOp=Belong(belongOp))
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, got False")
+
+        # Example 11 of checkFixValueRange
+        value = 4
+        belongOp = 0  # Belong
+        field = 'key'
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
+                                                  belongOp=Belong(belongOp))
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
+
+        # Example 12 of checkFixValueRange
+        value = 0.146
+        belongOp = 0  # Belong
+        field = 'key'
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
+                                                  belongOp=Belong(belongOp))
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
+
+        # Example 15 of checkFixValueRange
+        value = None
+        belongOp = 0  # Belong
+        field = 'key'
+        quant_op = 1  # greater
+        quant_abs = 2
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
+        assert result is True, "Test Case 15 Failed: Expected True, but got False"
+        print_and_log("Test Case 15 Passed: Expected True, got True")
+
+        # Example 16 of checkFixValueRange
+        value = 1
+        belongOp = 0  # Belong
+        field = 'track_name'
+        quant_op = 1  # greater
+        quant_abs = 3000
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
+                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                  belongOp=Belong(belongOp))
+        assert result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, got False")
+
+        # Example 18 of checkFixValueRange
+        value = 15
+        belongOp = 1  # Not Belong
+        field = 'key'
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
+                                                  belongOp=Belong(belongOp))
+        assert result is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, got True")
+
+        # Example 19 of checkFixValueRange
+        value = 8
+        belongOp = 1  # Not Belong
+        field = 'key'
+        result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
+                                                  belongOp=Belong(belongOp))
+        assert result is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, got False")
+
+        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        # Casos de error añadidos
+        print_and_log("")
+        print_and_log("Casos de error añadidos:")
+
+        # Example 4.5 of checkFixValueRange
+        # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
+        value = None
+        belongOp = 0  # Belong
+        field = None
+        quant_op = 2  # lessEqual
+        quant_rel = 0.4
+        quant_abs = 50
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
+                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
+
+        print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
+        # Example 7 of checkFixValueRange
+        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
+        value = 3
+        belongOp = 0  # Belong
+        field = None
+        quant_op = 2  # lessEqual
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                      belongOp=Belong(belongOp), field=field,
+                                                      quant_op=Operator(quant_op))
+        print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
+
+        # # Example 10 of checkFixValueRange
+        value = 5
+        belongOp = 1  # Not Belong
+        quant_op = 3
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
+                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+        print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+
 
 
 
