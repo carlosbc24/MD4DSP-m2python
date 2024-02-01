@@ -296,7 +296,6 @@ class ContractsPrePost:
                     else:
                         raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
 
-    # TODO: Implementar función checkInvalidValues
     def checkInvalidValues(self, belongOp: Belong, dataDictionary: pd.DataFrame, invalid_values: list,
                            field: str = None, quant_abs: int = None, quant_rel: float = None,
                            quant_op: Operator = None) -> bool:
@@ -317,54 +316,114 @@ class ContractsPrePost:
 
         :return: if dataDictionary meets the condition of belongOp with respect to the invalid values defined in invalid_values
         """
-        """
-        Descripción: 
-
-En esta función cuando hablamos de valores inválidos nos referimos a los valores establecidos en la lista invalid_values. 
-
- 
-
-Si field es None: 
-
- 
-
-    Si belongOp es BELONG 
-
-    Si quant_op es None: comprueba que hay valores inválidos en el dataset 
-
-    Si no:  
-
-    Si quant_rel no es None y quant_abs es None: comprueba que existen valores inválidos en el dataset y que además cumple lo que define el operador Operator sobre la cantidad relativa de veces que aparecen. 
-
-    Si no, si quant_abs no es None y quant_rel es None: comprueba que existen valores inválidos en el dataset y que además cumple lo que define el operador Operator sobre la cantidad absoluta de veces que aparecen. 
-
-    Si no: error 
-
-    Si belongOp es NOTBELONG  
-
-    Si quant_op, quant_rel y quant_abs son None: comprueba que no hay valores inválidos en el dataset 
-
-    Si no: error 
-
- 
-
-Si field no es None:  
-
-    Si belongOp es BELONG 
-
-    Si quant_op es None: comprueba que hay valores inválidos en la columna especificada en field 
-
-    Si no:  
-
-    Si quant_rel no es None y quant_abs es None: comprueba que existen valores inválidos en la columna especificada en field y que además cumple lo que define el operador Operator sobre la cantidad relativa de veces que aparecen. 
-
-    Si no, si quant_abs no es None y quant_rel es None: comprueba que existen valores inválidos en la columna especificada en field y que además cumple lo que define el operador Operator sobre la cantidad absoluta de veces que aparecen. 
-
-    Si no: error 
-
-    Si belongOp es NOTBELONG  
-
-    Si quant_op, quant_rel y quant_abs son None: comprueba que no hay valores inválidos en la columna especificada en field 
-
-    Si no: error 
-        """
+        if field is None:
+            if belongOp == Belong.BELONG:
+                if quant_op is None:  # Check if there are any invalid values in dataDictionary
+                    if invalid_values is not None: # Check that there are invalid values in the list 'invalid_values'
+                        if any(value in invalid_values for value in dataDictionary.values.flatten()):
+                            return True
+                        else:
+                            return False
+                    else: # If the list is None, it returns True
+                        return True
+                else:
+                    if quant_rel is not None and quant_abs is None:  # Check there are any invalid values in
+                        # dataDictionary and if it meets the condition of quant_rel and quant_op (relative frequency)
+                        if invalid_values is not None: # Check that there are invalid values in the list 'invalid_values'
+                            if any(value in invalid_values for value in
+                                                              dataDictionary.values.flatten()) and compare_numbers(
+                            sum([count_abs_frequency(value, dataDictionary) for value in
+                                 invalid_values]) / dataDictionary.size,
+                            quant_rel, quant_op):
+                                return True
+                            else:
+                                return False
+                        else: # If the list is None, it returns True
+                            return True
+                    elif quant_abs is not None and quant_rel is None:  # Check there are any invalid values in
+                        # dataDictionary and if it meets the condition of quant_abs and quant_op (absolute frequency)
+                        if invalid_values is not None: # Check that there are invalid values in the list 'invalid_values'
+                            if any(value in invalid_values for value in
+                                                              dataDictionary.values.flatten()) and compare_numbers(
+                            sum([count_abs_frequency(value, dataDictionary) for value in
+                                 invalid_values]),
+                            quant_abs, quant_op):
+                                return True
+                            else:
+                                return False
+                        else: # If the list is None, it returns True
+                            return True
+                    elif quant_abs is not None and quant_rel is not None:
+                        # Si se proporcionan los dos, se lanza un ValueError
+                        raise ValueError(
+                            "quant_rel and quant_abs can't have different values than None at the same time")
+                    else:
+                        raise ValueError(
+                            "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is "
+                            "not None")
+            else:
+                if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                    # Check that there aren't any invalid values in dataDictionary
+                    return True if not (invalid_values is not None and any(
+                        value in invalid_values for value in dataDictionary.values.flatten())) else False
+                else:
+                    raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
+        else:
+            if field is not None:
+                if field not in dataDictionary.columns:
+                    raise ValueError(f"Column '{field}' not found in dataDictionary.")
+                if belongOp == Belong.BELONG:
+                    if quant_op is None:  # Check that there are invalid values in the column specified by field
+                        if invalid_values is not None: # Check that there are invalid values in the list 'invalid_values'
+                            if any(value in invalid_values for value in dataDictionary[field].values):
+                                return True
+                            else:
+                                return False
+                        else: # If the list is None, it returns True
+                            return True
+                    else:
+                        if quant_rel is not None and quant_abs is None:  # Check there are invalid values in the
+                            # column specified by field and if it meets the condition of quant_rel and quant_op
+                            # (relative frequency)
+                            if invalid_values is not None: # Check that there are invalid values in the list 'invalid_values'
+                                if any(value in invalid_values for value in
+                                   dataDictionary[field].values) and compare_numbers(
+                                    sum([count_abs_frequency(value, dataDictionary, field) for value in
+                                         invalid_values]) / dataDictionary[field].size,
+                                    quant_rel, quant_op):
+                                    return True
+                                else:
+                                    return False
+                            else: # If the list is None, it returns True
+                                return True
+                        elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
+                            # column specified by field and if it meets the condition of quant_abs and quant_op
+                            # (absolute frequency)
+                            if invalid_values is not None: # Check that there are invalid values in the list 'invalid_values'
+                                if any(value in invalid_values for value in
+                                   dataDictionary[field].values) and compare_numbers(
+                                    sum([count_abs_frequency(value, dataDictionary, field) for value in
+                                         invalid_values]),
+                                    quant_abs, quant_op):
+                                    return True
+                                else:
+                                    return False
+                            else: # If the list is None, it returns True
+                                return True
+                        elif quant_abs is not None and quant_rel is not None:
+                            # Si se proporcionan los dos, se lanza un ValueError
+                            raise ValueError(
+                                "quant_rel and quant_abs can't have different values than None at the same time")
+                        else:
+                            raise ValueError(
+                                "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
+                else:
+                    if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                        # Check that there aren't any invalid values in the column specified by field
+                        if invalid_values is not None: # Check that there are invalid values in the list 'invalid_values'
+                            return True if not any(
+                                value in invalid_values for value in dataDictionary[field].values) else False
+                        else: # If the list is None, it returns True
+                            return True
+                    else:
+                        raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")

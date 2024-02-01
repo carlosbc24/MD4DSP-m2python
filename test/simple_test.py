@@ -1430,7 +1430,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 32 Failed: Expected True, but got False"
         print_and_log("Test Case 32 Passed: Expected True, got True")
 
-    # TODO: Realizar los tests simples de la función checkMissingRange (FALTAN PROBAR MÁS CASOS)
     def execute_CheckMissingRange_SimpleTests(self):
         """
         Execute the simple tests of the function checkMissingRange
@@ -1482,12 +1481,61 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
 
+        # TODO: AÑADIR CASOS AÑADIDOS DE checkMissingRange
 
 
-    # TODO: Realizar los tests simples de la función checkInvalidValues
+
     def execute_CheckInvalidValues_SimpleTests(self):
         """
         Execute the simple tests of the function checkInvalidValues
         """
         print_and_log("Testing checkInvalidValues Function")
         print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        # Caso 1 Solicitado
+        belong = 0 # BELONG
+        dataDictionary = pd.DataFrame(data={'colour':[-1, -1, 'Blue', 'Green']})
+        invalid_values = [-1]
+        field = 'colour'
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
+                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                  quant_rel=quant_rel, invalid_values=invalid_values)
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2 Solicitado
+        belong = 0 # BELONG
+        dataDictionary = pd.DataFrame(data={'colour':[-1, 0, 'Blue', 'Green']})
+        invalid_values = [-1, 0]
+        field = 'colour'
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
+                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                  quant_rel=quant_rel, invalid_values=invalid_values)
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3 Solicitado
+        belong = 0 # BELONG
+        dataDictionary = pd.DataFrame(data={'colour':[-1, 0, 'Blue', 'Green']})
+        invalid_values = [-1, 0]
+        field = 'colour'
+        quant_op = 2 # lessEqual
+        quant_abs = 2
+        result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
+                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                  quant_abs=quant_abs, invalid_values=invalid_values)
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        # TODO: AÑADIR CASOS AÑADIDOS DE checkInvalidValues
+        # Caso 4 Añadido
+        #...
