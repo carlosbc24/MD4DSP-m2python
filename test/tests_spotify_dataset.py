@@ -8,7 +8,7 @@ from helpers.enumerations import Belong, Operator, Closure
 from helpers.logger import print_and_log
 
 
-class ContractTestWithDatasets(unittest.TestCase):
+class ContractWithDatasetTests(unittest.TestCase):
     """
     Class to test the contracts with simple test cases
 
@@ -29,7 +29,21 @@ class ContractTestWithDatasets(unittest.TestCase):
         pre_post (ContractsPrePost): instance of the class ContractsPrePost
         """
         self.pre_post = ContractsPrePost()
+        print_and_log("")
+        print_and_log("--------------------------------------------------")
+        print_and_log("---------- STARTING DATASET TEST CASES -----------")
+        print_and_log("--------------------------------------------------")
+        print_and_log("")
 
+    def executeAll_DatasetTests(self):
+        """
+        Execute all the tests of the dataset
+        """
+        self.execute_CheckFieldRange_Tests()
+        self.execute_CheckFixValueRangeString_Tests()
+        self.execute_CheckFixValueRangeFloat_Tests()
+        self.execute_CheckFixValueRangeDateTime_Tests()
+        self.execute_checkIntervalRangeFloat_Tests()
 
     def execute_CheckFieldRange_Tests(self):
         """
@@ -1046,6 +1060,13 @@ class ContractTestWithDatasets(unittest.TestCase):
                                                            belongOp=Belong(belongOp),field=field)
         print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
         print_and_log("")
+
+
+    # TODO: Hacer los test de checkMissingRange
+
+
+
+    # TODO: Hacer los test de checkInvalidValues
 
 
 

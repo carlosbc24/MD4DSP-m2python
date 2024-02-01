@@ -12,6 +12,7 @@ if __name__ == "__main__":
     contract_test.executeAll_SimpleTests()
 
     ContractTestWithDatasets = ContractWithDatasetTests()
+    ContractTestWithDatasets.executeAll_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFieldRange_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFixValueRangeString_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFixValueRangeFloat_DatasetTests()
@@ -20,12 +21,3 @@ if __name__ == "__main__":
 
     # ContractTestWithDatasets.executeAll_DatasetTests()
 
-
-
-
-    ContractTestWithDatasets= ContractTestWithDatasets()
-    #ContractTestWithDatasets.execute_CheckFieldRange_Tests()
-    #ContractTestWithDatasets.execute_CheckFixValueRangeString_Tests()
-    #ContractTestWithDatasets.execute_CheckFixValueRangeFloat_Tests()
-    ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_Tests()   #TODO: fix this test
-    #ContractTestWithDatasets.execute_checkIntervalRangeFloat_Tests()
