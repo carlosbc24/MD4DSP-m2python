@@ -718,12 +718,12 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
         # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        # TODO: HACER LOS CASOS AÑADIDOS
+
         print_and_log("")
         print_and_log("Casos añadidos:")
 
         # Example 1 of checkFixValueRange
-        value = 2
+        value = pd.Timestamp('20180721')
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
@@ -735,7 +735,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Example 2 of checkFixValueRange
-        value = 400
+        value = pd.Timestamp('20000721')
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
@@ -748,7 +748,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
         # Example 3 of checkFixValueRange
-        value = 1
+        value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
@@ -761,7 +761,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Example 4 of checkFixValueRange
-        value = 1
+        value = pd.Timestamp('20180721')
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
@@ -774,7 +774,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
         # Example 5 of checkFixValueRange
-        value = 1
+        value = pd.Timestamp('2001-01-01')
         belongOp = 0  # Belong
         field = None
         quant_op = 1  # greater
@@ -800,7 +800,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Example 8 of checkFixValueRange
-        value = 804.8
+        value = pd.Timestamp('20251215')
         belongOp = 1  # Not Belong
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
@@ -809,7 +809,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # Example 9 of checkFixValueRange
-        value = 3
+        value = pd.Timestamp('20150721')
         belongOp = 1  # Not Belong
         # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
@@ -818,18 +818,18 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
         # Example 11 of checkFixValueRange
-        value = 4
+        value = pd.Timestamp('20150721')
         belongOp = 0  # Belong
-        field = 'key'
+        field = 'track_album_release_date'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
         # Example 12 of checkFixValueRange
-        value = 0.146
+        value = pd.Timestamp('20250721')
         belongOp = 0  # Belong
-        field = 'key'
+        field = 'track_album_release_date'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
@@ -838,7 +838,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 15 of checkFixValueRange
         value = None
         belongOp = 0  # Belong
-        field = 'key'
+        field = 'track_album_release_date'
         quant_op = 1  # greater
         quant_abs = 2
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
@@ -848,9 +848,9 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
         # Example 16 of checkFixValueRange
-        value = 1
+        value = pd.Timestamp('20180721')
         belongOp = 0  # Belong
-        field = 'track_name'
+        field = 'track_album_release_date'
         quant_op = 1  # greater
         quant_abs = 3000
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
@@ -860,18 +860,18 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
-        value = 15
+        value = pd.Timestamp('20250721')
         belongOp = 1  # Not Belong
-        field = 'key'
+        field = 'track_album_release_date'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 19 of checkFixValueRange
-        value = 8
+        value = pd.Timestamp('20180721')
         belongOp = 1  # Not Belong
-        field = 'key'
+        field = 'track_album_release_date'
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
@@ -900,7 +900,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
         # Example 7 of checkFixValueRange
         # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
-        value = 3
+        value = pd.Timestamp('20180721')
         belongOp = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
@@ -912,7 +912,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # # Example 10 of checkFixValueRange
-        value = 5
+        value = pd.Timestamp('20180721')
         belongOp = 1  # Not Belong
         quant_op = 3
         expected_exception = ValueError
@@ -920,10 +920,6 @@ class ContractWithDatasetTests(unittest.TestCase):
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                       belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
-
-
-
-
 
     def execute_checkIntervalRangeFloat_Tests(self):
         """
