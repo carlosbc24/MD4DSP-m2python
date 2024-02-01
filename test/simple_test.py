@@ -1430,7 +1430,7 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 32 Failed: Expected True, but got False"
         print_and_log("Test Case 32 Passed: Expected True, got True")
 
-    def execute_CheckMissingRange_SimpleTests(self):
+    def execute_CheckMissingRange_SimpleTests(self): #Tiene 29 casos posibles
         """
         Execute the simple tests of the function checkMissingRange
         """
@@ -1439,7 +1439,7 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
-        # Caso 1 Solicitado
+        # Caso 1 Solicitado (Caso 20)
 
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour':[None, None, 'Blue', 'Green']})
@@ -1449,10 +1449,10 @@ class ContractSimpleTest(unittest.TestCase):
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
                                                  quant_rel=quant_rel)
-        assert result is True, "Test Case 1 Failed: Expected True, but got False"
-        print_and_log("Test Case 1 Passed: Expected True, got True")
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
 
-        # Caso 2 Solicitado
+        # Caso 2 Solicitado (Caso 17)
         belong = 0
         dataDictionary =  pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
         field = 'colour'
@@ -1462,10 +1462,10 @@ class ContractSimpleTest(unittest.TestCase):
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
                                                  quant_rel=quant_rel, missing_values=missing_values)
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 2 Passed: Expected True, got True")
+        assert result is True, "Test Case 17 Failed: Expected True, but got False"
+        print_and_log("Test Case 17 Passed: Expected True, got True")
 
-        # Caso 3 Solicitado
+        # Caso 3 Solicitado (Caso 23)
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
         field = 'colour'
@@ -1475,13 +1475,186 @@ class ContractSimpleTest(unittest.TestCase):
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
                                                  quant_abs=quant_abs, missing_values=missing_values)
-        assert result is True, "Test Case 3 Failed: Expected True, but got False"
-        print_and_log("Test Case 3 Passed: Expected True, got True")
+        assert result is True, "Test Case 23 Failed: Expected True, but got False"
+        print_and_log("Test Case 23 Passed: Expected True, got True")
 
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
 
-        # TODO: AÑADIR CASOS AÑADIDOS DE checkMissingRange
+        #Casos añadidos
+
+        #Caso 1
+        field = None
+        belong = 0
+        dataDictionary=pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
+        missing_values = [-1]
+        result=self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,missing_values=missing_values,
+                                                 belongOp=Belong(belong))
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        #Caso 2
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
+        field = None
+        missing_values= ['Nulo', -8]
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        #Caso 3
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
+        field = None
+        missing_values= ['Nul', -8]
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        print_and_log("Test Case 3 Passed: Expected False, got False")
+
+        #Caso 4
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
+        field = None
+        missing_values= None
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is False, "Test Case 4 Failed: Expected False, but got True"
+        print_and_log("Test Case 4 Passed: Expected False, got False")
+
+        #Caso 5
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[None, None, 'Blue', 'Green']})
+        field = None
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        #Caso 6
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green']})
+        field = None
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
+
+        #Caso 7
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green']})
+        field = None
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        quant_abs=2
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                     quant_rel=quant_rel, quant_abs=quant_abs)
+        print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
+
+        #Caso 8
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        field = None
+        quant_op = 0 # greaterEqual
+        missing_values = ['Green']
+        quant_abs = 2
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_abs=quant_abs, missing_values=missing_values)
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
+
+        #Caso 9
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        field = None
+        quant_op = 0 # greaterEqual
+        missing_values = ['Blue']
+        quant_abs = 2
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_abs=quant_abs, missing_values=missing_values)
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, got False")
+
+        #Caso 10
+        belong = 0
+        dataDictionary = pd.DataFrame(data={'colour':[None, None, 'Blue', 'Green']})
+        field = None
+        quant_op = 2 # lessEqual
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op))
+        print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+
+        #Caso 11
+        belong = 1
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        field = None
+        missing_values = ['Red']
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), missing_values=missing_values)
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
+
+        #Caso 12
+        belong = 1
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        field = None
+        missing_values = ['Blue']
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong), missing_values=missing_values)
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
+
+        #Caso 13
+        belong = 1
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        field = None
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 belongOp=Belong(belong))
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        #Caso 14
+        belong = 1
+        quan_abs=5
+        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        field = None
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, quant_abs=quan_abs,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op))
+        print_and_log("Test Case 14 Passed: Expected ValueError, got ValueError")
+
+
+        # TODO: AÑADIR el resto de CASOS AÑADIDOS DE checkMissingRange
+
+
+
+
+
+
 
 
 

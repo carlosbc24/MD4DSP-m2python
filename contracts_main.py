@@ -10,14 +10,18 @@ if __name__ == "__main__":
 
     contract_test = ContractSimpleTest()
     # contract_test.executeAll_SimpleTests()
+    contract_test.execute_CheckMissingRange_SimpleTests()
+    # contract_test.execute_CheckInvalidValues_SimpleTests()
 
     ContractTestWithDatasets = ContractWithDatasetTests()
     # ContractTestWithDatasets.executeAll_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFieldRange_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFixValueRangeString_DatasetTests()
     # ContractTestWithDatasets.execute_CheckFixValueRangeFloat_DatasetTests()
-    ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_Tests()
+    # ContractTestWithDatasets.execute_CheckFixValueRangeDateTime_Tests()
     # ContractTestWithDatasets.execute_CheckIntervalRangeFloat_DatasetTests()
+    # ContractTestWithDatasets.execute_CheckMissingRange_Tests()
+    # ContractTestWithDatasets.execute_CheckInvalidValues_Tests()
 
     # ContractTestWithDatasets.executeAll_DatasetTests()
 

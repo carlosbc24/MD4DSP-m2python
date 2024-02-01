@@ -1329,11 +1329,35 @@ class ContractWithDatasetTests(unittest.TestCase):
 
 
     # TODO: Hacer los test de checkMissingRange
+    def execute_CheckMissingRange_Tests(self):
+        """
+        Execute the simple tests of the function checkInvalidValues
+        """
+        print_and_log("Testing checkMissingRange Function")
+        print_and_log("")
 
+        # Obtiene la ruta del directorio actual del script
+        directorio_actual = os.path.dirname(os.path.abspath(__file__))
+        # Construye la ruta al archivo CSV
+        ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
+        # Crea el dataframe a partir del archivo CSV
+        dataDictionary = pd.read_csv(ruta_csv)
 
 
     # TODO: Hacer los test de checkInvalidValues
+    def execute_CheckInvalidValues_Tests(self):
+        """
+        Execute the simple tests of the function checkInvalidValues
+        """
+        print_and_log("Testing checkInvalidValues Function")
+        print_and_log("")
 
+        # Obtiene la ruta del directorio actual del script
+        directorio_actual = os.path.dirname(os.path.abspath(__file__))
+        # Construye la ruta al archivo CSV
+        ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
+        # Crea el dataframe a partir del archivo CSV
+        dataDictionary = pd.read_csv(ruta_csv)
 
 
 
