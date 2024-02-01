@@ -44,6 +44,8 @@ class ContractWithDatasetTests(unittest.TestCase):
         self.execute_CheckFixValueRangeFloat_Tests()
         self.execute_CheckFixValueRangeDateTime_Tests()
         self.execute_checkIntervalRangeFloat_Tests()
+        self.execute_CheckMissingRange_Tests()
+        self.execute_CheckInvalidValues_Tests()
 
     def execute_CheckFieldRange_Tests(self):
         """
@@ -52,7 +54,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing CheckFieldRange Function")
         print_and_log("")
 
-        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+        print_and_log("Casos de test con dataset añadidos:")
 
         # Obtiene la ruta del directorio actual del script
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -95,6 +97,9 @@ class ContractWithDatasetTests(unittest.TestCase):
         result = self.pre_post.checkFieldRange(fields=fields, dataDictionary=data_dictionary, belongOp=Belong(belong))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
     def execute_CheckFixValueRangeString_Tests(self):
         """
@@ -103,7 +108,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing CheckFixValueRangeString Function")
 
         print_and_log("")
-        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+        print_and_log("Casos de test con dataset añadidos:")
 
         # Obtiene la ruta del directorio actual del script
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -368,6 +373,9 @@ class ContractWithDatasetTests(unittest.TestCase):
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                       belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
     def execute_CheckFixValueRangeFloat_Tests(self):
         """
@@ -376,7 +384,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing CheckFixValueRangeString Function")
 
         print_and_log("")
-        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+        print_and_log("Casos de test con dataset añadidos:")
 
         # Obtiene la ruta del directorio actual del script
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -641,6 +649,9 @@ class ContractWithDatasetTests(unittest.TestCase):
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                       belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
 
     def execute_CheckFixValueRangeDateTime_Tests(self):     #TODO: hacer de la misma forma que los anteriores
@@ -649,7 +660,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         """
         print_and_log("Testing CheckFixValueRangeDateTime Function")
         print_and_log("")
-        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+        print_and_log("Casos de test con dataset añadidos:")
 
         # Obtiene la ruta del directorio actual del script
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -920,6 +931,9 @@ class ContractWithDatasetTests(unittest.TestCase):
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                       belongOp=Belong(belongOp), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
     def execute_checkIntervalRangeFloat_Tests(self):
         """
@@ -927,6 +941,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         """
         print_and_log("Testing checkIntervalRangeFloat Function")
         print_and_log("")
+        print_and_log("Casos de test con dataset añadidos:")
 
         #field = None
         field = None
@@ -1326,6 +1341,8 @@ class ContractWithDatasetTests(unittest.TestCase):
                                                            belongOp=Belong(belongOp),field=field)
         print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
         print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
 
     # TODO: Hacer los test de checkMissingRange
@@ -1335,6 +1352,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         """
         print_and_log("Testing checkMissingRange Function")
         print_and_log("")
+        print_and_log("Casos de test con dataset añadidos:")
 
         # Obtiene la ruta del directorio actual del script
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -1342,6 +1360,12 @@ class ContractWithDatasetTests(unittest.TestCase):
         ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
         # Crea el dataframe a partir del archivo CSV
         dataDictionary = pd.read_csv(ruta_csv)
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+
 
 
     # TODO: Hacer los test de checkInvalidValues
@@ -1351,6 +1375,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         """
         print_and_log("Testing checkInvalidValues Function")
         print_and_log("")
+        print_and_log("Casos de test con dataset añadidos:")
 
         # Obtiene la ruta del directorio actual del script
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -1358,6 +1383,10 @@ class ContractWithDatasetTests(unittest.TestCase):
         ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
         # Crea el dataframe a partir del archivo CSV
         dataDictionary = pd.read_csv(ruta_csv)
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
 
 
