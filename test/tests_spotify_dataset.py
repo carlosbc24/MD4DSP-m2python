@@ -192,8 +192,8 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 2 of checkFixValueRange
         value = 'Maroon 4'
         belongOp = 0  # Belong
-        field = None  # None
-        quant_op = None  # None
+        field = None # None
+        quant_op = None # None
         quant_rel = 0.3
         # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
@@ -204,9 +204,9 @@ class ContractWithDatasetTests(unittest.TestCase):
 
         # Example 3 of checkFixValueRange
         value = 'Maroon 5'
-        belongOp = 0  # Belong
+        belongOp = 0 # Belong
         field = None
-        quant_op = 2  # lessEqual
+        quant_op = 2 # lessEqual
         quant_rel = 0.3
 
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
@@ -217,9 +217,9 @@ class ContractWithDatasetTests(unittest.TestCase):
 
         # Example 4 of checkFixValueRange
         value = 'Maroon 5'
-        belongOp = 0  # Belong
+        belongOp = 0 # Belong
         field = None
-        quant_op = 1  # greater
+        quant_op = 1 # greater
         quant_rel = 0.4
 
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
