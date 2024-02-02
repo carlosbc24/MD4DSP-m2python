@@ -1,6 +1,7 @@
 import os
 import unittest
 
+import numpy as np
 import pandas as pd
 
 from functions.contract_pre_post import ContractsPrePost
@@ -654,7 +655,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Eliminar los guiones de la columna 'track_album_release_date'
         # dataDictionary['track_album_release_date']=dataDictionary['track_album_release_date'].str.replace('-', '')
         # Convertir la columna 'track_album_release_date' a tipo timestamp
-        preprocessed_data_dictionary = self.data_dictionary
+        preprocessed_data_dictionary = self.data_dictionary.copy()
         preprocessed_data_dictionary['track_album_release_date'] = pd.to_datetime(preprocessed_data_dictionary['track_album_release_date'], errors='coerce')
 
 
@@ -1321,7 +1322,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
 
 
-    # TODO: Hacer los test de checkMissingRange
     def execute_CheckMissingRange_Tests(self):
         """
         Execute the simple tests of the function checkInvalidValues
@@ -1329,6 +1329,372 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing checkMissingRange Function")
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
+
+        preprocessed_data_dictionary = self.data_dictionary.copy()
+        string_replacement = 'No es nulo'
+        numeric_replacement = 33.33  # You can choose any numeric value
+
+        # Identify columns with string and numeric data types
+        string_columns = preprocessed_data_dictionary.select_dtypes(include='object').columns
+        numeric_columns = preprocessed_data_dictionary.select_dtypes(exclude='object').columns
+
+        # Replace null values in string columns
+        preprocessed_data_dictionary[string_columns] = preprocessed_data_dictionary[string_columns].fillna(
+            string_replacement)
+
+        # Replace null values in numeric columns
+        preprocessed_data_dictionary[numeric_columns] = preprocessed_data_dictionary[numeric_columns].fillna(
+            numeric_replacement)
+
+        # Caso 1 Solicitado (Caso 20)
+
+        belong = 0
+        field = 'track_name'
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Caso 2 Solicitado (Caso 20 también)
+        belong = 0
+        field = 'track_artist'
+        missing_values = [-1]
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel, missing_values=missing_values)
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Caso 3 Solicitado (Caso 23)
+        belong = 0
+        field = 'track_artist'
+        missing_values = [-1]
+        quant_op = 2 # lessEqual
+        quant_abs = 50
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_abs=quant_abs, missing_values=missing_values)
+        assert result is True, "Test Case 23 Failed: Expected True, but got False"
+        print_and_log("Test Case 23 Passed: Expected True, got True")
+
+        #Casos añadidos
+
+        #Caso 1
+        field = None
+        belong = 0
+        missing_values = [-1]
+        result=self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,missing_values=missing_values,
+                                                 belongOp=Belong(belong))
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        #Caso 2
+        belong = 0
+        field = None
+        missing_values= ['Nulo', -8]
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field, missing_values=missing_values,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        #Caso 3
+        belong = 0
+        field = None
+        missing_values= ['Nul', 'Mandarina']
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field, missing_values=missing_values,
+                                                 belongOp=Belong(belong))
+        assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        print_and_log("Test Case 3 Passed: Expected False, got False")
+
+        #Caso 4
+        belong = 0
+        field = None
+        missing_values= None
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field, missing_values=missing_values,
+                                                 belongOp=Belong(belong))
+        assert result is False, "Test Case 4 Failed: Expected False, but got True"
+        print_and_log("Test Case 4 Passed: Expected False, got False")
+
+        #Caso 5
+        belong = 0
+        field = None
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        #Caso 6
+        belong = 0
+        field = None
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel)
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
+
+        #Caso 8
+        belong = 0
+        field = None
+        quant_op = 0 # greaterEqual
+        missing_values = ['Poison']
+        quant_abs = 2
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_abs=quant_abs, missing_values=missing_values)
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
+
+        #Caso 9
+        belong = 0
+        field = None
+        quant_op = 0 # greaterEqual
+        missing_values = ['Mandarina']
+        quant_abs = 2
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_abs=quant_abs, missing_values=missing_values)
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, got False")
+
+        #Caso 11
+        belong = 1
+        field = None
+        missing_values = ['Mandarina']
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), missing_values=missing_values)
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
+
+        #Caso 12
+        belong = 1
+        field = None
+        missing_values = ['Poison']
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), missing_values=missing_values)
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
+
+        #Caso 13
+        belong = 1
+        field = None
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong))
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        #Caso 13.1
+        belong = 1
+        field = None
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                 belongOp=Belong(belong))
+        assert result is False, "Test Case 13.1 Failed: Expected False, but got True"
+        print_and_log("Test Case 13.1 Passed: Expected False, got False")
+
+        # Caso 16
+        belong = 0
+        field = 'track_name'
+        quant_op = None
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                    belongOp=Belong(belong), quant_op=quant_op)
+        assert result is True, "Test Case 16 Failed: Expected True, but got False"
+        print_and_log("Test Case 16 Passed: Expected True, got True")
+
+        # Caso 17
+        belong = 0
+        field = 'track_name'
+        quant_op = None
+        missing_values = ['Poison', 'Mandarina']
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=quant_op,
+                                                 missing_values=missing_values)
+        assert result is True, "Test Case 17 Failed: Expected True, but got False"
+        print_and_log("Test Case 17 Passed: Expected True, got True")
+
+        # Caso 18
+        belong = 0
+        field = 'track_name'
+        quant_op = None
+        missing_values = ['Mandarina', 'Mandarino']
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=quant_op,
+                                                 missing_values=missing_values)
+        assert result is False, "Test Case 18 Failed: Expected False, but got True"
+        print_and_log("Test Case 18 Passed: Expected False, got False")
+
+
+        # Caso 19
+        belong = 0
+        field = 'track_name'
+        quant_op = None
+        missing_values = None
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=quant_op,
+                                                 missing_values=missing_values)
+        assert result is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, got False")
+
+        # Caso 21
+        belong = 0
+        field = 'track_artist'
+        missing_values = ['Martin Garrix', 'Maroon 5']
+        quant_op = 1  # greater
+        quant_rel = 0.2
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_rel=quant_rel, missing_values=missing_values)
+        assert result is False, "Test Case 21 Failed: Expected False, but got True"
+        print_and_log("Test Case 21 Passed: Expected False, got False")
+
+        # Caso 24
+        belong = 0
+        field = 'key'
+        missing_values = [1,5]
+        quant_op = 2  # lessEqual
+        quant_abs = 400
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                 quant_abs=quant_abs, missing_values=missing_values)
+        assert result is False, "Test Case 24 Failed: Expected False, but got True"
+        print_and_log("Test Case 24 Passed: Expected False, got False")
+
+        # Caso 26
+        belong = 1
+        field = 'track_artist'
+        missing_values = [-1, np.NaN]
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong), missing_values=missing_values)
+        assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        print_and_log("Test Case 26 Passed: Expected True, got True")
+
+        # Caso 27
+        belong = 1
+        field = 'track_artist'
+        missing_values = [np.NaN,'Maroon 5']
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                 belongOp=Belong(belong), missing_values=missing_values)
+        assert result is False, "Test Case 27 Failed: Expected False, but got True"
+        print_and_log("Test Case 27 Passed: Expected False, got False")
+
+        # Caso 28
+        belong = 1
+        field = 'track_name'
+        result = self.pre_post.checkMissingRange(dataDictionary=preprocessed_data_dictionary, field=field,
+                                                 belongOp=Belong(belong))
+        assert result is True, "Test Case 28 Failed: Expected True, but got False"
+        print_and_log("Test Case 28 Passed: Expected True, got True")
+
+        # Caso 29
+        belong = 1
+        field = 'track_artist'
+        result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                 belongOp=Belong(belong))
+        assert result is False, "Test Case 29 Failed: Expected False, but got True"
+        print_and_log("Test Case 29 Passed: Expected False, got False")
+
+
+        print_and_log("")
+        print_and_log("Casos de error añadidos:")
+
+        # Caso 7
+        belong = 0
+        field = None
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        quant_abs = 2
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                     quant_rel=quant_rel, quant_abs=quant_abs)
+        print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
+
+        # Caso 10
+        belong = 0
+        field = None
+        quant_op = 2  # lessEqual
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op))
+        print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+
+        # Caso 14
+        belong = 1
+        quan_abs = 5
+        field = None
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field, quant_abs=quan_abs,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op))
+        print_and_log("Test Case 14 Passed: Expected ValueError, got ValueError")
+
+        # Caso 15
+        belong = 0
+        field = 'colours'  # Error due to the inexistent field
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                     quant_rel=quant_rel)
+        print_and_log("Test Case 15 Passed: Expected ValueError, got ValueError")
+
+        # Caso 22
+        belong = 0
+        field = 'colour'
+        missing_values = [-1]
+        quant_op = 2  # lessEqual
+        quant_rel = 0.5
+        quant_abs = 2
+        expected_exception = ValueError  # Error due to quant_abs and quant_op are not None at the same time
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                     quant_rel=quant_rel, quant_abs=quant_abs,
+                                                     missing_values=missing_values)
+        print_and_log("Test Case 22 Passed: Expected ValueError, got ValueError")
+
+        # Caso 25
+        belong = 0
+        field = 'colour'
+        missing_values = [-1]
+        quant_op = 2  # lessEqual
+        expected_exception = ValueError  # Error due to quant_op is not None and quant_abs/quant_rel are both None
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                     missing_values=missing_values)
+        print_and_log("Test Case 25 Passed: Expected ValueError, got ValueError")
+
+        # Caso 30
+        belong = 1
+        field = 'colour'
+        missing_values = [-1]
+        quant_abs = 2
+        quant_op = 0  # greaterEqual
+        expected_exception = ValueError  # Error due to quant_abs, quant_op or quant_rel are not None when belongOp is 1
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkMissingRange(dataDictionary=self.data_dictionary, field=field,
+                                                     belongOp=Belong(belong), missing_values=missing_values,
+                                                     quant_abs=quant_abs, quant_op=Operator(quant_op))
+        print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
+
+
+
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")

@@ -1559,11 +1559,8 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
         field = None
         missing_values= ['Nul', -8]
-        quant_op = 2  # lessEqual
-        quant_rel = 0.5
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel)
+                                                 belongOp=Belong(belong))
         assert result is False, "Test Case 3 Failed: Expected False, but got True"
         print_and_log("Test Case 3 Passed: Expected False, got False")
 
@@ -1572,11 +1569,8 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
         field = None
         missing_values= None
-        quant_op = 2  # lessEqual
-        quant_rel = 0.5
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel)
+                                                 belongOp=Belong(belong))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
@@ -1604,8 +1598,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
-
-
         #Caso 8
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
@@ -1631,8 +1623,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                  quant_abs=quant_abs, missing_values=missing_values)
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
-
-
 
         #Caso 11
         belong = 1
@@ -1737,8 +1727,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 21 Failed: Expected False, but got True"
         print_and_log("Test Case 21 Passed: Expected False, got False")
 
-
-
         # Caso 24
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour': [None, -1, 'Blue', 'Green', -1, -1],
@@ -1752,8 +1740,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                  quant_abs=quant_abs, missing_values=missing_values)
         assert result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, got False")
-
-
 
         # Caso 26
         belong = 1
@@ -1796,8 +1782,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                  belongOp=Belong(belong))
         assert result is False, "Test Case 29 Failed: Expected False, but got True"
         print_and_log("Test Case 29 Passed: Expected False, got False")
-
-
 
         print_and_log("")
         print_and_log("Casos de error añadidos:")
@@ -1902,13 +1886,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
-
-
-
-
-
-
-
 
 
     def execute_CheckInvalidValues_SimpleTests(self):

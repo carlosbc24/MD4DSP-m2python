@@ -175,7 +175,7 @@ class ContractsPrePost:
 
     def checkMissingRange(self, belongOp: Belong, dataDictionary: pd.DataFrame, field: str = None,
                           missing_values: list = None, quant_abs: int = None, quant_rel: float = None,
-                          quant_op: Operator = None) -> bool:
+                          quant_op: Operator = None) -> bool:   #TODO: Preguntar por lo del parseo de int a float
         """
         Check if the dataDictionary meets the condition of belongOp with respect to the missing values defined in missing_values.
         If field is None, it does the check in the whole dataDictionary. If not, it does the check in the column specified by field.
@@ -187,6 +187,12 @@ class ContractsPrePost:
 
         :return: if dataDictionary meets the condition of belongOp with respect to the missing values defined in missing_values
         """
+        if missing_values is not None:
+            for i in range(len(missing_values)):
+                if isinstance(missing_values[i], int):
+                    missing_values[i] = float(missing_values[i])
+
+
         if field is None:
             if belongOp == Belong.BELONG:
                 if quant_op is None:  # Check if there are any missing values in dataDictionary
@@ -316,7 +322,7 @@ class ContractsPrePost:
 
     def checkInvalidValues(self, belongOp: Belong, dataDictionary: pd.DataFrame, invalid_values: list,
                            field: str = None, quant_abs: int = None, quant_rel: float = None,
-                           quant_op: Operator = None) -> bool:
+                           quant_op: Operator = None) -> bool:   #TODO: Preguntar por lo del parseo de int a float
         """
         Check if the dataDictionary meets the condition of belongOp with respect to the invalid values defined in invalid_values.
         If field is None, it does the check in the whole dataDictionary. If not, it does the check in the column specified by field.
