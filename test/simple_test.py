@@ -2168,10 +2168,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, got False")
 
-
-
-
-
         # Caso 27
         belong = 1
         dataDictionary = pd.DataFrame(data={'colour': [3, 2, 'Blue', 'Green', 'Green', None],

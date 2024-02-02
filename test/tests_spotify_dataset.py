@@ -1785,9 +1785,293 @@ class ContractWithDatasetTests(unittest.TestCase):
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
+        # Caso 5
+        belong = 0
+        field = None
+        invalid_values = ['Martin Garrix', 0]
+        quant_op = 1 # Greater
+        quant_rel = 0.5
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+        assert result is False, "Test Case 5 Failed: Expected False, but got True"
+        print_and_log("Test Case 5 Passed: Expected False, got False")
+
+        # Caso 6
+        belong = 0
+        field = None
+        invalid_values = None
+        quant_op = 2
+        quant_rel = 0.5
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
+
+        # Caso 7
+        belong = 0
+        field = None
+        invalid_values = [1, 0]
+        quant_op = 1 # greater
+        quant_abs = 5000
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+        assert result is True, "Test Case 7 Failed: Expected True, but got False"
+        print_and_log("Test Case 7 Passed: Expected True, got True")
+
+        # Caso 8
+        belong = 0
+        field = None
+        invalid_values = [-1, 0]
+        quant_op = 4 # Equal
+        quant_abs = 50
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+        assert result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, got False")
+
+        # Caso 9
+        belong = 0
+        field = None
+        invalid_values = None
+        quant_op = 0 # greaterequal
+        quant_abs = 500
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, got False")
 
 
 
+        # Caso 12
+        belong = 1
+        field = None
+        invalid_values = [-53, 'Mandarina', 'Electrolito', 33.3333]
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        assert result is True, "Test Case 12 Failed: Expected True, but got False"
+        print_and_log("Test Case 12 Passed: Expected True, got True")
+
+        # Caso 13
+        belong = 1
+        field = None
+        invalid_values = [-1, 0]
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        assert result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, got False")
+
+
+
+        # Caso 16
+        belong = 0
+        quant_op = None
+        field = 'loudness'
+        invalid_values = [-5, 'Mandarina']
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=quant_op,
+                                                  belongOp=Belong(belong))
+        assert result is True, "Test Case 16 Failed: Expected True, but got False"
+        print_and_log("Test Case 16 Passed: Expected True, got True")
+
+        # Caso 17
+        belong = 0
+        invalid_values = [-50, '0']
+        field = 'loudness'
+        quant_op = None
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=quant_op,
+                                                  belongOp=Belong(belong))
+        assert result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, got False")
+
+        # Caso 18
+        belong = 0
+        field = 'track_name'
+        invalid_values = None
+        quant_op = None
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=quant_op,
+                                                  belongOp=Belong(belong))
+        assert result is False, "Test Case 18 Failed: Expected False, but got True"
+        print_and_log("Test Case 18 Passed: Expected False, got False")
+
+        # Caso 20
+        belong = 0
+        invalid_values = [-1, 0]
+        field = 'track_name'
+        quant_op = 1 # Greater
+        quant_rel = 0.1
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+        assert result is False, "Test Case 20 Failed: Expected False, but got True"
+        print_and_log("Test Case 20 Passed: Expected False, got False")
+
+        # Caso 21
+        belong = 0
+        invalid_values = None
+        field = 'track_artist'
+        quant_op = 1 # Greater
+        quant_rel = 0.5
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+        assert result is False, "Test Case 21 Failed: Expected False, but got True"
+        print_and_log("Test Case 21 Passed: Expected False, got False")
+
+        # Caso 23
+        belong = 0
+        invalid_values = ['Maroon 5', 'Katy Perry']
+        field = 'track_artist'
+        quant_op = 0 # GreaterEqual
+        quant_abs = 150
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+        assert result is False, "Test Case 23 Failed: Expected False, but got True"
+        print_and_log("Test Case 23 Passed: Expected False, got False")
+
+        # Caso 24
+        belong = 0
+        invalid_values = None
+        field = 'danceability'
+        quant_op = 0 # GreaterEqual
+        quant_abs = 15
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+        assert result is False, "Test Case 24 Failed: Expected False, but got True"
+        print_and_log("Test Case 24 Passed: Expected False, got False")
+
+        # Caso 27
+        belong = 1
+        invalid_values = ['Green', 'Blue', 'Red', 'Yellow', 'Black', 154.75]
+        field = 'danceability'
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        assert result is True, "Test Case 27 Failed: Expected True, but got False"
+        print_and_log("Test Case 27 Passed: Expected True, got True")
+
+        # Caso 28
+        belong = 1
+        invalid_values = ['Martin Garrix', 'Maroon 5']
+        field = 'track_artist'
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        assert result is False, "Test Case 28 Failed: Expected False, but got True"
+        print_and_log("Test Case 28 Passed: Expected False, got False")
+
+        # Caso 29
+        belong = 1
+        invalid_values = None
+        field = 'track_album_release_date'
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        assert result is True, "Test Case 29 Failed: Expected True, but got False"
+        print_and_log("Test Case 29 Passed: Expected True, got True")
+
+
+        print_and_log("")
+        print_and_log("Casos de error añadidos:")
+
+
+        # Caso 10
+        belong = 0
+        field = None
+        invalid_values = [-1, 0]
+        quant_op = 0  # GreaterEqual
+        quant_abs = 2
+        quant_rel = 0.5
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                      quant_abs=quant_abs, quant_rel=quant_rel,
+                                                      belongOp=Belong(belong))
+        print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+
+        # Caso 11
+        belong = 0
+        field = None
+        invalid_values = [-1, 0]
+        quant_op = 0
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                      belongOp=Belong(belong))
+        print_and_log("Test Case 11 Passed: Expected ValueError, got ValueError")
+
+        # Caso 14
+        belong = 1
+        field = None
+        invalid_values = [-1, 0]
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                      quant_rel=quant_rel, belongOp=Belong(belong))
+        print_and_log("Test Case 14 Passed: Expected ValueError, got ValueError")
+
+        # Caso 15
+        belong = 0
+        field = 'colours'
+        invalid_values = [-1, 0]
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                      quant_rel=quant_rel, belongOp=Belong(belong))
+        print_and_log("Test Case 15 Passed: Expected ValueError, got ValueError")
+
+        # Caso 25
+        belong = 0
+        invalid_values = [-1, 0]
+        field = 'track_name'
+        quant_op = 0  # GreaterEqual
+        quant_abs = 3
+        quant_rel = 0.5
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                      quant_abs=quant_abs, quant_rel=quant_rel,
+                                                      belongOp=Belong(belong))
+        print_and_log("Test Case 25 Passed: Expected ValueError, got ValueError")
+
+        # Caso 26
+        belong = 0
+        invalid_values = [-1, 0]
+        field = 'track_name'
+        quant_op = 0 # GreaterEqual
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                      belongOp=Belong(belong))
+        print_and_log("Test Case 26 Passed: Expected ValueError, got ValueError")
+
+        # Caso 30
+        belong = 1
+        invalid_values = [-1, 0]
+        field = 'track_name'
+        quant_op = 1 # Greater
+        quant_rel = 0.5
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                      quant_rel=quant_rel, belongOp=Belong(belong))
+        print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
 
 
 

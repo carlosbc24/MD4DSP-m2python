@@ -9,10 +9,8 @@ if __name__ == "__main__":
     set_logger("test")
 
     contract_test = ContractSimpleTest()
-    # contract_test.executeAll_SimpleTests()
+    contract_test.executeAll_SimpleTests()
 
     ContractTestWithDatasets = ContractWithDatasetTests()
-    # ContractTestWithDatasets.executeAll_DatasetTests()
-    # ContractTestWithDatasets.execute_CheckMissingRange_Tests()
-    ContractTestWithDatasets.execute_CheckInvalidValues_Tests()
+    ContractTestWithDatasets.executeAll_DatasetTests()
 
