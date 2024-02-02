@@ -37,7 +37,7 @@
 
 Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
 
-6. <Optional> Remove the environment created previously:
+6. (Optional) Remove the environment created previously:
 
    ```bash
    conda deactivate
