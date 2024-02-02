@@ -1694,12 +1694,9 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
 
 
-
-
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
-
 
 
 
@@ -1712,10 +1709,88 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
 
+        # Caso 19 Solicitado
+        belong = 0 # BELONG
+        invalid_values = ['Poison']
+        field = 'track_name'
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                  quant_rel=quant_rel, invalid_values=invalid_values)
+        assert result is True, "Test Case 19 Failed: Expected True, but got False"
+        print_and_log("Test Case 19 Passed: Expected True, got True")
+
+        # Caso 19_2 Solicitado
+        belong = 0 # BELONG
+        invalid_values = [-1, 0, 'Poison']
+        field = 'track_name'
+        quant_op = 2 # lessEqual
+        quant_rel = 0.2
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                  quant_rel=quant_rel, invalid_values=invalid_values)
+        assert result is True, "Test Case 19_2 Failed: Expected True, but got False"
+        print_and_log("Test Case 19_2 Passed: Expected True, got True")
+
+        # Caso 22 Solicitado
+        belong = 0 # BELONG
+        invalid_values = [-1, 0, 'Maroon 5']
+        field = 'track_artist'
+        quant_op = 1 # greater
+        quant_abs = 50
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
+                                                  quant_abs=quant_abs, invalid_values=invalid_values)
+        assert result is True, "Test Case 22 Failed: Expected True, but got False"
+        print_and_log("Test Case 22 Passed: Expected True, got True")
+
+
+        # Caso 1
+        belong = 0
+        invalid_values = [-1, 0]
+        field = None
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                    belongOp=Belong(belong), invalid_values=invalid_values)
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        belong = 0
+        invalid_values = [-50, 'Limón']
+        field = None
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                    belongOp=Belong(belong), invalid_values=invalid_values)
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
+
+        # Caso 3
+        belong = 0
+        field = None
+        invalid_values = None
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                    belongOp=Belong(belong), invalid_values=invalid_values)
+        assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        print_and_log("Test Case 3 Passed: Expected False, got False")
+
+        # Caso 4
+        belong = 0
+        field = None
+        invalid_values = [-1, 0]
+        quant_op = 2 # lessEqual
+        quant_rel = 0.5
+        result = self.pre_post.checkInvalidValues(dataDictionary=self.data_dictionary, field=field,
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+
+
+
+
+
+
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
-
-
-
-

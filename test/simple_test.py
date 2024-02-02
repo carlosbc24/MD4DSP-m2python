@@ -1936,8 +1936,10 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 22 Failed: Expected True, but got False"
         print_and_log("Test Case 22 Passed: Expected True, got True")
 
+
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
+
 
         # Caso 1
         belong = 0
