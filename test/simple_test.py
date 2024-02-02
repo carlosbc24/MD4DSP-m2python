@@ -67,6 +67,7 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+
         # Case 1 of checkFieldRange
         # Check that fields 'c1' and 'c2' belong to the data dictionary. It must return True
         fields = ['c1', 'c2']
@@ -127,6 +128,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+
         # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
         # it appears less or equal than 30% of the times
@@ -184,7 +186,6 @@ class ContractSimpleTest(unittest.TestCase):
                                              quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
-        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
@@ -209,7 +210,6 @@ class ContractSimpleTest(unittest.TestCase):
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                   belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                   quant_op=quant_op)
@@ -223,7 +223,6 @@ class ContractSimpleTest(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_rel = 0.1
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                   belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                   quant_op=Operator(quant_op))
@@ -237,7 +236,6 @@ class ContractSimpleTest(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_rel = 0.7
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                   belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                   quant_op=Operator(quant_op))
@@ -251,7 +249,6 @@ class ContractSimpleTest(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_abs = 3
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                   belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                   quant_op=Operator(quant_op))
@@ -265,7 +262,6 @@ class ContractSimpleTest(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_abs = 5
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                   belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                   quant_op=Operator(quant_op))
@@ -276,7 +272,6 @@ class ContractSimpleTest(unittest.TestCase):
         value = '3'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                   belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
@@ -286,7 +281,6 @@ class ContractSimpleTest(unittest.TestCase):
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                                   belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
@@ -297,7 +291,6 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
@@ -308,7 +301,6 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
@@ -321,7 +313,6 @@ class ContractSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 1  # greater
         quant_abs = 3
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                   belongOp=Belong(belongOp))
@@ -335,7 +326,6 @@ class ContractSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 1  # greater
         quant_abs = 10
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
                                                   quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                   belongOp=Belong(belongOp))
@@ -362,14 +352,12 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
-        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         # Casos de error añadidos
         print_and_log("")
         print_and_log("Casos de error añadidos:")
 
         # Example 4.5 of checkFixValueRange
-        # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -382,11 +370,9 @@ class ContractSimpleTest(unittest.TestCase):
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                              belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                              quant_abs=quant_abs, quant_op=Operator(quant_op))
-
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -397,14 +383,13 @@ class ContractSimpleTest(unittest.TestCase):
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
                                              belongOp=Belong(belongOp), field=field,
                                              quant_op=Operator(quant_op))
-
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # # Example 10 of checkFixValueRange
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
-        quant_op = 3
+        quant_op = 3 # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
@@ -412,7 +397,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Example 17 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 0  # Belong
@@ -429,7 +413,7 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
         field = 'c1'
-        quant_op = 3
+        quant_op = 3 # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
@@ -447,6 +431,7 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
 
         # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
@@ -490,7 +475,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
-        # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
@@ -505,7 +489,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                       quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
-        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
@@ -679,7 +662,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Casos de error añadidos:")
 
         # Example 4.5 of checkFixValueRange
-        # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
@@ -695,7 +677,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
@@ -720,7 +701,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Example 17 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = 0
         dataDictionary = pd.DataFrame(data={'c1': [0, 0, 0, 0, 0, 0, 0, None, None, None]})
         belongOp = 0  # Belong
@@ -756,9 +736,8 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+
         # Example 13 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'c1' and that
-        # it appears less or equal than 30% of the times
         value = None
         # dataDictionary utilizado en casi todos los ejemplos de pruebas
         dataDictionary = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
@@ -776,8 +755,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Example 14 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'c1' and that
-        # it appears less or equal than 30% of the times
         value = None
         dataDictionary1 = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
                                                     pd.Timestamp('20180310'), pd.Timestamp('20180310'),
@@ -794,7 +771,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
-        # Check that value 1 doesn't belong to the data dictionary in field 'c1'
         value = pd.Timestamp('20240310')
         belongOp = 1  # NotBelong
         field = 'c1'
@@ -804,7 +780,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
-        # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
         belongOp = 0  # Belong
         field = 'c1'
@@ -819,7 +794,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                       quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
-        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         print_and_log("")
         print_and_log("Casos añadidos:")
@@ -976,14 +950,12 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
-        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         # Casos de error añadidos
         print_and_log("")
         print_and_log("Casos de error añadidos:")
 
         # Example 4.5 of checkFixValueRange
-        # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         belongOp = 0  # Belong
         field = None
@@ -999,7 +971,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = None
@@ -1022,7 +993,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Example 17 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = 'c1'
@@ -1087,7 +1057,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 2 Passed: Expected False, got False")
         print_and_log("")
 
-        #---------------------------------------------------------------------------------------------------------------
+
         print_and_log("Casos Básicos añadidos:")
         # Rango de prueba utilizado en todas las llamadas
         left = 0
@@ -1487,8 +1457,8 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
-        # Caso 1 Solicitado (Caso 20)
 
+        # Caso 1 Solicitado (Caso 20)
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour':[None, None, 'Blue', 'Green']})
         field = 'colour'
@@ -1698,7 +1668,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                  missing_values=missing_values)
         assert result is False, "Test Case 18 Failed: Expected False, but got True"
         print_and_log("Test Case 18 Passed: Expected False, got False")
-
 
         # Caso 19
         belong = 0
@@ -2049,8 +2018,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
-
-
         # Caso 12
         belong = 1
         dataDictionary = pd.DataFrame(data={'colour': [3, 2, 'Blue', 'Green', 'Green']})
@@ -2307,8 +2274,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                       invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                       quant_rel=quant_rel, belongOp=Belong(belong))
         print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
-
-
 
 
         print_and_log("")

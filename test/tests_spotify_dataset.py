@@ -68,7 +68,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Casos de test con dataset añadidos:")
 
         # Case 1 of checkFieldRange
-        # Check that fields 'c1' and 'c2' belong to the data dictionary. It must return True
+        # Check that fields 'track_id', 'loudness' and 'playlist_id' belong to the data dictionary. It must return True
         fields = ['track_id', 'loudness', 'playlist_id']
         belong = 0
         result = self.pre_post.checkFieldRange(fields=fields, dataDictionary=self.data_dictionary, belongOp=Belong(belong))
@@ -76,7 +76,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Case 2 of checkFieldRange
-        # Check that fields 'c2' and 'c3' belong to the data dictionary. It must return False as 'c3' does not belong
+        # Check that fields 'track_id', 'loudness' and 'c3' belong to the data dictionary. It must return False as 'c3' does not belong
         fields = ['track_id', 'loudness', 'c3']
         belong = 0
         result = self.pre_post.checkFieldRange(fields=fields, dataDictionary=self.data_dictionary, belongOp=Belong(belong))
@@ -84,7 +84,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
         # Case 3 of checkFieldRange
-        # Check that fields 'c2' and 'c3' don't belong to the data dictionary.It must return True as 'c2' doesn't belong
+        # Check that fields 'c2', 'track_id' and 'loudness' don't belong to the data dictionary.It must return True as 'c2' doesn't belong
         fields = ['c2', 'track_id', 'loudness']
         belong = 1
         result = self.pre_post.checkFieldRange(fields=fields, dataDictionary=self.data_dictionary, belongOp=Belong(belong))
@@ -95,7 +95,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Case 4 of checkFieldRange
-        # Check that fields 'c1' and 'c2' don't belong to the data dictionary. It must return False as both belong
+        # Check that fields 'track_id', 'loudness' and 'valence' don't belong to the data dictionary. It must return False as both belong
         fields = ['track_id', 'loudness', 'valence']
         belong = 1
         result = self.pre_post.checkFieldRange(fields=fields, dataDictionary=self.data_dictionary, belongOp=Belong(belong))
@@ -115,8 +115,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Casos de test con dataset añadidos:")
 
         # Example 13 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'c1' and that
-        # it appears less or equal than 30% of the times
         value = None
         belongOp = 0  # Belong
         field = 'track_artist'
@@ -129,8 +127,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Example 14 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'c1' and that
-        # it appears less or equal than 30% of the times
         value = None
         belongOp = 0  # Belong
         field = 'track_name'
@@ -143,7 +139,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
-        # Check that value 1 doesn't belong to the data dictionary in field 'c1'
         value = 'Una cancion'
         belongOp = 1  # NotBelong
         field = 'track_name'
@@ -153,7 +148,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
-        # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
         belongOp = 0  # Belong
         field = 'track_name'
@@ -190,7 +184,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=quant_op)
@@ -203,7 +196,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
@@ -216,7 +208,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_rel = 0.4
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
@@ -229,7 +220,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_abs = 30
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
@@ -242,7 +232,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_abs = 50
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
@@ -252,7 +241,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 8 of checkFixValueRange
         value = '3'
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
@@ -261,7 +249,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 9 of checkFixValueRange
         value = 'Avicii'
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
@@ -334,7 +321,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Casos de error añadidos:")
 
         # Example 4.5 of checkFixValueRange
-        # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         belongOp = 0  # Belong
         field = None
@@ -348,8 +334,8 @@ class ContractWithDatasetTests(unittest.TestCase):
                                                    quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
+
         # Example 7 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = "Katy Perry"
         belongOp = 0  # Belong
         field = None
@@ -361,10 +347,10 @@ class ContractWithDatasetTests(unittest.TestCase):
                                                       quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
-        # # Example 10 of checkFixValueRange
+        # Example 10 of checkFixValueRange
         value = 'Martin Garrix'
         belongOp = 1  # Not Belong
-        quant_op = 3
+        quant_op = 3 # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
@@ -384,8 +370,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Casos de test con dataset añadidos:")
 
         # Example 13 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'c1' and that
-        # it appears less or equal than 30% of the times
         value = None
         belongOp = 0  # Belong
         field = 'key'
@@ -398,8 +382,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Example 14 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'c1' and that
-        # it appears less or equal than 30% of the times
         value = None
         belongOp = 0  # Belong
         field = 'key'
@@ -412,7 +394,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
-        # Check that value 1 doesn't belong to the data dictionary in field 'c1'
         value = 45.8
         belongOp = 1  # NotBelong
         field = 'key'
@@ -422,7 +403,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
-        # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ??? VALUERROR
         value = None
         belongOp = 0  # Belong
         field = 'key'
@@ -459,7 +439,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=quant_op)
@@ -472,7 +451,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
@@ -485,7 +463,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_rel = 0.4
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
@@ -498,7 +475,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_abs = 30
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
@@ -511,7 +487,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_abs = 50
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
@@ -521,7 +496,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 8 of checkFixValueRange
         value = 804.8
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
@@ -530,7 +504,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 9 of checkFixValueRange
         value = 3
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
@@ -603,7 +576,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Casos de error añadidos:")
 
         # Example 4.5 of checkFixValueRange
-        # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         belongOp = 0  # Belong
         field = None
@@ -617,8 +589,8 @@ class ContractWithDatasetTests(unittest.TestCase):
                                              quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
+
         # Example 7 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = 3
         belongOp = 0  # Belong
         field = None
@@ -630,10 +602,10 @@ class ContractWithDatasetTests(unittest.TestCase):
                                                       quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
-        # # Example 10 of checkFixValueRange
+        # Example 10 of checkFixValueRange
         value = 5
         belongOp = 1  # Not Belong
-        quant_op = 3
+        quant_op = 3 # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=self.data_dictionary,
@@ -644,7 +616,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
 
 
-    def execute_CheckFixValueRangeDateTime_Tests(self):     #TODO: hacer de la misma forma que los anteriores
+    def execute_CheckFixValueRangeDateTime_Tests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
@@ -652,16 +624,11 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
 
-        # Eliminar los guiones de la columna 'track_album_release_date'
-        # dataDictionary['track_album_release_date']=dataDictionary['track_album_release_date'].str.replace('-', '')
-        # Convertir la columna 'track_album_release_date' a tipo timestamp
         preprocessed_data_dictionary = self.data_dictionary.copy()
         preprocessed_data_dictionary['track_album_release_date'] = pd.to_datetime(preprocessed_data_dictionary['track_album_release_date'], errors='coerce')
 
 
         # Example 13 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'track_album_release_date' and that
-        # it appears less or equal than 30% of the times
         value = pd.Timestamp('20180310')
         belongOp = 0  # Belong
         field = 'track_album_release_date'
@@ -674,8 +641,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Example 14 of checkFixValueRange
-        # Check that value None belongs to the data dictionary in field 'c1' and that
-        # it appears less or equal than 30% of the times
         value = None
         belongOp = 0  # Belong
         field = 'track_album_release_date'
@@ -688,7 +653,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
-        # Check that value 1 doesn't belong to the data dictionary in field 'track_album_release_date'
         value = pd.Timestamp('20250310')
         belongOp = 1  # NotBelong
         field = 'track_album_release_date'
@@ -698,7 +662,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
-        # CASO DE QUE NO SE PUEDEN PROPORCIONAR QUANT_REL Y QUANT_ABS A LA VEZ --> VALUERROR
         value = None
         belongOp = 0  # Belong
         field = 'track_album_release_date'
@@ -748,7 +711,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=preprocessed_data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
@@ -761,7 +723,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_rel = 0.4
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=preprocessed_data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                         quant_op=Operator(quant_op))
@@ -774,7 +735,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 1  # greater
         quant_abs = 30
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=preprocessed_data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
@@ -787,7 +747,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_abs = 50
-
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=preprocessed_data_dictionary,
                                                         belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
                                                         quant_op=Operator(quant_op))
@@ -797,7 +756,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 8 of checkFixValueRange
         value = pd.Timestamp('20251215')
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=preprocessed_data_dictionary,
                                                         belongOp=Belong(belongOp))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
@@ -806,7 +764,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Example 9 of checkFixValueRange
         value = pd.Timestamp('20150721')
         belongOp = 1  # Not Belong
-        # # Ejecutar la función y verificar que devuelve False
         result = self.pre_post.checkFixValueRange(value=value, dataDictionary=preprocessed_data_dictionary,
                                                         belongOp=Belong(belongOp))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
@@ -879,7 +836,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Casos de error añadidos:")
 
         # Example 4.5 of checkFixValueRange
-        # CASO DE QUE quant_rel y quant_abs NO SEAN None A LA VEZ (existen los dos) VALUERROR
         value = None
         belongOp = 0  # Belong
         field = None
@@ -893,8 +849,8 @@ class ContractWithDatasetTests(unittest.TestCase):
                                              quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
+
         # Example 7 of checkFixValueRange
-        # CASO DE QUE no existan ni quant_rel ni quant_abs cuando belongOp es BELONG Y quant_op no es None VALUERROR
         value = pd.Timestamp('20180721')
         belongOp = 0  # Belong
         field = None
@@ -906,10 +862,10 @@ class ContractWithDatasetTests(unittest.TestCase):
                                                       quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
-        # # Example 10 of checkFixValueRange
+        # Example 10 of checkFixValueRange
         value = pd.Timestamp('20180721')
         belongOp = 1  # Not Belong
-        quant_op = 3
+        quant_op = 3 # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkFixValueRange(value=value, dataDictionary=preprocessed_data_dictionary,
@@ -926,6 +882,15 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing checkIntervalRangeFloat Function")
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
+
+        """
+        Whole dataset:
+            minValue=-46.448
+            maxValue=517810.0
+        field = 'loudness'
+            minValue=-46.448
+            maxValue=1.275
+        """
 
         #field = None
         field = None
@@ -945,7 +910,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
 
         # Example 1 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 1)
+        # Check if the data in the whole dictionary belongs to the interval (0, 1)
         left = 0
         right = 1
         closure = 0  # OpenOpen
@@ -956,7 +921,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 1 Passed: Expected False, got False")
 
         # Example 2 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810)
+        # Check if the data in the whole dictionary belongs to the interval (-47.30, 518000)
         left = -47.30
         right = 518000
         closure = 0  # OpenOpen
@@ -967,7 +932,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 Passed: Expected True, got True")
 
         # Example 3 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval (-47.30, 517810]
         left = -47.30
         right = 517810
         closure = 1  # OpenClosed
@@ -978,7 +943,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Example 4 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval (-47.30, 517809.99]
         left = -47.30
         right = 517809.99
         closure = 1  # OpenClosed
@@ -989,7 +954,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
         # Example 5 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517811)
         left = -46.448
         right = 517811
         closure = 2  # ClosedOpen
@@ -1000,7 +965,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Example 6 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810.0)
         left = -46.448
         right = 517810.0
         belongOp = 0
@@ -1012,7 +977,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Example 7 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810]
         left = -46.448
         right = 517810
         closure = 3  # ClosedClosed
@@ -1023,7 +988,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
         # Example 8 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval [-46.447, 517810.0]
         left = -46.447
         right = 517810.0
         closure = 3  # ClosedClosed
@@ -1037,7 +1002,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         belongOp = 1
 
         # Example 9 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810)
+        # Check if the data in the whole dictionary belongs to the interval (-46.448, 517811)
         left = -46.448
         right = 517811
         closure = 0  # OpenOpen
@@ -1048,7 +1013,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 9 Passed: Expected True, got True")
 
         # Example 10 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810)
+        # Check if the data in the whole dictionary belongs to the interval (-46.449, 517810.1)
         left = -46.449
         right = 517810.1
         closure = 0  # OpenOpen
@@ -1059,7 +1024,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected False, got False")
 
         # Example 11 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval (-46.449, 517810]
         left = -46.449
         right = 517810
         closure = 1  # OpenClosed
@@ -1070,7 +1035,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 11 Passed: Expected False, got False")
 
         # Example 12 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval (-46.448, 517810]
         left = -46.448
         right = 517810
         closure = 1  # OpenClosed
@@ -1081,7 +1046,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 12 Passed: Expected True, got True")
 
         # Example 13 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810.01)
         left = -46.448
         right = 517810.01
         closure = 2  # ClosedOpen
@@ -1092,7 +1057,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected False, got False")
 
         # Example 14 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810)
         left = -46.448
         right = 517810
         closure = 2  # ClosedOpen
@@ -1103,7 +1068,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected True, got True")
 
         # Example 15 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810]
         left = -46.448
         right = 517810
         closure = 3  # ClosedClosed
@@ -1114,7 +1079,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 15 Passed: Expected False, got False")
 
         # Example 16 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 517810]
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517809.9]
         left = -46.448
         right = 517809.9
         closure = 3  # ClosedClosed
@@ -1130,7 +1095,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         belongOp = 0
 
         # Example 17 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.275)
         left = -46.448
         right = 1.275
         closure = 0  # OpenOpen
@@ -1141,7 +1106,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 17 Passed: Expected False, got False")
 
         # Example 18 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval (-46.449, 1.276)
         left = -46.449
         right = 1.276
         closure = 0  # OpenOpen
@@ -1152,7 +1117,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 19 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval (-46.449, 1.275]
         left = -46.449
         right = 1.275
         closure = 1  # OpenClosed
@@ -1163,7 +1128,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 19 Passed: Expected True, got True")
 
         # Example 20 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.275]
         left = -46.448
         right = 1.275
         closure = 1  # OpenClosed
@@ -1174,7 +1139,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
         # Example 21 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.276)
         left = -46.448
         right = 1.276
         closure = 2  # ClosedOpen
@@ -1185,7 +1150,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 21 Passed: Expected True, got True")
 
         # Example 22 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275)
         left = -46.448
         right = 1.275
         closure = 2  # ClosedOpen
@@ -1196,7 +1161,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 22 Passed: Expected False, got False")
 
         # Example 23 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275]
         left = -46.448
         right = 1.275
         closure = 3  # ClosedClosed
@@ -1207,7 +1172,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 23 Passed: Expected True, got True")
 
         # Example 24 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.274]
         left = -46.448
         right = 1.274
         closure = 3  # ClosedClosed
@@ -1221,7 +1186,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         belongOp = 1
 
         # Example 25 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.276)
         left = -46.448
         right = 1.276
         closure = 0  # OpenOpen
@@ -1232,7 +1197,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 25 Passed: Expected True, got True")
 
         # Example 26 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval (-46.449, 1.276)
         left = -46.449
         right = 1.276
         closure = 0  # OpenOpen
@@ -1243,7 +1208,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 26 Passed: Expected False, got False")
 
         # Example 27 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval (-46.449, 1.275]
         left = -46.449
         right = 1.275
         closure = 1  # OpenClosed
@@ -1254,7 +1219,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 27 Passed: Expected False, got False")
 
         # Example 28 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.275]
         left = -46.448
         right = 1.275
         closure = 1  # OpenClosed
@@ -1265,7 +1230,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 28 Passed: Expected True, got True")
 
         # Example 29 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.276)
         left = -46.448
         right = 1.276
         closure = 2  # ClosedOpen
@@ -1276,7 +1241,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 29 Passed: Expected False, got False")
 
         # Example 30 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275)
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275)
         left = -46.448
         right = 1.275
         closure = 2  # ClosedOpen
@@ -1287,7 +1252,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 30 Passed: Expected True, got True")
 
         # Example 31 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275]
         left = -46.448
         right = 1.275
         closure = 3  # ClosedClosed
@@ -1298,7 +1263,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Test Case 31 Passed: Expected False, got False")
 
         # Example 32 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [-46.448, 1.275]
+        # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275]
         left = -46.447
         right = 1.275
         closure = 3  # ClosedClosed
@@ -1332,7 +1297,7 @@ class ContractWithDatasetTests(unittest.TestCase):
 
         preprocessed_data_dictionary = self.data_dictionary.copy()
         string_replacement = 'No es nulo'
-        numeric_replacement = 33.33  # You can choose any numeric value
+        numeric_replacement = 33.33
 
         # Identify columns with string and numeric data types
         string_columns = preprocessed_data_dictionary.select_dtypes(include='object').columns
@@ -1534,7 +1499,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         assert result is False, "Test Case 18 Failed: Expected False, but got True"
         print_and_log("Test Case 18 Passed: Expected False, got False")
 
-
         # Caso 19
         belong = 0
         field = 'track_name'
@@ -1607,6 +1571,7 @@ class ContractWithDatasetTests(unittest.TestCase):
 
         print_and_log("")
         print_and_log("Casos de error añadidos:")
+
 
         # Caso 7
         belong = 0
@@ -1700,7 +1665,6 @@ class ContractWithDatasetTests(unittest.TestCase):
 
 
 
-    # TODO: Hacer los test de checkInvalidValues
     def execute_CheckInvalidValues_Tests(self):
         """
         Execute the simple tests of the function checkInvalidValues
@@ -1744,7 +1708,6 @@ class ContractWithDatasetTests(unittest.TestCase):
                                                   quant_abs=quant_abs, invalid_values=invalid_values)
         assert result is True, "Test Case 22 Failed: Expected True, but got False"
         print_and_log("Test Case 22 Passed: Expected True, got True")
-
 
         # Caso 1
         belong = 0
@@ -1845,8 +1808,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
-
-
         # Caso 12
         belong = 1
         field = None
@@ -1864,8 +1825,6 @@ class ContractWithDatasetTests(unittest.TestCase):
                                                   invalid_values=invalid_values, belongOp=Belong(belong))
         assert result is False, "Test Case 13 Failed: Expected False, but got True"
         print_and_log("Test Case 13 Passed: Expected False, got False")
-
-
 
         # Caso 16
         belong = 0
