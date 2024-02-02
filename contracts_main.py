@@ -1,6 +1,6 @@
-import os
 
-from helpers.logger import set_logger, print_and_log
+# Importing functions and classes from packages
+from helpers.logger import set_logger
 from test.simple_test import ContractSimpleTest
 from test.tests_spotify_dataset import ContractWithDatasetTests
 

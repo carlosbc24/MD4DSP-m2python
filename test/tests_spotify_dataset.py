@@ -1,9 +1,12 @@
+
+# Importing libraries
 import os
 import unittest
-
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
+# Importing functions and classes from packages
 from functions.contract_pre_post import ContractsPrePost
 from helpers.enumerations import Belong, Operator, Closure
 from helpers.logger import print_and_log
@@ -50,13 +53,18 @@ class ContractWithDatasetTests(unittest.TestCase):
         """
         Execute all the tests of the dataset
         """
-        self.execute_CheckFieldRange_Tests()
-        self.execute_CheckFixValueRangeString_Tests()
-        self.execute_CheckFixValueRangeFloat_Tests()
-        self.execute_CheckFixValueRangeDateTime_Tests()
-        self.execute_checkIntervalRangeFloat_Tests()
-        self.execute_CheckMissingRange_Tests()
-        self.execute_CheckInvalidValues_Tests()
+        test_methods = [
+            self.execute_CheckFieldRange_Tests,
+            self.execute_CheckFixValueRangeString_Tests,
+            self.execute_CheckFixValueRangeFloat_Tests,
+            self.execute_CheckFixValueRangeDateTime_Tests,
+            self.execute_checkIntervalRangeFloat_Tests,
+            self.execute_CheckMissingRange_Tests,
+            self.execute_CheckInvalidValues_Tests
+        ]
+
+        for test_method in tqdm(test_methods, desc="Running Dataset Tests", unit="test"):
+            test_method()
 
     def execute_CheckFieldRange_Tests(self):
         """
@@ -113,6 +121,8 @@ class ContractWithDatasetTests(unittest.TestCase):
 
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
+
+        # 23 casos
 
         # Example 13 of checkFixValueRange
         value = None
@@ -369,6 +379,8 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
 
+        # 23 casos
+
         # Example 13 of checkFixValueRange
         value = None
         belongOp = 0  # Belong
@@ -623,6 +635,8 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing CheckFixValueRangeDateTime Function")
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
+
+        # 23 casos
 
         preprocessed_data_dictionary = self.data_dictionary.copy()
         preprocessed_data_dictionary['track_album_release_date'] = pd.to_datetime(preprocessed_data_dictionary['track_album_release_date'], errors='coerce')
@@ -882,6 +896,8 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing checkIntervalRangeFloat Function")
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
+
+        # 35 casos
 
         """
         Whole dataset:
@@ -1295,6 +1311,8 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
 
+        # 30 casos
+
         preprocessed_data_dictionary = self.data_dictionary.copy()
         string_replacement = 'No es nulo'
         numeric_replacement = 33.33
@@ -1664,7 +1682,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
 
 
-
     def execute_CheckInvalidValues_Tests(self):
         """
         Execute the simple tests of the function checkInvalidValues
@@ -1672,6 +1689,8 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("Testing checkInvalidValues Function")
         print_and_log("")
         print_and_log("Casos de test con dataset añadidos:")
+
+        # 30 casos
 
         # Caso 19 Solicitado
         belong = 0 # BELONG

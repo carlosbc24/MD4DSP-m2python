@@ -1,7 +1,9 @@
-from typing import Union
 
+# Importing libraries
 import pandas as pd
 
+# Importing enumerations from packages
+from typing import Union
 from helpers.enumerations import Operator
 
 

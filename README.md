@@ -27,6 +27,23 @@
    pip install -r requirements.txt
    ```
 
+4. Run the tests:
+
+   ```bash
+    python ./contracts_main.py
+    ```
+
+5. Check the results in the logs:
+
+Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
+
+6. <Optional> Remove the environment created previously:
+
+   ```bash
+   conda deactivate
+   conda remove --name your-env-name --all
+   ```
+
 ## Project Structure
 
 The project structure must follow the next structure:
@@ -71,9 +88,9 @@ MD4DSP-m2python/
 
 - **`requirements.txt`**: file that contains the libraries needed to run the project.
 
-  ```bash
-  conda create --name tu_entorno --file requirements.txt
-    ```
+- **`contracts_main.py`**: main file of the project. It is the file that must be executed to run the tests.
+
+- **`README.md`**: file that contains the documentation of the project.
   
 ## External Documentation
 The external documentation of the project is available in the following link: https://unexes.sharepoint.com/:w:/s/PDI_i3lab/EYNMm7pMsX1HuIKz_PMWCi8Bl_ssrzRnvp3hQHimY363ng?e=d8Cvvh

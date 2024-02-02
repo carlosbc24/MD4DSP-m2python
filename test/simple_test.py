@@ -1,8 +1,11 @@
-import unittest
 
+# Importing libraries
+import unittest
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
+# Importing functions and classes from packages
 from functions.contract_pre_post import ContractsPrePost
 from helpers.enumerations import Belong, Operator, Closure
 from helpers.logger import print_and_log
@@ -50,13 +53,18 @@ class ContractSimpleTest(unittest.TestCase):
         """
         Execute all the simple tests of the functions of the class
         """
-        self.execute_CheckFieldRange_SimpleTests()
-        self.execute_CheckFixValueRangeString_SimpleTests()
-        self.execute_CheckFixValueRangeFloat_SimpleTests()
-        self.execute_CheckFixValueRangeDateTime_SimpleTests()
-        self.execute_CheckIntervalRangeFloat_SimpleTests()
-        self.execute_CheckMissingRange_SimpleTests()
-        self.execute_CheckInvalidValues_SimpleTests()
+        simple_test_methods = [
+            self.execute_CheckFieldRange_SimpleTests,
+            self.execute_CheckFixValueRangeString_SimpleTests,
+            self.execute_CheckFixValueRangeFloat_SimpleTests,
+            self.execute_CheckFixValueRangeDateTime_SimpleTests,
+            self.execute_CheckIntervalRangeFloat_SimpleTests,
+            self.execute_CheckMissingRange_SimpleTests,
+            self.execute_CheckInvalidValues_SimpleTests
+        ]
+
+        for simple_test_method in tqdm(simple_test_methods, desc="Running Simple Tests", unit="test"):
+            simple_test_method()
 
     def execute_CheckFieldRange_SimpleTests(self):
         """
@@ -128,6 +136,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+        # 23 Casos
 
         # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
@@ -432,6 +441,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+        # 23 Casos
 
         # Example 13 of checkFixValueRange
         # Check that value None belongs to the data dictionary in field 'c1' and that
@@ -736,6 +746,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+        # 23 Casos
 
         # Example 13 of checkFixValueRange
         value = None
@@ -1026,6 +1037,8 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        # 35 casos
 
         # Example 1 of checkIntervalRangeFloat
         # Check that the data in the field 'c1' of the data dictionary belongs to the interval [0, 5]
@@ -1448,7 +1461,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckMissingRange_SimpleTests(self): #Tiene 29 casos posibles
+    def execute_CheckMissingRange_SimpleTests(self):
         """
         Execute the simple tests of the function checkMissingRange
         """
@@ -1457,6 +1470,7 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
 
+        # 30 casos posibles
 
         # Caso 1 Solicitado (Caso 20)
         belong = 0
@@ -1865,6 +1879,8 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        # 30 casos posibles
 
         # Caso 19 Solicitado
         belong = 0 # BELONG
