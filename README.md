@@ -61,10 +61,11 @@ MD4DSP-m2python/
 │ ├── logger.py
 │ └── ...
 │
-├── test/
-│ ├── simple_test.py
-│ ├── tests_spotify_dataset.py
-│ └── ...
+├── tests/
+│ ├── contract_pre_post/
+│   ├── simple_test.py
+│   └── tests_spotify_dataset.py
+│ ├── ...
 │
 ├── test_datasets/
 │ ├── spotify_songs

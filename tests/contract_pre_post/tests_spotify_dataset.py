@@ -12,7 +12,7 @@ from helpers.enumerations import Belong, Operator, Closure
 from helpers.logger import print_and_log
 
 
-class ContractWithDatasetTests(unittest.TestCase):
+class ContractExternalDatasetTests(unittest.TestCase):
     """
     Class to test the contracts with simple test cases
 
@@ -21,10 +21,14 @@ class ContractWithDatasetTests(unittest.TestCase):
     dataDictionary (pd.DataFrame): dataframe with the external dataset. It must be loaded in the __init__ method
 
     Methods:
-    execute_CheckFieldRange_Tests: execute the simple tests of the function checkFieldRange
-    execute_CheckFixValueRangeString_Tests: execute the simple tests of the function checkFixValueRangeString
-    execute_CheckFixValueRangeFloat_Tests: execute the simple tests of the function checkFixValueRangeFloat
-    execute_CheckFixValueRangeDateTime_Tests: execute the simple tests of the function checkFixValueRangeDateTime
+    execute_CheckFieldRange_ExternalDatasetTests: execute the external dataset tests of the checkFieldRange function
+    execute_CheckFixValueRangeString_ExternalDatasetTests: execute the external dataset tests of the checkFixValueRange function with string values
+    execute_CheckFixValueRangeFloat_ExternalDatasetTests: execute the external dataset tests of the checkFixValueRange function with float values
+    execute_CheckFixValueRangeDateTime_ExternalDatasetTests: execute the external dataset tests of the checkFixValueRange function with datetime values
+    execute_checkIntervalRangeFloat_ExternalDatasetTests: execute the external dataset tests of the checkIntervalRange function with float values
+    execute_CheckMissingRange_ExternalDatasetTests: execute the external dataset tests of the checkMissingRange function
+    execute_CheckInvalidValues_ExternalDatasetTests: execute the external dataset tests of the checkInvalidValues function
+    executeAll_ExternalDatasetTests: execute all the external dataset tests
     """
     def __init__(self):
         """
@@ -39,9 +43,24 @@ class ContractWithDatasetTests(unittest.TestCase):
         # Obtiene la ruta del directorio actual del script
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
         # Construye la ruta al archivo CSV
-        ruta_csv = os.path.join(directorio_actual, '../test_datasets/spotify_songs/spotify_songs.csv')
+        ruta_csv = os.path.join(directorio_actual, '../../test_datasets/spotify_songs/spotify_songs.csv')
         # Crea el dataframe a partir del archivo CSV
         self.data_dictionary = pd.read_csv(ruta_csv)
+
+
+    def executeAll_ExternalDatasetTests(self):
+        """
+        Execute all the tests of the dataset
+        """
+        test_methods = [
+            self.execute_CheckFieldRange_ExternalDatasetTests,
+            self.execute_CheckFixValueRangeString_ExternalDatasetTests,
+            self.execute_CheckFixValueRangeFloat_ExternalDatasetTests,
+            self.execute_CheckFixValueRangeDateTime_ExternalDatasetTests,
+            self.execute_checkIntervalRangeFloat_ExternalDatasetTests,
+            self.execute_CheckMissingRange_ExternalDatasetTests,
+            self.execute_CheckInvalidValues_ExternalDatasetTests
+        ]
 
         print_and_log("")
         print_and_log("--------------------------------------------------")
@@ -49,24 +68,16 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("--------------------------------------------------")
         print_and_log("")
 
-    def executeAll_DatasetTests(self):
-        """
-        Execute all the tests of the dataset
-        """
-        test_methods = [
-            self.execute_CheckFieldRange_Tests,
-            self.execute_CheckFixValueRangeString_Tests,
-            self.execute_CheckFixValueRangeFloat_Tests,
-            self.execute_CheckFixValueRangeDateTime_Tests,
-            self.execute_checkIntervalRangeFloat_Tests,
-            self.execute_CheckMissingRange_Tests,
-            self.execute_CheckInvalidValues_Tests
-        ]
-
         for test_method in tqdm(test_methods, desc="Running Dataset Tests", unit="test"):
             test_method()
 
-    def execute_CheckFieldRange_Tests(self):
+        print_and_log("")
+        print_and_log("--------------------------------------------------")
+        print_and_log("---------- DATASET TEST CASES FINISHED -----------")
+        print_and_log("--------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckFieldRange_ExternalDatasetTests(self):
         """
         Execute the datasets_tests of the checkFieldRange function
         """
@@ -113,7 +124,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckFixValueRangeString_Tests(self):
+    def execute_CheckFixValueRangeString_ExternalDatasetTests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
@@ -370,7 +381,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckFixValueRangeFloat_Tests(self):
+    def execute_CheckFixValueRangeFloat_ExternalDatasetTests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
@@ -628,7 +639,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
 
 
-    def execute_CheckFixValueRangeDateTime_Tests(self):
+    def execute_CheckFixValueRangeDateTime_ExternalDatasetTests(self):
         """
         Execute the simple tests of the function checkFixValueRange
         """
@@ -889,7 +900,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_checkIntervalRangeFloat_Tests(self):
+    def execute_checkIntervalRangeFloat_ExternalDatasetTests(self):
         """
         Execute the simple tests of the function checkIntervalRangeFloat
         """
@@ -912,18 +923,6 @@ class ContractWithDatasetTests(unittest.TestCase):
         field = None
         #belongOp = 0
         belongOp = 0
-        
-        #Example 0 of checkIntervalRangeFloat
-        #Check that the left margin is not bigger than the right margin
-        left0=20
-        right0=15
-        closure = 0  # OpenOpen
-        expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkIntervalRangeFloat(left_margin=left0, right_margin=right0,
-                                                       dataDictionary=self.data_dictionary, closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
-        print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
 
         # Example 1 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (0, 1)
@@ -1289,21 +1288,40 @@ class ContractWithDatasetTests(unittest.TestCase):
         assert result is True, "Test Case 32 Failed: Expected True, but got False"
         print_and_log("Test Case 32 Passed: Expected True, got True")
 
+        print_and_log("")
+        print_and_log("Casos de error añadidos:")
+
+        # Example 0 of checkIntervalRangeFloat
+        # Check that the left margin is not bigger than the right margin
+        left0 = 20
+        right0 = 15
+        closure = 0  # OpenOpen
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkIntervalRangeFloat(left_margin=left0, right_margin=right0,
+                                                           dataDictionary=self.data_dictionary,
+                                                           closureType=Closure(closure),
+                                                           belongOp=Belong(belongOp))
+        print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
+
         # Example 33 of checkIntervalRangeFloat
-        field='playlist_name'
+        field = 'playlist_name'
         closure = 3  # ClosedClosed
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                           dataDictionary=self.data_dictionary, closureType=Closure(closure),
-                                                           belongOp=Belong(belongOp),field=field)
+                                                           dataDictionary=self.data_dictionary,
+                                                           closureType=Closure(closure),
+                                                           belongOp=Belong(belongOp), field=field)
+
         print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
+
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_CheckMissingRange_Tests(self):
+    def execute_CheckMissingRange_ExternalDatasetTests(self):
         """
         Execute the simple tests of the function checkInvalidValues
         """
@@ -1682,7 +1700,7 @@ class ContractWithDatasetTests(unittest.TestCase):
         print_and_log("")
 
 
-    def execute_CheckInvalidValues_Tests(self):
+    def execute_CheckInvalidValues_ExternalDatasetTests(self):
         """
         Execute the simple tests of the function checkInvalidValues
         """
