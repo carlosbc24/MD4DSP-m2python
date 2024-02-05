@@ -76,48 +76,48 @@ class ContractsPrePost:
                     elif quant_rel is not None and quant_abs is not None:
                         # Si se proporcionan los dos, se lanza un ValueError
                         raise ValueError(
-                            "quant_rel and quant_abs can't have different values than None at the same time") # Caso 5
+                            "quant_rel and quant_abs can't have different values than None at the same time") # Caso 4.5
                     elif quant_abs is not None:
-                        return True if value in dataDictionary.values and compare_numbers( # Caso 6 y 7
+                        return True if value in dataDictionary.values and compare_numbers( # Caso 5 y 6
                             count_abs_frequency(value, dataDictionary),
                             quant_abs,
                             quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
                     else:
-                        raise ValueError( # Caso 8
+                        raise ValueError( # Caso 7
                             "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
             else:
                 if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                    return True if value not in dataDictionary.values else False # Caso 9 y 10
+                    return True if value not in dataDictionary.values else False # Caso 8 y 9
                 else:
-                    raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 11
+                    raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 10
         else:
             if field is not None:
                 if field not in dataDictionary.columns:  # Se comprueba que la columna exista en el dataframe
-                    raise ValueError(f"Column '{field}' not found in dataDictionary.") # Caso 12
+                    raise ValueError(f"Column '{field}' not found in dataDictionary.") # Caso 10.5
                 if belongOp == Belong.BELONG:
                     if quant_op is None:
-                        return True if value in dataDictionary[field].values else False # Caso 13 y 14
+                        return True if value in dataDictionary[field].values else False # Caso 11 y 12
                     else:
                         if quant_rel is not None and quant_abs is None:  # Añadido respecto a la especificacion inicial del contrato para test case 4
-                            return True if value in dataDictionary[field].values and compare_numbers( # Caso 15 y 16
+                            return True if value in dataDictionary[field].values and compare_numbers( # Caso 13 y 14
                                 dataDictionary[field].value_counts(dropna=False).get(value, 0)
                                 / dataDictionary.size, quant_rel,
                                 quant_op) else False  # Importante el dropna=False para que cuente los valores NaN en caso de que value sea None
                         elif quant_rel is not None and quant_abs is not None:
                             # Si se proporcionan los dos, se lanza un ValueError
-                            raise ValueError( # Caso 17
+                            raise ValueError( # Caso 14.5
                                 "quant_rel and quant_abs can't have different values than None at the same time")
                         elif quant_abs is not None:
                             return True if value in dataDictionary[field].values and compare_numbers(
                                 dataDictionary[field].value_counts(dropna=False).get(value, 0),
-                                quant_abs, quant_op) else False # Caso 18 y 19
+                                quant_abs, quant_op) else False # Caso 15 y 16
                         else:  # quant_rel is None and quant_abs is None
-                            raise ValueError( # Caso 20
+                            raise ValueError( # Caso 17
                                 "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")
                 else:
                     if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                        return True if value not in dataDictionary[field].values else False # Caso 21 y 22
-                    else: # Caso 23
+                        return True if value not in dataDictionary[field].values else False # Caso 18 y 19
+                    else: # Caso 20
                         raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG")
 
     def checkIntervalRangeFloat(self, left_margin: float, right_margin: float, dataDictionary: pd.DataFrame,
@@ -137,7 +137,7 @@ class ContractsPrePost:
             :return: if dataDictionary meets the condition of belongOp in the interval defined by leftMargin and rightMargin with the closureType
         """
         if left_margin > right_margin:
-            raise ValueError("Error: leftMargin should be less than or equal to rightMargin") # Caso 1
+            raise ValueError("Error: leftMargin should be less than or equal to rightMargin") # Caso 0
 
         def check_condition(min_val: float, max_val: float) -> bool:
             if closureType == Closure.openOpen:
@@ -156,17 +156,17 @@ class ContractsPrePost:
                 include=['int', 'float'])  # Se descartan todos los campos que no sean float o int o double
             return check_condition(dataDictionary.min().min(),
                                    dataDictionary.max().max()) if belongOp == Belong.BELONG else not check_condition(
-                dataDictionary.min().min(), dataDictionary.max().max()) # Casos 2-17
+                dataDictionary.min().min(), dataDictionary.max().max()) # Casos 1-16
         else:
             if field not in dataDictionary.columns:  # Se comprueba que la columna exista en el dataframe
-                raise ValueError(f"Column '{field}' not found in dataDictionary.") # Caso 18
+                raise ValueError(f"Column '{field}' not found in dataDictionary.") # Caso 16.5
             if dataDictionary[field].dtype in ['int', 'float']:
                 return check_condition(dataDictionary[field].min(),
                                        dataDictionary[
                                            field].max()) if belongOp == Belong.BELONG else not check_condition(
-                    dataDictionary[field].min(), dataDictionary[field].max()) # Casos 19-34
+                    dataDictionary[field].min(), dataDictionary[field].max()) # Casos 17-32
             else:
-                raise ValueError("Error: field should be a float") # Caso 35
+                raise ValueError("Error: field should be a float") # Caso 33
 
     def checkMissingRange(self, belongOp: Belong, dataDictionary: pd.DataFrame, field: str = None,
                           missing_values: list = None, quant_abs: int = None, quant_rel: float = None,
