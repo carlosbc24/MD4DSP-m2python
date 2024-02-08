@@ -15,3 +15,4 @@ class ContractsInvariants:
         # Check FixValue - FixValue
         dataDictionary.apply(lambda func: func*2 if(func.iloc[0]==2) else func, axis=1)
         print()
+
