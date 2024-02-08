@@ -4,7 +4,7 @@ import pandas as pd
 
 # Importing enumerations from packages
 from typing import Union
-from helpers.enumerations import Operator
+from helpers.enumerations import Operator, DataType
 
 
 def compare_numbers(rel_abs_number: Union [int,float], quant_rel_abs: Union[int, float], quant_op: Operator) -> bool:
@@ -50,3 +50,42 @@ def count_abs_frequency(value, dataDictionary: pd.DataFrame, field: str=None) ->
             count += dataDictionary[column].value_counts(dropna=False).get(value, 0)
         return count
 
+def cast_type_FixValue(dataTypeInput: DataType=None, FixValueInput=None, dataTypeOutput: DataType=None, FixValueOutput=None):
+    """
+    Cast the value FixValueInput to the type dataTypeOutput and the value FixValueOutput to the type dataTypeOutput
+
+    :param dataTypeInput: data type of the input value
+    :param FixValueInput: input value to cast
+    :param dataTypeOutput: data type of the output value
+    :param FixValueOutput: output value to cast
+    :return: FixValueInput and FixValueOutput casted to the types dataTypeInput and dataTypeOutput respectively
+    """
+    if dataTypeInput is not None and FixValueInput is not None:
+        if dataTypeInput == DataType.STRING:
+            FixValueInput = str(FixValueInput)
+        elif dataTypeInput == DataType.TIME:
+            FixValueInput = pd.to_datetime(FixValueInput)
+        elif dataTypeInput == DataType.INTEGER:
+            FixValueInput = int(FixValueInput)
+        elif dataTypeInput == DataType.DATETIME:
+            FixValueInput = pd.to_datetime(FixValueInput)
+        elif dataTypeInput == DataType.BOOLEAN:
+            FixValueInput = bool(FixValueInput)
+        elif dataTypeInput == DataType.DOUBLE or dataTypeInput == DataType.FLOAT:
+            FixValueInput = float(FixValueInput)
+
+    if dataTypeOutput is not None and FixValueOutput is not None:
+        if dataTypeOutput == DataType.STRING:
+            FixValueOutput = str(FixValueOutput)
+        elif dataTypeOutput == DataType.TIME:
+            FixValueOutput = pd.to_datetime(FixValueOutput)
+        elif dataTypeOutput == DataType.INTEGER:
+            FixValueOutput = int(FixValueOutput)
+        elif dataTypeOutput == DataType.DATETIME:
+            FixValueOutput = pd.to_datetime(FixValueOutput)
+        elif dataTypeOutput == DataType.BOOLEAN:
+            FixValueOutput = bool(FixValueOutput)
+        elif dataTypeOutput == DataType.DOUBLE or dataTypeOutput == DataType.FLOAT:
+            FixValueOutput = float(FixValueOutput)
+
+    return FixValueInput, FixValueOutput
