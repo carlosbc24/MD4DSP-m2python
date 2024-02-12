@@ -98,17 +98,16 @@ class ContractsInvariants:
         """
         fixValueInput, valorNulo=cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
 
-        # Si el tipo de dato es booleano, datetime, time o string, no se puede hacer la operación
-        if dataTypeInput == DataType.BOOLEAN or dataTypeInput == DataType.DATETIME or dataTypeInput == DataType.TIME or dataTypeInput == DataType.STRING:
-            raise ValueError("No valid data type, the data type must be a numeric value")
 
         #Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
         dataDictionary_copy = dataDictionary.copy()
 
-        if numOpOutput == Operation.INTERPOLATION:
-            # TODO: Revisar si se puede hacer la interpolación de todo el dataframe, ya que esto no funciona
-            print("Not implemented yet")
-            # dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput, other=x.interpolate()), axis=axis_param)
+        if numOpOutput == Operation.INTERPOLATION:  #TODO: No funciona, hacer por columnas y filas
+            if axis_param == 0 or axis_param == 1:
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda x: x.interpolate(method='linear',
+                                            limit_direction='both') if fixValueInput in x.values else x,axis=axis_param)
+
         elif numOpOutput == Operation.MEAN:
             if axis_param == None:
                 # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
