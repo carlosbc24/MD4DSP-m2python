@@ -34,6 +34,7 @@ class ContractsInvariants:
 
     def checkInv_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, dataTypeInput: DataType, FixValueInput, derivedTypeOutput: DerivedType, axis_param: int=0) -> pd.DataFrame:
         # Por defecto, si todos los valores son igual de frecuentes, se sustituye por el primer valor.
+        # Comprobar si solo se debe hacer para filas y columnas o también para el dataframe completo.
 
         """
         Check the invariant of the FixValue - DerivedValue relation
