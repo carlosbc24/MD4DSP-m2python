@@ -5,7 +5,7 @@ from tests.contract_pre_post.simple_test import ContractSimpleTest
 from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
 from functions.contract_invariants import ContractsInvariants
 import pandas as pd
-from helpers.enumerations import DataType, DerivedType, Operation
+from helpers.enumerations import DataType, DerivedType, Operation, Closure
 
 if __name__ == "__main__":
 
@@ -49,8 +49,14 @@ if __name__ == "__main__":
     #                                                   fixValueInput=0, numOpOutput=Operation(0), axis_param=0)
     # print(result)
 
-    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 'Paco', 0, 5], 'C': [1, 2, 3, 4, 5]})
+    # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+    # print(datadic)
+    # result = contracts.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+    #                                                   fixValueInput=0, numOpOutput=Operation(3), axis_param=1)
+    # print(result)
+
+    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
     print(datadic)
-    result = contracts.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
-                                                      fixValueInput=0, numOpOutput=Operation(3), axis_param=1)
+    result = contracts.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                  closureType=Closure(2), dataTypeOutput=DataType(0), fixValueOutput='Suspenso')
     print(result)

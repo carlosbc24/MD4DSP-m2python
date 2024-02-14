@@ -11,9 +11,7 @@ class ContractsInvariants:
     # FixValue - FixValue, FixValue - DerivedValue, FixValue - NumOp
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
-    """
 
-    """
     def checkInv_FixValue_FixValue(self, dataDictionary: pd.DataFrame, dataTypeInput: DataType, fixValueInput, dataTypeOutput: DataType, fixValueOutput) -> pd.DataFrame:
         """
         Check the invariant of the FixValue - FixValue relation
@@ -156,15 +154,41 @@ class ContractsInvariants:
                     lambda col: col.apply(
                         lambda x: find_closest_value(col, fixValueInput) if x == fixValueInput else x), axis=axis_param)
 
-
         else:
             raise ValueError("No valid operator")
 
         return dataDictionary_copy
 
 
+    def checkInv_Interval_FixValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float, closureType: Closure, dataTypeOutput: DataType, fixValueOutput) -> pd.DataFrame:
+        """
+        Check the invariant of the Interval - FixValue relation
+        :param dataDictionary: dataframe with the data
+        :param leftMargin: left margin of the interval
+        :param rightMargin: right margin of the interval
+        :param closureType: closure type of the interval
+        :param dataTypeOutput: data type of the output value
+        :param fixValueOutput: output value to check
+        :return: dataDictionary with the values of the interval changed to the value fixValueOutput
+        """
+        vacio, fixValueOutput=cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+        dataDictionary_copy = dataDictionary.copy()
 
+        # Aplicar el cambio en los valores dentro del intervalo
+        if closureType == Closure.openOpen:
+            dataDictionary_copy = dataDictionary.apply(
+                lambda func: func.apply(lambda x: fixValueOutput if (leftMargin < x) and (x < rightMargin) else x))
+        elif closureType == Closure.openClosed:
+            dataDictionary_copy = dataDictionary.apply(
+                lambda func: func.apply(lambda x: fixValueOutput if (leftMargin < x) and (x <= rightMargin) else x))
+        elif closureType == Closure.closedOpen:
+            dataDictionary_copy = dataDictionary.apply(
+                lambda func: func.apply(lambda x: fixValueOutput if (leftMargin <= x) and (x < rightMargin) else x))
+        elif closureType == Closure.closedClosed:
+            dataDictionary_copy = dataDictionary.apply(
+                lambda func: func.apply(lambda x: fixValueOutput if (leftMargin <= x) and (x <= rightMargin) else x))
 
+        return dataDictionary_copy
 
 
 
