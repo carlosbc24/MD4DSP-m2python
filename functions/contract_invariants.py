@@ -190,6 +190,54 @@ class ContractsInvariants:
 
         return dataDictionary_copy
 
+    def checkInv_Interval_DerivedValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
+                                       closureType: Closure, derivedTypeOutput: DerivedType,
+                                       axis_param: int = None) -> pd.DataFrame:
+        """
+        Check the invariant of the Interval - DerivedValue relation
+        :param dataDictionary: dataframe with the data
+        :param leftMargin: left margin of the interval
+        :param rightMargin: right margin of the interval
+        :param closureType: closure type of the interval
+        :param derivedTypeOutput: derived type of the output value
+        :param axis_param: axis to check the invariant
 
+        :return: dataDictionary with the values of the interval changed to the
+            value derived from the operation derivedTypeOutput
+        """
+        dataDictionary_copy = dataDictionary.copy()
+
+        # Definir la condición del intervalo basada en el tipo de cierre
+        def get_condition(x):
+            if closureType == Closure.openOpen:
+                return (x > leftMargin) & (x < rightMargin)
+            elif closureType == Closure.openClosed:
+                return (x > leftMargin) & (x <= rightMargin)
+            elif closureType == Closure.closedOpen:
+                return (x >= leftMargin) & (x < rightMargin)
+            elif closureType == Closure.closedClosed:
+                return (x >= leftMargin) & (x <= rightMargin)
+
+        def apply_derived_value(row_or_col):
+            condition = get_condition(row_or_col)
+            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+                filtered_values = row_or_col[condition]
+                if not filtered_values.empty:
+                    most_frequent_value = filtered_values.mode()[0]
+                    row_or_col[condition] = most_frequent_value
+            elif derivedTypeOutput == DerivedType.PREVIOUS:
+                row_or_col[condition] = row_or_col[condition].shift(1)
+            elif derivedTypeOutput == DerivedType.NEXT:
+                row_or_col[condition] = row_or_col[condition].shift(-1)
+            return row_or_col
+
+        # Aplicar la función al eje especificado o a todo el DataFrame
+        if axis_param is not None:
+            dataDictionary_copy = dataDictionary_copy.apply(apply_derived_value, axis=axis_param)
+        else:
+            for col in dataDictionary_copy.columns:
+                dataDictionary_copy[col] = apply_derived_value(dataDictionary_copy[col])
+
+        return dataDictionary_copy
 
 

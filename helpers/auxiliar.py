@@ -4,7 +4,7 @@ import pandas as pd
 
 # Importing enumerations from packages
 from typing import Union
-from helpers.enumerations import Operator, DataType
+from helpers.enumerations import Operator, DataType, Closure
 
 
 def compare_numbers(rel_abs_number: Union [int,float], quant_rel_abs: Union[int, float], quant_op: Operator) -> bool:
@@ -92,7 +92,7 @@ def cast_type_FixValue(dataTypeInput: DataType=None, FixValueInput=None, dataTyp
 
 
 
-def find_closest_value(numeric_values, value):
+def find_closest_value(numeric_values : list, value: Union[int, float]) -> Union[int, float]:
     """
     Find the closest value to a given value in a list of numeric values
     :param numeric_values: list of numeric values
@@ -112,3 +112,4 @@ def find_closest_value(numeric_values, value):
                 min_distance = distance
 
     return closest_value
+
