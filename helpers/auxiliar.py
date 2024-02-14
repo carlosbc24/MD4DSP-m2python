@@ -1,4 +1,4 @@
-
+import numpy as np
 # Importing libraries
 import pandas as pd
 
@@ -89,3 +89,26 @@ def cast_type_FixValue(dataTypeInput: DataType=None, FixValueInput=None, dataTyp
             FixValueOutput = float(FixValueOutput)
 
     return FixValueInput, FixValueOutput
+
+
+
+def find_closest_value(numeric_values, value):
+    """
+    Find the closest value to a given value in a list of numeric values
+    :param numeric_values: list of numeric values
+    :param value: value to compare with the list of numeric values
+
+    :return: the closest value to the given value in the list of numeric values
+
+    """
+    closest_value = None
+    min_distance = float('inf')
+
+    for v in numeric_values:
+        if v != value and v is not None and np.issubdtype(type(v), np.number):
+            distance = abs(v - value)
+            if distance < min_distance:
+                closest_value = v
+                min_distance = distance
+
+    return closest_value

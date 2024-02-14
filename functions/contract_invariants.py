@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-from helpers.auxiliar import cast_type_FixValue
+from helpers.auxiliar import cast_type_FixValue, find_closest_value
 # Importing functions and classes from packages
 from helpers.enumerations import Belong, Operator, Closure, DataType, DerivedType, Operation, SpecialType
 
@@ -98,7 +98,6 @@ class ContractsInvariants:
         """
         fixValueInput, valorNulo=cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
 
-
         #Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
         dataDictionary_copy = dataDictionary.copy()
 
@@ -147,15 +146,21 @@ class ContractsInvariants:
                         else x[x.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
 
         elif numOpOutput == Operation.CLOSEST:
-            # TODO: Revisar si se puede hacer la interpolación de todo el dataframe, ya que esto no funciona
-            print("Not implemented yet")
-            # dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput, other=x.interpolate(method='nearest')), axis=axis_param)
+            if axis_param is None:
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(),
+                                                                       fixValueInput) if x == fixValueInput else x))
+            elif axis_param == 0 or axis_param == 1:
+                # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(
+                        lambda x: find_closest_value(col, fixValueInput) if x == fixValueInput else x), axis=axis_param)
+
+
         else:
             raise ValueError("No valid operator")
 
         return dataDictionary_copy
-
-
 
 
 
