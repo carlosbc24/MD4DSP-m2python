@@ -102,11 +102,17 @@ class ContractsInvariants:
         #Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
         dataDictionary_copy = dataDictionary.copy()
 
-        if numOpOutput == Operation.INTERPOLATION:  #TODO: No funciona, hacer por columnas y filas
+        if numOpOutput == Operation.INTERPOLATION:
             if axis_param == 0 or axis_param == 1:
-                dataDictionary_copy = dataDictionary_copy.apply(
-                    lambda x: x.interpolate(method='linear',
-                                            limit_direction='both') if fixValueInput in x.values else x,axis=axis_param)
+                # Aplicamos la interpolación lineal en el DataFrame
+                if axis_param == 0:
+                    for col in dataDictionary_copy.columns:
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: np.nan if x == fixValueInput else x).interpolate(method='linear', limit_direction='both')
+                else:
+                    dataDictionary_copy = dataDictionary_copy.apply(
+                        lambda row: row.apply(lambda x: np.nan if x == fixValueInput else x).interpolate(
+                            method='linear', limit_direction='both'), axis=axis_param)
 
         elif numOpOutput == Operation.MEAN:
             if axis_param == None:
@@ -117,13 +123,13 @@ class ContractsInvariants:
                 # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.replace(fixValueInput, mean_value))
-
             elif axis_param == 0 or axis_param == 1:
                 # dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput, other=x.mean()), axis=axis_param)
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda x: x.apply(
                         lambda y: y if not np.issubdtype(type(y), np.number) or y != fixValueInput
                         else x[x.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+
         elif numOpOutput == Operation.MEDIAN:
             if axis_param == None:
                 # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
@@ -139,6 +145,7 @@ class ContractsInvariants:
                     lambda x: x.apply(
                         lambda y: y if not np.issubdtype(type(y), np.number) or y != fixValueInput
                         else x[x.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+
         elif numOpOutput == Operation.CLOSEST:
             # TODO: Revisar si se puede hacer la interpolación de todo el dataframe, ya que esto no funciona
             print("Not implemented yet")

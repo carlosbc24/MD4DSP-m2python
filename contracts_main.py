@@ -44,8 +44,7 @@ if __name__ == "__main__":
     #                                                   derivedTypeOutput=DerivedType(2), axis_param=1)
 
     datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+    print(datadic)
     result = contracts.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
                                                       fixValueInput=0, numOpOutput=Operation(0), axis_param=0)
-
-    print(datadic)
     print(result)
