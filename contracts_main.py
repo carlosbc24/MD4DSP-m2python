@@ -1,3 +1,4 @@
+import numpy as np
 
 # Importing functions and classes from packages
 from helpers.logger import set_logger
@@ -5,7 +6,7 @@ from tests.contract_pre_post.simple_test import ContractSimpleTest
 from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
 from functions.contract_invariants import ContractsInvariants
 import pandas as pd
-from helpers.enumerations import DataType, DerivedType, Operation, Closure
+from helpers.enumerations import DataType, DerivedType, Operation, Closure, SpecialType
 
 if __name__ == "__main__":
 
@@ -73,8 +74,17 @@ if __name__ == "__main__":
     #                                                   derivedTypeOutput=DerivedType(1), axis_param=1)
     # print(result)
 
-    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
-    print(datadic)
-    result = contracts.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=5,
-                                               closureType=Closure(1), numOpOutput=Operation(1), axis_param=None)
-    print(result)
+    # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+    # print(datadic)
+    # result = contracts.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+    #                                            closureType=Closure(1), numOpOutput=Operation(0), axis_param=None)
+    # print(result)
+
+    # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, np.nan], 'C': [1, None, 3, 4, 5]})
+    # missing_values=[1,3,4]
+    # print(datadic)
+    # result = contracts.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+    #                                            dataTypeOutput=DataType(0), fixValueOutput='Ok',
+    #                                             missing_values=missing_values, axis_param=None)
+    # print(result)
+
