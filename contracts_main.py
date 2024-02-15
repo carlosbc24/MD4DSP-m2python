@@ -61,9 +61,14 @@ if __name__ == "__main__":
     #                                               closureType=Closure(2), dataTypeOutput=DataType(0), fixValueOutput='Suspenso')
     # print(result)
 
-    # Testeamos la invariante checkInv_Interval_DerivedValue
+    # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+    # print(datadic)
+    # result = contracts.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5, closureType=Closure(1),
+    #                                                   derivedTypeOutput=DerivedType(0), axis_param=None)
+    # print(result)
+
     datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
     print(datadic)
     result = contracts.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5, closureType=Closure(1),
-                                                      derivedTypeOutput=DerivedType(0), axis_param=None)
+                                                      derivedTypeOutput=DerivedType(1), axis_param=1)
     print(result)

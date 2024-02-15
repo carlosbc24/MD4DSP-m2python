@@ -59,23 +59,28 @@ class ContractsInvariants:
                     lambda value: dataDictionary_copy[
                         columna.name].value_counts().idxmax() if value == fixValueInput else value), axis=axis_param)
             else: # Aplica la función lambda a nivel de dataframe
-                # Asumiendo que 'dataDictionary_copy' es tu DataFrame y 'fixValueInput' el valor a reemplazar
                 # En caso de empate de valor con más apariciones en el dataset, se toma el primer valor
                 valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
                 # Reemplaza 'fixValueInput' con el valor más frecuente en el DataFrame completo usando lambda
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.replace(fixValueInput, valor_mas_frecuente))
-
+        # Si el valor es el primero, se asigna a np.nan
         elif derivedTypeOutput == DerivedType.PREVIOUS:
             # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
             # Lambda que sustitutuye cualquier valor igual a FixValueInput del dataframe por el valor de la fila anterior en la misma columna
-
-            dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput,
+            if axis_param is not None:
+                dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput,
                                                                                   other=x.shift(1)), axis=axis_param)
+            else:
+                raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+        # Si el valor es el último, se asigna a np.nan
         elif derivedTypeOutput == DerivedType.NEXT:
             # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
-            dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput,
+            if axis_param is not None:
+                dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput,
                                                                                   other=x.shift(-1)), axis=axis_param)
+            else:
+                raise ValueError("The axis cannot be None when applying the NEXT operation")
 
 
         return dataDictionary_copy
@@ -210,33 +215,51 @@ class ContractsInvariants:
         # Definir la condición del intervalo basada en el tipo de cierre
         def get_condition(x):
             if closureType == Closure.openOpen:
-                return (x > leftMargin) & (x < rightMargin)
+                return True if (x > leftMargin) & (x < rightMargin) else False
             elif closureType == Closure.openClosed:
-                return (x > leftMargin) & (x <= rightMargin)
+                return True if (x > leftMargin) & (x <= rightMargin) else False
             elif closureType == Closure.closedOpen:
-                return (x >= leftMargin) & (x < rightMargin)
+                return True if (x >= leftMargin) & (x < rightMargin) else False
             elif closureType == Closure.closedClosed:
-                return (x >= leftMargin) & (x <= rightMargin)
+                return True if (x >= leftMargin) & (x <= rightMargin) else False
 
-        def apply_derived_value(row_or_col):
-            condition = get_condition(row_or_col)
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                filtered_values = row_or_col[condition]
-                if not filtered_values.empty:
-                    most_frequent_value = filtered_values.mode()[0]
-                    row_or_col[condition] = most_frequent_value
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
-                row_or_col[condition] = row_or_col[condition].shift(1)
-            elif derivedTypeOutput == DerivedType.NEXT:
-                row_or_col[condition] = row_or_col[condition].shift(-1)
-            return row_or_col
+        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            if axis_param == 1: # Aplica la función lambda a nivel de fila
+                dataDictionary_copy = dataDictionary_copy.apply(lambda fila: fila.apply(
+                    lambda value: dataDictionary_copy.loc[
+                        fila.name].value_counts().idxmax() if get_condition(value) else value), axis=axis_param)
+            elif axis_param == 0: # Aplica la función lambda a nivel de columna
+                dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
+                    lambda value: dataDictionary_copy[
+                        columna.name].value_counts().idxmax() if get_condition(value) else value), axis=axis_param)
+            else: # Aplica la función lambda a nivel de dataframe
+                # En caso de empate de valor con más apariciones en el dataset, se toma el primer valor
+                valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
+                # Reemplaza los valores dentro del intervalo con el valor más frecuente en el DataFrame completo usando lambda
+                dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
+                    lambda value: valor_mas_frecuente if get_condition(value) else value))
+        # No asigna nada a np.nan
+        elif derivedTypeOutput == DerivedType.PREVIOUS:
+            # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
+            # Lambda que sustitutuye cualquier valor igual a FixValueInput del dataframe por el valor de la fila anterior en la misma columna
+            if axis_param is not None:
+                # Define una función lambda para reemplazar los valores dentro del intervalo por el valor de la posición anterior
+                dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
+                        value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
+                                for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
+            else:
+                raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+        # No asigna nada a np.nan
+        elif derivedTypeOutput == DerivedType.NEXT:
+            # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
+            if axis_param is not None:
+                # Define la función lambda para reemplazar los valores dentro del intervalo por el valor de la siguiente posición
+                dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
+                    value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
+                            for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
 
-        # Aplicar la función al eje especificado o a todo el DataFrame
-        if axis_param is not None:
-            dataDictionary_copy = dataDictionary_copy.apply(apply_derived_value, axis=axis_param)
-        else:
-            for col in dataDictionary_copy.columns:
-                dataDictionary_copy[col] = apply_derived_value(dataDictionary_copy[col])
+            else:
+                raise ValueError("The axis cannot be None when applying the NEXT operation")
 
         return dataDictionary_copy
 
