@@ -263,4 +263,91 @@ class ContractsInvariants:
 
         return dataDictionary_copy
 
+    #TODO: MEAN y MEDIAN funcionan correctamente, CLOSEST e INTERPOLATION no se han probado adecuadamente
+    def checkInv_Interval_NumOp(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float, closureType: Closure, numOpOutput: Operation, axis_param: int = None) -> pd.DataFrame:
+        """
+        Check the invariant of the FixValue - NumOp relation
+        If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
+        :param dataDictionary: dataframe with the data
+        :param leftMargin: left margin of the interval
+        :param rightMargin: right margin of the interval
+        :param numOpOutput: operation to check the invariant
+        :param axis_param: axis to check the invariant
+        :return: dataDictionary with the values of the interval changed to the result of the operation numOpOutput
+        """
+        def get_condition(x):
+            if closureType == Closure.openOpen:
+                return True if (x > leftMargin) & (x < rightMargin) else False
+            elif closureType == Closure.openClosed:
+                return True if (x > leftMargin) & (x <= rightMargin) else False
+            elif closureType == Closure.closedOpen:
+                return True if (x >= leftMargin) & (x < rightMargin) else False
+            elif closureType == Closure.closedClosed:
+                return True if (x >= leftMargin) & (x <= rightMargin) else False
+
+        #Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
+        dataDictionary_copy = dataDictionary.copy()
+
+        if numOpOutput == Operation.INTERPOLATION:
+            if axis_param == 0 or axis_param == 1:
+                # Aplicamos la interpolación lineal en el DataFrame
+                if axis_param == 0:
+                    for col in dataDictionary_copy.columns:
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: np.nan if get_condition(x) else x).interpolate(method='linear', limit_direction='both')
+                else:
+                    dataDictionary_copy = dataDictionary_copy.apply(
+                        lambda row: row.apply(lambda x: np.nan if get_condition(x) else x).interpolate(
+                            method='linear', limit_direction='both'), axis=axis_param)
+
+        elif numOpOutput == Operation.MEAN:
+            if axis_param == None:
+                # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+                only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                # Calcular la media de estas columnas numéricas
+                mean_value = only_numbers_df.mean().mean()
+                # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(
+                        lambda x: mean_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
+
+            elif axis_param == 0 or axis_param == 1:
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(
+                        lambda x: x if not np.issubdtype(type(x), np.number) or not get_condition(x)
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+
+        elif numOpOutput == Operation.MEDIAN:
+            if axis_param == None:
+                # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+                only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                # Calcular la media de estas columnas numéricas
+                median_value = only_numbers_df.median().median()
+                # Reemplaza 'fixValueInput' con la mediana del DataFrame completo usando lambda
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(
+                        lambda x: median_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
+
+            elif axis_param == 0 or axis_param == 1:
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(
+                        lambda x: x if not np.issubdtype(type(x), np.number) or not get_condition(x)
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+
+        elif numOpOutput == Operation.CLOSEST:
+            if axis_param is None:
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(),
+                                                                       x) if get_condition(x) else x))
+            elif axis_param == 0 or axis_param == 1:
+                # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda col: col.apply(
+                        lambda x: find_closest_value(col, x) if get_condition(x) else x), axis=axis_param)
+
+        else:
+            raise ValueError("No valid operator")
+
+        return dataDictionary_copy
+
 

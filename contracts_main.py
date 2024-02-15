@@ -67,8 +67,14 @@ if __name__ == "__main__":
     #                                                   derivedTypeOutput=DerivedType(0), axis_param=None)
     # print(result)
 
+    # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+    # print(datadic)
+    # result = contracts.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5, closureType=Closure(1),
+    #                                                   derivedTypeOutput=DerivedType(1), axis_param=1)
+    # print(result)
+
     datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
     print(datadic)
-    result = contracts.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5, closureType=Closure(1),
-                                                      derivedTypeOutput=DerivedType(1), axis_param=1)
+    result = contracts.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                               closureType=Closure(1), numOpOutput=Operation(1), axis_param=None)
     print(result)
