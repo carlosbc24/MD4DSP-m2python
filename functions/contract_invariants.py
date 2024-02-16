@@ -469,7 +469,12 @@ class ContractsInvariants:
             if missing_values is not None:
                 dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
         elif specialTypeInput == SpecialType.OUTLIER:
-                # missing_values=getOutliers()# TODO MIRAR ESTA FUMADA
+                # TODO: Para esta función deberá ser importante pasar el axis_param de tal modo que para
+                #  un dataframe dado se devolverá una máscara de 0's y 1's indicando si el valor en
+                #  a posición en cuestión es un outlier o no.
+                # missing_values=getOutliers()
+                # TODO: Una vez hecho esto, se podrá aplicar la invariante en cuestión sobre todos aquellos valores
+                #  del dataframe máscara obtenido previamente donde el valor sea 1.
                 # dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
             pass
 
