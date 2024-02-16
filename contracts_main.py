@@ -86,11 +86,19 @@ if __name__ == "__main__":
     #                                            closureType=Closure(1), numOpOutput=Operation(0), axis_param=None)
     # print(result)
 
-    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10], 'E': [1, 10, 3, 4, 1]})
-    missing_values=[1,3,4]
+    # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10], 'E': [1, 10, 3, 4, 1]})
+    # missing_values=[1,3,4]
+    # print(datadic)
+    # result = contracts.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+    #                                            dataTypeOutput=DataType(2), fixValueOutput=999,
+    #                                             missing_values=missing_values, axis_param=1)
+    # print(result)
+
+    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1]})
+    missing_values=[1,3,6]
     print(datadic)
-    result = contracts.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
-                                               dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                missing_values=missing_values, axis_param=1)
+    result = contracts.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                        derivedTypeOutput=DerivedType(2), missing_values=missing_values,
+                                                          axis_param=0)
     print(result)
 

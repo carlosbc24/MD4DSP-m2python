@@ -71,7 +71,6 @@ class ContractsInvariants:
             if axis_param is not None:
                 dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where((x != fixValueInput) | x.shift(1).isna(),
                                                                                   other=x.shift(1)), axis=axis_param)
-
             else:
                 raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
         # Si el valor es el último, se asigna a np.nan
@@ -260,7 +259,6 @@ class ContractsInvariants:
                 dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                     value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
                             for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
-
             else:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
 
@@ -400,7 +398,6 @@ class ContractsInvariants:
                                                 column.quantile(0.75) - column.quantile(0.25)))), other=fixValueOutput))
                 dataDictionary_copy = outliers_function(dataDictionary_copy, threshold, fixValueOutput)
 
-
             elif axis_param == 1:
                 Q1 = dataDictionary_copy.quantile(0.25, axis="rows")
                 Q3 = dataDictionary_copy.quantile(0.75, axis="rows")
@@ -441,27 +438,42 @@ class ContractsInvariants:
                     if missing_values is not None:
                         dataDictionary_copy = dataDictionary_copy.apply(
                             lambda col: col.apply(lambda x: valor_mas_frecuente if x in missing_values else x))
+
             elif derivedTypeOutput == DerivedType.PREVIOUS:
-                pass
+                # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
+                if axis_param is not None:
+                    # Define la función lambda para reemplazar los valores dentro de missing values por el valor de la posición anterior
+                    dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
+                        value) else row_or_col.iloc[i - 1] if value in missing_values and i > 0 else value
+                                                                for i, value in enumerate(row_or_col)],
+                                                                        index=row_or_col.index), axis=axis_param)
+                else:
+                    raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+            elif derivedTypeOutput == DerivedType.NEXT:
+                # Define la función lambda para reemplazar los valores dentro de missing values por el valor de la siguiente posición
+                if axis_param is not None:
+                    dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
+                        value) else row_or_col.iloc[i + 1] if value in missing_values and i < len(row_or_col) - 1 else value
+                                for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
+                else:
+                    raise ValueError("The axis cannot be None when applying the NEXT operation")
 
             return dataDictionary_copy
 
 
-
-
-
         if specialTypeInput == SpecialType.MISSING:
             missing_values.append(np.nan)
-            get_function(derivedTypeOutput, dataDictionary_copy)
+            dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
         elif specialTypeInput == SpecialType.INVALID:
             if missing_values is not None:
-                get_function(derivedTypeOutput, dataDictionary_copy)
+                dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
         elif specialTypeInput == SpecialType.OUTLIER:
-                # missing_values=getOutliers()# TODO: Preguntar a Fran que se considera un outlier
-                # get_function(derivedTypeOutput, dataDictionary_copy)
+                # missing_values=getOutliers()# TODO MIRAR ESTA FUMADA
+                # dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
             pass
 
-
+        return dataDictionary_copy
 
 
 
