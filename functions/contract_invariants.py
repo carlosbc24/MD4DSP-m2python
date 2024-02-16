@@ -69,15 +69,17 @@ class ContractsInvariants:
             # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
             # Lambda que sustitutuye cualquier valor igual a FixValueInput del dataframe por el valor de la fila anterior en la misma columna
             if axis_param is not None:
-                dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput,
+                dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where((x != fixValueInput) | x.shift(1).isna(),
                                                                                   other=x.shift(1)), axis=axis_param)
+
             else:
                 raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
         # Si el valor es el último, se asigna a np.nan
         elif derivedTypeOutput == DerivedType.NEXT:
             # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
             if axis_param is not None:
-                dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput,
+
+                dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where((x != fixValueInput) | x.shift(-1).isna(),
                                                                                   other=x.shift(-1)), axis=axis_param)
             else:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
@@ -370,23 +372,54 @@ class ContractsInvariants:
             if missing_values is not None:
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+
         elif specialTypeInput == SpecialType.INVALID: #Solo incluye los valores de la lista missing_values
             if missing_values is not None:
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
-        elif specialTypeInput == SpecialType.OUTLIER: #TODO: Preguntar a Fran que se considera un outlier
-            #Incluye los valores que no estén en el rango de 3 desviaciones estándar
+
+        elif specialTypeInput == SpecialType.OUTLIER:
+            threshold = 1.5
             if axis_param is None:
-                pass
+                Q1 = dataDictionary_copy.stack().quantile(0.25)
+                Q3 = dataDictionary_copy.stack().quantile(0.75)
+                IQR = Q3 - Q1
+                # Definir los límites para identificar outliers
+                lower_bound = Q1 - threshold * IQR
+                upper_bound = Q3 + threshold * IQR
+                # Identificar outliers en el dataframe completo
+                outliers = (dataDictionary_copy < lower_bound) | (dataDictionary_copy > upper_bound)
+                # Reemplazar outliers por fixValueOutput
+                dataDictionary_copy[outliers] = fixValueOutput
+
             elif axis_param == 0:
-                pass
+                Q1 = dataDictionary_copy.quantile(0.25, axis="index")
+                Q3 = dataDictionary_copy.quantile(0.75, axis="index")
+                IQR = Q3 - Q1
+                outliers = dataDictionary_copy[
+                    (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
+                for column in outliers.columns:
+                    dataDictionary_copy[column] = dataDictionary_copy[column].where(
+                        ~((dataDictionary_copy[column] < Q1[column] - threshold * IQR[column]) |
+                          (dataDictionary_copy[column] > Q3[column] + threshold * IQR[column])),
+                        other=fixValueOutput)
+
             elif axis_param == 1:
-                pass
+                Q1 = dataDictionary_copy.quantile(0.25, axis="rows")
+                Q3 = dataDictionary_copy.quantile(0.75, axis="rows")
+                IQR = Q3 - Q1
+                outliers = dataDictionary_copy[
+                    (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
+                for row in outliers.index:
+                    dataDictionary_copy.loc[row] = dataDictionary_copy.loc[row].where(
+                        ~((dataDictionary_copy.loc[row] < Q1[row] - threshold * IQR[row]) |
+                          (dataDictionary_copy.loc[row] > Q3[row] + threshold * IQR[row])),
+                        other=fixValueOutput)
 
         return dataDictionary_copy
 
 
-    def checkInv_SpecialValue_DerivedValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,, derivedTypeOutput: DerivedType, missing_values: list = None, axis_param: int = None) -> pd.DataFrame:
+    def checkInv_SpecialValue_DerivedValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType, derivedTypeOutput: DerivedType, missing_values: list = None, axis_param: int = None) -> pd.DataFrame:
         """
         Check the invariant of the SpecialValue - DerivedValue relation
         :param dataDictionary: dataframe with the data
@@ -396,7 +429,7 @@ class ContractsInvariants:
         """
         dataDictionary_copy = dataDictionary.copy()
 
-        def get_function(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame):
+        def get_function(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame)->pd.DataFrame:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                 if axis_param == 1:
                     if missing_values is not None:
@@ -413,6 +446,12 @@ class ContractsInvariants:
                             lambda col: col.apply(lambda x: valor_mas_frecuente if x in missing_values else x))
             elif derivedTypeOutput == DerivedType.PREVIOUS:
                 pass
+
+            return dataDictionary_copy
+
+
+
+
 
         if specialTypeInput == SpecialType.MISSING:
             missing_values.append(np.nan)

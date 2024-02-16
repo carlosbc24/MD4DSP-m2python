@@ -36,13 +36,19 @@ if __name__ == "__main__":
     # result=contracts.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2), fixValueInput=0,
     #                                                 derivedTypeOutput=DerivedType(0), axis_param=None)
 
+    # datadic=pd.DataFrame({'A': [0, 2, 3, 5, 5], 'B': [1, 2, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
+    # print(datadic)
     # result = contracts.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
     #                                                   fixValueInput=5,
-    #                                                   derivedTypeOutput=DerivedType(2), axis_param=0)
+    #                                                   derivedTypeOutput=DerivedType(1), axis_param=0)
+    # print(result)
     #
+    # datadic=pd.DataFrame({'A': [0, 2, 3, 5, 5], 'B': [1, 8, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
+    # print(datadic)
     # result = contracts.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
     #                                                   fixValueInput=2,
     #                                                   derivedTypeOutput=DerivedType(2), axis_param=1)
+    # print(result)
 
     # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
     # print(datadic)
@@ -80,11 +86,11 @@ if __name__ == "__main__":
     #                                            closureType=Closure(1), numOpOutput=Operation(0), axis_param=None)
     # print(result)
 
-    # datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, np.nan], 'C': [1, None, 3, 4, 5]})
-    # missing_values=[1,3,4]
-    # print(datadic)
-    # result = contracts.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
-    #                                            dataTypeOutput=DataType(0), fixValueOutput='Ok',
-    #                                             missing_values=missing_values, axis_param=None)
-    # print(result)
+    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10], 'E': [1, 10, 3, 4, 1]})
+    missing_values=[1,3,4]
+    print(datadic)
+    result = contracts.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                               dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                missing_values=missing_values, axis_param=1)
+    print(result)
 
