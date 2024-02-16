@@ -393,16 +393,12 @@ class ContractsInvariants:
                 dataDictionary_copy[outliers] = fixValueOutput
 
             elif axis_param == 0:
-                Q1 = dataDictionary_copy.quantile(0.25, axis="index")
-                Q3 = dataDictionary_copy.quantile(0.75, axis="index")
-                IQR = Q3 - Q1
-                outliers = dataDictionary_copy[
-                    (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
-                for column in outliers.columns:
-                    dataDictionary_copy[column] = dataDictionary_copy[column].where(
-                        ~((dataDictionary_copy[column] < Q1[column] - threshold * IQR[column]) |
-                          (dataDictionary_copy[column] > Q3[column] + threshold * IQR[column])),
-                        other=fixValueOutput)
+                outliers_function = lambda data, threshold, fixValueOutput: data.apply(lambda column:
+                                   column.where(~((column < column.quantile(0.25) - threshold * (
+                                               column.quantile(0.75) - column.quantile(0.25))) |
+                                               (column > column.quantile(0.75) + threshold * (
+                                                column.quantile(0.75) - column.quantile(0.25)))), other=fixValueOutput))
+                dataDictionary_copy = outliers_function(dataDictionary_copy, threshold, fixValueOutput)
 
             elif axis_param == 1:
                 Q1 = dataDictionary_copy.quantile(0.25, axis="rows")
