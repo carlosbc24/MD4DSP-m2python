@@ -552,7 +552,7 @@ class ContractsInvariants:
                 return dataDictionary_copy
 
 
-        #TODO: Modularizar las dos funciones anteriores en auxiliar.py
+        #TODO: Modularizar las tres funciones anteriores en auxiliar.py
         if specialTypeInput == SpecialType.MISSING:
             missing_values.append(np.nan)
             dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
