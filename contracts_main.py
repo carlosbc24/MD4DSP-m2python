@@ -1,7 +1,7 @@
 import numpy as np
 
 # Importing functions and classes from packages
-from helpers.logger import set_logger
+from helpers.logger import set_logger, print_and_log
 from tests.contract_pre_post.simple_test import ContractSimpleTest
 from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
 from functions.contract_invariants import ContractsInvariants
@@ -94,11 +94,13 @@ if __name__ == "__main__":
     #                                             missing_values=missing_values, axis_param=1)
     # print(result)
 
-    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1]})
-    missing_values=[1,3,6]
+    datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 3, 0]})
+    missing_values=None
+    print_and_log(datadic)
     print(datadic)
-    result = contracts.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
-                                                        derivedTypeOutput=DerivedType(2), missing_values=missing_values,
-                                                          axis_param=0)
+    result = contracts.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                        derivedTypeOutput=DerivedType(0), missing_values=missing_values,
+                                                          axis_param=None)
+    print_and_log(result)
     print(result)
 

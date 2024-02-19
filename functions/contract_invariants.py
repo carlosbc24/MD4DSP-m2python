@@ -423,7 +423,7 @@ class ContractsInvariants:
         """
         dataDictionary_copy = dataDictionary.copy()
 
-        def get_function(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame)->pd.DataFrame:
+        def get_function(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame, missing_values: list = None, axis_param: int = None)->pd.DataFrame:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                 if axis_param == 1:
                     if missing_values is not None:
@@ -462,21 +462,69 @@ class ContractsInvariants:
             return dataDictionary_copy
 
 
+        def getOutliers(dataDictionary_copy: pd.DataFrame, axis_param: int)->pd.DataFrame:
+            dataDictionary_copy_copy = dataDictionary_copy.copy()
+            threshold = 1.5
+            if axis_param is None:
+                Q1 = dataDictionary_copy_copy.stack().quantile(0.25)
+                Q3 = dataDictionary_copy_copy.stack().quantile(0.75)
+                IQR = Q3 - Q1
+                # Definir los límites para identificar outliers
+                lower_bound = Q1 - threshold * IQR
+                upper_bound = Q3 + threshold * IQR
+                # Pone a 1 los valores que son outliers y a 0 los que no lo son
+                for col in dataDictionary_copy_copy.columns:
+                    for idx, value in dataDictionary_copy_copy[col].items():
+                        if value < lower_bound or value > upper_bound:
+                            dataDictionary_copy_copy.at[idx, col] = 1
+                        else:
+                            dataDictionary_copy_copy.at[idx, col] = 0
+
+            elif axis_param == 0:
+                outliers_function = lambda data, threshold: data.apply(lambda column:
+                                   column.where(~((column < column.quantile(0.25) - threshold * (
+                                               column.quantile(0.75) - column.quantile(0.25))) |
+                                               (column > column.quantile(0.75) + threshold * (
+                                                column.quantile(0.75) - column.quantile(0.25)))), other=True))
+
+            """
+            elif axis_param == 1:
+                Q1 = dataDictionary_copy.quantile(0.25, axis="rows")
+                Q3 = dataDictionary_copy.quantile(0.75, axis="rows")
+                IQR = Q3 - Q1
+                outliers = dataDictionary_copy[
+                    (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
+            """
+            return dataDictionary_copy_copy
+
+        #TODO: Modularizar las dos funciones anteriores en auxiliar.py
         if specialTypeInput == SpecialType.MISSING:
             missing_values.append(np.nan)
-            dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
+            dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
         elif specialTypeInput == SpecialType.INVALID:
             if missing_values is not None:
-                dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
-        elif specialTypeInput == SpecialType.OUTLIER:
+                dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
+        elif specialTypeInput == SpecialType.OUTLIER: #Hecho para el caso de que axis_param sea None
+            #IMPORTANTE: El valor de axis_param que se aplica a la función getOutliers es el mismo qu el que se utiliza
+            #en la función get_function. Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
+            #ni previous ni next.
+
+            # print(dataDictionary_copy)
+            dataDictionary_copy_copy = getOutliers(dataDictionary_copy, axis_param)
+            # print(dataDictionary_copy_copy)
+
+            if axis_param is None:
                 # TODO: Para esta función deberá ser importante pasar el axis_param de tal modo que para
                 #  un dataframe dado se devolverá una máscara de 0's y 1's indicando si el valor en
                 #  a posición en cuestión es un outlier o no.
-                # missing_values=getOutliers()
                 # TODO: Una vez hecho esto, se podrá aplicar la invariante en cuestión sobre todos aquellos valores
                 #  del dataframe máscara obtenido previamente donde el valor sea 1.
-                # dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy)
-            pass
+                missing_values = dataDictionary_copy.where(dataDictionary_copy_copy == 1).stack().tolist()
+                dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
+            elif axis_param == 0:   #Hacer por columnas
+                pass
+            elif axis_param == 1:   #Hacer por filas
+                pass
 
         return dataDictionary_copy
 
