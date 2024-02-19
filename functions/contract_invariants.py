@@ -462,7 +462,7 @@ class ContractsInvariants:
             return dataDictionary_copy
 
 
-        def getOutliers(dataDictionary_copy: pd.DataFrame, axis_param: int)->pd.DataFrame:
+        def getOutliers(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame, missing_values: list = None, axis_param: int = None)->pd.DataFrame:
             dataDictionary_copy_copy = dataDictionary_copy.copy()
             threshold = 1.5
             if axis_param is None:
@@ -479,13 +479,24 @@ class ContractsInvariants:
                             dataDictionary_copy_copy.at[idx, col] = 1
                         else:
                             dataDictionary_copy_copy.at[idx, col] = 0
+                return dataDictionary_copy_copy
 
             elif axis_param == 0:
-                outliers_function = lambda data, threshold: data.apply(lambda column:
-                                   column.where(~((column < column.quantile(0.25) - threshold * (
-                                               column.quantile(0.75) - column.quantile(0.25))) |
-                                               (column > column.quantile(0.75) + threshold * (
-                                                column.quantile(0.75) - column.quantile(0.25)))), other=True))
+                for col in dataDictionary_copy_copy.columns:
+                    Q1 = dataDictionary_copy_copy[col].quantile(0.25)
+                    Q3 = dataDictionary_copy_copy[col].quantile(0.75)
+                    IQR = Q3 - Q1
+                    # Definir los límites para identificar outliers
+                    lower_bound_col = Q1 - threshold * IQR
+                    upper_bound_col = Q3 + threshold * IQR
+
+                    for idx, value in dataDictionary_copy_copy[col].items():
+                        if value < lower_bound_col or value > upper_bound_col:
+                            dataDictionary_copy_copy.at[idx, col] = 1
+                        else:
+                            dataDictionary_copy_copy.at[idx, col] = 0
+
+                return dataDictionary_copy_copy
 
             """
             elif axis_param == 1:
@@ -495,7 +506,6 @@ class ContractsInvariants:
                 outliers = dataDictionary_copy[
                     (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
             """
-            return dataDictionary_copy_copy
 
         #TODO: Modularizar las dos funciones anteriores en auxiliar.py
         if specialTypeInput == SpecialType.MISSING:
@@ -509,21 +519,25 @@ class ContractsInvariants:
             #en la función get_function. Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
             #ni previous ni next.
 
-            # print(dataDictionary_copy)
-            dataDictionary_copy_copy = getOutliers(dataDictionary_copy, axis_param)
-            # print(dataDictionary_copy_copy)
-
             if axis_param is None:
                 # TODO: Para esta función deberá ser importante pasar el axis_param de tal modo que para
                 #  un dataframe dado se devolverá una máscara de 0's y 1's indicando si el valor en
                 #  a posición en cuestión es un outlier o no.
                 # TODO: Una vez hecho esto, se podrá aplicar la invariante en cuestión sobre todos aquellos valores
                 #  del dataframe máscara obtenido previamente donde el valor sea 1.
+
+                # print(dataDictionary_copy)
+                dataDictionary_copy_copy = getOutliers(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
+                # print(dataDictionary_copy_copy)
                 missing_values = dataDictionary_copy.where(dataDictionary_copy_copy == 1).stack().tolist()
                 dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
             elif axis_param == 0:   #Hacer por columnas
-                pass
+                #TODO: Separar el procesamiento
+                print(dataDictionary_copy)
+                dataDictionary_copy=getOutliers(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
+                print(dataDictionary_copy)
             elif axis_param == 1:   #Hacer por filas
+                #TODO: Separar el procesamiento
                 pass
 
         return dataDictionary_copy
