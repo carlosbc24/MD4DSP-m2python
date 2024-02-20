@@ -429,8 +429,6 @@ class ContractsInvariants:
         dataDictionary_copy = dataDictionary.copy()
 
         if specialTypeInput == SpecialType.MISSING:
-            nulos=[np.nan, None, np.NAN, np.NaN,"None", "none", "NONE", "NaN", "nan", "NAN"]
-            missing_values.append(nulos)
             dataDictionary_copy=apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
         elif specialTypeInput == SpecialType.INVALID:
             if missing_values is not None:

@@ -98,9 +98,9 @@ if __name__ == "__main__":
     # missing_values=[1,3,4]
     # print_and_log(datadic)
     # print(datadic)
-    # result = contracts.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+    # result = contracts.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
     #                                                     derivedTypeOutput=DerivedType(0), missing_values=missing_values,
-    #                                                       axis_param=1)
+    #                                                       axis_param=0)
     # print_and_log(result)
     # print(result)
 
