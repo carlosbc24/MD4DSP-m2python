@@ -94,13 +94,13 @@ if __name__ == "__main__":
     #                                             missing_values=missing_values, axis_param=1)
     # print(result)
 
-    datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8, 6, 1, 2]})
-    missing_values=[1,3,4]
-    print_and_log(datadic)
-    print(datadic)
-    result = contracts.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
-                                                        derivedTypeOutput=DerivedType(0), missing_values=missing_values,
-                                                          axis_param=1)
-    print_and_log(result)
-    print(result)
+    # datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8, 6, 1, 2]})
+    # missing_values=[1,3,4]
+    # print_and_log(datadic)
+    # print(datadic)
+    # result = contracts.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+    #                                                     derivedTypeOutput=DerivedType(0), missing_values=missing_values,
+    #                                                       axis_param=1)
+    # print_and_log(result)
+    # print(result)
 

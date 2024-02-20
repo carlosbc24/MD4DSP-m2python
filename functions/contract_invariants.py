@@ -361,6 +361,8 @@ class ContractsInvariants:
         :param specialTypeInput: special type of the input value
         :param dataTypeOutput: data type of the output value
         :param fixValueOutput: output value to check
+        :param missing_values: list of missing values
+        :param axis_param: axis to check the invariant
         :return: dataDictionary with the values of the special type changed to the value fixValueOutput
         """
         vacio, fixValueOutput=cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
@@ -420,6 +422,8 @@ class ContractsInvariants:
         :param dataDictionary: dataframe with the data
         :param specialTypeInput: special type of the input value
         :param derivedTypeOutput: derived type of the output value
+        :param missing_values: list of missing values
+        :param axis_param: axis to check the invariant
         :return: dataDictionary with the values of the special type changed to the value derived from the operation derivedTypeOutput
         """
         dataDictionary_copy = dataDictionary.copy()
@@ -446,6 +450,36 @@ class ContractsInvariants:
 
         return dataDictionary_copy
 
+
+    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType, numOpOutput: Operation, axis_param: int = None) -> pd.DataFrame:
+        """
+        Check the invariant of the SpecialValue - NumOp relation
+        :param dataDictionary: dataframe with the data
+        :param specialTypeInput: special type of the input value
+        :param numOpOutput: operation to check the invariant
+        :param axis_param: axis to check the invariant
+        :return: dataDictionary with the values of the special type changed to the result of the operation numOpOutput
+        """
+        #TODO: Está sin hacer
+        dataDictionary_copy = dataDictionary.copy()
+
+        if specialTypeInput == SpecialType.MISSING:
+            if axis_param is None:
+                pass
+            elif axis_param == 0 or axis_param == 1:
+                pass
+        elif specialTypeInput == SpecialType.INVALID:
+            if axis_param is None:
+                pass
+            elif axis_param == 0 or axis_param == 1:
+                pass
+        elif specialTypeInput == SpecialType.OUTLIER:
+            if axis_param is None:
+                pass
+            elif axis_param == 0 or axis_param == 1:
+                pass
+
+        return dataDictionary_copy
 
 
 
