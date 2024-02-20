@@ -459,11 +459,16 @@ class ContractsInvariants:
 
         def apply_derivedType(dataDictionary_copy, dataDictionary_copy_copy, axis_param: int = None):
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 0 or axis_param == 1:
+                if axis_param == 0:
                     for col in dataDictionary_copy.columns:
                         for idx, value in dataDictionary_copy[col].items():
                             if dataDictionary_copy_copy.at[idx, col] == 1:
                                 dataDictionary_copy.at[idx, col] = dataDictionary_copy[col].value_counts().idxmax()
+                elif axis_param == 1:
+                    for idx, row in dataDictionary_copy.iterrows():
+                        for col in row.index:
+                            if dataDictionary_copy_copy.at[idx, col] == 1:
+                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].value_counts().idxmax()
 
             elif derivedTypeOutput == DerivedType.PREVIOUS:
                 if axis_param == 0:
@@ -475,7 +480,8 @@ class ContractsInvariants:
                     for idx, row in dataDictionary_copy.iterrows():
                         for col in row.index:
                             if dataDictionary_copy_copy.at[idx, col] == 1 and col != 0:
-                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.at[idx, col-1]
+                                prev_col = row.index[row.index.get_loc(col) - 1]  # Obtener la columna anterior
+                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.at[idx, prev_col]
 
             elif derivedTypeOutput == DerivedType.NEXT:
                 if axis_param == 0:
@@ -486,8 +492,9 @@ class ContractsInvariants:
                 elif axis_param == 1:
                     for col in dataDictionary_copy.columns:
                         for idx, value in dataDictionary_copy[col].items():
-                            if dataDictionary_copy_copy.at[idx, col] == 1 and col != len(dataDictionary_copy) - 1:
-                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.at[idx+1, col]
+                            if dataDictionary_copy_copy.at[idx, col] == 1 and col != dataDictionary_copy.columns[-1]:
+                                next_col = dataDictionary_copy.columns[dataDictionary_copy.columns.get_loc(col) + 1]
+                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.at[idx, next_col]
 
             return dataDictionary_copy
 
@@ -529,8 +536,7 @@ class ContractsInvariants:
 
                 return dataDictionary_copy
 
-
-            elif axis_param == 1:#TODO: Hacer por filas. Esto no funciona
+            elif axis_param == 1:
                 for idx, row in dataDictionary_copy_copy.iterrows():
                     Q1 = row.quantile(0.25)
                     Q3 = row.quantile(0.75)
@@ -541,18 +547,16 @@ class ContractsInvariants:
 
                     for col in row.index:
                         value = row[col]
-                        if value < lower_bound_row[col] or value > upper_bound_row[col]:
+                        if value < lower_bound_row or value > upper_bound_row:
                             dataDictionary_copy_copy.at[idx, col] = 1
                         else:
                             dataDictionary_copy_copy.at[idx, col] = 0
 
-                print(dataDictionary_copy_copy)
                 dataDictionary_copy=apply_derivedType(dataDictionary_copy, dataDictionary_copy_copy, axis_param)
 
                 return dataDictionary_copy
 
 
-        #TODO: Modularizar las tres funciones anteriores en auxiliar.py
         if specialTypeInput == SpecialType.MISSING:
             missing_values.append(np.nan)
             dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
@@ -568,14 +572,8 @@ class ContractsInvariants:
                 dataDictionary_copy_copy = getOutliers(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
                 missing_values = dataDictionary_copy.where(dataDictionary_copy_copy == 1).stack().tolist()
                 dataDictionary_copy=get_function(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
-            elif axis_param == 0:   #Hacer por columnas
-                print(dataDictionary_copy)
+            elif axis_param == 0 or axis_param==1:
                 dataDictionary_copy=getOutliers(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
-                print(dataDictionary_copy)
-            elif axis_param == 1:   #Hacer por filas
-                print(dataDictionary_copy)
-                dataDictionary_copy=getOutliers(derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
-                print(dataDictionary_copy)
 
         return dataDictionary_copy
 
