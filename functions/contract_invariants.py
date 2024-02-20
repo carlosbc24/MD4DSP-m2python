@@ -431,7 +431,7 @@ class ContractsInvariants:
         elif specialTypeInput == SpecialType.INVALID:
             if missing_values is not None:
                 dataDictionary_copy=apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
-        elif specialTypeInput == SpecialType.OUTLIER: #Hecho para el caso de que axis_param sea None
+        elif specialTypeInput == SpecialType.OUTLIER:
             #IMPORTANTE: El valor de axis_param que se aplica a la función getOutliers es el mismo qu el que se utiliza
             #en la función get_function. Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
             #ni previous ni next.

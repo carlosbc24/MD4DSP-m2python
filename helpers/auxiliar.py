@@ -178,6 +178,16 @@ def getOutliers(dataDictionary_copy: pd.DataFrame, axis_param: int = None) -> pd
 
 
 def apply_derivedTypeOutliers(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame, dataDictionary_copy_copy: pd.DataFrame, axis_param: int = None):
+    """
+    Apply the derived type to the outliers of a dataframe
+    :param derivedTypeOutput: derived type to apply to the outliers
+    :param dataDictionary_copy: dataframe with the data
+    :param dataDictionary_copy_copy: dataframe with the outliers
+    :param axis_param: axis to apply the derived type. If axis_param is None, the derived type is applied to the whole dataframe.
+    If axis_param is 0, the derived type is applied to each column. If axis_param is 1, the derived type is applied to each row.
+
+    :return: dataframe with the derived type applied to the outliers
+    """
     if derivedTypeOutput == DerivedType.MOSTFREQUENT:
         if axis_param == 0:
             for col in dataDictionary_copy.columns:
@@ -221,6 +231,17 @@ def apply_derivedTypeOutliers(derivedTypeOutput: DerivedType, dataDictionary_cop
 
 def apply_derivedType(specialTypeInput: SpecialType,derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame, missing_values: list = None,
                       axis_param: int = None) -> pd.DataFrame:
+    """
+    Apply the derived type to the missing values of a dataframe
+    :param specialTypeInput: special type to apply to the missing values
+    :param derivedTypeOutput: derived type to apply to the missing values
+    :param dataDictionary_copy: dataframe with the data
+    :param missing_values: list of missing values
+    :param axis_param: axis to apply the derived type. If axis_param is None, the derived type is applied to the whole dataframe.
+    If axis_param is 0, the derived type is applied to each column. If axis_param is 1, the derived type is applied to each row.
+
+    :return: dataframe with the derived type applied to the missing values
+    """
     if derivedTypeOutput == DerivedType.MOSTFREQUENT:
         if axis_param == 0:
             if specialTypeInput == SpecialType.MISSING:
@@ -278,10 +299,7 @@ def apply_derivedType(specialTypeInput: SpecialType,derivedTypeOutput: DerivedTy
             else:
                 dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                     value) else row_or_col.iloc[i + 1] if value in missing_values and i < len(row_or_col) - 1 else value
-                                                                                              for i, value in
-                                                                                              enumerate(row_or_col)],
-                                                                                             index=row_or_col.index),
-                                                                axis=axis_param)
+                                            for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
         elif axis_param is None:
             raise ValueError("The axis cannot be None when applying the NEXT operation")
 
