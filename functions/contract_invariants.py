@@ -460,34 +460,45 @@ class ContractsInvariants:
         """
         #TODO: Está sin terminar
         dataDictionary_copy = dataDictionary.copy()
+        dataDictionary_copy_mask=None
 
-        if specialTypeInput == SpecialType.MISSING:
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
             if numOpOutput == Operation.INTERPOLATION:
-                dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+                dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
             elif numOpOutput == Operation.MEAN:
-                dataDictionary_copy=specialTypeMean(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+                dataDictionary_copy=specialTypeMean(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
             elif numOpOutput == Operation.MEDIAN:
-                dataDictionary_copy=specialTypeMedian(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+                dataDictionary_copy=specialTypeMedian(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
             elif numOpOutput == Operation.CLOSEST:
-                dataDictionary_copy=specialTypeClosest(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+                dataDictionary_copy=specialTypeClosest(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
 
-        elif specialTypeInput == SpecialType.INVALID:
-            if missing_values is not None:
-                if numOpOutput == Operation.INTERPOLATION:
-                    dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
-                elif numOpOutput == Operation.MEAN:
-                    dataDictionary_copy=specialTypeMean(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
-                elif numOpOutput == Operation.MEDIAN:
-                    dataDictionary_copy=specialTypeMedian(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
-                elif numOpOutput == Operation.CLOSEST:
-                    dataDictionary_copy=specialTypeClosest(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
         elif specialTypeInput == SpecialType.OUTLIER:
             if axis_param is None:
-                pass
-            elif axis_param == 0:
-                pass
-            elif axis_param == 1:
-                pass
+                dataDictionary_copy_mask = getOutliers(dataDictionary_copy, axis_param)
+
+                dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.MEAN:
+                dataDictionary_copy=specialTypeMean(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.MEDIAN:
+                dataDictionary_copy=specialTypeMedian(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.CLOSEST:
+                dataDictionary_copy=specialTypeClosest(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
 
         return dataDictionary_copy
 

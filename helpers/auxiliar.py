@@ -306,7 +306,7 @@ def apply_derivedType(specialTypeInput: SpecialType,derivedTypeOutput: DerivedTy
     return dataDictionary_copy
 
 
-def specialTypeInterpolation(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+def specialTypeInterpolation(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, dataDictionary_copy_mask : pd.DataFrame = None, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
     """
     Apply the interpolation to the missing values of a dataframe
     :param dataDictionary_copy: dataframe with the data
@@ -330,6 +330,7 @@ def specialTypeInterpolation(dataDictionary_copy : pd.DataFrame, specialTypeInpu
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
                         method='linear', limit_direction='both'), axis=axis_param)
+
     if specialTypeInput == SpecialType.INVALID:
             # Aplicamos la interpolación lineal en el DataFrame
             if axis_param == 0:
@@ -348,10 +349,24 @@ def specialTypeInterpolation(dataDictionary_copy : pd.DataFrame, specialTypeInpu
             else:
                 dataDictionary_copy = dataDictionary_copy_copy.copy()
 
+    if specialTypeInput == SpecialType.OUTLIER:
+        if axis_param == 0:
+            for col in dataDictionary_copy.columns:
+                for idx, value in dataDictionary_copy[col].items():
+                    if dataDictionary_copy_mask.at[idx, col] == 1:
+                        dataDictionary_copy.at[idx, col] = np.NaN
+                        dataDictionary_copy[col] = dataDictionary_copy[col].interpolate(method='linear', limit_direction='both')
+        elif axis_param == 1:
+            for idx, row in dataDictionary_copy.iterrows():
+                for col in row.index:
+                    if dataDictionary_copy_mask.at[idx, col] == 1:
+                        dataDictionary_copy.at[idx, col] = np.NaN
+                        dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].interpolate(method='linear', limit_direction='both')
+
     return dataDictionary_copy
 
 
-def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, dataDictionary_copy_mask : pd.DataFrame = None, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
     """
     Apply the mean to the missing values of a dataframe
     :param dataDictionary_copy: dataframe with the data
@@ -395,10 +410,30 @@ def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: Specia
                     lambda x: x if not np.issubdtype(type(x), np.number) or not x in missing_values
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
 
+    if specialTypeInput == SpecialType.OUTLIER:
+        if axis_param is None:
+            # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+            only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+            # Calcular la media de estas columnas numéricas
+            mean_value = only_numbers_df.mean().mean()
+            # Reemplaza los outliers con la media del DataFrame completo usando lambda
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x: mean_value
+                        if (np.issubdtype(type(x), np.number) and dataDictionary_copy_mask.at[x.name, x] == 1) else x), axis=0)
+        if axis_param == 0:
+            for col in dataDictionary_copy.columns:
+                for idx, value in dataDictionary_copy[col].items():
+                    if dataDictionary_copy_mask.at[idx, col] == 1:
+                        dataDictionary_copy[col] = dataDictionary_copy[col].mean()
+        elif axis_param == 1:
+            for idx, row in dataDictionary_copy.iterrows():
+                for col in row.index:
+                    if dataDictionary_copy_mask.at[idx, col] == 1:
+                        dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].mean()
+
     return dataDictionary_copy
 
 
-def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, dataDictionary_copy_mask : pd.DataFrame = None, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
     """
     Apply the median to the missing values of a dataframe
     :param dataDictionary_copy: dataframe with the data
@@ -445,7 +480,7 @@ def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spec
     return dataDictionary_copy
 
 
-def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, dataDictionary_copy_mask : pd.DataFrame = None, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
     """
     Apply the closest to the missing values of a dataframe
     :param dataDictionary_copy: dataframe with the data
@@ -460,12 +495,12 @@ def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spe
         if axis_param is None:
             dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:
                                 find_closest_value(dataDictionary_copy.stack(), x) if x in missing_values else
-                                0 if pd.isnull(x) else x)) # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
+                                0 if pd.isnull(x) else x))                                                              # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
         elif axis_param == 0 or axis_param == 1:
             # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
             dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
                     lambda x: find_closest_value(col, x) if x in missing_values else 0 if pd.isnull(x)
-        else x), axis=axis_param) # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
+        else x), axis=axis_param)                                                                                       # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
     if specialTypeInput == SpecialType.INVALID:
         if axis_param is None:
             dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:
