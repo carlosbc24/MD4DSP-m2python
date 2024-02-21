@@ -4,7 +4,7 @@ import numpy as np
 from helpers.logger import set_logger, print_and_log
 from tests.contract_pre_post.simple_test import ContractSimpleTest
 from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
-from functions.contract_invariants import ContractsInvariants
+from tests.invariants.simple_invariants_tests import InvariantSimpleTest
 import pandas as pd
 from helpers.enumerations import DataType, DerivedType, Operation, Closure, SpecialType
 
@@ -21,7 +21,9 @@ if __name__ == "__main__":
     # ContractTestWithDatasets = ContractExternalDatasetTests()
     # ContractTestWithDatasets.executeAll_ExternalDatasetTests()
 
-
+    # Execute all invariants tests
+    contracts_invariants_test = InvariantSimpleTest()
+    contracts_invariants_test.execute_checkInv_SpecialValue_NumOp_SimpleTests()
 
 
 

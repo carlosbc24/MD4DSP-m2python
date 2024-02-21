@@ -2,8 +2,8 @@
 import numpy as np
 import pandas as pd
 
-from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeColRowOutliers, \
-    apply_derivedType
+from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeOutliers, \
+    apply_derivedType, specialTypeInterpolation, specialTypeMean, specialTypeMedian, specialTypeClosest
 # Importing functions and classes from packages
 from helpers.enumerations import Belong, Operator, Closure, DataType, DerivedType, Operation, SpecialType
 
@@ -90,6 +90,7 @@ class ContractsInvariants:
                                       other=x.shift(-1)), axis=axis_param)
             else:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
+
 
         return dataDictionary_copy
 
@@ -256,11 +257,8 @@ class ContractsInvariants:
                 # Define una función lambda para reemplazar los valores dentro del intervalo por el valor de la
                 # posición anterior
                 dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                    value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
-                                                                                              for i, value in
-                                                                                              enumerate(row_or_col)],
-                                                                                             index=row_or_col.index),
-                                                                                            axis=axis_param)
+                        value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
+                                for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
             else:
                 raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
         # No asigna nada a np.nan
@@ -270,10 +268,7 @@ class ContractsInvariants:
                 # Define la función lambda para reemplazar los valores dentro del intervalo por el valor de la siguiente posición
                 dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                     value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
-                                                                                              for i, value in
-                                                                                              enumerate(row_or_col)],
-                                                                                             index=row_or_col.index),
-                                                                axis=axis_param)
+                                    for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
             else:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
 
@@ -291,7 +286,6 @@ class ContractsInvariants:
         :param axis_param: axis to check the invariant
         :return: dataDictionary with the values of the interval changed to the result of the operation numOpOutput
         """
-
         def get_condition(x):
             if closureType == Closure.openOpen:
                 return True if (x > leftMargin) & (x < rightMargin) else False
@@ -412,19 +406,10 @@ class ContractsInvariants:
 
             elif axis_param == 0:
                 outliers_function = lambda data, threshold, fixValueOutput: data.apply(lambda column:
-                                                                                       column.where(~((
-                                                                                        column < column.quantile(
-                                                                                        0.25) - threshold * (
-                                                                                        column.quantile(
-                                                                                        0.75) - column.quantile(
-                                                                                        0.25))) |
-                                                                                        (
-                                                                                        column > column.quantile(
-                                                                                        0.75) + threshold * (
-                                                                                        column.quantile(
-                                                                                        0.75) - column.quantile(
-                                                                                        0.25)))),
-                                                                                        other=fixValueOutput))
+                                   column.where(~((column < column.quantile(0.25) - threshold * (
+                                               column.quantile(0.75) - column.quantile(0.25))) |
+                                               (column > column.quantile(0.75) + threshold * (
+                                                column.quantile(0.75) - column.quantile(0.25)))), other=fixValueOutput))
                 dataDictionary_copy = outliers_function(dataDictionary_copy, threshold, fixValueOutput)
 
             elif axis_param == 1:
@@ -460,24 +445,22 @@ class ContractsInvariants:
                                                     missing_values, axis_param)
 
         elif specialTypeInput == SpecialType.OUTLIER:
-            # IMPORTANTE: El valor de axis_param que se aplica a la función getOutliers() es el mismo qu el que se utiliza
-            # en la función apply_derivedTypeOutliers(). Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
-            # ni previous ni next.
+            #IMPORTANTE: El valor de axis_param que se aplica a la función getOutliers() es el mismo qu el que se utiliza
+            #en la función apply_derivedTypeOutliers(). Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
+            #ni previous ni next.
 
             if axis_param is None:
                 dataDictionary_copy_copy = getOutliers(dataDictionary_copy, axis_param)
                 missing_values = dataDictionary_copy.where(dataDictionary_copy_copy == 1).stack().tolist()
-                dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
-                                                        missing_values, axis_param)
-            elif axis_param == 0 or axis_param == 1:
-                dataDictionary_copy_copy = getOutliers(dataDictionary_copy, axis_param)
-                dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
-                                                                      dataDictionary_copy_copy, axis_param)
+                dataDictionary_copy=apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
+            elif axis_param == 0 or axis_param==1:
+                dataDictionary_copy_copy=getOutliers(dataDictionary_copy, axis_param)
+                dataDictionary_copy=apply_derivedTypeOutliers(derivedTypeOutput, dataDictionary_copy, dataDictionary_copy_copy, axis_param)
 
         return dataDictionary_copy
 
-    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
-                                    numOpOutput: Operation, axis_param: int = None) -> pd.DataFrame:
+
+    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType, numOpOutput: Operation, missing_values: list = None, axis_param: int = None) -> pd.DataFrame:
         """
         Check the invariant of the SpecialValue - NumOp relation
         :param dataDictionary: dataframe with the data
@@ -486,23 +469,45 @@ class ContractsInvariants:
         :param axis_param: axis to check the invariant
         :return: dataDictionary with the values of the special type changed to the result of the operation numOpOutput
         """
-        # TODO: Está sin hacer
         dataDictionary_copy = dataDictionary.copy()
+        dataDictionary_copy_mask=None
 
-        if specialTypeInput == SpecialType.MISSING:
-            if axis_param is None:
-                pass
-            elif axis_param == 0 or axis_param == 1:
-                pass
-        elif specialTypeInput == SpecialType.INVALID:
-            if axis_param is None:
-                pass
-            elif axis_param == 0 or axis_param == 1:
-                pass
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            if numOpOutput == Operation.INTERPOLATION:
+                dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.MEAN:
+                dataDictionary_copy=specialTypeMean(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.MEDIAN:
+                dataDictionary_copy=specialTypeMedian(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.CLOSEST:
+                dataDictionary_copy=specialTypeClosest(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                             missing_values=missing_values, axis_param=axis_param)
+
         elif specialTypeInput == SpecialType.OUTLIER:
-            if axis_param is None:
-                pass
-            elif axis_param == 0 or axis_param == 1:
-                pass
+            dataDictionary_copy_mask = getOutliers(dataDictionary_copy, axis_param)
+
+            if numOpOutput == Operation.INTERPOLATION:
+                dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                                 dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                                 missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.MEAN:
+                dataDictionary_copy=specialTypeMean(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                         missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.MEDIAN:
+                dataDictionary_copy=specialTypeMedian(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                         missing_values=missing_values, axis_param=axis_param)
+            elif numOpOutput == Operation.CLOSEST:
+                dataDictionary_copy=specialTypeClosest(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
+                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                         missing_values=missing_values, axis_param=axis_param)
 
         return dataDictionary_copy
