@@ -60,7 +60,7 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("")
         print_and_log("--------------------------------------------------")
-        print_and_log("----------- STARTING SIMPLE TEST CASES -----------")
+        print_and_log("------- STARTING PRE-POST SIMPLE TEST CASES -------")
         print_and_log("--------------------------------------------------")
         print_and_log("")
 
@@ -69,7 +69,7 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("")
         print_and_log("--------------------------------------------------")
-        print_and_log("------- SIMPLE TEST CASES EXECUTION FINISHED ------")
+        print_and_log("-- SIMPLE PRE-POST TEST CASES EXECUTION FINISHED -")
         print_and_log("--------------------------------------------------")
         print_and_log("")
 
