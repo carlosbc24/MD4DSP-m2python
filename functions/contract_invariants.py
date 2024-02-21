@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeOutliers, \
-    apply_derivedType
+    apply_derivedType, specialTypeInterpolation, specialTypeMean, specialTypeMedian, specialTypeClosest
 # Importing functions and classes from packages
 from helpers.enumerations import Belong, Operator, Closure, DataType, DerivedType, Operation, SpecialType
 
@@ -449,7 +449,7 @@ class ContractsInvariants:
         return dataDictionary_copy
 
 
-    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType, numOpOutput: Operation, axis_param: int = None) -> pd.DataFrame:
+    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType, numOpOutput: Operation, missing_values: list = None, axis_param: int = None) -> pd.DataFrame:
         """
         Check the invariant of the SpecialValue - NumOp relation
         :param dataDictionary: dataframe with the data
@@ -458,23 +458,35 @@ class ContractsInvariants:
         :param axis_param: axis to check the invariant
         :return: dataDictionary with the values of the special type changed to the result of the operation numOpOutput
         """
-        #TODO: Está sin hacer
+        #TODO: Está sin terminar
         dataDictionary_copy = dataDictionary.copy()
 
         if specialTypeInput == SpecialType.MISSING:
-            if axis_param is None:
-                pass
-            elif axis_param == 0 or axis_param == 1:
-                pass
+            if numOpOutput == Operation.INTERPOLATION:
+                dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+            elif numOpOutput == Operation.MEAN:
+                dataDictionary_copy=specialTypeMean(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+            elif numOpOutput == Operation.MEDIAN:
+                dataDictionary_copy=specialTypeMedian(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+            elif numOpOutput == Operation.CLOSEST:
+                dataDictionary_copy=specialTypeClosest(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+
         elif specialTypeInput == SpecialType.INVALID:
-            if axis_param is None:
-                pass
-            elif axis_param == 0 or axis_param == 1:
-                pass
+            if missing_values is not None:
+                if numOpOutput == Operation.INTERPOLATION:
+                    dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+                elif numOpOutput == Operation.MEAN:
+                    dataDictionary_copy=specialTypeMean(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+                elif numOpOutput == Operation.MEDIAN:
+                    dataDictionary_copy=specialTypeMedian(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
+                elif numOpOutput == Operation.CLOSEST:
+                    dataDictionary_copy=specialTypeClosest(dataDictionary_copy, specialTypeInput, missing_values, axis_param)
         elif specialTypeInput == SpecialType.OUTLIER:
             if axis_param is None:
                 pass
-            elif axis_param == 0 or axis_param == 1:
+            elif axis_param == 0:
+                pass
+            elif axis_param == 1:
                 pass
 
         return dataDictionary_copy

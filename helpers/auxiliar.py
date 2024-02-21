@@ -4,7 +4,7 @@ import pandas as pd
 
 # Importing enumerations from packages
 from typing import Union
-from helpers.enumerations import Operator, DataType, Closure, DerivedType, SpecialType
+from helpers.enumerations import Operator, DataType, Closure, DerivedType, SpecialType, Operation
 
 
 def compare_numbers(rel_abs_number: Union [int,float], quant_rel_abs: Union[int, float], quant_op: Operator) -> bool:
@@ -306,14 +306,175 @@ def apply_derivedType(specialTypeInput: SpecialType,derivedTypeOutput: DerivedTy
     return dataDictionary_copy
 
 
+def specialTypeInterpolation(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+    """
+    Apply the interpolation to the missing values of a dataframe
+    :param dataDictionary_copy: dataframe with the data
+    :param specialTypeInput: special type to apply to the missing values
+    :param missing_values: list of missing values
+    :param axis_param: axis to apply the interpolation.
+
+    :return: dataframe with the interpolation applied to the missing values
+    """
+    dataDictionary_copy_copy = dataDictionary_copy.copy()
+    if axis_param is None:
+        raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
+
+    if specialTypeInput == SpecialType.MISSING:
+            # Aplicamos la interpolación lineal en el DataFrame
+            if axis_param == 0:
+                for col in dataDictionary_copy.columns:
+                    dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                        lambda x: np.nan if x in missing_values else x).interpolate(method='linear', limit_direction='both')
+            elif axis_param == 1:
+                dataDictionary_copy = dataDictionary_copy.apply(
+                    lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
+                        method='linear', limit_direction='both'), axis=axis_param)
+    if specialTypeInput == SpecialType.INVALID:
+            # Aplicamos la interpolación lineal en el DataFrame
+            if axis_param == 0:
+                for col in dataDictionary_copy_copy.columns:
+                    dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(
+                        lambda x: np.nan if x in missing_values else x).interpolate(method='linear', limit_direction='both')
+            elif axis_param == 1:
+                dataDictionary_copy_copy = dataDictionary_copy_copy.apply(
+                    lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
+                        method='linear', limit_direction='both'), axis=axis_param)
+
+            # Verificamos si hay algún valor nulo en el DataFrame
+            if dataDictionary_copy.isnull().any().any():
+                dataDictionary_copy = dataDictionary_copy.apply(lambda row: row.apply(
+                    lambda value: dataDictionary_copy_copy.at[row.name, value] if not pd.isnull(value) else value), axis=1)
+            else:
+                dataDictionary_copy = dataDictionary_copy_copy.copy()
+
+    return dataDictionary_copy
 
 
+def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+    """
+    Apply the mean to the missing values of a dataframe
+    :param dataDictionary_copy: dataframe with the data
+    :param specialTypeInput: special type to apply to the missing values
+    :param missing_values: list of missing values
+    :param axis_param: axis to apply the mean.
+
+    :return: dataframe with the mean applied to the missing values
+    """
+
+    if specialTypeInput == SpecialType.MISSING:
+        if axis_param == None:
+            # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+            only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+            # Calcular la media de estas columnas numéricas
+            mean_value = only_numbers_df.mean().mean()
+            # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: mean_value if ((np.issubdtype(type(x), np.number) and x in missing_values) or pd.isnull(x)) else x))
+
+        elif axis_param == 0 or axis_param == 1:
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: x if (not np.issubdtype(type(x), np.number) or not x in missing_values) or pd.isnull(x)
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+    if specialTypeInput == SpecialType.INVALID:
+        if axis_param == None:
+            # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+            only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+            # Calcular la media de estas columnas numéricas
+            mean_value = only_numbers_df.mean().mean()
+            # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: mean_value if (np.issubdtype(type(x), np.number) and x in missing_values) else x))
+
+        elif axis_param == 0 or axis_param == 1:
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: x if not np.issubdtype(type(x), np.number) or not x in missing_values
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+
+    return dataDictionary_copy
 
 
+def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+    """
+    Apply the median to the missing values of a dataframe
+    :param dataDictionary_copy: dataframe with the data
+    :param specialTypeInput: special type to apply to the missing values
+    :param missing_values: list of missing values
+    :param axis_param: axis to apply the median.
+
+    :return: dataframe with the median applied to the missing values
+    """
+
+    if specialTypeInput == SpecialType.MISSING:
+        if axis_param == None:
+            # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+            only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+            # Calcular la media de estas columnas numéricas
+            median_value = only_numbers_df.median().median()
+            # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: median_value if ((np.issubdtype(type(x), np.number) and x in missing_values) or pd.isnull(x)) else x))
+
+        elif axis_param == 0 or axis_param == 1:
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: x if (not np.issubdtype(type(x), np.number) or not x in missing_values) or pd.isnull(x)
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+    if specialTypeInput == SpecialType.INVALID:
+        if axis_param == None:
+            # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+            only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+            # Calcular la media de estas columnas numéricas
+            median_value = only_numbers_df.median().median()
+            # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: median_value if (np.issubdtype(type(x), np.number) and x in missing_values) else x))
+
+        elif axis_param == 0 or axis_param == 1:
+            dataDictionary_copy = dataDictionary_copy.apply(
+                lambda col: col.apply(
+                    lambda x: x if not np.issubdtype(type(x), np.number) or not x in missing_values
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+
+    return dataDictionary_copy
 
 
+def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, missing_values : list = None, axis_param : int = None)->pd.DataFrame:
+    """
+    Apply the closest to the missing values of a dataframe
+    :param dataDictionary_copy: dataframe with the data
+    :param specialTypeInput: special type to apply to the missing values
+    :param missing_values: list of missing values
+    :param axis_param: axis to apply the closest value.
 
+    :return: dataframe with the closest applied to the missing values
+    """
 
+    if specialTypeInput == SpecialType.MISSING:
+        if axis_param is None:
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:
+                                find_closest_value(dataDictionary_copy.stack(), x) if x in missing_values else
+                                0 if pd.isnull(x) else x)) # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
+        elif axis_param == 0 or axis_param == 1:
+            # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
+                    lambda x: find_closest_value(col, x) if x in missing_values else 0 if pd.isnull(x)
+        else x), axis=axis_param) # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
+    if specialTypeInput == SpecialType.INVALID:
+        if axis_param is None:
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:
+                                find_closest_value(dataDictionary_copy.stack(), x) if x in missing_values else x))
+        elif axis_param == 0 or axis_param == 1:
+            # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
+                    lambda x: find_closest_value(col, x) if x in missing_values else x), axis=axis_param)
 
+    return dataDictionary_copy
 
 
