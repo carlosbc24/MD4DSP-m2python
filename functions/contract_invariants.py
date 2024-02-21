@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeOutliers, \
+from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeColRowOutliers, \
     apply_derivedType, specialTypeInterpolation, specialTypeMean, specialTypeMedian, specialTypeClosest
 # Importing functions and classes from packages
 from helpers.enumerations import Belong, Operator, Closure, DataType, DerivedType, Operation, SpecialType
@@ -13,8 +13,8 @@ class ContractsInvariants:
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
-    def checkInv_FixValue_FixValue(self, dataDictionary: pd.DataFrame, dataTypeInput: DataType, fixValueInput,
-                                   dataTypeOutput: DataType, fixValueOutput) -> pd.DataFrame:
+    def checkInv_FixValue_FixValue(self, dataDictionary: pd.DataFrame, fixValueInput, fixValueOutput, dataTypeInput: DataType = None,
+                                   dataTypeOutput: DataType = None) -> pd.DataFrame:
         """
         Check the invariant of the FixValue - FixValue relation
         params:
@@ -27,16 +27,18 @@ class ContractsInvariants:
         Returns:
             dataDictionary with the FixValueInput and FixValueOutput values changed to the type dataTypeInput and dataTypeOutput respectively
         """
-        fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput, fixValueOutput)
-        # Función auxiliar que cambia los valores de FixValueInput y FixValueOutput al tipo de dato en DataTypeInput y DataTypeOutput respectivamente
+        if dataTypeInput is not None and dataTypeOutput is not None:  # Si se especifican los tipos de dato, se realiza la transformación
+            # Función auxiliar que cambia los valores de FixValueInput y FixValueOutput al tipo de dato en DataTypeInput y DataTypeOutput respectivamente
+            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput, fixValueOutput)
+
         dataDictionary = dataDictionary.replace(fixValueInput, fixValueOutput)
         # Posible refactorización para emplear la lambda con el uso de apply
         # dataDictionary = dataDictionary.apply(lambda col: col.replace(fixValueInput, fixValueOutput))
 
         return dataDictionary
 
-    def checkInv_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, dataTypeInput: DataType, fixValueInput,
-                                       derivedTypeOutput: DerivedType, axis_param: int = None) -> pd.DataFrame:
+    def checkInv_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, fixValueInput,
+                                       derivedTypeOutput: DerivedType, dataTypeInput: DataType = None, axis_param: int = None) -> pd.DataFrame:
         # Por defecto, si todos los valores son igual de frecuentes, se sustituye por el primer valor.
         # Comprobar si solo se debe hacer para filas y columnas o también para el dataframe completo.
 
@@ -50,7 +52,8 @@ class ContractsInvariants:
             derivedTypeOutput: derived type of the output value
             axis_param: axis to check the invariant
         """
-        fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
+        if dataTypeInput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+            fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
         # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
 
         dataDictionary_copy = dataDictionary.copy()
@@ -94,8 +97,8 @@ class ContractsInvariants:
 
         return dataDictionary_copy
 
-    def checkInv_FixValue_NumOp(self, dataDictionary: pd.DataFrame, dataTypeInput: DataType, fixValueInput,
-                                numOpOutput: Operation, axis_param: int = None) -> pd.DataFrame:
+    def checkInv_FixValue_NumOp(self, dataDictionary: pd.DataFrame, fixValueInput,
+                                numOpOutput: Operation, dataTypeInput: DataType = None, axis_param: int = None) -> pd.DataFrame:
         """
         Check the invariant of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
@@ -108,7 +111,8 @@ class ContractsInvariants:
         Returns:
             dataDictionary with the FixValueInput values replaced by the result of the operation numOpOutput
         """
-        fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
+        if dataTypeInput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+            fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
 
         # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
         dataDictionary_copy = dataDictionary.copy()
@@ -176,7 +180,7 @@ class ContractsInvariants:
         return dataDictionary_copy
 
     def checkInv_Interval_FixValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
-                                   closureType: Closure, dataTypeOutput: DataType, fixValueOutput) -> pd.DataFrame:
+                                   closureType: Closure, fixValueOutput, dataTypeOutput: DataType = None) -> pd.DataFrame:
         """
         Check the invariant of the Interval - FixValue relation
         :param dataDictionary: dataframe with the data
@@ -187,7 +191,9 @@ class ContractsInvariants:
         :param fixValueOutput: output value to check
         :return: dataDictionary with the values of the interval changed to the value fixValueOutput
         """
-        vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+        if dataTypeOutput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+            vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+
         dataDictionary_copy = dataDictionary.copy()
 
         # Aplicar el cambio en los valores dentro del intervalo
@@ -268,7 +274,10 @@ class ContractsInvariants:
                 # Define la función lambda para reemplazar los valores dentro del intervalo por el valor de la siguiente posición
                 dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                     value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
-                                    for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
+                                                                                              for i, value in
+                                                                                              enumerate(row_or_col)],
+                                                                                             index=row_or_col.index),
+                                                                axis=axis_param)
             else:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
 
@@ -364,7 +373,7 @@ class ContractsInvariants:
         return dataDictionary_copy
 
     def checkInv_SpecialValue_FixValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
-                                       dataTypeOutput: DataType, fixValueOutput, missing_values: list = None,
+                                        fixValueOutput, dataTypeOutput: DataType = None, missing_values: list = None,
                                        axis_param: int = None) -> pd.DataFrame:
         """
         Check the invariant of the SpecialValue - FixValue relation
@@ -376,7 +385,9 @@ class ContractsInvariants:
         :param axis_param: axis to check the invariant
         :return: dataDictionary with the values of the special type changed to the value fixValueOutput
         """
-        vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+        if dataTypeOutput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+            vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+
         dataDictionary_copy = dataDictionary.copy()
 
         if specialTypeInput == SpecialType.MISSING:  # Incluye nulos, np.nan, None, etc y los valores de la lista missing_values
@@ -455,7 +466,7 @@ class ContractsInvariants:
                 dataDictionary_copy=apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy, missing_values, axis_param)
             elif axis_param == 0 or axis_param==1:
                 dataDictionary_copy_copy=getOutliers(dataDictionary_copy, axis_param)
-                dataDictionary_copy=apply_derivedTypeOutliers(derivedTypeOutput, dataDictionary_copy, dataDictionary_copy_copy, axis_param)
+                dataDictionary_copy=apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy, dataDictionary_copy_copy, axis_param)
 
         return dataDictionary_copy
 
