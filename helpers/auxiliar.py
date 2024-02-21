@@ -115,52 +115,53 @@ def find_closest_value(numeric_values : list, value: Union[int, float]) -> Union
 
 
 
-def getOutliers(dataDictionary_copy: pd.DataFrame, axis_param: int = None) -> pd.DataFrame:
+def getOutliers(dataDictionary: pd.DataFrame, axis_param: int = None) -> pd.DataFrame:
     """
-    Get the outliers of a dataframe
-    :param dataDictionary_copy: dataframe with the data
+    Get the outliers of a dataframe. The Outliers are calculated using the IQR method, so the outliers are the values that are
+    below Q1 - 1.5 * IQR or above Q3 + 1.5 * IQR
+    :param dataDictionary: dataframe with the data
     :param axis_param: axis to get the outliers. If axis_param is None, the outliers are calculated for the whole dataframe.
     If axis_param is 0, the outliers are calculated for each column. If axis_param is 1, the outliers are calculated for each row.
 
     :return: dataframe with the outliers. The value 1 indicates that the value is an outlier and the value 0 indicates that the value is not an outlier
 
     """
-    dataDictionary_copy_copy = dataDictionary_copy.copy()
+    dataDictionary_copy = dataDictionary.copy()
     threshold = 1.5
     if axis_param is None:
-        Q1 = dataDictionary_copy_copy.stack().quantile(0.25)
-        Q3 = dataDictionary_copy_copy.stack().quantile(0.75)
+        Q1 = dataDictionary_copy.stack().quantile(0.25)
+        Q3 = dataDictionary_copy.stack().quantile(0.75)
         IQR = Q3 - Q1
         # Definir los límites para identificar outliers
         lower_bound = Q1 - threshold * IQR
         upper_bound = Q3 + threshold * IQR
         # Pone a 1 los valores que son outliers y a 0 los que no lo son
-        for col in dataDictionary_copy_copy.columns:
-            for idx, value in dataDictionary_copy_copy[col].items():
+        for col in dataDictionary_copy.columns:
+            for idx, value in dataDictionary_copy[col].items():
                 if value < lower_bound or value > upper_bound:
-                    dataDictionary_copy_copy.at[idx, col] = 1
+                    dataDictionary_copy.at[idx, col] = 1
                 else:
-                    dataDictionary_copy_copy.at[idx, col] = 0
-        return dataDictionary_copy_copy
+                    dataDictionary_copy.at[idx, col] = 0
+        return dataDictionary_copy
 
     elif axis_param == 0:
-        for col in dataDictionary_copy_copy.columns:
-            Q1 = dataDictionary_copy_copy[col].quantile(0.25)
-            Q3 = dataDictionary_copy_copy[col].quantile(0.75)
+        for col in dataDictionary_copy.columns:
+            Q1 = dataDictionary_copy[col].quantile(0.25)
+            Q3 = dataDictionary_copy[col].quantile(0.75)
             IQR = Q3 - Q1
             # Definir los límites para identificar outliers
             lower_bound_col = Q1 - threshold * IQR
             upper_bound_col = Q3 + threshold * IQR
 
-            for idx, value in dataDictionary_copy_copy[col].items():
+            for idx, value in dataDictionary_copy[col].items():
                 if value < lower_bound_col or value > upper_bound_col:
-                    dataDictionary_copy_copy.at[idx, col] = 1
+                    dataDictionary_copy.at[idx, col] = 1
                 else:
-                    dataDictionary_copy_copy.at[idx, col] = 0
-        return dataDictionary_copy_copy
+                    dataDictionary_copy.at[idx, col] = 0
+        return dataDictionary_copy
 
     elif axis_param == 1:
-        for idx, row in dataDictionary_copy_copy.iterrows():
+        for idx, row in dataDictionary_copy.iterrows():
             Q1 = row.quantile(0.25)
             Q3 = row.quantile(0.75)
             IQR = Q3 - Q1
@@ -171,13 +172,13 @@ def getOutliers(dataDictionary_copy: pd.DataFrame, axis_param: int = None) -> pd
             for col in row.index:
                 value = row[col]
                 if value < lower_bound_row or value > upper_bound_row:
-                    dataDictionary_copy_copy.at[idx, col] = 1
+                    dataDictionary_copy.at[idx, col] = 1
                 else:
-                    dataDictionary_copy_copy.at[idx, col] = 0
-        return dataDictionary_copy_copy
+                    dataDictionary_copy.at[idx, col] = 0
+        return dataDictionary_copy
 
 
-def apply_derivedTypeOutliers(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame, dataDictionary_copy_copy: pd.DataFrame, axis_param: int = None):
+def apply_derivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionary_copy: pd.DataFrame, dataDictionary_copy_copy: pd.DataFrame, axis_param: int = None):
     """
     Apply the derived type to the outliers of a dataframe
     :param derivedTypeOutput: derived type to apply to the outliers
