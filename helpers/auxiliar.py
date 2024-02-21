@@ -477,6 +477,26 @@ def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spec
                     lambda x: x if not np.issubdtype(type(x), np.number) or not x in missing_values
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
 
+    if specialTypeInput == SpecialType.OUTLIER:
+        if axis_param is None:
+            # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+            only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+            # Calcular la media de estas columnas numéricas
+            median_value = only_numbers_df.median().median()
+            # Reemplaza los outliers con la media del DataFrame completo usando lambda
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x: median_value
+                        if (np.issubdtype(type(x), np.number) and dataDictionary_copy_mask.at[x.name, x] == 1) else x), axis=0)
+        if axis_param == 0:
+            for col in dataDictionary_copy.columns:
+                for idx, value in dataDictionary_copy[col].items():
+                    if dataDictionary_copy_mask.at[idx, col] == 1:
+                        dataDictionary_copy[col] = dataDictionary_copy[col].median()
+        elif axis_param == 1:
+            for idx, row in dataDictionary_copy.iterrows():
+                for col in row.index:
+                    if dataDictionary_copy_mask.at[idx, col] == 1:
+                        dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].median()
+
     return dataDictionary_copy
 
 
@@ -509,6 +529,16 @@ def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spe
             # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
             dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
                     lambda x: find_closest_value(col, x) if x in missing_values else x), axis=axis_param)
+
+    if specialTypeInput == SpecialType.OUTLIER:
+        if axis_param is None:
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:find_closest_value(
+                                 dataDictionary_copy.stack(), x) if dataDictionary_copy_mask.at[x.name, x] == 1 else x))
+
+        elif axis_param == 0 or axis_param == 1:
+            # Reemplazar los valores en la misma posicion que los 1 dataDictionary_copy_mask por el valor numérico más cercano a lo largo de las columnas y filas
+            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x: find_closest_value(col, x)
+                                    if dataDictionary_copy_mask.at[x.name, col.name] == 1 else x), axis=axis_param)
 
     return dataDictionary_copy
 

@@ -458,7 +458,6 @@ class ContractsInvariants:
         :param axis_param: axis to check the invariant
         :return: dataDictionary with the values of the special type changed to the result of the operation numOpOutput
         """
-        #TODO: Está sin terminar
         dataDictionary_copy = dataDictionary.copy()
         dataDictionary_copy_mask=None
 
@@ -481,24 +480,24 @@ class ContractsInvariants:
                                                              missing_values=missing_values, axis_param=axis_param)
 
         elif specialTypeInput == SpecialType.OUTLIER:
-            if axis_param is None:
-                dataDictionary_copy_mask = getOutliers(dataDictionary_copy, axis_param)
+            dataDictionary_copy_mask = getOutliers(dataDictionary_copy, axis_param)
 
+            if numOpOutput == Operation.INTERPOLATION:
                 dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                             missing_values=missing_values, axis_param=axis_param)
+                                                                 dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                                 missing_values=missing_values, axis_param=axis_param)
             elif numOpOutput == Operation.MEAN:
                 dataDictionary_copy=specialTypeMean(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                             missing_values=missing_values, axis_param=axis_param)
+                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                         missing_values=missing_values, axis_param=axis_param)
             elif numOpOutput == Operation.MEDIAN:
                 dataDictionary_copy=specialTypeMedian(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                             missing_values=missing_values, axis_param=axis_param)
+                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                         missing_values=missing_values, axis_param=axis_param)
             elif numOpOutput == Operation.CLOSEST:
                 dataDictionary_copy=specialTypeClosest(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                             dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                             missing_values=missing_values, axis_param=axis_param)
+                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                         missing_values=missing_values, axis_param=axis_param)
 
         return dataDictionary_copy
 

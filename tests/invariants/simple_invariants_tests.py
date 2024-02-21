@@ -29,7 +29,6 @@ class InvariantSimpleTest(unittest.TestCase):
         """
         self.invs = ContractsInvariants()
 
-    contracts = ContractsInvariants()
 
     def test_invs(self):
         """
@@ -113,4 +112,41 @@ class InvariantSimpleTest(unittest.TestCase):
         # print(result)
         """
 
+    def execute_checkInv_SpecialValue_NumOp_SimpleTests(self):
+        """
+        Method to test the checkInv_SpecialValue_NumOp method with simple test cases
+        """
+        print_and_log("Testing checkInv_SpecialValue_NumOp method with simple test cases")
+        """
+        SpecialTypes:
+            0: Missing
+            1: Invalid
+            2: Outlier
+        Operation:
+            0: Interpolation
+            1: Mean
+            2: Median
+            3: Closest
+        Axis:
+            0: Columns
+            1: Rows
+            None: All
+        """
+
+
+        #Caso 1
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8, 6, 1, 2]})
+        missing_values = [1, 3, 4]
+        manual = pd.DataFrame({'A': [0, 2, 3, 2, 2], 'B': [2, 3, 4.5, 6, 12], 'C': [10, 6.5, 2, 1.5, 0], 'D': [5, 8, 6, 4, 2]})
+        result = self.invs.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                        numOpOutput=Operation(0), missing_values=missing_values,
+                                                                        axis_param=0)
+
+        print_and_log(datadic)
+        print(datadic)
+
+        #pd.testing.assert_frame_equal(manual, result)
+
+        print_and_log(result)
+        print(result)
 
