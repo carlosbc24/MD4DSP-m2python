@@ -25,11 +25,184 @@ class InvariantSimpleTest(unittest.TestCase):
         Constructor of the class
 
         Attributes:
-        inv (InvariantSimpleTest): instance of the class InvariantSimpleTest
+        invariants (InvariantSimpleTest): instance of the class InvariantSimpleTest
         """
-        self.invs = ContractsInvariants()
+        self.invariants = ContractsInvariants()
 
-    contracts = ContractsInvariants()
+    def execute_All_SimpleTests(self):
+        """
+        Method to execute all simple tests of the functions  of the class
+        """
+        simple_test_methods = [
+            self.execute_CheckInv_FixValue_FixValue(),
+            self.execute_checkInv_FixValue_DerivedValue(),
+            self.execute_CheckInv_FixValue_NumOp(),
+            self.execute_CheckInv_Interval_FixValue(),
+            self.execute_CheckInv_Interval_DerivedValue(),
+            self.execute_CheckInv_Interval_NumOp(),
+            self.execute_CheckInv_SpecialValue_FixValue(),
+            self.execute_CheckInv_SpecialValue_DerivedValue(),
+            self.execute_CheckInv_SpecialValue_NumOp()
+        ]
+
+        print_and_log("")
+        print_and_log("--------------------------------------------------")
+        print_and_log("------ STARTING INVARIANT SIMPLE TEST CASES ------")
+        print_and_log("--------------------------------------------------")
+        print_and_log("")
+
+        for simple_test_method in tqdm(simple_test_methods, desc="Running Simple Tests", unit="test"):
+            simple_test_method()
+
+        print_and_log("")
+        print_and_log("--------------------------------------------------")
+        print_and_log("- SIMPLE INVARIANT TEST CASES EXECUTION FINISHED -")
+        print_and_log("--------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_FixValue_FixValue(self):
+        """
+        Execute the simple tests of the function CheckInv_FixValue_FixValue
+        """
+        print_and_log("Testing CheckInv_FixValue_FixValue Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_checkInv_FixValue_DerivedValue(self):
+        """
+        Execute the simple tests of the function checkInv_FixValue_DerivedValue
+        """
+        print_and_log("Testing checkInv_FixValue_DerivedValue Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_FixValue_NumOp(self):
+        """
+        Execute the simple tests of the function checkInv_FixValue_NumOp
+        """
+        print_and_log("Testing checkInv_FixValue_NumOp Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_Interval_FixValue(self):
+        """
+        Execute the simple tests of the function checkInv_Interval_FixValue
+        """
+        print_and_log("Testing checkInv_Interval_FixValue Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_Interval_DerivedValue(self):
+        """
+        Execute the simple tests of the function checkInv_Interval_DerivedValue
+        """
+        print_and_log("Testing checkInv_Interval_DerivedValue Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_Interval_NumOp(self):
+        """
+        Execute the simple tests of the function checkInv_Interval_NumOp
+        """
+        print_and_log("Testing checkInv_Interval_NumOp Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_SpecialValue_FixValue(self):
+        """
+        Execute the simple tests of the function checkInv_SpecialValue_FixValue
+        """
+        print_and_log("Testing checkInv_SpecialValue_FixValue Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_SpecialValue_DerivedValue(self):
+        """
+        Execute the simple tests of the function checkInv_SpecialValue_DerivedValue
+        """
+        print_and_log("Testing checkInv_SpecialValue_DerivedValue Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckInv_SpecialValue_NumOp(self):
+        """
+        Execute the simple tests of the function checkInv_SpecialValue_NumOp
+        """
+        print_and_log("Testing checkInv_SpecialValue_NumOp Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos solicitados en la especificación del contrato:")
+
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
     def test_invs(self):
         """
@@ -112,5 +285,3 @@ class InvariantSimpleTest(unittest.TestCase):
         # print_and_log(result)
         # print(result)
         """
-
-
