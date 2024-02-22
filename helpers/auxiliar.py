@@ -512,16 +512,19 @@ def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spe
     :return: dataframe with the closest applied to the missing values
     """
 
+    def raise_error():
+        raise ValueError("Error: it's not possible to apply the closest operation to the null values")
+
     if specialTypeInput == SpecialType.MISSING:
         if axis_param is None:
             dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:
                                 find_closest_value(dataDictionary_copy.stack(), x) if x in missing_values else
-                                0 if pd.isnull(x) else x))                                                              # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
+                                raise_error() if pd.isnull(x) else x))
         elif axis_param == 0 or axis_param == 1:
             # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
             dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
-                    lambda x: find_closest_value(col, x) if x in missing_values else 0 if pd.isnull(x)
-        else x), axis=axis_param)                                                                                       # TODO: Esperar a que Fran diga que hacer con los nulos (0 o ERROR)
+                    lambda x: find_closest_value(col, x) if x in missing_values else raise_error() if pd.isnull(x)
+        else x), axis=axis_param)
     if specialTypeInput == SpecialType.INVALID:
         if axis_param is None:
             dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:

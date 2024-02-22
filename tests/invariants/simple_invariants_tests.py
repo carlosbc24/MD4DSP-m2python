@@ -435,8 +435,20 @@ class InvariantSimpleTest(unittest.TestCase):
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
                                                              numOpOutput=Operation(0), missing_values=missing_values,
                                                              axis_param=0)
-
         pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+        # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, None, 3, 3, 0], 'D': [1, 8.2, np.NaN, 1, 2]})
+        missing_values = [1, 3, 4]
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                             numOpOutput=Operation(3), missing_values=missing_values,
+                                                             axis_param=0)
+        print_and_log("Test Case 2 Passed: Expected ValueError, got ValueError")
 
 
 
