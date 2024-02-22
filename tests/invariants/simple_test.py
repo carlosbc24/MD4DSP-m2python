@@ -82,7 +82,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame({'A': [0, 1, fixValueOutput, 3, 4], 'B': [5, 4, 3, fixValueOutput, 1]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
-        print("Test Case 1 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # Caso 2
         # Comprobar la invariante: cambiar el valor fijo 'Clara' por el valor fijo de fecha 2021-01-01
@@ -99,7 +99,7 @@ class InvariantSimpleTest(unittest.TestCase):
                                     'B': [fixValueOutput, fixValueOutput, 'Ana', 'Ana', 'Ana']})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
-        print("Test Case 2 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
         # Caso 3
         # Comprobar la invariante: cambiar el valor fijo de tipo TIME 2021-01-01 por el valor fijo de tipo boolean True
@@ -117,7 +117,7 @@ class InvariantSimpleTest(unittest.TestCase):
                                     'B': [True, True, True, True, pd.to_datetime('2021-08-01')]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
-        print("Test Case 3 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
         # Caso 4
         # Comprobar la invariante: cambiar el valor fijo string 'Clara' por el valor fijo de tipo FLOAT 3.0
@@ -133,7 +133,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame({'A': [3.0, 'Ana', 3.0, 3.0, np.NaN], 'B': [3.0, 3.0, 'Ana', '8', None]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
-        print("Test Case 4 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
         # Caso 5
         # Comprobar la invariante: cambiar el valor fijo de tipo FLOAT 3.0 por el valor fijo de tipo STRING 'Clara'
@@ -147,7 +147,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame({'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 2.0, 2.0, 2.0]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
-        print("Test Case 5 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")

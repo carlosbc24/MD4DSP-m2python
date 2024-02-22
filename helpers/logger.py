@@ -38,5 +38,5 @@ def print_and_log(message, level=logging.INFO):
     message (str): message to print and save in the log
     level (int): level of the message
     """
-    print(message)
+    # print(message)
     logging.log(level, message)
