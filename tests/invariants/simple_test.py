@@ -298,7 +298,6 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO: Implement the simples tests
     def execute_CheckInv_FixValue_NumOp(self):
         """
         Execute the simple tests of the function checkInv_FixValue_NumOp
@@ -408,7 +407,36 @@ class InvariantSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
+        # Caso 6
+        # Comprobar la invariante: cambiar el valor fijo 0 por el valor de operación 2 (Median) a nivel de fila
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 0, 6, 0, 5], 'C': [1, 2, 3, 4, 0]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+                                                            fixValueInput=0, numOpOutput=Operation(2), axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 2, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
 
+        # Caso 7
+        # Comprobar la invariante: cambiar el valor fijo 0 por el valor de operación 3 (Closest) a nivel de columna
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 3, 6, 0, 5], 'C': [1, 0, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+                                                            fixValueInput=0, numOpOutput=Operation(3), axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [3, 3, 6, 3, 5], 'C': [1, 1, 3, 4, 5]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
 
         # Caso 8
         # Comprobar la invariante: cambiar el valor fijo 0 por el valor de operación 3 (Closest) a nivel de fila
@@ -421,7 +449,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 3, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -585,6 +613,8 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
+
+
     # TODO: Change specialTypeMean y los demas
     # TODO: Implement the simples tests
     def execute_CheckInv_SpecialValue_NumOp(self):
@@ -625,7 +655,7 @@ class InvariantSimpleTest(unittest.TestCase):
                                                              numOpOutput=Operation(0), missing_values=missing_values,
                                                              axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
 
         # Caso 2
         datadic = pd.DataFrame(
@@ -747,12 +777,12 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [1, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = expected_df.astype({
-            'B': 'float64',  # Convertir B a float64
+            'D': 'float64',  # Convertir D a float64
+            'B': 'float64', # Convertir B a float64
             'C': 'float64'  # Convertir C a float64
         })
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
-                                                                numOpOutput=Operation(0), missing_values=None,
-                                                                axis_param=0)
+                                                                numOpOutput=Operation(0), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 11 Passed: got the dataframe expected")
 
@@ -805,16 +835,19 @@ class InvariantSimpleTest(unittest.TestCase):
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 14 Passed: got the dataframe expected")
+
         #TODO: Check if the test is correct
         # Caso 15
         # Probamos a aplicar la operación closest sobre un dataframe sin nulos
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [10, 6, 3, 3, 0], 'D': [1, 2, 2, 1, 2]})
+        expected_df = expected_df.astype({
+            'D': 'float64'  # Convertir D a float64
+        })
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
-                                                                numOpOutput=Operation(3), missing_values=None,
-                                                                axis_param=0)
+                                                                numOpOutput=Operation(3), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 15 Passed: got the dataframe expected")
 
