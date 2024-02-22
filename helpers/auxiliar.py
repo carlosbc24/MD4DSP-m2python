@@ -135,35 +135,35 @@ def getOutliers(dataDictionary: pd.DataFrame, axis_param: int = None) -> pd.Data
 
     threshold = 1.5
     if axis_param is None:
-        Q1 = dataDictionary_copy.stack().quantile(0.25)
-        Q3 = dataDictionary_copy.stack().quantile(0.75)
+        Q1 = dataDictionary.stack().quantile(0.25)
+        Q3 = dataDictionary.stack().quantile(0.75)
         IQR = Q3 - Q1
         # Definir los límites para identificar outliers
         lower_bound = Q1 - threshold * IQR
         upper_bound = Q3 + threshold * IQR
         # Pone a 1 los valores que son outliers y a 0 los que no lo son
         for col in dataDictionary_numeric.columns:
-            for idx, value in dataDictionary_copy[col].items():
+            for idx, value in dataDictionary[col].items():
                 if value < lower_bound or value > upper_bound:
                     dataDictionary_copy.at[idx, col] = 1
         return dataDictionary_copy
 
     elif axis_param == 0:
-        for col in dataDictionary_copy.columns:
-            Q1 = dataDictionary_copy[col].quantile(0.25)
-            Q3 = dataDictionary_copy[col].quantile(0.75)
+        for col in dataDictionary_numeric.columns:
+            Q1 = dataDictionary[col].quantile(0.25)
+            Q3 = dataDictionary[col].quantile(0.75)
             IQR = Q3 - Q1
             # Definir los límites para identificar outliers
             lower_bound_col = Q1 - threshold * IQR
             upper_bound_col = Q3 + threshold * IQR
 
-            for idx, value in dataDictionary_copy[col].items():
+            for idx, value in dataDictionary[col].items():
                 if value < lower_bound_col or value > upper_bound_col:
                     dataDictionary_copy.at[idx, col] = 1
         return dataDictionary_copy
 
     elif axis_param == 1:
-        for idx, row in dataDictionary_copy.iterrows():
+        for idx, row in dataDictionary_numeric.iterrows():
             Q1 = row.quantile(0.25)
             Q3 = row.quantile(0.75)
             IQR = Q3 - Q1
@@ -543,7 +543,7 @@ def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spe
             for col_name in dataDictionary_copy.columns:
                 for idx, value in dataDictionary_copy[col_name].items():
                     if dataDictionary_copy_mask.at[idx, col_name] == 1:
-                        dataDictionary_copy[col_name][idx] = find_closest_value(dataDictionary_copy.stack(), value)
+                        dataDictionary_copy.at[idx, col_name] = find_closest_value(dataDictionary_copy.stack(), value)
 
 
         elif axis_param == 0 or axis_param == 1:
@@ -551,8 +551,6 @@ def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spe
             for col_name in dataDictionary_copy.columns:
                 for idx, value in dataDictionary_copy[col_name].items():
                     if dataDictionary_copy_mask.at[idx, col_name] == 1:
-                        dataDictionary_copy[col_name][idx] = find_closest_value(dataDictionary_copy[col_name], value)
+                        dataDictionary_copy.at[idx, col_name] = find_closest_value(dataDictionary_copy[col_name], value)
 
     return dataDictionary_copy
-
-
