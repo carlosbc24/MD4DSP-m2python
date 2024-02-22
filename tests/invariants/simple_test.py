@@ -585,7 +585,7 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
-
+    # TODO: Change specialTypeMean y los demas
     # TODO: Implement the simples tests
     def execute_CheckInv_SpecialValue_NumOp(self):
         """
@@ -614,6 +614,7 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
+        #MISSING
         # Caso 1
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
@@ -627,6 +628,30 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # Caso 2
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        missing_values = [3, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0], 'D': [1, 8.2, 6, 1, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                numOpOutput=Operation(1), missing_values=missing_values,
+                                                                axis_param=None)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        missing_values = [1, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 3.5, 1], 'B': [2, 3, 3.5, 6, 1], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                numOpOutput=Operation(2), missing_values=missing_values,
+                                                                axis_param=1)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 4
         # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, None, 3, 3, 0], 'D': [1, 8.2, np.NaN, 1, 2]})
@@ -636,9 +661,162 @@ class InvariantSimpleTest(unittest.TestCase):
             result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
                                                              numOpOutput=Operation(3), missing_values=missing_values,
                                                              axis_param=0)
-        print_and_log("Test Case 2 Passed: Expected ValueError, got ValueError")
+        print_and_log("Test Case 4 Passed: Expected ValueError, got ValueError")
+
+        # Caso 5
+        # Probamos a aplicar la operación closest sobre un dataframe correcto
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
+        missing_values = [3, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                numOpOutput=Operation(3), missing_values=missing_values,
+                                                                axis_param=0)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        #Invalid
+        # Caso 6
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        missing_values = [1, 3, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4/3, 2 + 8/3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0], 'D': [8.2, 8.2, 6, 4, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                             numOpOutput=Operation(0), missing_values=missing_values,
+                                                             axis_param=0)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        # Caso 7
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        missing_values = [3, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0], 'D': [1, 8.2, 6, 1, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                numOpOutput=Operation(1), missing_values=missing_values,
+                                                                axis_param=None)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Caso 8
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        missing_values = [1, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 3.5, 1.5], 'B': [2, 3, 3.5, 6, 12], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                numOpOutput=Operation(2), missing_values=missing_values,
+                                                                axis_param=1)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 8 Passed: got the dataframe expected")
+
+        # Caso 9
+        # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 8.2, 3, 1, 2]})
+        missing_values = [1, 3, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 2, 3, 0], 'B': [2, 2, 3, 6, 12], 'C': [10, 3, 4, np.NaN, 0], 'D': [2, 8.2, 2, 2, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                             numOpOutput=Operation(3), missing_values=missing_values,
+                                                             axis_param=0)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 9 Passed: got the dataframe expected")
+
+        # Caso 10
+        # Probamos a aplicar la operación closest sobre un dataframe sin nulos
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
+        missing_values = [3, 4]
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
+
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                numOpOutput=Operation(3), missing_values=missing_values,
+                                                                axis_param=0)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 10 Passed: got the dataframe expected")
+
+        # Outliers
+        # Caso 11
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [1, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = expected_df.astype({
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                numOpOutput=Operation(0), missing_values=None,
+                                                                axis_param=0)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 11 Passed: got the dataframe expected")
+
+        # Caso 12
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        datadic = datadic.astype({
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 3.61], 'C': [3.61, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
 
 
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                numOpOutput=Operation(1), missing_values=None,
+                                                                axis_param=None)
+
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 12 Passed: got the dataframe expected")
+
+        # Caso 13
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        datadic = datadic.astype({
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir B a float64
+        })
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 1.5], 'C': [1.5, 1, 3, 3, 0], 'D': [1, 2.5, 6, 1, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                numOpOutput=Operation(2), missing_values=None,
+                                                                axis_param=1)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 13 Passed: got the dataframe expected")
+
+        # Caso 14
+        # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 8.2, 3, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 3, 3, 1, 2]})
+        expected_df = expected_df.astype({
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                numOpOutput=Operation(3), missing_values=None,
+                                                                axis_param=0)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 14 Passed: got the dataframe expected")
+        #TODO: Check if the test is correct
+        # Caso 15
+        # Probamos a aplicar la operación closest sobre un dataframe sin nulos
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                numOpOutput=Operation(3), missing_values=None,
+                                                                axis_param=0)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 15 Passed: got the dataframe expected")
 
 
 

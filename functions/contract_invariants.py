@@ -335,7 +335,7 @@ class ContractsInvariants:
             elif axis_param == 0 or axis_param == 1:
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
-                        lambda x: x if not np.issubdtype(type(x), np.number) or not get_condition(x)
+                        lambda x: x if not(np.issubdtype(type(x), np.number) and get_condition(x))
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
 
         elif numOpOutput == Operation.MEDIAN:
@@ -352,7 +352,7 @@ class ContractsInvariants:
             elif axis_param == 0 or axis_param == 1:
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
-                        lambda x: x if not np.issubdtype(type(x), np.number) or not get_condition(x)
+                        lambda x: x if not (np.issubdtype(type(x), np.number) and get_condition(x))
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
 
         elif numOpOutput == Operation.CLOSEST:
@@ -390,7 +390,7 @@ class ContractsInvariants:
         dataDictionary_copy = dataDictionary.copy()
 
         if specialTypeInput == SpecialType.MISSING:  # Incluye nulos, np.nan, None, etc y los valores de la lista missing_values
-            dataDictionary_copy = dataDictionary_copy.replace(np.nan, fixValueOutput) # TODO: Tener en cuenta el resto de valores nulos. Ahora solo se tienen en cuenta los valores NaN
+            dataDictionary_copy = dataDictionary_copy.replace(np.nan, fixValueOutput)
             if missing_values is not None:
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
