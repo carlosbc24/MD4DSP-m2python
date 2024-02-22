@@ -41,7 +41,6 @@ class ContractsInvariants:
                                        derivedTypeOutput: DerivedType, dataTypeInput: DataType = None, axis_param: int = None) -> pd.DataFrame:
         # Por defecto, si todos los valores son igual de frecuentes, se sustituye por el primer valor.
         # Comprobar si solo se debe hacer para filas y columnas o también para el dataframe completo.
-
         """
         Check the invariant of the FixValue - DerivedValue relation
         Sustituye el valor proporcionado por el usuario por el valor derivado en el eje que se especifique por parámetros

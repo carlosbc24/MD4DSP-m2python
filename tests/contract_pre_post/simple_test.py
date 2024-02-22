@@ -55,7 +55,8 @@ class ContractSimpleTest(unittest.TestCase):
             self.execute_CheckFixValueRangeDateTime_SimpleTests,
             self.execute_CheckIntervalRangeFloat_SimpleTests,
             self.execute_CheckMissingRange_SimpleTests,
-            self.execute_CheckInvalidValues_SimpleTests
+            self.execute_CheckInvalidValues_SimpleTests,
+            self.execute_CheckOutliers_SimpleTests
         ]
 
         print_and_log("")
@@ -2302,3 +2303,19 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
+
+    def execute_CheckOutliers_SimpleTests(self):
+        """
+        Execute the simple tests of the function checkOutliers
+        """
+        print_and_log("Testing checkOutliers Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos añadidos:")
+
+        # Caso 1
+        dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                            'names': ['John', 'Mary', None, np.NaN, None, None, None, None, None, None]})
+        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=0)
+        assert result is False, "Test Case 1 Failed: Expected False, but got True"
+        print_and_log("Test Case 1 Passed: Expected False, got False")

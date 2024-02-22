@@ -448,7 +448,7 @@ class ContractsPrePost:
                     else:
                         raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 30
 
-    def checkOutliers(dataDictionary: pd.DataFrame, axis_param: int = None) -> bool:
+    def checkOutliers(self, dataDictionary: pd.DataFrame, axis_param: int = None) -> bool:
         """
         Check if there are outliers in the dataDictionary. The Outliers are calculated using the IQR method, so the outliers are the values that are
         below Q1 - 1.5 * IQR or above Q3 + 1.5 * IQR

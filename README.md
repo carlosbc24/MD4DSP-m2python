@@ -52,25 +52,21 @@ The project structure must follow the next structure:
 MD4DSP-m2python/
 │
 ├── functions/
-│ ├── contract_pre_post.py
-│ └── ...
+│ ├── contract_invariants.py
+│ └── contract_pre_post.py
 │
 ├── helpers/
 │ ├── auxiliar.py
 │ ├── enumerations.py
-│ ├── logger.py
-│ └── ...
+│ └── logger.py
 │
 ├── tests/
 │ ├── contract_pre_post/
+│ ├ ├── simple_test.py
+│ ├ └── tests_spotify_dataset.py
+│ ├── invariants/
 │   ├── simple_test.py
-│   └── tests_spotify_dataset.py
-│ ├── ...
-│
-├── test_datasets/
-│ ├── spotify_songs
-│   ├── readme.md
-│   └── spotify_songs.csv
+│   └── tests_spotify_dataset
 │
 ├── .gitignore
 ├── contracts_main.py
@@ -79,13 +75,11 @@ MD4DSP-m2python/
 
 ```
 
-- **`functions/`**: contains the main functions of the project.
+- **`functions/`**: contains the main functions of the project. The functions are divided into two files: `contract_invariants.py` and `contract_pre_post.py`. The first file contains the functions of the invariants, and the second file contains the functions of the contracts.
 
-- **`helpers/`**: contains auxiliary functions that are used in the main functions.
+- **`helpers/`**: contains auxiliary functions that are used in the main functions. The file `auxiliar.py` contains the auxiliary functions, `enumerations.py` contains the enumerations used in the project, and `logger.py` contains the functions to log the results of the tests.
 
-- **`test/`**: contains the tests to make exhaustive evaluations of the functions.
-
-- **`test_datasets/`**: contains the datasets used in the tests. We have decided to upload it to the repository to facilitate the execution of the tests, using the same version that the developers used to execute the tests.
+- **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into two directories: `contract_pre_post` and `invariants`. The first directory contains the tests of the contracts, and the second directory contains the tests of the invariants. Each package contains simple tests and tests with the Spotify dataset.
 
 - **`requirements.txt`**: file that contains the libraries needed to run the project.
 
