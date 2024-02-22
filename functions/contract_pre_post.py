@@ -450,44 +450,48 @@ class ContractsPrePost:
 
     def checkOutliers(self, dataDictionary: pd.DataFrame, axis_param: int = None) -> bool:
         """
-        Check if there are outliers in the dataDictionary. The Outliers are calculated using the IQR method, so the outliers are the values that are
+        Check if there are outliers in the numeric columns of dataDictionary. The Outliers are calculated using the IQR method, so the outliers are the values that are
         below Q1 - 1.5 * IQR or above Q3 + 1.5 * IQR
 
         :param dataDictionary: dataframe with the data
         :param axis_param: axis to get the outliers. If axis_param is None, the outliers are calculated for the whole dataframe.
-        If axis_param is 0, the outliers are calculated for each column. If axis_param is 1, the outliers are calculated for each row.
+        If axis_param is 0, the outliers are calculated for each column. If axis_param is 1, the outliers are calculated for each row (although it is not recommended as it is not a common use case)
 
-        :return: dataframe with the outliers. The value 1 indicates that the value is an outlier and the value 0 indicates that the value is not an outlier
+        :return: boolean indicating if there are outliers in the dataDictionary
         """
+        # Filtrar el DataFrame para incluir solo columnas numéricas
+        dataDictionary_numeric = dataDictionary.select_dtypes(include=[np.number])
+
         threshold = 1.5
         if axis_param is None:
-            Q1 = dataDictionary.stack().quantile(0.25)
-            Q3 = dataDictionary.stack().quantile(0.75)
+            Q1 = dataDictionary_numeric.stack().quantile(0.25)
+            Q3 = dataDictionary_numeric.stack().quantile(0.75)
             IQR = Q3 - Q1
             # Definir los límites para identificar outliers
             lower_bound = Q1 - threshold * IQR
             upper_bound = Q3 + threshold * IQR
             # Pone a 1 los valores que son outliers y a 0 los que no lo son
-            for col in dataDictionary.columns:
-                for idx, value in dataDictionary[col].items():
+            for col in dataDictionary_numeric.columns:
+                for idx, value in dataDictionary_numeric[col].items():
                     if value < lower_bound or value > upper_bound:
                         return True
 
         elif axis_param == 0:
-            for col in dataDictionary.columns:
-                Q1 = dataDictionary[col].quantile(0.25)
-                Q3 = dataDictionary[col].quantile(0.75)
+
+            for col in dataDictionary_numeric.columns:
+                Q1 = dataDictionary_numeric[col].quantile(0.25)
+                Q3 = dataDictionary_numeric[col].quantile(0.75)
                 IQR = Q3 - Q1
                 # Definir los límites para identificar outliers
                 lower_bound_col = Q1 - threshold * IQR
                 upper_bound_col = Q3 + threshold * IQR
 
-                for idx, value in dataDictionary[col].items():
+                for idx, value in dataDictionary_numeric[col].items():
                     if value < lower_bound_col or value > upper_bound_col:
                         return True
 
         elif axis_param == 1:
-            for idx, row in dataDictionary.iterrows():
+            for idx, row in dataDictionary_numeric.iterrows():
                 Q1 = row.quantile(0.25)
                 Q3 = row.quantile(0.75)
                 IQR = Q3 - Q1

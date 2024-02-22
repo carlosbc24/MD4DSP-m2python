@@ -1,4 +1,3 @@
-
 # Importing libraries
 import unittest
 import numpy as np
@@ -41,6 +40,7 @@ class ContractSimpleTest(unittest.TestCase):
         execute_CheckIntervalRangeFloat_SimpleTests: execute the simple tests of the function checkIntervalRange
         execute_CheckMissingRange_SimpleTests: execute the simple tests of the function checkMissingRange
         execute_CheckInvalidValues_SimpleTests: execute the simple tests of the function checkInvalidValues
+        execute_CheckOutliers_SimpleTests: execute the simple tests of the function checkOutliers
         """
         self.pre_post = ContractsPrePost()
 
@@ -82,7 +82,6 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Casos Básicos solicitados en la especificación del contrato:")
-
 
         # Case 1 of checkFieldRange
         # Check that fields 'c1' and 'c2' belong to the data dictionary. It must return True
@@ -202,7 +201,6 @@ class ContractSimpleTest(unittest.TestCase):
                                              belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                              quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
-
 
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
@@ -369,7 +367,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
-
         # Casos de error añadidos
         print_and_log("")
         print_and_log("Casos de error añadidos:")
@@ -406,7 +403,7 @@ class ContractSimpleTest(unittest.TestCase):
         value = '0'
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
-        quant_op = 3 # less
+        quant_op = 3  # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary,
@@ -430,7 +427,7 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'c1': ['0', '0', '0', '0', '0', '0', '0', None, None, None]})
         belongOp = 1  # Not Belong
         field = 'c1'
-        quant_op = 3 # less
+        quant_op = 3  # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             self.pre_post.checkFixValueRange(value=value, dataDictionary=dataDictionary, field=field,
@@ -506,7 +503,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                       belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
                                                       quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
-
 
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
@@ -813,7 +809,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                       quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
-
         print_and_log("")
         print_and_log("Casos añadidos:")
 
@@ -969,7 +964,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
-
         # Casos de error añadidos
         print_and_log("")
         print_and_log("Casos de error añadidos:")
@@ -1077,7 +1071,6 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
         print_and_log("")
-
 
         print_and_log("Casos Básicos añadidos:")
         # Rango de prueba utilizado en todas las llamadas
@@ -1482,9 +1475,9 @@ class ContractSimpleTest(unittest.TestCase):
 
         # Caso 1 Solicitado (Caso 20)
         belong = 0
-        dataDictionary = pd.DataFrame(data={'colour':[None, None, 'Blue', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [None, None, 'Blue', 'Green']})
         field = 'colour'
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_rel = 0.5
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
@@ -1494,7 +1487,7 @@ class ContractSimpleTest(unittest.TestCase):
 
         # Caso 2 Solicitado (Caso 20 también)
         belong = 0
-        dataDictionary =  pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [None, -1, 'Blue', 'Green']})
         field = 'colour'
         missing_values = [-1]
         quant_op = 2  # lessEqual
@@ -1507,10 +1500,10 @@ class ContractSimpleTest(unittest.TestCase):
 
         # Caso 3 Solicitado (Caso 23)
         belong = 0
-        dataDictionary = pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [None, -1, 'Blue', 'Green']})
         field = 'colour'
         missing_values = [-1]
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_abs = 2
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
@@ -1521,56 +1514,60 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
 
-        #Casos añadidos
+        # Casos añadidos
 
-        #Caso 1
+        # Caso 1
         field = None
         belong = 0
-        dataDictionary=pd.DataFrame(data={'colour':[None, -1, 'Blue', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [None, -1, 'Blue', 'Green']})
         missing_values = [-1]
-        result=self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,missing_values=missing_values,
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 missing_values=missing_values,
                                                  belongOp=Belong(belong))
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
-        #Caso 2
+        # Caso 2
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
         field = None
-        missing_values= ['Nulo', -8]
+        missing_values = ['Nulo', -8]
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 missing_values=missing_values,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
                                                  quant_rel=quant_rel)
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
 
-        #Caso 3
+        # Caso 3
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
         field = None
-        missing_values= ['Nul', -8]
-        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
+        missing_values = ['Nul', -8]
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 missing_values=missing_values,
                                                  belongOp=Belong(belong))
         assert result is False, "Test Case 3 Failed: Expected False, but got True"
         print_and_log("Test Case 3 Passed: Expected False, got False")
 
-        #Caso 4
+        # Caso 4
         belong = 0
         dataDictionary = pd.DataFrame(data={'colour': ['Red', 5, 'Blue', 'Green', 'Nulo']})
         field = None
-        missing_values= None
-        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field, missing_values=missing_values,
+        missing_values = None
+        result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
+                                                 missing_values=missing_values,
                                                  belongOp=Belong(belong))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
-        #Caso 5
+        # Caso 5
         belong = 0
-        dataDictionary = pd.DataFrame(data={'colour':[None, None, 'Blue', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [None, None, 'Blue', 'Green']})
         field = None
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_rel = 0.5
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
@@ -1578,11 +1575,11 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
-        #Caso 6
+        # Caso 6
         belong = 0
-        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [4, 5, 'Blue', 'Green']})
         field = None
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_rel = 0.5
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
@@ -1590,11 +1587,11 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
-        #Caso 8
+        # Caso 8
         belong = 0
-        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [4, 5, 'Blue', 'Green', 'Green']})
         field = None
-        quant_op = 0 # greaterEqual
+        quant_op = 0  # greaterEqual
         missing_values = ['Green']
         quant_abs = 2
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
@@ -1603,11 +1600,11 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
-        #Caso 9
+        # Caso 9
         belong = 0
-        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [4, 5, 'Blue', 'Green', 'Green']})
         field = None
-        quant_op = 0 # greaterEqual
+        quant_op = 0  # greaterEqual
         missing_values = ['Blue']
         quant_abs = 2
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
@@ -1616,9 +1613,9 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
-        #Caso 11
+        # Caso 11
         belong = 1
-        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [4, 5, 'Blue', 'Green', 'Green']})
         field = None
         missing_values = ['Red']
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
@@ -1626,9 +1623,9 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
-        #Caso 12
+        # Caso 12
         belong = 1
-        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [4, 5, 'Blue', 'Green', 'Green']})
         field = None
         missing_values = ['Blue']
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
@@ -1636,9 +1633,9 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
-        #Caso 13
+        # Caso 13
         belong = 1
-        dataDictionary = pd.DataFrame(data={'colour':[4, 5, 'Blue', 'Green', 'Green']})
+        dataDictionary = pd.DataFrame(data={'colour': [4, 5, 'Blue', 'Green', 'Green']})
         field = None
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
                                                  belongOp=Belong(belong))
@@ -1661,7 +1658,7 @@ class ContractSimpleTest(unittest.TestCase):
         field = 'colour'
         quant_op = None
         result = self.pre_post.checkMissingRange(dataDictionary=dataDictionary, field=field,
-                                                    belongOp=Belong(belong), quant_op=quant_op)
+                                                 belongOp=Belong(belong), quant_op=quant_op)
         assert result is True, "Test Case 16 Failed: Expected True, but got False"
         print_and_log("Test Case 16 Passed: Expected True, got True")
 
@@ -1873,11 +1870,9 @@ class ContractSimpleTest(unittest.TestCase):
                                                      quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
 
-
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
-
 
     def execute_CheckInvalidValues_SimpleTests(self):
         """
@@ -1891,11 +1886,11 @@ class ContractSimpleTest(unittest.TestCase):
         # 30 casos posibles
 
         # Caso 19 Solicitado
-        belong = 0 # BELONG
-        dataDictionary = pd.DataFrame(data={'colour':[-1, -1, 'Blue', 'Green']})
+        belong = 0  # BELONG
+        dataDictionary = pd.DataFrame(data={'colour': [-1, -1, 'Blue', 'Green']})
         invalid_values = [-1]
         field = 'colour'
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_rel = 0.5
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belong), quant_op=Operator(quant_op),
@@ -1904,11 +1899,11 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 19 Passed: Expected True, got True")
 
         # Caso 19.1 Solicitado
-        belong = 0 # BELONG
-        dataDictionary = pd.DataFrame(data={'colour':[-1, 0, 'Blue', 'Green']})
+        belong = 0  # BELONG
+        dataDictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green']})
         invalid_values = [-1, 0]
         field = 'colour'
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_rel = 0.5
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belong), quant_op=Operator(quant_op),
@@ -1917,11 +1912,11 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Test Case 19.1 Passed: Expected True, got True")
 
         # Caso 22 Solicitado
-        belong = 0 # BELONG
-        dataDictionary = pd.DataFrame(data={'colour':[-1, 0, 'Blue', 'Green']})
+        belong = 0  # BELONG
+        dataDictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green']})
         invalid_values = [-1, 0]
         field = 'colour'
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_abs = 2
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   belongOp=Belong(belong), quant_op=Operator(quant_op),
@@ -1929,10 +1924,8 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 22 Failed: Expected True, but got False"
         print_and_log("Test Case 22 Passed: Expected True, got True")
 
-
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-
 
         # Caso 1
         belong = 0
@@ -1940,7 +1933,7 @@ class ContractSimpleTest(unittest.TestCase):
         invalid_values = [-1, 0]
         field = None
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
-                                                    belongOp=Belong(belong), invalid_values=invalid_values)
+                                                  belongOp=Belong(belong), invalid_values=invalid_values)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
@@ -1950,7 +1943,7 @@ class ContractSimpleTest(unittest.TestCase):
         invalid_values = [-1, 0]
         field = None
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
-                                                    belongOp=Belong(belong), invalid_values=invalid_values)
+                                                  belongOp=Belong(belong), invalid_values=invalid_values)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
@@ -1960,7 +1953,7 @@ class ContractSimpleTest(unittest.TestCase):
         field = None
         invalid_values = None
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
-                                                    belongOp=Belong(belong), invalid_values=invalid_values)
+                                                  belongOp=Belong(belong), invalid_values=invalid_values)
         assert result is False, "Test Case 3 Failed: Expected False, but got True"
         print_and_log("Test Case 3 Passed: Expected False, got False")
 
@@ -1969,11 +1962,11 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green']})
         field = None
         invalid_values = [-1, 0]
-        quant_op = 2 # lessEqual
+        quant_op = 2  # lessEqual
         quant_rel = 0.5
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+                                                  quant_rel=quant_rel, belongOp=Belong(belong))
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
@@ -1982,11 +1975,11 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green']})
         field = None
         invalid_values = [-1, 0]
-        quant_op = 1 # Greater
+        quant_op = 1  # Greater
         quant_rel = 0.5
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+                                                  quant_rel=quant_rel, belongOp=Belong(belong))
         assert result is False, "Test Case 5 Failed: Expected False, but got True"
         print_and_log("Test Case 5 Passed: Expected False, got False")
 
@@ -1999,7 +1992,7 @@ class ContractSimpleTest(unittest.TestCase):
         quant_rel = 0.5
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+                                                  quant_rel=quant_rel, belongOp=Belong(belong))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
@@ -2008,11 +2001,11 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green']})
         field = None
         invalid_values = [-1, 0]
-        quant_op = 4 # Equal
+        quant_op = 4  # Equal
         quant_abs = 2
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+                                                  quant_abs=quant_abs, belongOp=Belong(belong))
         assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
@@ -2021,11 +2014,11 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green']})
         field = None
         invalid_values = [-1, 0]
-        quant_op = 4 # Equal
+        quant_op = 4  # Equal
         quant_abs = 1
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+                                                  quant_abs=quant_abs, belongOp=Belong(belong))
         assert result is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, got False")
 
@@ -2034,11 +2027,11 @@ class ContractSimpleTest(unittest.TestCase):
         dataDictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green']})
         field = None
         invalid_values = None
-        quant_op = 4 # Equal
+        quant_op = 4  # Equal
         quant_abs = 2
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
                                                   invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+                                                  quant_abs=quant_abs, belongOp=Belong(belong))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
@@ -2061,8 +2054,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                   invalid_values=invalid_values, belongOp=Belong(belong))
         assert result is False, "Test Case 13 Failed: Expected False, but got True"
         print_and_log("Test Case 13 Passed: Expected False, got False")
-
-
 
         # Caso 16
         belong = 0
@@ -2109,11 +2100,11 @@ class ContractSimpleTest(unittest.TestCase):
                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = [-1, 0]
         field = 'colour'
-        quant_op = 1 # Greater
+        quant_op = 1  # Greater
         quant_rel = 0.5
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
-                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                  quant_rel=quant_rel, belongOp=Belong(belong))
         assert result is False, "Test Case 20 Failed: Expected False, but got True"
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
@@ -2123,11 +2114,11 @@ class ContractSimpleTest(unittest.TestCase):
                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = None
         field = 'colour'
-        quant_op = 1 # Greater
+        quant_op = 1  # Greater
         quant_rel = 0.5
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
-                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_rel=quant_rel, belongOp=Belong(belong))
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                  quant_rel=quant_rel, belongOp=Belong(belong))
         assert result is False, "Test Case 21 Failed: Expected False, but got True"
         print_and_log("Test Case 21 Passed: Expected False, got False")
 
@@ -2137,11 +2128,11 @@ class ContractSimpleTest(unittest.TestCase):
                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = [-1, 0]
         field = 'colour'
-        quant_op = 0 # GreaterEqual
+        quant_op = 0  # GreaterEqual
         quant_abs = 3
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
-                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                  quant_abs=quant_abs, belongOp=Belong(belong))
         assert result is False, "Test Case 23 Failed: Expected False, but got True"
         print_and_log("Test Case 23 Passed: Expected False, got False")
 
@@ -2151,11 +2142,11 @@ class ContractSimpleTest(unittest.TestCase):
                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = None
         field = 'colour'
-        quant_op = 0 # GreaterEqual
+        quant_op = 0  # GreaterEqual
         quant_abs = 3
         result = self.pre_post.checkInvalidValues(dataDictionary=dataDictionary, field=field,
-                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                    quant_abs=quant_abs, belongOp=Belong(belong))
+                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                  quant_abs=quant_abs, belongOp=Belong(belong))
         assert result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, got False")
 
@@ -2299,7 +2290,6 @@ class ContractSimpleTest(unittest.TestCase):
                                                       quant_rel=quant_rel, belongOp=Belong(belong))
         print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
 
-
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
@@ -2314,8 +2304,32 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Caso 1
-        dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None, None, None, None, None]})
+        dataframe = pd.DataFrame(data={'colour': [-10, 0, 0.25, 0.5, 0.75, 1],
+                                       'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=0)
-        assert result is False, "Test Case 1 Failed: Expected False, but got True"
-        print_and_log("Test Case 1 Passed: Expected False, got False")
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2 # No existen outliers
+        dataframe = pd.DataFrame(data={'colour': [0, 0.25, 0.5, 0.75, 1],
+                                       'names': ['John', 'Mary', None, np.NaN, None]})
+        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=0)
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
+
+        # Caso 3: prueba con otros tipos de datos numéricos (enteros)
+        dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5],
+                                       'temperature': [6, 7, 8, 9, 10],
+                                       'names': ['John', 'Mary', None, np.NaN, None]})
+        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=None)
+        assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        print_and_log("Test Case 3 Passed: Expected False, got False")
+
+        # Caso 4: prueba con otros tipos de datos numéricos (enteros) Devuelve True al si existir outliers
+        dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5],
+                                         'temperature': [6, 7, 8, 9, 100],
+                                        'names': ['John', 'Mary', None, np.NaN, None]})
+        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=None)
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+

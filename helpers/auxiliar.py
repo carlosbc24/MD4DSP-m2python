@@ -126,7 +126,13 @@ def getOutliers(dataDictionary: pd.DataFrame, axis_param: int = None) -> pd.Data
     :return: dataframe with the outliers. The value 1 indicates that the value is an outlier and the value 0 indicates that the value is not an outlier
 
     """
+    # Filtrar el DataFrame para incluir solo columnas numéricas
+    dataDictionary_numeric = dataDictionary.select_dtypes(include=[np.number])
+
     dataDictionary_copy = dataDictionary.copy()
+    # Inicializar todos los valores del DataFrame copiado a 0
+    dataDictionary_copy.loc[:, :] = 0
+
     threshold = 1.5
     if axis_param is None:
         Q1 = dataDictionary_copy.stack().quantile(0.25)
@@ -136,12 +142,10 @@ def getOutliers(dataDictionary: pd.DataFrame, axis_param: int = None) -> pd.Data
         lower_bound = Q1 - threshold * IQR
         upper_bound = Q3 + threshold * IQR
         # Pone a 1 los valores que son outliers y a 0 los que no lo son
-        for col in dataDictionary_copy.columns:
+        for col in dataDictionary_numeric.columns:
             for idx, value in dataDictionary_copy[col].items():
                 if value < lower_bound or value > upper_bound:
                     dataDictionary_copy.at[idx, col] = 1
-                else:
-                    dataDictionary_copy.at[idx, col] = 0
         return dataDictionary_copy
 
     elif axis_param == 0:
@@ -156,8 +160,6 @@ def getOutliers(dataDictionary: pd.DataFrame, axis_param: int = None) -> pd.Data
             for idx, value in dataDictionary_copy[col].items():
                 if value < lower_bound_col or value > upper_bound_col:
                     dataDictionary_copy.at[idx, col] = 1
-                else:
-                    dataDictionary_copy.at[idx, col] = 0
         return dataDictionary_copy
 
     elif axis_param == 1:
@@ -173,8 +175,6 @@ def getOutliers(dataDictionary: pd.DataFrame, axis_param: int = None) -> pd.Data
                 value = row[col]
                 if value < lower_bound_row or value > upper_bound_row:
                     dataDictionary_copy.at[idx, col] = 1
-                else:
-                    dataDictionary_copy.at[idx, col] = 0
         return dataDictionary_copy
 
 

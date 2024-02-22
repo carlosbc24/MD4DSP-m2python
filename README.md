@@ -62,11 +62,17 @@ MD4DSP-m2python/
 │
 ├── tests/
 │ ├── contract_pre_post/
-│ ├ ├── simple_test.py
-│ ├ └── tests_spotify_dataset.py
-│ ├── invariants/
+│ │ ├── simple_test.py
+│ │ └── tests_spotify_dataset.py
+│ │
+│ └── invariants/
 │   ├── simple_test.py
 │   └── tests_spotify_dataset
+│
+├── test_datasets/
+│ ├── spotify_songs/
+│   ├── spotify_songs.csv
+│   └── readme.md
 │
 ├── .gitignore
 ├── contracts_main.py
@@ -80,6 +86,8 @@ MD4DSP-m2python/
 - **`helpers/`**: contains auxiliary functions that are used in the main functions. The file `auxiliar.py` contains the auxiliary functions, `enumerations.py` contains the enumerations used in the project, and `logger.py` contains the functions to log the results of the tests.
 
 - **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into two directories: `contract_pre_post` and `invariants`. The first directory contains the tests of the contracts, and the second directory contains the tests of the invariants. Each package contains simple tests and tests with the Spotify dataset.
+
+- **`test_datasets/`**: contains the external datasets used in the tests. The datasets are divided into directories, and each directory contains the dataset and a readme file with the description of the dataset.
 
 - **`requirements.txt`**: file that contains the libraries needed to run the project.
 

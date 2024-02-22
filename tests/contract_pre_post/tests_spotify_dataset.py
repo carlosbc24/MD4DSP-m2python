@@ -14,7 +14,7 @@ from helpers.logger import print_and_log
 
 class ContractExternalDatasetTests(unittest.TestCase):
     """
-    Class to test the contracts with simple test cases
+    Class to test the contracts with external dataset test cases
 
     Attributes:
     pre_post (ContractsPrePost): instance of the class ContractsPrePost
@@ -28,6 +28,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
     execute_checkIntervalRangeFloat_ExternalDatasetTests: execute the external dataset tests of the checkIntervalRange function with float values
     execute_CheckMissingRange_ExternalDatasetTests: execute the external dataset tests of the checkMissingRange function
     execute_CheckInvalidValues_ExternalDatasetTests: execute the external dataset tests of the checkInvalidValues function
+    execute_CheckOutliers_SpotifyDatasetTests: execute the external dataset tests of the checkOutliers function
     executeAll_ExternalDatasetTests: execute all the external dataset tests
     """
     def __init__(self):
@@ -59,12 +60,13 @@ class ContractExternalDatasetTests(unittest.TestCase):
             self.execute_CheckFixValueRangeDateTime_ExternalDatasetTests,
             self.execute_checkIntervalRangeFloat_ExternalDatasetTests,
             self.execute_CheckMissingRange_ExternalDatasetTests,
-            self.execute_CheckInvalidValues_ExternalDatasetTests
+            self.execute_CheckInvalidValues_ExternalDatasetTests,
+            self.execute_CheckOutliers_SpotifyDatasetTests
         ]
 
         print_and_log("")
         print_and_log("--------------------------------------------------")
-        print_and_log("---------- STARTING DATASET TEST CASES -----------")
+        print_and_log("------ STARTING PRE-POST DATASET TEST CASES ------")
         print_and_log("--------------------------------------------------")
         print_and_log("")
 
@@ -73,7 +75,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         print_and_log("")
         print_and_log("--------------------------------------------------")
-        print_and_log("---------- DATASET TEST CASES FINISHED -----------")
+        print_and_log("------ DATASET PRE-POST TEST CASES FINISHED ------")
         print_and_log("--------------------------------------------------")
         print_and_log("")
 
@@ -2074,3 +2076,16 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
+
+    def execute_CheckOutliers_SpotifyDatasetTests(self):
+        """
+        Execute the simple tests of the function CheckOutliers
+        """
+        print_and_log("Testing CheckOutliers Function")
+        print_and_log("")
+        print_and_log("Casos de test con dataset Spotify:")
+
+        # Caso 1
+        result = self.pre_post.checkOutliers(dataDictionary=self.data_dictionary, axis_param=None)
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
