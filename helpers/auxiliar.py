@@ -392,7 +392,7 @@ def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: Specia
         elif axis_param == 0 or axis_param == 1:
             dataDictionary_copy = dataDictionary_copy.apply(
                 lambda col: col.apply(
-                    lambda x: x if (not np.issubdtype(type(x), np.number) or not x in missing_values) or pd.isnull(x)
+                    lambda x: x if not((np.issubdtype(type(x), np.number) and x in missing_values) or pd.isnull(x))
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
     if specialTypeInput == SpecialType.INVALID:
         if axis_param == None:
@@ -400,7 +400,6 @@ def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: Specia
             only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
             # Calcular la media de estas columnas numéricas
             mean_value = only_numbers_df.mean().mean()
-            # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
             dataDictionary_copy = dataDictionary_copy.apply(
                 lambda col: col.apply(
                     lambda x: mean_value if (np.issubdtype(type(x), np.number) and x in missing_values) else x))
@@ -408,7 +407,7 @@ def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: Specia
         elif axis_param == 0 or axis_param == 1:
             dataDictionary_copy = dataDictionary_copy.apply(
                 lambda col: col.apply(
-                    lambda x: x if not np.issubdtype(type(x), np.number) or not x in missing_values
+                    lambda x: x if not (np.issubdtype(type(x), np.number) and x in missing_values)
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
 
     if specialTypeInput == SpecialType.OUTLIER:
@@ -418,8 +417,11 @@ def specialTypeMean(dataDictionary_copy : pd.DataFrame, specialTypeInput: Specia
             # Calcular la media de estas columnas numéricas
             mean_value = only_numbers_df.mean().mean()
             # Reemplaza los outliers con la media del DataFrame completo usando lambda
-            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x: mean_value
-                        if (np.issubdtype(type(x), np.number) and dataDictionary_copy_mask.at[x.name, x] == 1) else x), axis=0)
+            for col_name in dataDictionary_copy.columns:
+                for idx, value in dataDictionary_copy[col_name].items():
+                    if np.issubdtype(type(value), np.number) and dataDictionary_copy_mask.at[idx, col_name] == 1:
+                        dataDictionary_copy.at[idx, col_name] = mean_value
+
         if axis_param == 0:
             for col in dataDictionary_copy.columns:
                 for idx, value in dataDictionary_copy[col].items():
@@ -451,7 +453,6 @@ def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spec
             only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
             # Calcular la media de estas columnas numéricas
             median_value = only_numbers_df.median().median()
-            # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
             dataDictionary_copy = dataDictionary_copy.apply(
                 lambda col: col.apply(
                     lambda x: median_value if ((np.issubdtype(type(x), np.number) and x in missing_values) or pd.isnull(x)) else x))
@@ -459,7 +460,7 @@ def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spec
         elif axis_param == 0 or axis_param == 1:
             dataDictionary_copy = dataDictionary_copy.apply(
                 lambda col: col.apply(
-                    lambda x: x if (not np.issubdtype(type(x), np.number) or not x in missing_values) or pd.isnull(x)
+                    lambda x: x if not((np.issubdtype(type(x), np.number) and x in missing_values) or pd.isnull(x))
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
     if specialTypeInput == SpecialType.INVALID:
         if axis_param == None:
@@ -475,7 +476,7 @@ def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spec
         elif axis_param == 0 or axis_param == 1:
             dataDictionary_copy = dataDictionary_copy.apply(
                 lambda col: col.apply(
-                    lambda x: x if not np.issubdtype(type(x), np.number) or not x in missing_values
+                    lambda x: x if not(np.issubdtype(type(x), np.number) and x in missing_values)
                         else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
 
     if specialTypeInput == SpecialType.OUTLIER:
@@ -485,8 +486,11 @@ def specialTypeMedian(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spec
             # Calcular la media de estas columnas numéricas
             median_value = only_numbers_df.median().median()
             # Reemplaza los outliers con la media del DataFrame completo usando lambda
-            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x: median_value
-                        if (np.issubdtype(type(x), np.number) and dataDictionary_copy_mask.at[x.name, x] == 1) else x), axis=0)
+            for col_name in dataDictionary_copy.columns:
+                for idx, value in dataDictionary_copy[col_name].items():
+                    if np.issubdtype(type(value), np.number) and dataDictionary_copy_mask.at[idx, col_name] == 1:
+                        dataDictionary_copy.at[idx, col_name] = median_value
+
         if axis_param == 0:
             for col in dataDictionary_copy.columns:
                 for idx, value in dataDictionary_copy[col].items():
@@ -536,13 +540,18 @@ def specialTypeClosest(dataDictionary_copy : pd.DataFrame, specialTypeInput: Spe
 
     if specialTypeInput == SpecialType.OUTLIER:
         if axis_param is None:
-            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:find_closest_value(
-                                 dataDictionary_copy.stack(), x) if dataDictionary_copy_mask.at[x.name, x] == 1 else x))
+            for col_name in dataDictionary_copy.columns:
+                for idx, value in dataDictionary_copy[col_name].items():
+                    if dataDictionary_copy_mask.at[idx, col_name] == 1:
+                        dataDictionary_copy[col_name][idx] = find_closest_value(dataDictionary_copy.stack(), value)
+
 
         elif axis_param == 0 or axis_param == 1:
             # Reemplazar los valores en la misma posicion que los 1 dataDictionary_copy_mask por el valor numérico más cercano a lo largo de las columnas y filas
-            dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x: find_closest_value(col, x)
-                                    if dataDictionary_copy_mask.at[x.name, col.name] == 1 else x), axis=axis_param)
+            for col_name in dataDictionary_copy.columns:
+                for idx, value in dataDictionary_copy[col_name].items():
+                    if dataDictionary_copy_mask.at[idx, col_name] == 1:
+                        dataDictionary_copy[col_name][idx] = find_closest_value(dataDictionary_copy[col_name], value)
 
     return dataDictionary_copy
 
