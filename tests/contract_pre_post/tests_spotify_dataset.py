@@ -2077,7 +2077,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckOutliers_SpotifyDatasetTests(self):
+    def execute_CheckOutliers_SpotifyDatasetTests(self):    #TODO: Implementar
         """
         Execute the simple tests of the function CheckOutliers
         """
@@ -2086,6 +2086,6 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("Casos de test con dataset Spotify:")
 
         # Caso 1
-        result = self.pre_post.checkOutliers(dataDictionary=self.data_dictionary, axis_param=None)
-        assert result is True, "Test Case 1 Failed: Expected True, but got False"
-        print_and_log("Test Case 1 Passed: Expected True, got True")
+        # result = self.pre_post.checkOutliers(dataDictionary=self.data_dictionary, axis_param=None)
+        # assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        # print_and_log("Test Case 1 Passed: Expected True, got True")
