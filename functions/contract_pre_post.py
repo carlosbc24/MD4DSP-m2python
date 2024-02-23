@@ -6,7 +6,7 @@ import pandas as pd
 # Importing functions and classes from packages
 from typing import Union
 from datetime import datetime
-from helpers.auxiliar import compare_numbers, count_abs_frequency
+from helpers.auxiliar import compare_numbers, count_abs_frequency, getOutliers
 from helpers.enumerations import Belong, Operator, Closure
 
 
@@ -448,7 +448,7 @@ class ContractsPrePost:
                     else:
                         raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 30
 
-    def checkOutliers(self, dataDictionary: pd.DataFrame, axis_param: int = None) -> bool:
+    def checkOutliers(self, dataDictionary:pd.DataFrame, belongOp: Belong=None, field:str=None, quant_abs:int=None, quant_rel:float=None, quant_op:Operator=None) -> bool:
         """
         Check if there are outliers in the numeric columns of dataDictionary. The Outliers are calculated using the IQR method, so the outliers are the values that are
         below Q1 - 1.5 * IQR or above Q3 + 1.5 * IQR
@@ -459,49 +459,85 @@ class ContractsPrePost:
 
         :return: boolean indicating if there are outliers in the dataDictionary
         """
-        # Filtrar el DataFrame para incluir solo columnas numéricas
-        dataDictionary_numeric = dataDictionary.select_dtypes(include=[np.number])
+        dataDictionary_copy = dataDictionary.copy()
+        outlier=1
 
-        threshold = 1.5
-        if axis_param is None:
-            Q1 = dataDictionary_numeric.stack().quantile(0.25)
-            Q3 = dataDictionary_numeric.stack().quantile(0.75)
-            IQR = Q3 - Q1
-            # Definir los límites para identificar outliers
-            lower_bound = Q1 - threshold * IQR
-            upper_bound = Q3 + threshold * IQR
-            # Pone a 1 los valores que son outliers y a 0 los que no lo son
-            for col in dataDictionary_numeric.columns:
-                for idx, value in dataDictionary_numeric[col].items():
-                    if value < lower_bound or value > upper_bound:
-                        return True
+        if field is None:
+            dataDictionary_copy=getOutliers(dataDictionary=dataDictionary_copy,field=None,axis_param=None)
+            if belongOp == Belong.BELONG:
+                if quant_op is None:  # Check if there are any invalid values in dataDictionary
+                    if outlier in dataDictionary_copy.values:
+                        return True  # Caso 1
+                    else:
+                        return False  # Caso 2
+                else:
+                    if quant_rel is not None and quant_abs is None:  # Check there are any invalid values in
+                        # dataDictionary and if it meets the condition of quant_rel and quant_op (relative frequency)
+                        if compare_numbers(count_abs_frequency(outlier, dataDictionary_copy) / dataDictionary_copy.size, quant_rel, quant_op):
+                            return True  # Caso 3
+                        else:
+                            return False  # Caso 4
+                    elif quant_abs is not None and quant_rel is None:  # Check there are any invalid values in
+                        # dataDictionary and if it meets the condition of quant_abs and quant_op (absolute frequency)
+                        if compare_numbers(count_abs_frequency(outlier, dataDictionary_copy), quant_abs, quant_op):
+                            return True  # Caso 5
+                        else:
+                            return False  # Caso 6
+                    elif quant_abs is not None and quant_rel is not None:
+                        # Si se proporcionan los dos, se lanza un ValueError
+                        raise ValueError(
+                            "quant_rel and quant_abs can't have different values than None at the same time")  # Caso 7
+                    else:
+                        raise ValueError(
+                            "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is "
+                            "not None")  # Caso 8
+            else:
+                if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                    # Check that there aren't any invalid values in dataDictionary
+                    return True if not (outlier in dataDictionary_copy.values) else False # Caso 9 y 10
+                else:
+                    raise ValueError("Error: quant_op, quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 11
+        else:
+            if field is not None:
+                if field not in dataDictionary.columns:
+                    raise ValueError(f"Column '{field}' not found in dataDictionary.") # Caso 12
 
-        elif axis_param == 0:
+                dataDictionary_copy = getOutliers(dataDictionary=dataDictionary_copy, field=field, axis_param=None)
+                if belongOp == Belong.BELONG:
+                    if quant_op is None:  # Check that there are invalid values in the column specified by field
+                        if outlier in dataDictionary_copy[field].values:
+                            return True # Caso 13
+                        else:
+                            return False # Caso 14
+                    else:
+                        if quant_rel is not None and quant_abs is None:  # Check there are invalid values in the
+                            # column specified by field and if it meets the condition of quant_rel and quant_op
+                            # (relative frequency)
+                                if compare_numbers(count_abs_frequency(outlier, dataDictionary_copy) / dataDictionary_copy[field].size,
+                                                                        quant_rel, quant_op):
+                                    return True # Caso 15
+                                else:
+                                    return False # Caso 16
+                        elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
+                            # column specified by field and if it meets the condition of quant_abs and quant_op
+                            # (absolute frequency)
+                            if compare_numbers(count_abs_frequency(outlier, dataDictionary_copy), quant_abs, quant_op):
+                                return True # Caso 17
+                            else:
+                                return False # Caso 18
+                        elif quant_abs is not None and quant_rel is not None:
+                            # Si se proporcionan los dos, se lanza un ValueError
+                            raise ValueError(
+                                "quant_rel and quant_abs can't have different values than None at the same time") # Caso 19
+                        else:
+                            raise ValueError(
+                                "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None") # Caso 20
+                else:
+                    if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                        # Check that there aren't any invalid values in the column specified by field
+                        return True if not (outlier in dataDictionary_copy[field].values) else False # Caso 21 y 22
+                    else:
+                        raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 23
 
-            for col in dataDictionary_numeric.columns:
-                Q1 = dataDictionary_numeric[col].quantile(0.25)
-                Q3 = dataDictionary_numeric[col].quantile(0.75)
-                IQR = Q3 - Q1
-                # Definir los límites para identificar outliers
-                lower_bound_col = Q1 - threshold * IQR
-                upper_bound_col = Q3 + threshold * IQR
 
-                for idx, value in dataDictionary_numeric[col].items():
-                    if value < lower_bound_col or value > upper_bound_col:
-                        return True
 
-        elif axis_param == 1:
-            for idx, row in dataDictionary_numeric.iterrows():
-                Q1 = row.quantile(0.25)
-                Q3 = row.quantile(0.75)
-                IQR = Q3 - Q1
-                # Definir los límites para identificar outliers
-                lower_bound_row = Q1 - threshold * IQR
-                upper_bound_row = Q3 + threshold * IQR
-
-                for col in row.index:
-                    value = row[col]
-                    if value < lower_bound_row or value > upper_bound_row:
-                        return True
-
-        return False
