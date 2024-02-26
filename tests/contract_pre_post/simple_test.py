@@ -2303,6 +2303,24 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("Casos Básicos añadidos:")
 
+        # Caso 1
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                       'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field=None
+        belongOp=0
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field)
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        dataDictionary = pd.DataFrame(data={'colour': [-0.25, 0, 1.25, 0.25, 0.25, 1],
+                                        'names': ['John', 'Mary', None, np.NaN, None, None]})
+        belongOp=0
+        field=None
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field)
+        assert result is False , "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
+
         # Caso 3
         dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
                                        'names': ['John', 'Mary', None, np.NaN, None, None]})
@@ -2315,8 +2333,139 @@ class ContractSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
+        # Caso 4
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                       'names': ['John', 'Mary', None, np.NaN, None, None]})
+        quant_rel=0.01
+        quant_op= 2 # less
+        belongOp=0
+        field=None
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field,
+                                             quant_abs=None, quant_rel=quant_rel, quant_op=Operator(quant_op))
+        assert result is False, "Test Case 4 Failed: Expected False, but got True"
+        print_and_log("Test Case 4 Passed: Expected False, got False")
 
-        # # Caso 2 # No existen outliers
+        # Caso 5
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                      'names': ['John', 'Mary', None, np.NaN, None, None]})
+        quant_abs=1
+        # Equal
+        quant_op= 4
+        belongOp=0
+        field=None
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field,
+                                             quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                      'names': ['John', 'Mary', None, np.NaN, None, None]})
+        belongOp=0
+        field=None
+        quant_abs=1
+        # Greater
+        quant_op= 1
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field,
+                                                quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        print_and_log("Test Case 6 Passed: Expected False, got False")
+
+        # Exception quant_abs and quant_op are not None at the same time (Case 7)
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                        'names': ['John', 'Mary', None, np.NaN, None, None]})
+        belongOp=0
+        field=None
+        quant_abs=1
+        quant_op= 1 # greater
+        quant_rel=0.01
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field,
+                                                 quant_abs=quant_abs, quant_rel=quant_rel, quant_op=Operator(quant_op))
+        print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
+
+
+        # Exception quant_op is not None and quant_abs/quant_rel are both None (Case 8)
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                        'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field=None
+        quant_op= 1
+        expected_exception = ValueError
+        belongOp=0
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field,
+                                                 quant_op=Operator(quant_op))
+        print_and_log("Test Case 8 Passed: Expected ValueError, got ValueError")
+
+        # Caso 9
+        belongOp=1
+        dataDictionary = pd.DataFrame(data={'colour': [-0.3, 0, 1.25, 0.25, 1.25, 1],
+                                         'names': ['John', 'Mary', None, np.NaN, None, None]})
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=None)
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
+
+        # Caso 10
+        belongOp=1
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                         'names': ['John', 'Mary', None, np.NaN, None, None]})
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=None)
+        assert result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, got False")
+
+        # Caso 11 # Exception quant_abs, quant_op or quant_rel are not None when belongOp is 1
+        belongOp=1
+        quant_abs=1
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                         'names': ['John', 'Mary', None, np.NaN, None, None]})
+        quant_op= 1 # greater
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=None,
+                                                 quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        print_and_log("Test Case 11 Passed: Expected ValueError, got ValueError")
+
+        # Case 12
+        field = 'price'
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                         'names': ['John', 'Mary', None, np.NaN, None, None]})
+        belongOp=0
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field)
+        print_and_log("Test Case 12 Passed: Expected ValueError, got ValueError")
+
+        # Case 13
+        field = 'colour'
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
+                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+        belongOp=0
+        quant_op=None
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field, quant_op=quant_op)
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        # Case 14
+        field = 'colour'
+        dataDictionary = pd.DataFrame(data={'colour': [1, 0, 1.25, 0.25, 2.25, 1],
+                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+        belongOp=0
+        quant_op=None
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field, quant_op=quant_op)
+        assert result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, got False")
+
+        # Case 15
+
+
+
+
+
+
+
+
+
+
         # dataframe = pd.DataFrame(data={'colour': [0, 0.25, 0.5, 0.75, 1],
         #                                'names': ['John', 'Mary', None, np.NaN, None]})
         # result = self.pre_post.checkOutliers(dataDictionary=dataframe)
