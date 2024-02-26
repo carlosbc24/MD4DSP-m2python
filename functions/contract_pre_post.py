@@ -460,7 +460,7 @@ class ContractsPrePost:
         :return: boolean indicating if there are outliers in the dataDictionary
         """
         dataDictionary_copy = dataDictionary.copy()
-        outlier=1
+        outlier=1 # 1 is the value that is going to be used to check if there are outliers in the dataframe
 
         if field is None:
             dataDictionary_copy=getOutliers(dataDictionary=dataDictionary_copy,field=None,axis_param=None)
@@ -493,10 +493,10 @@ class ContractsPrePost:
                             "not None")  # Caso 8
             else:
                 if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                    # Check that there aren't any invalid values in dataDictionary
                     return True if not (outlier in dataDictionary_copy.values) else False # Caso 9 y 10
                 else:
-                    raise ValueError("Error: quant_op, quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 11
+                    raise ValueError("Error: quant_op, quant_rel and quant_abs should be None when belongOp is "
+                                     "NOTBELONG") # Caso 11
         else:
             if field is not None:
                 if field not in dataDictionary.columns:
@@ -515,28 +515,36 @@ class ContractsPrePost:
                             # (relative frequency)
                                 if compare_numbers(count_abs_frequency(outlier, dataDictionary_copy) / dataDictionary_copy[field].size,
                                                                         quant_rel, quant_op):
+                                    print("Caso 15")
                                     return True # Caso 15
                                 else:
+                                    print("Caso 16")
                                     return False # Caso 16
                         elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
                             # column specified by field and if it meets the condition of quant_abs and quant_op
                             # (absolute frequency)
                             if compare_numbers(count_abs_frequency(outlier, dataDictionary_copy), quant_abs, quant_op):
+                                print("Caso 17")
                                 return True # Caso 17
                             else:
+                                print("Caso 18")
                                 return False # Caso 18
                         elif quant_abs is not None and quant_rel is not None:
                             # Si se proporcionan los dos, se lanza un ValueError
+                            print("Caso 19")
                             raise ValueError(
                                 "quant_rel and quant_abs can't have different values than None at the same time") # Caso 19
                         else:
+                            print("Caso 20")
                             raise ValueError(
                                 "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None") # Caso 20
                 else:
                     if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                         # Check that there aren't any invalid values in the column specified by field
+                        print("Caso 21 y 22")
                         return True if not (outlier in dataDictionary_copy[field].values) else False # Caso 21 y 22
                     else:
+                        print("Caso 23")
                         raise ValueError("Error: quant_rel and quant_abs should be None when belongOp is NOTBELONG") # Caso 23
 
 

@@ -179,17 +179,17 @@ def getOutliers(dataDictionary: pd.DataFrame, field : str = None, axis_param: in
                         dataDictionary_copy.at[idx, col] = 1
             return dataDictionary_copy
     elif field is not None:
-        if dataDictionary_copy[field].dtype != np.number:
+        if dataDictionary[field].dtype != np.number:
             raise ValueError("The field is not numeric")
 
-        Q1 = dataDictionary_copy[field].quantile(0.25)
-        Q3 = dataDictionary_copy[field].quantile(0.75)
+        Q1 = dataDictionary[field].quantile(0.25)
+        Q3 = dataDictionary[field].quantile(0.75)
         IQR = Q3 - Q1
 
         lower_bound_col = Q1 - threshold * IQR
         upper_bound_col = Q3 + threshold * IQR
 
-        for idx, value in dataDictionary_copy[field].items():
+        for idx, value in dataDictionary[field].items():
             if value < lower_bound_col or value > upper_bound_col:
                 dataDictionary_copy.at[idx, field] = 1
 
