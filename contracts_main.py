@@ -11,13 +11,15 @@ if __name__ == "__main__":
     # Set the logger to save the logs of the execution in the path logs/test
     set_logger("test")
 
-    # # Execute all pre-post simple tests
-    # contract_test = ContractSimpleTest()
+    # Execute all pre-post simple tests
+    contract_test = ContractSimpleTest()
     # contract_test.executeAll_SimpleTests()
-    #
-    # # Execute all pre-post external dataset tests
-    # ContractTestWithDatasets = ContractExternalDatasetTests()
+    contract_test.execute_CheckOutliers_SimpleTests()
+
+    # Execute all pre-post external dataset tests
+    ContractTestWithDatasets = ContractExternalDatasetTests()
     # ContractTestWithDatasets.executeAll_ExternalDatasetTests()
+    ContractTestWithDatasets.execute_CheckOutliers_SpotifyDatasetTests()
 
     # Execute all invariants simple tests
     contracts_invariants_test = InvariantSimpleTest()

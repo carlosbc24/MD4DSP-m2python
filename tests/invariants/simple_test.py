@@ -20,6 +20,8 @@ class InvariantSimpleTest(unittest.TestCase):
     Methods:
     """
 
+    #TODO: Add the remaining simple tests and adapt the existing ones to the field values
+
     def __init__(self):
         """
         Constructor of the class
@@ -615,8 +617,7 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("")
 
 
-    # TODO: Change specialTypeMean y los demas
-    # TODO: Implement the simples tests
+
     def execute_CheckInv_SpecialValue_NumOp(self):
         """
         Execute the simple tests of the function checkInv_SpecialValue_NumOp
@@ -836,7 +837,6 @@ class InvariantSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 14 Passed: got the dataframe expected")
 
-        #TODO: Check if the test is correct
         # Caso 15
         # Probamos a aplicar la operación closest sobre un dataframe sin nulos
         datadic = pd.DataFrame(

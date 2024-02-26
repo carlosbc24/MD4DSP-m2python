@@ -6,7 +6,7 @@ import pandas as pd
 from functions.contract_invariants import ContractsInvariants
 from helpers.logger import print_and_log
 
-
+#TODO: Implement the invariants tests with external dataset
 class InvariantsExternalDatasetTests(unittest.TestCase):
     """
         Class to test the invariants with external dataset test cases

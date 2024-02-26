@@ -2294,7 +2294,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckOutliers_SimpleTests(self):
+    def execute_CheckOutliers_SimpleTests(self):#TODO: Finish all the options
         """
         Execute the simple tests of the function checkOutliers
         """
@@ -2303,33 +2303,39 @@ class ContractSimpleTest(unittest.TestCase):
 
         print_and_log("Casos Básicos añadidos:")
 
-        # Caso 1
-        dataframe = pd.DataFrame(data={'colour': [-10, 0, 0.25, 0.5, 0.75, 1],
+        # Caso 3
+        dataDictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
                                        'names': ['John', 'Mary', None, np.NaN, None, None]})
-        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=0)
-        assert result is True, "Test Case 1 Failed: Expected True, but got False"
-        print_and_log("Test Case 1 Passed: Expected True, got True")
+        field=None
+        quant_rel=0.01
+        quant_op= 1 # greater
+        belongOp=0
+        result = self.pre_post.checkOutliers(dataDictionary=dataDictionary, belongOp=Belong(belongOp), field=field,
+                                             quant_abs=None, quant_rel=quant_rel, quant_op=Operator(quant_op))
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
 
-        # Caso 2 # No existen outliers
-        dataframe = pd.DataFrame(data={'colour': [0, 0.25, 0.5, 0.75, 1],
-                                       'names': ['John', 'Mary', None, np.NaN, None]})
-        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=0)
-        assert result is False, "Test Case 2 Failed: Expected False, but got True"
-        print_and_log("Test Case 2 Passed: Expected False, got False")
 
-        # Caso 3: prueba con otros tipos de datos numéricos (enteros)
-        dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5],
-                                       'temperature': [6, 7, 8, 9, 10],
-                                       'names': ['John', 'Mary', None, np.NaN, None]})
-        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=None)
-        assert result is False, "Test Case 3 Failed: Expected False, but got True"
-        print_and_log("Test Case 3 Passed: Expected False, got False")
-
-        # Caso 4: prueba con otros tipos de datos numéricos (enteros) Devuelve True al si existir outliers
-        dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5],
-                                         'temperature': [6, 7, 8, 9, 100],
-                                        'names': ['John', 'Mary', None, np.NaN, None]})
-        result = self.pre_post.checkOutliers(dataDictionary=dataframe, axis_param=None)
-        assert result is True, "Test Case 4 Failed: Expected True, but got False"
-        print_and_log("Test Case 4 Passed: Expected True, got True")
+        # # Caso 2 # No existen outliers
+        # dataframe = pd.DataFrame(data={'colour': [0, 0.25, 0.5, 0.75, 1],
+        #                                'names': ['John', 'Mary', None, np.NaN, None]})
+        # result = self.pre_post.checkOutliers(dataDictionary=dataframe)
+        # assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        # print_and_log("Test Case 2 Passed: Expected False, got False")
+        #
+        # # Caso 3: prueba con otros tipos de datos numéricos (enteros)
+        # dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5],
+        #                                'temperature': [6, 7, 8, 9, 10],
+        #                                'names': ['John', 'Mary', None, np.NaN, None]})
+        # result = self.pre_post.checkOutliers(dataDictionary=dataframe)
+        # assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        # print_and_log("Test Case 3 Passed: Expected False, got False")
+        #
+        # # Caso 4: prueba con otros tipos de datos numéricos (enteros) Devuelve True al si existir outliers
+        # dataframe = pd.DataFrame(data={'colour': [1, 2, 3, 4, 5],
+        #                                  'temperature': [6, 7, 8, 9, 100],
+        #                                 'names': ['John', 'Mary', None, np.NaN, None]})
+        # result = self.pre_post.checkOutliers(dataDictionary=dataframe)
+        # assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        # print_and_log("Test Case 4 Passed: Expected True, got True")
 
