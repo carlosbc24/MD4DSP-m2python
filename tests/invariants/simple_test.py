@@ -618,8 +618,31 @@ class InvariantSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
+        # Caso 2
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                closureType=Closure(3), derivedTypeOutput=DerivedType(0),
+                                                                axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 0, 0, 0, 0], 'B': [2, 2, 6, 2, 2], 'C': [1, 1, 1, 1, 1]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+        # Caso 3
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                closureType=Closure(2), derivedTypeOutput=DerivedType(0),
+                                                                axis_param=None)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [2, 2, 2, 2, 5], 'B': [2, 2, 6, 2, 5], 'C': [2, 2, 2, 2, 5]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+
         # Caso 4
-        # Comprobar la invariante: cambiar el rango de valores (0, 5] por el valor derivado 1 (Previous) a nivel de columna
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
@@ -631,8 +654,18 @@ class InvariantSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
+        # Caso 5
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                    closureType=Closure(1),
+                                                                    derivedTypeOutput=DerivedType(1), axis_param=None)
+        print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
+
         # Caso 6
-        # Comprobar la invariante: cambiar el rango de valores (0, 5] por el valor derivado 2 (Next) a nivel de fila
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
@@ -644,6 +677,72 @@ class InvariantSimpleTest(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                    closureType=Closure(1),
+                                                                    derivedTypeOutput=DerivedType(2), axis_param=None)
+        print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
+
+        # Caso 8
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field='T'
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                    closureType=Closure(1), derivedTypeOutput=DerivedType(2),
+                                                                    axis_param=None, field=field)
+        print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
+
+        # Caso 9
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field='A'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                closureType=Closure(0), derivedTypeOutput=DerivedType(0),
+                                                                axis_param=1, field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 0, 0, 0, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
+
+        # TODO: Check invariant
+        # Caso 10
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field='A'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                closureType=Closure(0), derivedTypeOutput=DerivedType(1),
+                                                                axis_param=0, field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 0, 2, 3, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field='A'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                closureType=Closure(0), derivedTypeOutput=DerivedType(2),
+                                                                axis_param=1, field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 3, 4, 5, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
 
 
         print_and_log("")
