@@ -35,7 +35,8 @@ class ContractsInvariants:
             dataDictionary = dataDictionary.replace(fixValueInput, fixValueOutput)
         elif field is not None:
             if field in dataDictionary.columns:
-                dataDictionary[field] = dataDictionary[field].replace(fixValueInput, fixValueOutput)
+                dataDictionary.loc[:, field] = dataDictionary.loc[:, field].replace(fixValueInput, fixValueOutput)
+                # dataDictionary[field] = dataDictionary[field].replace(fixValueInput, fixValueOutput)
             elif field not in dataDictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
