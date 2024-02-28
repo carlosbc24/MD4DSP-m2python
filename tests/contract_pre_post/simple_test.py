@@ -2294,7 +2294,7 @@ class ContractSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckOutliers_SimpleTests(self):#TODO: Finish all the options
+    def execute_CheckOutliers_SimpleTests(self):
         """
         Execute the simple tests of the function checkOutliers
         """

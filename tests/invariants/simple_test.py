@@ -161,7 +161,7 @@ class InvariantSimpleTest(unittest.TestCase):
         """
         """
         DerivedTypes:
-            0: Most Frequently
+            0: Most Frequent
             1: Previous
             2: Next
         axis_param:
@@ -457,7 +457,6 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO: Implement the simples tests
     def execute_CheckInv_Interval_FixValue(self):
         """
         Execute the simple tests of the function checkInv_Interval_FixValue
@@ -467,6 +466,38 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Caso 1
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                            closureType=Closure(0), dataTypeOutput=DataType(0),
+                                                            fixValueOutput='Suspenso')
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 5],
+                                 'B': ['Suspenso', 'Suspenso', 6, 0, 5],
+                                 'C': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 5]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+
+        # Caso 2
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                            closureType=Closure(1), dataTypeOutput=DataType(0),
+                                                            fixValueOutput='Suspenso')
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'],
+                                 'B': ['Suspenso', 'Suspenso', 6, 0, 'Suspenso'],
+                                 'C': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso']})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+
+        # Caso 3
         # Comprobar la invariante: cambiar el rango de valores [0, 5) por el valor fijo 'Suspenso'
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
@@ -479,8 +510,87 @@ class InvariantSimpleTest(unittest.TestCase):
                                  'C': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 5]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
+
+        # Caso 4
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                            closureType=Closure(3), dataTypeOutput=DataType(0),
+                                                            fixValueOutput='Suspenso')
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'],
+                                 'B': ['Suspenso', 'Suspenso', 6, 'Suspenso', 'Suspenso'],
+                                 'C': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso']})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+        # Caso 5
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        field='A'
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                            closureType=Closure(0), dataTypeOutput=DataType(0),
+                                                            fixValueOutput='Suspenso', field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 5], 'B': [2, 3, 6, 0, 5],
+                                 'C': [1, 2, 3, 4, 5]})
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # Caso 6
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        field='A'
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                            closureType=Closure(1), dataTypeOutput=DataType(0),
+                                                            fixValueOutput='Suspenso', field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'], 'B': [2, 3, 6, 0, 5],
+                                 'C': [1, 2, 3, 4, 5]})
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        field='A'
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                            closureType=Closure(2), dataTypeOutput=DataType(0),
+                                                            fixValueOutput='Suspenso', field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 5], 'B': [2, 3, 6, 0, 5],
+                                 'C': [1, 2, 3, 4, 5]})
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 8
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        field='A'
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                            closureType=Closure(3), dataTypeOutput=DataType(0),
+                                                            fixValueOutput='Suspenso', field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'], 'B': [2, 3, 6, 0, 5],
+                                 'C': [1, 2, 3, 4, 5]})
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
 
 
         print_and_log("")
@@ -497,6 +607,18 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Caso 1
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                closureType=Closure(0), derivedTypeOutput=DerivedType(0),
+                                                                axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 2, 6, 0, 5], 'C': [0, 2, 3, 4, 5]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+        # Caso 4
         # Comprobar la invariante: cambiar el rango de valores (0, 5] por el valor derivado 1 (Previous) a nivel de columna
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
@@ -507,20 +629,21 @@ class InvariantSimpleTest(unittest.TestCase):
         expected = pd.DataFrame({'A': [0, 0, 2, 3, 4], 'B': [2, 2, 6, 0, 0], 'C': [1, 1, 2, 3, 4]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
-        # Caso 2
-        # Comprobar la invariante: cambiar el rango de valores (0, 5] por el valor derivado 1 (Previous) a nivel de fila
+        # Caso 6
+        # Comprobar la invariante: cambiar el rango de valores (0, 5] por el valor derivado 2 (Next) a nivel de fila
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5, closureType=Closure(1),
-                                                                derivedTypeOutput=DerivedType(1), axis_param=1)
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+                                                                closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(2), axis_param=1)
         # Definir el resultado esperado
-        expected = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 2, 6, 0, 5], 'C': [2, 3, 6, 0, 5]})
+        expected = pd.DataFrame({'A': [0, 3, 6, 0, 5], 'B': [1, 2, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
 
 
         print_and_log("")
@@ -560,7 +683,6 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO: Implement the simples tests
     def execute_CheckInv_SpecialValue_FixValue(self):
         """
         Execute the simple tests of the function checkInv_SpecialValue_FixValue
@@ -570,6 +692,92 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Caso 1
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, 999, 10], 'C': [999, 10, 999, 4, 999], 'D': [2, 999, 4, 6, 10],
+             'E': [999, 10, 999, 4, 999]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+        # Caso 2
+        # Comprobar la invariante: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, np.NaN, 10], 'C': [999, 10, 999, 4, 999], 'D': [2, None, 4, 6, 10],
+             'E': [999, 10, 999, 4, 999]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+        # Caso 3
+        # Comprobar la invariante: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                axis_param=None)
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 999], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 999],
+             'E': [1, 999, 3, 4, 1]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+
+        # Caso 4
+        # Comprobar la invariante: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 999, 3, 4, 1]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+
+        # Caso 5
         # Comprobar la invariante: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10], 'E': [1, 10, 3, 4, 1]})
@@ -580,7 +788,93 @@ class InvariantSimpleTest(unittest.TestCase):
         expected = pd.DataFrame({'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 999], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 999], 'E': [1, 10, 3, 4, 1]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # Caso 6
+        # Comprobar la invariante: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        field= 'B'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0, field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, 999, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        # Comprobar la invariante: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        field= 'B'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0, field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 8
+        # Comprobar la invariante: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        field= 'C'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                axis_param=None, field=field)
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+
+        # Caso 9
+        # ValueError
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        field= 'T'
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                    dataTypeOutput=DataType(2), fixValueOutput=999,
+                                                                    axis_param=None, field=field)
+        print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
 
         print_and_log("")
@@ -850,6 +1144,23 @@ class InvariantSimpleTest(unittest.TestCase):
                                                                 numOpOutput=Operation(3), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 15 Passed: got the dataframe expected")
+
+        # Caso 16
+        # Probamos a aplicar la operación mean sobre un field concreto
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 2.84, 2, 1, 2]})
+        expected_df = expected_df.astype({
+            'D': 'float64'  # Convertir D a float64
+        })
+        field = 'D'
+        missing_values=[8.2]
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+                                                                numOpOutput=Operation(1), missing_values=missing_values,
+                                                                axis_param=0, field=field)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 16 Passed: got the dataframe expected")
 
 
 
