@@ -22,12 +22,12 @@ if __name__ == "__main__":
     # ContractTestWithDatasets.execute_CheckOutliers_SpotifyDatasetTests()
 
     # Execute all invariants simple tests
-    # contracts_invariants_test = InvariantSimpleTest()
-    # contracts_invariants_test.execute_All_SimpleTests()
+    contracts_invariants_test = InvariantSimpleTest()
+    contracts_invariants_test.execute_All_SimpleTests()
 
     # TODO: Implement the invariants external dataset tests
     # Execute all invariants external dataset tests
-    InvariantTestWithDatasets = InvariantsExternalDatasetTests()
-    InvariantTestWithDatasets.executeAll_ExternalDatasetTests()
+    # InvariantTestWithDatasets = InvariantsExternalDatasetTests()
+    # InvariantTestWithDatasets.executeAll_ExternalDatasetTests()
 
 

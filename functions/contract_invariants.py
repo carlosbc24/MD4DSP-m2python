@@ -345,18 +345,18 @@ class ContractsInvariants:
             if field not in dataDictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in dataDictionary.columns: #TODO: No funcionan PREVIOUS ni NEXT. Además, hay que hacer comprobaciones para que los indices no se salgan del rango
+            elif field in dataDictionary.columns:  # TODO: No funcionan PREVIOUS ni NEXT. Además, hay que hacer comprobaciones para que los indices no se salgan del rango
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda value: dataDictionary_copy[field].value_counts().idxmax() if get_condition(value) else value)
+                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value:
+                                dataDictionary_copy[field].value_counts().idxmax() if get_condition(value) else value)
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda value: np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[
-                            dataDictionary_copy[field].index.get_loc(value) - 1] if get_condition(value) else value)
+                    dataDictionary_copy[field] = pd.Series([np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
+                        if get_condition(value) and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
+                        index=dataDictionary_copy[field].index)
                 elif derivedTypeOutput == DerivedType.NEXT:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda value: np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[
-                            dataDictionary_copy[field].index.get_loc(value) + 1] if get_condition(value) else value)
+                    dataDictionary_copy[field] = pd.Series([np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
+                        if get_condition(value) and i < len(dataDictionary_copy[field]) - 1 else value for i, value in
+                                        enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
 
         return dataDictionary_copy
 
