@@ -1202,6 +1202,69 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Caso 1
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(0), missing_values=missing_values,
+                                                                    axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 0, 0, 0, 0], 'B': [2, 12, 12, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        expected = expected.astype({
+            'A': 'float64'  # Convertir A a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+        # Caso 2
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(0), missing_values=missing_values,
+                                                                    axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 3, 3, 4, 2], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 4, 2], 'D': [0, 8, 8, 4, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+        # Caso 3
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(0), missing_values=missing_values,
+                                                                    axis_param=None)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 3, 3, 3, 3], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [3, 8, 8, 3, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+
+        # Caso 4
         # Comprobar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent)
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -1215,7 +1278,71 @@ class InvariantSimpleTest(unittest.TestCase):
         expected = pd.DataFrame({'A': [0, None, 0, 0, 0], 'B': [2, 12, 12, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+        # Caso 5
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                    derivedTypeOutput=DerivedType(0), missing_values=missing_values,
+                                                                    axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, None, 3, 4, 2], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 4, 2], 'D': [0, 8, 8, 4, 2]})
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Caso 6
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                    derivedTypeOutput=DerivedType(0), missing_values=missing_values,
+                                                                    axis_param=None)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, None, 3, 3, 3], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [3, 8, 8, 3, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(1), missing_values=missing_values,
+                                                                    axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 0, np.NaN, 3, 4], 'B': [2, 2, 3, 12, 12], 'C': [10, 0, 0, 3, 2], 'D': [1, 8, 8, 8, 2]})
+        expected = expected.astype({
+            'A': 'float64'  # Convertir A a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+
+
+
+
+
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")

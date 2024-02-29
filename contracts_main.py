@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # Execute all invariants simple tests
     contracts_invariants_test = InvariantSimpleTest()
     # contracts_invariants_test.execute_All_SimpleTests()
-    contracts_invariants_test.execute_CheckInv_Interval_NumOp()
+    contracts_invariants_test.execute_CheckInv_SpecialValue_DerivedValue()
 
     # TODO: Implement the invariants external dataset tests
     # Execute all invariants external dataset tests
