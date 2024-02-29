@@ -20,7 +20,6 @@ class InvariantSimpleTest(unittest.TestCase):
     Methods:
     """
 
-    #TODO: Add the remaining simple tests and adapt the existing ones to the field values
 
     def __init__(self):
         """
