@@ -179,7 +179,7 @@ def getOutliers(dataDictionary: pd.DataFrame, field : str = None, axis_param: in
                         dataDictionary_copy.at[idx, col] = 1
             return dataDictionary_copy
     elif field is not None:
-        if dataDictionary[field].dtype != np.number:
+        if not np.issubdtype(dataDictionary[field].dtype, np.number):
             raise ValueError("The field is not numeric")
 
         Q1 = dataDictionary[field].quantile(0.25)
@@ -378,16 +378,16 @@ def apply_derivedType(specialTypeInput: SpecialType,derivedTypeOutput: DerivedTy
                 if specialTypeInput == SpecialType.MISSING:
                     if missing_values is not None:
                         dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i + 1]
-                            if (value in missing_values or pd.isnull(value)) and i < len(dataDictionary_copy[field]) else value for i, value in
+                            if (value in missing_values or pd.isnull(value)) and i < len(dataDictionary_copy[field])-1 else value for i, value in
                              enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
                     else:
                         dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i + 1]
-                            if pd.isnull(value) and i < len(dataDictionary_copy[field]) else value for i, value in
+                            if pd.isnull(value) and i < len(dataDictionary_copy[field])-1 else value for i, value in
                              enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
                 elif specialTypeInput == SpecialType.INVALID:
                     if missing_values is not None:
                         dataDictionary_copy[field] = pd.Series([np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
-                            if value in missing_values and i < len(dataDictionary_copy[field]) else value for i, value in
+                            if value in missing_values and i < len(dataDictionary_copy[field])-1 else value for i, value in
                              enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
 
     return dataDictionary_copy
