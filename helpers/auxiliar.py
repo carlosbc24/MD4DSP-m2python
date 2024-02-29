@@ -360,24 +360,41 @@ def apply_derivedType(specialTypeInput: SpecialType,derivedTypeOutput: DerivedTy
                         lambda x: dataDictionary_copy[field].value_counts().idxmax() if x in missing_values else x)
             elif derivedTypeOutput == DerivedType.PREVIOUS:
                 if specialTypeInput == SpecialType.MISSING:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: dataDictionary_copy[field].shift(1) if pd.isnull(x) else x)
-                if missing_values is not None:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: dataDictionary_copy[field].shift(1) if x in missing_values else x)
+                    if missing_values is not None:
+                        dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i - 1]
+                            if (value in missing_values or pd.isnull(value)) and i > 0 else value for i, value in
+                             enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
+                    else:
+                        dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i - 1]
+                            if pd.isnull(value) and i > 0 else value for i, value in
+                             enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
+                elif specialTypeInput == SpecialType.INVALID:
+                    if missing_values is not None:
+                        dataDictionary_copy[field] = pd.Series([np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
+                            if value in missing_values and i > 0 else value for i, value in
+                             enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
+
             elif derivedTypeOutput == DerivedType.NEXT:
                 if specialTypeInput == SpecialType.MISSING:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: dataDictionary_copy[field].shift(-1) if pd.isnull(x) else x)
-                if missing_values is not None:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: dataDictionary_copy[field].shift(-1) if x in missing_values else x)
+                    if missing_values is not None:
+                        dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i + 1]
+                            if (value in missing_values or pd.isnull(value)) and i < len(dataDictionary_copy[field]) else value for i, value in
+                             enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
+                    else:
+                        dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i + 1]
+                            if pd.isnull(value) and i < len(dataDictionary_copy[field]) else value for i, value in
+                             enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
+                elif specialTypeInput == SpecialType.INVALID:
+                    if missing_values is not None:
+                        dataDictionary_copy[field] = pd.Series([np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
+                            if value in missing_values and i < len(dataDictionary_copy[field]) else value for i, value in
+                             enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
 
     return dataDictionary_copy
 
 
 def specialTypeInterpolation(dataDictionary_copy : pd.DataFrame, specialTypeInput: SpecialType, dataDictionary_copy_mask : pd.DataFrame = None,
-                             missing_values : list = None, axis_param : int = None, field: str = None)->pd.DataFrame:
+                             missing_values: list = None, axis_param: int = None, field: str = None)->pd.DataFrame:
     """
     Apply the interpolation to the missing values of a dataframe
     :param dataDictionary_copy: dataframe with the data

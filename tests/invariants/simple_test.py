@@ -1338,6 +1338,112 @@ class InvariantSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
 
+        # Caso 8
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                    derivedTypeOutput=DerivedType(1), missing_values=missing_values,
+                                                                    axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, np.NaN, 3, 12, 12], 'C': [10, 0, 4, 12, 2], 'D': [10, 8, 8, 3, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+
+        # Caso 9
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                        derivedTypeOutput=DerivedType(1), missing_values=missing_values,
+                                                                        axis_param=None)
+        print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+
+        # Caso 10
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(2), missing_values=missing_values,
+                                                                    axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 3, 4, 1, 1], 'B': [2, 4, 12, 12, 12], 'C': [10, 0, 3, 2, 2], 'D': [8, 8, 8, 2, 2]})
+        expected = expected.astype({
+            'A': 'float64'  # Convertir A a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                    derivedTypeOutput=DerivedType(2), missing_values=missing_values,
+                                                                    axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, None, 4, 12, 12], 'B': [2, 0, 3, 12, 12], 'C': [10, 0, 8, 1, 2], 'D': [1, 8, 8, 1, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
+
+        # Caso 12
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                        derivedTypeOutput=DerivedType(2), missing_values=missing_values,
+                                                                        axis_param=None)
+        print_and_log("Test Case 12 Passed: expected ValueError, got ValueError")
+
+#TODO:Hacer con field not None------------------------------------------------------------------------------------------------------------------------------------------------
+
+        # Caso 13
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        field= 'T'
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+                                                                        derivedTypeOutput=DerivedType(2), missing_values=missing_values,
+                                                                        axis_param=None, field=field)
+        print_and_log("Test Case 13 Passed: expected ValueError, got ValueError")
+
+
+
 
 
 
