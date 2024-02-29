@@ -320,7 +320,7 @@ def apply_derivedType(specialTypeInput: SpecialType,derivedTypeOutput: DerivedTy
             if axis_param == 0 or axis_param == 1:
                 if specialTypeInput == SpecialType.MISSING:
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([row_or_col.iloc[i - 1]
-                                            if value in missing_values or pd.isnull(value) and i > 0 else value for i, value
+                                            if (value in missing_values or pd.isnull(value)) and i > 0 else value for i, value
                                                     in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     # Define la función lambda para reemplazar los valores dentro de missing values por el valor de la posición anterior
