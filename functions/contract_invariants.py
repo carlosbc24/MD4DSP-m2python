@@ -345,7 +345,7 @@ class ContractsInvariants:
             if field not in dataDictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in dataDictionary.columns:  # TODO: No funcionan PREVIOUS ni NEXT. Además, hay que hacer comprobaciones para que los indices no se salgan del rango
+            elif field in dataDictionary.columns:
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value:
                                 dataDictionary_copy[field].value_counts().idxmax() if get_condition(value) else value)

@@ -597,7 +597,6 @@ class InvariantSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO: Implement the simples tests
     def execute_CheckInv_Interval_DerivedValue(self):
         """
         Execute the simple tests of the function checkInv_Interval_DerivedValue
@@ -715,7 +714,6 @@ class InvariantSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
-        # TODO: Check invariant
         # Caso 10
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
@@ -775,6 +773,145 @@ class InvariantSimpleTest(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+        # Caso 2
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+                                                            closureType=Closure(3), numOpOutput=Operation(0), axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, np.NaN, 6, 0, 5], 'B': [0.5, np.NaN, 6, 0, 5], 'C': [1, np.NaN, 6, 0, 5]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+        # Caso 3
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+                                                                closureType=Closure(3), numOpOutput=Operation(0), axis_param=None)
+        print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
+
+        # Caso 4
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+                                                            closureType=Closure(0), numOpOutput=Operation(1), axis_param=None)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 3, 3, 4, 5], 'B': [3, 3, 6, 0, 5], 'C': [3, 3, 3, 4, 5]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+        # Caso 5
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+                                                            closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 2.8, 3, 4, 5], 'B': [3.2, 3, 6, 0, 5], 'C': [3, 3, 3, 4, 5]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # Caso 6
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+                                                            closureType=Closure(0), numOpOutput=Operation(1), axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 7/3, 3, 4, 5], 'B': [1, 3, 6, 0, 5], 'C': [1, 7/3, 3, 4, 5]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+                                                            closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [3, 3, 3, 4, 5], 'B': [3, 3, 6, 3, 5], 'C': [3, 3, 3, 4, 5]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 8
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+                                                            closureType=Closure(2), numOpOutput=Operation(2), axis_param=1)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [1, 3, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+
+        # Caso 9
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=4,
+                                                            closureType=Closure(0), numOpOutput=Operation(3), axis_param=None)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 1, 2, 4, 5], 'B': [1, 2, 6, 0, 5], 'C': [0, 1, 2, 4, 5]})
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
+
+        # Caso 10
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=4,
+                                                            closureType=Closure(0), numOpOutput=Operation(3), axis_param=0)
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 3, 2, 4, 5], 'B': [3, 2, 6, 0, 5], 'C': [2, 1, 2, 4, 5]})
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
 
 
 
