@@ -5,7 +5,7 @@ import pandas as pd
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeColRowOutliers, \
     apply_derivedType, specialTypeInterpolation, specialTypeMean, specialTypeMedian, specialTypeClosest
 # Importing functions and classes from packages
-from helpers.enumerations import Belong, Operator, Closure, DataType, DerivedType, Operation, SpecialType
+from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType
 
 
 class ContractsInvariants:
@@ -13,8 +13,9 @@ class ContractsInvariants:
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
-    def checkInv_FixValue_FixValue(self, dataDictionary: pd.DataFrame, fixValueInput, fixValueOutput, dataTypeInput: DataType = None,
-                                   dataTypeOutput: DataType = None, field : str = None) -> pd.DataFrame:
+    def checkInv_FixValue_FixValue(self, dataDictionary: pd.DataFrame, fixValueInput, fixValueOutput,
+                                   dataTypeInput: DataType = None,
+                                   dataTypeOutput: DataType = None, field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the FixValue - FixValue relation
         params:
@@ -29,7 +30,8 @@ class ContractsInvariants:
         """
         if dataTypeInput is not None and dataTypeOutput is not None:  # Si se especifican los tipos de dato, se realiza la transformación
             # Función auxiliar que cambia los valores de FixValueInput y FixValueOutput al tipo de dato en DataTypeInput y DataTypeOutput respectivamente
-            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput, fixValueOutput)
+            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput,
+                                                               fixValueOutput)
 
         if field is None:
             dataDictionary = dataDictionary.replace(fixValueInput, fixValueOutput)
@@ -42,8 +44,10 @@ class ContractsInvariants:
 
         return dataDictionary
 
-    def checkInv_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, fixValueInput, derivedTypeOutput: DerivedType,
-                                       dataTypeInput: DataType = None, axis_param: int = None, field : str = None) -> pd.DataFrame:
+    def checkInv_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, fixValueInput,
+                                       derivedTypeOutput: DerivedType,
+                                       dataTypeInput: DataType = None, axis_param: int = None,
+                                       field: str = None) -> pd.DataFrame:
         # Por defecto, si todos los valores son igual de frecuentes, se sustituye por el primer valor.
         # Comprobar si solo se debe hacer para filas y columnas o también para el dataframe completo.
         """
@@ -74,7 +78,8 @@ class ContractsInvariants:
                 elif axis_param == 0:  # Aplica la función lambda a nivel de columna
                     dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
                         lambda value: dataDictionary_copy[
-                            columna.name].value_counts().idxmax() if value == fixValueInput else value), axis=axis_param)
+                            columna.name].value_counts().idxmax() if value == fixValueInput else value),
+                                                                    axis=axis_param)
                 else:  # Aplica la función lambda a nivel de dataframe
                     # En caso de empate de valor con más apariciones en el dataset, se toma el primer valor
                     valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
@@ -106,7 +111,7 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value: dataDictionary_copy[
-                            field].value_counts().idxmax() if value == fixValueInput else value)
+                        field].value_counts().idxmax() if value == fixValueInput else value)
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
                     dataDictionary_copy[field] = dataDictionary_copy[field].where(
                         (dataDictionary_copy[field] != fixValueInput) | dataDictionary_copy[field].shift(1).isna(),
@@ -119,7 +124,8 @@ class ContractsInvariants:
         return dataDictionary_copy
 
     def checkInv_FixValue_NumOp(self, dataDictionary: pd.DataFrame, fixValueInput, numOpOutput: Operation,
-                                dataTypeInput: DataType = None, axis_param: int = None, field : str = None) -> pd.DataFrame:
+                                dataTypeInput: DataType = None, axis_param: int = None,
+                                field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
@@ -195,7 +201,8 @@ class ContractsInvariants:
                     # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
-                            lambda x: find_closest_value(col, fixValueInput) if x == fixValueInput else x), axis=axis_param)
+                            lambda x: find_closest_value(col, fixValueInput) if x == fixValueInput else x),
+                        axis=axis_param)
 
             else:
                 raise ValueError("No valid operator")
@@ -206,7 +213,8 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if numOpOutput == Operation.INTERPOLATION:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if x != fixValueInput else np.nan).interpolate(method='linear', limit_direction='both')
+                        lambda x: x if x != fixValueInput else np.nan).interpolate(method='linear',
+                                                                                   limit_direction='both')
                 elif numOpOutput == Operation.MEAN:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                         lambda x: x if x != fixValueInput else dataDictionary_copy[field].mean())
@@ -215,13 +223,14 @@ class ContractsInvariants:
                         lambda x: x if x != fixValueInput else dataDictionary_copy[field].median())
                 elif numOpOutput == Operation.CLOSEST:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if x != fixValueInput else find_closest_value(dataDictionary_copy[field], fixValueInput))
+                        lambda x: x if x != fixValueInput else find_closest_value(dataDictionary_copy[field],
+                                                                                  fixValueInput))
 
         return dataDictionary_copy
 
     def checkInv_Interval_FixValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
                                    closureType: Closure, fixValueOutput, dataTypeOutput: DataType = None,
-                                   field : str = None) -> pd.DataFrame:
+                                   field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the Interval - FixValue relation
         :param dataDictionary: dataframe with the data
@@ -251,7 +260,8 @@ class ContractsInvariants:
                     lambda func: func.apply(lambda x: fixValueOutput if (leftMargin <= x) and (x < rightMargin) else x))
             elif closureType == Closure.closedClosed:
                 dataDictionary_copy = dataDictionary.apply(
-                    lambda func: func.apply(lambda x: fixValueOutput if (leftMargin <= x) and (x <= rightMargin) else x))
+                    lambda func: func.apply(
+                        lambda x: fixValueOutput if (leftMargin <= x) and (x <= rightMargin) else x))
 
         elif field is not None:
             if field not in dataDictionary.columns:
@@ -275,7 +285,7 @@ class ContractsInvariants:
 
     def checkInv_Interval_DerivedValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
                                        closureType: Closure, derivedTypeOutput: DerivedType,
-                                       axis_param: int = None, field : str = None) -> pd.DataFrame:
+                                       axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the Interval - DerivedValue relation
         :param dataDictionary: dataframe with the data
@@ -326,8 +336,12 @@ class ContractsInvariants:
                     # Define una función lambda para reemplazar los valores dentro del intervalo por el valor de la
                     # posición anterior
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                            value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
-                                    for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
+                        value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
+                                                                                                  for i, value in
+                                                                                                  enumerate(
+                                                                                                      row_or_col)],
+                                                                                                 index=row_or_col.index),
+                                                                    axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
             # No asigna nada a np.nan
@@ -336,8 +350,13 @@ class ContractsInvariants:
                 if axis_param is not None:
                     # Define la función lambda para reemplazar los valores dentro del intervalo por el valor de la siguiente posición
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                        value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
-                                    for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
+                        value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(
+                        row_or_col) - 1 else value
+                                                                                                  for i, value in
+                                                                                                  enumerate(
+                                                                                                      row_or_col)],
+                                                                                                 index=row_or_col.index),
+                                                                    axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the NEXT operation")
 
@@ -348,20 +367,26 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value:
-                                dataDictionary_copy[field].value_counts().idxmax() if get_condition(value) else value)
+                                                                                  dataDictionary_copy[
+                                                                                      field].value_counts().idxmax() if get_condition(
+                                                                                      value) else value)
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    dataDictionary_copy[field] = pd.Series([np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
-                        if get_condition(value) and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
+                    dataDictionary_copy[field] = pd.Series(
+                        [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
+                        if get_condition(value) and i > 0 else value for i, value in
+                         enumerate(dataDictionary_copy[field])],
                         index=dataDictionary_copy[field].index)
                 elif derivedTypeOutput == DerivedType.NEXT:
-                    dataDictionary_copy[field] = pd.Series([np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
+                    dataDictionary_copy[field] = pd.Series(
+                        [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
                         if get_condition(value) and i < len(dataDictionary_copy[field]) - 1 else value for i, value in
-                                        enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
+                         enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
 
         return dataDictionary_copy
 
     def checkInv_Interval_NumOp(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
-                                closureType: Closure, numOpOutput: Operation, axis_param: int = None, field : str = None) -> pd.DataFrame:
+                                closureType: Closure, numOpOutput: Operation, axis_param: int = None,
+                                field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
@@ -373,6 +398,7 @@ class ContractsInvariants:
         :param field: field to check the invariant
         :return: dataDictionary with the values of the interval changed to the result of the operation numOpOutput
         """
+
         def get_condition(x):
             if closureType == Closure.openOpen:
                 return True if (x > leftMargin) & (x < rightMargin) else False
@@ -415,7 +441,7 @@ class ContractsInvariants:
                 elif axis_param == 0 or axis_param == 1:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
-                            lambda x: x if not(np.issubdtype(type(x), np.number) and get_condition(x))
+                            lambda x: x if not (np.issubdtype(type(x), np.number) and get_condition(x))
                             else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
 
             elif numOpOutput == Operation.MEDIAN:
@@ -456,7 +482,8 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if numOpOutput == Operation.INTERPOLATION:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if not get_condition(x) else np.nan).interpolate(method='linear', limit_direction='both')
+                        lambda x: x if not get_condition(x) else np.nan).interpolate(method='linear',
+                                                                                     limit_direction='both')
                 elif numOpOutput == Operation.MEAN:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                         lambda x: x if not get_condition(x) else dataDictionary_copy[field].mean())
@@ -470,8 +497,8 @@ class ContractsInvariants:
         return dataDictionary_copy
 
     def checkInv_SpecialValue_FixValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
-                                        fixValueOutput, dataTypeOutput: DataType = None, missing_values: list = None,
-                                       axis_param: int = None, field : str = None) -> pd.DataFrame:
+                                       fixValueOutput, dataTypeOutput: DataType = None, missing_values: list = None,
+                                       axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the SpecialValue - FixValue relation
         :param dataDictionary: dataframe with the data
@@ -516,10 +543,19 @@ class ContractsInvariants:
 
                 elif axis_param == 0:
                     outliers_function = lambda data, threshold, fixValueOutput: data.apply(lambda column:
-                                       column.where(~((column < column.quantile(0.25) - threshold * (
-                                                   column.quantile(0.75) - column.quantile(0.25))) |
-                                                   (column > column.quantile(0.75) + threshold * (
-                                                    column.quantile(0.75) - column.quantile(0.25)))), other=fixValueOutput))
+                                                                                           column.where(~((
+                                                                                                                  column < column.quantile(
+                                                                                                              0.25) - threshold * (
+                                                                                                                          column.quantile(
+                                                                                                                              0.75) - column.quantile(
+                                                                                                                      0.25))) |
+                                                                                                          (
+                                                                                                                  column > column.quantile(
+                                                                                                              0.75) + threshold * (
+                                                                                                                          column.quantile(
+                                                                                                                              0.75) - column.quantile(
+                                                                                                                      0.25)))),
+                                                                                                        other=fixValueOutput))
                     dataDictionary_copy = outliers_function(dataDictionary_copy, threshold, fixValueOutput)
 
                 elif axis_param == 1:
@@ -553,15 +589,16 @@ class ContractsInvariants:
                     Q1 = dataDictionary_copy[field].quantile(0.25)
                     Q3 = dataDictionary_copy[field].quantile(0.75)
                     IQR = Q3 - Q1
-                    dataDictionary_copy[field] = dataDictionary_copy[field].where(~((dataDictionary_copy[field] < Q1 - threshold * IQR) |
-                                                                                 (dataDictionary_copy[field] > Q3 + threshold * IQR)),
-                                                                                 other=fixValueOutput)
+                    dataDictionary_copy[field] = dataDictionary_copy[field].where(
+                        ~((dataDictionary_copy[field] < Q1 - threshold * IQR) |
+                          (dataDictionary_copy[field] > Q3 + threshold * IQR)),
+                        other=fixValueOutput)
 
         return dataDictionary_copy
 
     def checkInv_SpecialValue_DerivedValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
                                            derivedTypeOutput: DerivedType, missing_values: list = None,
-                                           axis_param: int = None, field : str = None) -> pd.DataFrame:
+                                           axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the SpecialValue - DerivedValue relation
         :param dataDictionary: dataframe with the data
@@ -580,17 +617,19 @@ class ContractsInvariants:
                                                         missing_values, axis_param, field)
 
             elif specialTypeInput == SpecialType.OUTLIER:
-                #IMPORTANTE: El valor de axis_param que se aplica a la función getOutliers() es el mismo qu el que se utiliza
-                #en la función apply_derivedTypeOutliers(). Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
-                #ni previous ni next.
+                # IMPORTANTE: El valor de axis_param que se aplica a la función getOutliers() es el mismo qu el que se utiliza
+                # en la función apply_derivedTypeOutliers(). Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
+                # ni previous ni next.
 
                 if axis_param is None:
-                    dataDictionary_copy_copy = getOutliers(dataDictionary_copy,field, axis_param)
+                    dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
                     missing_values = dataDictionary_copy.where(dataDictionary_copy_copy == 1).stack().tolist()
-                    dataDictionary_copy=apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy, missing_values, axis_param, field)
-                elif axis_param == 0 or axis_param==1:
-                    dataDictionary_copy_copy=getOutliers(dataDictionary_copy, field, axis_param)
-                    dataDictionary_copy=apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy, dataDictionary_copy_copy, axis_param, field)
+                    dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
+                                                            missing_values, axis_param, field)
+                elif axis_param == 0 or axis_param == 1:
+                    dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
+                    dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
+                                                                          dataDictionary_copy_copy, axis_param, field)
 
         elif field is not None:
             if field not in dataDictionary.columns:
@@ -598,17 +637,18 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
                     dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
-                                                                                    missing_values, axis_param, field)
+                                                            missing_values, axis_param, field)
                 elif specialTypeInput == SpecialType.OUTLIER:
                     dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
                     dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
-                                                                                   dataDictionary_copy_copy, axis_param, field)
+                                                                          dataDictionary_copy_copy, axis_param, field)
 
         return dataDictionary_copy
 
-
-    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType, numOpOutput: Operation,
-                                    missing_values: list = None, axis_param: int = None, field : str = None) -> pd.DataFrame:
+    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
+                                    numOpOutput: Operation,
+                                    missing_values: list = None, axis_param: int = None,
+                                    field: str = None) -> pd.DataFrame:
         """
         Check the invariant of the SpecialValue - NumOp relation
         :param dataDictionary: dataframe with the data
@@ -619,27 +659,31 @@ class ContractsInvariants:
         :return: dataDictionary with the values of the special type changed to the result of the operation numOpOutput
         """
         dataDictionary_copy = dataDictionary.copy()
-        dataDictionary_copy_mask=None
+        dataDictionary_copy_mask = None
 
         if specialTypeInput == SpecialType.OUTLIER:
             dataDictionary_copy_mask = getOutliers(dataDictionary_copy, field, axis_param)
 
         if numOpOutput == Operation.INTERPOLATION:
-            dataDictionary_copy=specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                         missing_values=missing_values, axis_param=axis_param, field=field)
+            dataDictionary_copy = specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy,
+                                                           specialTypeInput=specialTypeInput,
+                                                           dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                           missing_values=missing_values, axis_param=axis_param,
+                                                           field=field)
         elif numOpOutput == Operation.MEAN:
-            dataDictionary_copy=specialTypeMean(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                         missing_values=missing_values, axis_param=axis_param, field=field)
+            dataDictionary_copy = specialTypeMean(dataDictionary_copy=dataDictionary_copy,
+                                                  specialTypeInput=specialTypeInput,
+                                                  dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                  missing_values=missing_values, axis_param=axis_param, field=field)
         elif numOpOutput == Operation.MEDIAN:
-            dataDictionary_copy=specialTypeMedian(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                         missing_values=missing_values, axis_param=axis_param, field=field)
+            dataDictionary_copy = specialTypeMedian(dataDictionary_copy=dataDictionary_copy,
+                                                    specialTypeInput=specialTypeInput,
+                                                    dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                    missing_values=missing_values, axis_param=axis_param, field=field)
         elif numOpOutput == Operation.CLOSEST:
-            dataDictionary_copy=specialTypeClosest(dataDictionary_copy=dataDictionary_copy, specialTypeInput=specialTypeInput,
-                                                         dataDictionary_copy_mask=dataDictionary_copy_mask,
-                                                         missing_values=missing_values, axis_param=axis_param, field=field)
-
+            dataDictionary_copy = specialTypeClosest(dataDictionary_copy=dataDictionary_copy,
+                                                     specialTypeInput=specialTypeInput,
+                                                     dataDictionary_copy_mask=dataDictionary_copy_mask,
+                                                     missing_values=missing_values, axis_param=axis_param, field=field)
 
         return dataDictionary_copy

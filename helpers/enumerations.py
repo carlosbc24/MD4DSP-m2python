@@ -1,4 +1,3 @@
-
 # Importing libraries
 from enum import Enum
 
@@ -45,6 +44,7 @@ class Closure(Enum):
     closedOpen = 2
     closedClosed = 3
 
+
 class DataType(Enum):
     """
     Enumeration for the data type
@@ -65,6 +65,7 @@ class DataType(Enum):
     DOUBLE = 5
     FLOAT = 6
 
+
 class DerivedType(Enum):
     """
     Enumeration for the derived type
@@ -76,6 +77,7 @@ class DerivedType(Enum):
     MOSTFREQUENT = 0
     PREVIOUS = 1
     NEXT = 2
+
 
 class Operation(Enum):
     """
@@ -91,6 +93,7 @@ class Operation(Enum):
     MEDIAN = 2
     CLOSEST = 3
 
+
 class SpecialType(Enum):
     """
     Enumeration for the special type
@@ -102,8 +105,3 @@ class SpecialType(Enum):
     MISSING = 0
     INVALID = 1
     OUTLIER = 2
-
-
-
-
-

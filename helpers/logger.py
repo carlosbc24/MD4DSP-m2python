@@ -1,10 +1,9 @@
-
 # Importing libraries
-import os
 import logging
+import os
 
 
-def set_logger(logger_name : str = "test"):
+def set_logger(logger_name: str = "test"):
     """
     Create the logger to save the logs of the execution in the corresponding path
 
