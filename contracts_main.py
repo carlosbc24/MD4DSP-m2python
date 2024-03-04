@@ -25,4 +25,4 @@ if __name__ == "__main__":
     # Execute all invariants external dataset tests
     InvariantTestWithDatasets = InvariantsExternalDatasetTests()
     # InvariantTestWithDatasets.executeAll_ExternalDatasetTests()
-    InvariantTestWithDatasets.execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset()
+    InvariantTestWithDatasets.execute_checkInv_Interval_FixValue_ExternalDatasetTests()
