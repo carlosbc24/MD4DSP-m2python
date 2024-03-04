@@ -150,9 +150,10 @@ class ContractsInvariants:
                 # Aplicamos la interpolación lineal en el DataFrame
                 if axis_param == 0:
                     for col in dataDictionary_copy.columns:
-                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                            lambda x: np.nan if x == fixValueInput else x).interpolate(method='linear',
-                                                                                       limit_direction='both')
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                                lambda x: np.nan if x == fixValueInput else x).interpolate(method='linear',
+                                                                                           limit_direction='both')
                 elif axis_param == 1:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda row: row.apply(lambda x: np.nan if x == fixValueInput else x).interpolate(
@@ -211,20 +212,23 @@ class ContractsInvariants:
                 raise ValueError("The field does not exist in the dataframe")
 
             elif field in dataDictionary.columns:
-                if numOpOutput == Operation.INTERPOLATION:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if x != fixValueInput else np.nan).interpolate(method='linear',
-                                                                                   limit_direction='both')
-                elif numOpOutput == Operation.MEAN:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if x != fixValueInput else dataDictionary_copy[field].mean())
-                elif numOpOutput == Operation.MEDIAN:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if x != fixValueInput else dataDictionary_copy[field].median())
-                elif numOpOutput == Operation.CLOSEST:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if x != fixValueInput else find_closest_value(dataDictionary_copy[field],
-                                                                                  fixValueInput))
+                if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
+                    if numOpOutput == Operation.INTERPOLATION:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if x != fixValueInput else np.nan).interpolate(method='linear',
+                                                                                       limit_direction='both')
+                    elif numOpOutput == Operation.MEAN:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if x != fixValueInput else dataDictionary_copy[field].mean())
+                    elif numOpOutput == Operation.MEDIAN:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if x != fixValueInput else dataDictionary_copy[field].median())
+                    elif numOpOutput == Operation.CLOSEST:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if x != fixValueInput else find_closest_value(dataDictionary_copy[field],
+                                                                                      fixValueInput))
+                else:
+                    raise ValueError("The field is not numeric")
 
         return dataDictionary_copy
 
@@ -409,9 +413,10 @@ class ContractsInvariants:
                 # Aplicamos la interpolación lineal en el DataFrame
                 if axis_param == 0:
                     for col in dataDictionary_copy.columns:
-                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                            lambda x: np.nan if get_condition(x) else x).interpolate(method='linear',
-                                                                                     limit_direction='both')
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                                lambda x: np.nan if get_condition(x) else x).interpolate(method='linear',
+                                                                                         limit_direction='both')
                 elif axis_param == 1:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda row: row.apply(lambda x: np.nan if get_condition(x) else x).interpolate(
@@ -472,19 +477,22 @@ class ContractsInvariants:
                 raise ValueError("The field does not exist in the dataframe")
 
             elif field in dataDictionary.columns:
-                if numOpOutput == Operation.INTERPOLATION:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if not get_condition(x) else np.nan).interpolate(method='linear',
-                                                                                     limit_direction='both')
-                elif numOpOutput == Operation.MEAN:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if not get_condition(x) else dataDictionary_copy[field].mean())
-                elif numOpOutput == Operation.MEDIAN:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if not get_condition(x) else dataDictionary_copy[field].median())
-                elif numOpOutput == Operation.CLOSEST:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: x if not get_condition(x) else find_closest_value(dataDictionary_copy[field], x))
+                if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
+                    if numOpOutput == Operation.INTERPOLATION:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if not get_condition(x) else np.nan).interpolate(method='linear',
+                                                                                         limit_direction='both')
+                    elif numOpOutput == Operation.MEAN:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if not get_condition(x) else dataDictionary_copy[field].mean())
+                    elif numOpOutput == Operation.MEDIAN:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if not get_condition(x) else dataDictionary_copy[field].median())
+                    elif numOpOutput == Operation.CLOSEST:
+                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                            lambda x: x if not get_condition(x) else find_closest_value(dataDictionary_copy[field], x))
+                else:
+                    raise ValueError("The field is not numeric")
 
         return dataDictionary_copy
 

@@ -445,9 +445,10 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
             # Aplicamos la interpolación lineal en el DataFrame
             if axis_param == 0:
                 for col in dataDictionary_copy.columns:
-                    dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                        lambda x: np.nan if x in missing_values else x).interpolate(method='linear',
-                                                                                    limit_direction='both')
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: np.nan if x in missing_values else x).interpolate(method='linear',
+                                                                                        limit_direction='both')
             elif axis_param == 1:
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
@@ -457,9 +458,10 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
             # Aplicamos la interpolación lineal en el DataFrame
             if axis_param == 0:
                 for col in dataDictionary_copy_copy.columns:
-                    dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(
-                        lambda x: np.nan if x in missing_values else x).interpolate(method='linear',
-                                                                                    limit_direction='both')
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(
+                            lambda x: np.nan if x in missing_values else x).interpolate(method='linear',
+                                                                                        limit_direction='both')
             elif axis_param == 1:
                 dataDictionary_copy_copy = dataDictionary_copy_copy.apply(
                     lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
@@ -492,6 +494,8 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
     elif field is not None:
         if field not in dataDictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
+        if not np.issubdtype(dataDictionary_copy[field].dtype, np.number):
+            raise ValueError("The field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
             dataDictionary_copy[field] = dataDictionary_copy[field].apply(
