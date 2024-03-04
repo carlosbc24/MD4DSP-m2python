@@ -214,12 +214,23 @@ class ContractsInvariants:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(),
                                                                            fixValueInput) if x == fixValueInput else x))
-                elif axis_param == 0 or axis_param == 1:
-                    # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
+                if axis_param == 0:
+                    # Aplica una función lambda a nivel del DataFrame para columnas numéricas
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
-                            lambda x: find_closest_value(col, fixValueInput) if x == fixValueInput else x),
-                        axis=axis_param)
+                            lambda x: col[col != fixValueInput].iloc[
+                                (col[col != fixValueInput] - x).abs().argsort().iloc[0]]
+                            if x == fixValueInput else x
+                        ) if col.dtype.kind in 'biufc' else col
+                    )
+                if axis_param == 1:
+                    # Trasponer, aplicar la misma lógica que para columnas, y luego trasponer de nuevo
+                    dataDictionary_copy = dataDictionary_copy.T.apply(
+                        lambda col: col.apply(
+                            lambda x: col[col != fixValueInput].iloc[(col[col != fixValueInput] - x).abs().argsort().iloc[0]]
+                            if x == fixValueInput else x
+                        ) if col.dtype.kind in 'biufc' else col
+                    ).T
 
             else:
                 raise ValueError("No valid operator")

@@ -843,23 +843,28 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset,
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(3), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
+        # Seleccionar solo las columnas numéricas del sub-DataFrame expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Inicializar variables para almacenar el valor más cercano y la diferencia mínima
-        closest_value = None
-        min_diff = np.inf
-        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fixValueInput
+
+        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
         for col in numeric_columns:
+            # Inicializar variables para almacenar el valor más cercano y la diferencia mínima para cada columna
+            closest_value = None
+            min_diff = np.inf
+
             # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
             diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
+
             # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
             idx_min = diff.idxmin()
+
             # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
             if diff[idx_min] < min_diff:
                 closest_value = expected_df.at[idx_min, col]
                 min_diff = diff[idx_min]
-        # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, closest_value)
+
+            # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
+            expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -1053,32 +1058,33 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
         # esperado.
         # Crear un DataFrame de prueba
-        expected_df = self.rest_of_dataset[670:700].copy()
+        expected_df = self.rest_of_dataset[3400:3750].copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset[670:700],
+        result_df = self.invariants.checkInv_FixValue_NumOp(expected_df,
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(3), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
+        # Seleccionar solo las columnas numéricas del sub-DataFrame expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Inicializar variables para almacenar el valor más cercano y la diferencia mínima
-        closest_value = None
-        min_diff = np.inf
-        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fixValueInput
+
+        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
         for col in numeric_columns:
+            # Inicializar variables para almacenar el valor más cercano y la diferencia mínima para cada columna
+            closest_value = None
+            min_diff = np.inf
+
             # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
             diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
+
             # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
             idx_min = diff.idxmin()
-            # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según
-            # sea necesario
+
+            # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
             if diff[idx_min] < min_diff:
                 closest_value = expected_df.at[idx_min, col]
                 min_diff = diff[idx_min]
-        # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, closest_value)
 
-        print("Expected df", expected_df["energy"])
-        print("Result df", result_df["energy"])
+            # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
+            expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
