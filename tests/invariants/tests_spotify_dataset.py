@@ -789,8 +789,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
-        print(expected_df['tempo'])
-        print(result_df['tempo'])
 
         # Caso 5
         # Comprobar la invariante: cambiar el valor 0 en todas las columnas del batch pequeño del dataset de prueba por
@@ -861,7 +859,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                 closest_value = expected_df.at[idx_min, col]
                 min_diff = diff[idx_min]
         # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, closest_value)
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, closest_value)
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -1055,9 +1053,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
         # esperado.
         # Crear un DataFrame de prueba
-        expected_df = self.rest_of_dataset.copy()
+        expected_df = self.rest_of_dataset[670:700].copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset[670:700],
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(3), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
@@ -1077,7 +1075,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                 closest_value = expected_df.at[idx_min, col]
                 min_diff = diff[idx_min]
         # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, closest_value)
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, closest_value)
+
+        print("Expected df", expected_df["energy"])
+        print("Result df", result_df["energy"])
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)

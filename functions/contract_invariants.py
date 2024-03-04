@@ -170,12 +170,28 @@ class ContractsInvariants:
                     # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.replace(fixValueInput, mean_value))
-                elif axis_param == 0 or axis_param == 1:
-                    # dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput, other=x.mean()), axis=axis_param)
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda x: x.apply(
-                            lambda y: y if not np.issubdtype(type(y), np.number) or y != fixValueInput
-                            else x[x.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+                elif axis_param == 0:
+                    means = dataDictionary_copy.apply(
+                        lambda col: col[col.apply(lambda x: np.issubdtype(type(x), np.number))].mean() if np.issubdtype(
+                            col.dtype, np.number) else None)
+
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                                lambda x: x if x != fixValueInput else means[col])
+                elif axis_param == 1:
+                    dataDictionary_copy = dataDictionary_copy.T
+
+                    means = dataDictionary_copy.apply(
+                        lambda row: row[row.apply(lambda x: np.issubdtype(type(x), np.number))].mean() if np.issubdtype(
+                            row.dtype, np.number) else None)
+
+                    for row in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
+                            dataDictionary_copy[row] = dataDictionary_copy[row].apply(
+                                lambda x: x if x != fixValueInput else means[row])
+
+                    dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.MEDIAN:
                 if axis_param == None:
