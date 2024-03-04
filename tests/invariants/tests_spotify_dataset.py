@@ -599,8 +599,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                             field=field)
 
         expected_df['track_popularity'] = expected_df['track_popularity'].apply(lambda x: '65<=Pop<=69' if 65 <= x <= 69 else x)
-        print(expected_df['track_popularity'])
-        print(result['track_popularity'])
+        print_and_log(expected_df['track_popularity'])
+        print_and_log(result['track_popularity'])
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
@@ -612,9 +612,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
                                                                               ((x > 0.5) and (x < 1))) else x))
-        print(expected_df[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
+        print_and_log(expected_df[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
                            'liveness', 'valence']])
-        print(result[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
+        print_and_log(result[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
                       'liveness', 'valence']])
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -628,8 +628,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                             fixValueOutput=33, field=field)
 
         expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
-        print(expected_df['speechiness'])
-        print(result['speechiness'])
+        print_and_log(expected_df['speechiness'])
+        print_and_log(result['speechiness'])
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
@@ -659,8 +659,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                             field=field)
 
         expected_df['track_popularity'] = expected_df['track_popularity'].apply(lambda x: '65<=Pop<69' if 65 <= x < 69 else x)
-        print(expected_df['track_popularity'])
-        print(result['track_popularity'])
+        print_and_log(expected_df['track_popularity'])
+        print_and_log(result['track_popularity'])
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
@@ -672,9 +672,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
                                                                               ((x > 0.5) and (x < 1))) else x))
-        print(expected_df[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
+        print_and_log(expected_df[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
                            'liveness', 'valence']])
-        print(result[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
+        print_and_log(result[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
                       'liveness', 'valence']])
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -713,11 +713,46 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_DerivedValue
         """
 
+        # Caso 1
+        expected_df = self.small_batch_dataset.copy()
+        field='liveness'
+
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(0), field=field)
+
+        most_frequent_value = expected_df[field].mode().iloc[0]
+        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if 0.2 < x < 0.4 else x)
+
+        print_and_log(expected_df['liveness'])
+        print_and_log(result['liveness'])
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
     # TODO: Implement the invariant tests with external dataset
     def execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_DerivedValue
         """
+
+        # Caso 1
+        expected_df = self.rest_of_dataset.copy()
+        field='liveness'
+
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(0), field=field)
+
+        most_frequent_value = expected_df[field].mode().iloc[0]
+        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if 0.2 < x < 0.4 else x)
+
+        print_and_log(expected_df['liveness'])
+        print_and_log(result['liveness'])
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+
+
 
     def execute_checkInv_Interval_NumOp_ExternalDatasetTests(self):
         """
