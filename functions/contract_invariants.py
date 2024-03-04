@@ -250,36 +250,38 @@ class ContractsInvariants:
         if field is None:
             # Aplicar el cambio en los valores dentro del intervalo
             if closureType == Closure.openOpen:
-                dataDictionary_copy = dataDictionary.apply(
-                    lambda func: func.apply(lambda x: fixValueOutput if (leftMargin < x) and (x < rightMargin) else x))
+                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if (
+                                np.issubdtype(type(x), np.number) and leftMargin < x < rightMargin) else x))
             elif closureType == Closure.openClosed:
-                dataDictionary_copy = dataDictionary.apply(
-                    lambda func: func.apply(lambda x: fixValueOutput if (leftMargin < x) and (x <= rightMargin) else x))
+                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if
+                                np.issubdtype(type(x), np.number) and (leftMargin < x) and (x <= rightMargin) else x))
             elif closureType == Closure.closedOpen:
-                dataDictionary_copy = dataDictionary.apply(
-                    lambda func: func.apply(lambda x: fixValueOutput if (leftMargin <= x) and (x < rightMargin) else x))
+                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if
+                                np.issubdtype(type(x), np.number) and (leftMargin <= x) and (x < rightMargin) else x))
             elif closureType == Closure.closedClosed:
-                dataDictionary_copy = dataDictionary.apply(
-                    lambda func: func.apply(
-                        lambda x: fixValueOutput if (leftMargin <= x) and (x <= rightMargin) else x))
+                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if
+                                np.issubdtype(type(x), np.number) and (leftMargin <= x) and (x <= rightMargin) else x))
 
         elif field is not None:
             if field not in dataDictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
             elif field in dataDictionary.columns:
-                if closureType == Closure.openOpen:
-                    dataDictionary_copy[field] = dataDictionary[field].apply(
-                        lambda x: fixValueOutput if (leftMargin < x) and (x < rightMargin) else x)
-                elif closureType == Closure.openClosed:
-                    dataDictionary_copy[field] = dataDictionary[field].apply(
-                        lambda x: fixValueOutput if (leftMargin < x) and (x <= rightMargin) else x)
-                elif closureType == Closure.closedOpen:
-                    dataDictionary_copy[field] = dataDictionary[field].apply(
-                        lambda x: fixValueOutput if (leftMargin <= x) and (x < rightMargin) else x)
-                elif closureType == Closure.closedClosed:
-                    dataDictionary_copy[field] = dataDictionary[field].apply(
-                        lambda x: fixValueOutput if (leftMargin <= x) and (x <= rightMargin) else x)
+                if np.issubdtype(dataDictionary[field].dtype, np.number):
+                    if closureType == Closure.openOpen:
+                        dataDictionary_copy[field] = dataDictionary[field].apply(
+                            lambda x: fixValueOutput if (leftMargin < x) and (x < rightMargin) else x)
+                    elif closureType == Closure.openClosed:
+                        dataDictionary_copy[field] = dataDictionary[field].apply(
+                            lambda x: fixValueOutput if (leftMargin < x) and (x <= rightMargin) else x)
+                    elif closureType == Closure.closedOpen:
+                        dataDictionary_copy[field] = dataDictionary[field].apply(
+                            lambda x: fixValueOutput if (leftMargin <= x) and (x < rightMargin) else x)
+                    elif closureType == Closure.closedClosed:
+                        dataDictionary_copy[field] = dataDictionary[field].apply(
+                            lambda x: fixValueOutput if (leftMargin <= x) and (x <= rightMargin) else x)
+                else:
+                    raise ValueError("The field is not numeric")
 
         return dataDictionary_copy
 
@@ -304,13 +306,13 @@ class ContractsInvariants:
         # Definir la condición del intervalo basada en el tipo de cierre
         def get_condition(x):
             if closureType == Closure.openOpen:
-                return True if (x > leftMargin) & (x < rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x < rightMargin)) else False
             elif closureType == Closure.openClosed:
-                return True if (x > leftMargin) & (x <= rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x <= rightMargin)) else False
             elif closureType == Closure.closedOpen:
-                return True if (x >= leftMargin) & (x < rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x < rightMargin)) else False
             elif closureType == Closure.closedClosed:
-                return True if (x >= leftMargin) & (x <= rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x <= rightMargin)) else False
 
         if field is None:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
@@ -337,11 +339,7 @@ class ContractsInvariants:
                     # posición anterior
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                         value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
-                                                                                                  for i, value in
-                                                                                                  enumerate(
-                                                                                                      row_or_col)],
-                                                                                                 index=row_or_col.index),
-                                                                    axis=axis_param)
+                                  for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
             # No asigna nada a np.nan
@@ -350,13 +348,8 @@ class ContractsInvariants:
                 if axis_param is not None:
                     # Define la función lambda para reemplazar los valores dentro del intervalo por el valor de la siguiente posición
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                        value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(
-                        row_or_col) - 1 else value
-                                                                                                  for i, value in
-                                                                                                  enumerate(
-                                                                                                      row_or_col)],
-                                                                                                 index=row_or_col.index),
-                                                                    axis=axis_param)
+                        value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
+                               for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the NEXT operation")
 
@@ -367,9 +360,8 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value:
-                                                                                  dataDictionary_copy[
-                                                                                      field].value_counts().idxmax() if get_condition(
-                                                                                      value) else value)
+                                                dataDictionary_copy[field].value_counts().idxmax() if get_condition(value)
+                                                                                                    else value)
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
                     dataDictionary_copy[field] = pd.Series(
                         [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
@@ -401,13 +393,13 @@ class ContractsInvariants:
 
         def get_condition(x):
             if closureType == Closure.openOpen:
-                return True if (x > leftMargin) & (x < rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x < rightMargin)) else False
             elif closureType == Closure.openClosed:
-                return True if (x > leftMargin) & (x <= rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x <= rightMargin)) else False
             elif closureType == Closure.closedOpen:
-                return True if (x >= leftMargin) & (x < rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x < rightMargin)) else False
             elif closureType == Closure.closedClosed:
-                return True if (x >= leftMargin) & (x <= rightMargin) else False
+                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x <= rightMargin)) else False
 
         # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
         dataDictionary_copy = dataDictionary.copy()

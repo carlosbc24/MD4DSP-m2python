@@ -1,11 +1,12 @@
 import os
 import unittest
 
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
 from functions.contract_invariants import ContractsInvariants
-from helpers.enumerations import DerivedType
+from helpers.enumerations import DerivedType, Closure, DataType
 from helpers.logger import print_and_log
 
 
@@ -588,6 +589,36 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_FixValue
         """
+
+        # Caso 1
+        expected_df = self.small_batch_dataset.copy()
+        field='track_popularity'
+
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset, leftMargin=65,
+                                                            rightMargin=69, closureType=Closure(3),
+                                                            dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<=69',
+                                                            field=field)
+
+        expected_df['track_popularity'] = expected_df['track_popularity'].apply(lambda x: '65<=Pop<=69' if 65 <= x <= 69 else x)
+        print(expected_df['track_popularity'])
+        print(result['track_popularity'])
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+        # Caso 2
+        expected_df = self.small_batch_dataset.copy()
+
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset, leftMargin=0.5,
+                                                            rightMargin=1, closureType=Closure(0), fixValueOutput=2)
+
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
+                                                                              ((x > 0.5) and (x < 1))) else x))
+        print(expected_df[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
+                           'liveness', 'valence']])
+        print(result[['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness',
+                      'liveness', 'valence']])
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
     # TODO: Implement the invariant tests with external dataset
     def execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset(self):
