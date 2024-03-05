@@ -558,11 +558,14 @@ class ContractsInvariants:
                     dataDictionary_copy[outliers] = fixValueOutput
 
                 elif axis_param == 0:#Se niega la condición para que se cumpla la condición de outliers, y se reemplaza por fixValueOutput en el else
-                    outliers_function = lambda data, threshold, fixValueOutput: data.apply(lambda column: column.where(~(((
-                                          column < column.quantile(0.25) - threshold * (column.quantile(0.25))) | (
-                                           column > column.quantile(0.75) + threshold * (column.quantile(0.75) -
-                                            column.quantile(0.25)))) and np.issubdtype(column.dtype, np.number)), other=fixValueOutput))
-                    dataDictionary_copy = outliers_function(dataDictionary_copy, threshold, fixValueOutput)
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[col], np.number):
+                            dataDictionary_copy[col] = dataDictionary_copy[col].where(~((
+                                        dataDictionary_copy[col] < dataDictionary_copy[col].quantile(0.25) - threshold * (
+                                        dataDictionary_copy[col].quantile(0.75) - dataDictionary_copy[col].quantile(0.25))) |
+                                        (dataDictionary_copy[col] > dataDictionary_copy[col].quantile(0.75) + threshold * (
+                                        dataDictionary_copy[col].quantile(0.75) - dataDictionary_copy[col].quantile(0.25)))),
+                                                                                other = fixValueOutput)
 
                 elif axis_param == 1:
                     Q1 = dataDictionary_copy.quantile(0.25, axis="rows")
@@ -572,9 +575,9 @@ class ContractsInvariants:
                         (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
                     for row in outliers.index:
                         dataDictionary_copy.iloc[row] = dataDictionary_copy.iloc[row].where(
-                            ~(((dataDictionary_copy.iloc[row] < Q1.iloc[row] - threshold * IQR.iloc[row]) |
-                              (dataDictionary_copy.iloc[row] > Q3.iloc[row] + threshold * IQR.iloc[row]))
-                              and np.issubdtype(row.dtype, np.number)), other=fixValueOutput)
+                            ~((dataDictionary_copy.iloc[row] < Q1.iloc[row] - threshold * IQR.iloc[row]) |
+                              (dataDictionary_copy.iloc[row] > Q3.iloc[row] + threshold * IQR.iloc[row])),
+                                other=fixValueOutput)
 
         elif field is not None:
             if field not in dataDictionary.columns:
