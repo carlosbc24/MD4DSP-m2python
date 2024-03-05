@@ -495,7 +495,6 @@ class ContractsInvariants:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
                             lambda x: find_closest_value(col, x) if get_condition(x) else x), axis=axis_param)
-
             else:
                 raise ValueError("No valid operator")
 
@@ -554,7 +553,7 @@ class ContractsInvariants:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
 
-            elif specialTypeInput == SpecialType.OUTLIER:
+            elif specialTypeInput == SpecialType.OUTLIER:#TODO:Probar
                 threshold = 1.5
                 if axis_param is None:
                     Q1 = dataDictionary_copy.stack().quantile(0.25)
@@ -564,25 +563,16 @@ class ContractsInvariants:
                     lower_bound = Q1 - threshold * IQR
                     upper_bound = Q3 + threshold * IQR
                     # Identificar outliers en el dataframe completo
-                    outliers = (dataDictionary_copy < lower_bound) | (dataDictionary_copy > upper_bound)
+                    numeric_values = dataDictionary_copy.select_dtypes(include=[np.number])
+                    outliers = (numeric_values < lower_bound) | (numeric_values > upper_bound)
                     # Reemplazar outliers por fixValueOutput
                     dataDictionary_copy[outliers] = fixValueOutput
 
-                elif axis_param == 0:
-                    outliers_function = lambda data, threshold, fixValueOutput: data.apply(lambda column:
-                                                                                           column.where(~((
-                                                                                                                  column < column.quantile(
-                                                                                                              0.25) - threshold * (
-                                                                                                                          column.quantile(
-                                                                                                                              0.75) - column.quantile(
-                                                                                                                      0.25))) |
-                                                                                                          (
-                                                                                                                  column > column.quantile(
-                                                                                                              0.75) + threshold * (
-                                                                                                                          column.quantile(
-                                                                                                                              0.75) - column.quantile(
-                                                                                                                      0.25)))),
-                                                                                                        other=fixValueOutput))
+                elif axis_param == 0:#Se niega la condición para que se cumpla la condición de outliers, y se reemplaza por fixValueOutput en el else
+                    outliers_function = lambda data, threshold, fixValueOutput: data.apply(lambda column: column.where(~(((
+                                          column < column.quantile(0.25) - threshold * (column.quantile(0.25))) | (
+                                           column > column.quantile(0.75) + threshold * (column.quantile(0.75) -
+                                            column.quantile(0.25)))) and np.issubdtype(column.dtype, np.number)), other=fixValueOutput))
                     dataDictionary_copy = outliers_function(dataDictionary_copy, threshold, fixValueOutput)
 
                 elif axis_param == 1:
@@ -593,9 +583,9 @@ class ContractsInvariants:
                         (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
                     for row in outliers.index:
                         dataDictionary_copy.iloc[row] = dataDictionary_copy.iloc[row].where(
-                            ~((dataDictionary_copy.iloc[row] < Q1.iloc[row] - threshold * IQR.iloc[row]) |
-                              (dataDictionary_copy.iloc[row] > Q3.iloc[row] + threshold * IQR.iloc[row])),
-                            other=fixValueOutput)
+                            ~(((dataDictionary_copy.iloc[row] < Q1.iloc[row] - threshold * IQR.iloc[row]) |
+                              (dataDictionary_copy.iloc[row] > Q3.iloc[row] + threshold * IQR.iloc[row]))
+                              and np.issubdtype(row.dtype, np.number)), other=fixValueOutput)
 
         elif field is not None:
             if field not in dataDictionary.columns:
@@ -612,14 +602,17 @@ class ContractsInvariants:
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                             lambda x: fixValueOutput if x in missing_values else x)
                 elif specialTypeInput == SpecialType.OUTLIER:
-                    threshold = 1.5
-                    Q1 = dataDictionary_copy[field].quantile(0.25)
-                    Q3 = dataDictionary_copy[field].quantile(0.75)
-                    IQR = Q3 - Q1
-                    dataDictionary_copy[field] = dataDictionary_copy[field].where(
-                        ~((dataDictionary_copy[field] < Q1 - threshold * IQR) |
-                          (dataDictionary_copy[field] > Q3 + threshold * IQR)),
-                        other=fixValueOutput)
+                    if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
+                        threshold = 1.5
+                        Q1 = dataDictionary_copy[field].quantile(0.25)
+                        Q3 = dataDictionary_copy[field].quantile(0.75)
+                        IQR = Q3 - Q1
+                        dataDictionary_copy[field] = dataDictionary_copy[field].where(
+                            ~((dataDictionary_copy[field] < Q1 - threshold * IQR) |
+                              (dataDictionary_copy[field] > Q3 + threshold * IQR)),
+                            other=fixValueOutput)
+                    else:
+                        raise ValueError("The field is not numeric")
 
         return dataDictionary_copy
 
@@ -662,13 +655,16 @@ class ContractsInvariants:
             if field not in dataDictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
             elif field in dataDictionary.columns:
-                if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
-                    dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
-                                                            missing_values, axis_param, field)
-                elif specialTypeInput == SpecialType.OUTLIER:
-                    dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
-                    dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
-                                                                          dataDictionary_copy_copy, axis_param, field)
+                if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
+                    if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+                        dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
+                                                                missing_values, axis_param, field)
+                    elif specialTypeInput == SpecialType.OUTLIER:
+                        dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
+                        dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
+                                                                              dataDictionary_copy_copy, axis_param, field)
+                else:
+                    raise ValueError("The field is not numeric")
 
         return dataDictionary_copy
 
