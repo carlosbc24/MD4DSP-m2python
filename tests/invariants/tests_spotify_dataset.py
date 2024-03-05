@@ -1179,6 +1179,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
         # Caso 3
+        field = 'track_name'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset, leftMargin=65,
+                                                                rightMargin=69, closureType=Closure(2),
+                                                                fixValueOutput=101, field=field)
+        print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
+
+        # Caso 4
         expected_df = self.small_batch_dataset.copy()
         field = 'speechiness'
 
@@ -1189,16 +1198,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
 
         pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
-        # Caso 4
+        # Caso 5
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset, leftMargin=65,
                                                                 rightMargin=69, closureType=Closure(2),
                                                                 fixValueOutput=101, field=field)
-        print_and_log("Test Case 4 Passed: expected ValueError, got ValueError")
+        print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
     def execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset(self):
         """
@@ -1241,6 +1250,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                 fixValueOutput=101, field=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
+        # Caso 4
+        expected_df = self.rest_of_dataset.copy()
+        field = 'speechiness'
+
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset, leftMargin=0.06,
+                                                            rightMargin=0.1270, closureType=Closure(1),
+                                                            fixValueOutput=33, field=field)
+
+        expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
     def execute_checkInv_Interval_DerivedValue_ExternalDatasetTests(self):
         """
         Execute the invariant test with external dataset for the function checkInv_Interval_DerivedValue
@@ -1279,22 +1301,33 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
-
         result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset, leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
-
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i - 1] if np.issubdtype(
                                                                           type(value),
                                                                           np.number) and 0.2 < value < 0.4 and i > 0
                                                                       else value for i, value in enumerate(row_or_col)],
                                                                      index=row_or_col.index))
-
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
         # Caso 3
+        expected_df = self.small_batch_dataset.copy()
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(1), axis_param=1)
+        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
+                                                                      row_or_col.iloc[i - 1] if np.issubdtype(
+                                                                          type(value),
+                                                                          np.number) and 0.2 < value < 0.4 and i > 0
+                                                                      else value for i, value in enumerate(row_or_col)],
+                                                                     index=row_or_col.index), axis=1)
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+
+        # Caso 4
         expected_df = self.small_batch_dataset.copy()
 
         result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset, leftMargin=0.2,
@@ -1309,16 +1342,48 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                       enumerate(row_or_col)], index=row_or_col.index))
 
         pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
-        # Caso 4
+        # Caso 5
+        expected_df = self.small_batch_dataset.copy()
+
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(0), axis_param=None)
+
+        most_frequent_value = expected_df.stack().value_counts().idxmax()
+        expected_df = expected_df.apply(
+            lambda col: col.apply(lambda x: most_frequent_value if np.issubdtype(type(x), np.number)
+                                                                   and 0.2 < x < 0.4 else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # Caso 6
+        expected_df = self.small_batch_dataset.copy()
+
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(2), axis_param=0)
+
+        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
+                                                                      row_or_col.iloc[i + 1] if np.issubdtype(
+                                                                          type(value), np.number) and 0.2 < value < 0.4
+                                                                                                and i < len(
+                                                                          row_or_col) - 1 else value for i, value in
+                                                                      enumerate(row_or_col)], index=row_or_col.index))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset,
                                                                     leftMargin=0.2, rightMargin=0.4,
                                                                     closureType=Closure(0),
                                                                     derivedTypeOutput=DerivedType(2), axis_param=None)
-        print_and_log("Test Case 4 Passed: expected ValueError, got ValueError")
+        print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
     def execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset(self):
         """
@@ -1341,6 +1406,20 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(1), axis_param=0)
+        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
+                                                                      row_or_col.iloc[i - 1] if np.issubdtype(
+                                                                          type(value),
+                                                                          np.number) and 0.2 < value < 0.4 and i > 0
+                                                                      else value for i, value in enumerate(row_or_col)],
+                                                                     index=row_or_col.index))
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+        # Caso 3
+        expected_df = self.rest_of_dataset.copy()
 
         result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
@@ -1352,21 +1431,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                           np.number) and 0.2 < value < 0.4 and i > 0
                                                                       else value for i, value in enumerate(row_or_col)],
                                                                      index=row_or_col.index), axis=1)
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
-
-        # Caso 3
-        expected_df = self.rest_of_dataset.copy()
-
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
-                                                                rightMargin=0.4, closureType=Closure(0),
-                                                                derivedTypeOutput=DerivedType(0), axis_param=None)
-
-        most_frequent_value = expected_df.stack().value_counts().idxmax()
-        expected_df = expected_df.apply(
-            lambda col: col.apply(lambda x: most_frequent_value if np.issubdtype(type(x), np.number)
-                                                                   and 0.2 < x < 0.4 else x))
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
@@ -1387,6 +1451,47 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+        # Caso 5
+        expected_df = self.rest_of_dataset.copy()
+
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(0), axis_param=None)
+
+        most_frequent_value = expected_df.stack().value_counts().idxmax()
+        expected_df = expected_df.apply(
+            lambda col: col.apply(lambda x: most_frequent_value if np.issubdtype(type(x), np.number)
+                                                                   and 0.2 < x < 0.4 else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # Caso 6
+        expected_df = self.rest_of_dataset.copy()
+
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+                                                                rightMargin=0.4, closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(2), axis_param=0)
+
+        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
+                                                                      row_or_col.iloc[i + 1] if np.issubdtype(
+                                                                          type(value), np.number) and 0.2 < value < 0.4
+                                                                                                and i < len(
+                                                                          row_or_col) - 1 else value for i, value in
+                                                                      enumerate(row_or_col)], index=row_or_col.index))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset,
+                                                                    leftMargin=0.2, rightMargin=0.4,
+                                                                    closureType=Closure(0),
+                                                                    derivedTypeOutput=DerivedType(2), axis_param=None)
+        print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
     def execute_checkInv_Interval_NumOp_ExternalDatasetTests(self):
         """
@@ -1411,11 +1516,125 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_NumOp
         """
 
+        # Caso 1
+        expected_df = self.small_batch_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=2, rightMargin=4,
+                                                         closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
+        # Aplicar la lógica para reemplazar los valores en el rango especificado
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: np.nan if (np.issubdtype(type(x), np.number) and
+                                                                                   ((x > 2) & (x <= 4))) else x))
+        # Interpolar solo en columnas numéricas
+        numeric_columns = expected_df.select_dtypes(include=[np.number]).columns
+        expected_df[numeric_columns] = expected_df[numeric_columns].interpolate(method='linear', limit_direction='both')
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+        # # Caso 2
+        # expected_df = self.small_batch_dataset.copy()
+        # result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=2, rightMargin=4,
+        #                                                  closureType=Closure(3), numOpOutput=Operation(0), axis_param=1)
+        #
+        # expected_df = expected_df.apply(
+        #     lambda row: row.apply(lambda x: np.nan if np.issubdtype(type(x), np.number) and ((x >= 2) & (x <= 4)) else x).interpolate(
+        #         method='linear', limit_direction='both'), axis=1)
+        # pd.testing.assert_frame_equal(result, expected_df)
+        # print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+        # Caso 3
+        expected_df = self.small_batch_dataset.copy()
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=2, rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None)
+        print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
+
+        # Caso 4
+        expected_df = self.small_batch_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=0, rightMargin=3,
+                                                         closureType=Closure(0), numOpOutput=Operation(1),
+                                                         axis_param=None)
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        # Calcular la media de estas columnas numéricas
+        mean_value = only_numbers_df.mean().mean()
+        # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+        expected_df = expected_df.apply(
+            lambda col: col.apply(
+                lambda x: mean_value if (np.issubdtype(type(x), np.number) and ((x > 0) & (x < 3))) else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+
+
+
+
     # TODO: Implement the invariant tests with external dataset
     def execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_NumOp
         """
+
+        # Caso 1
+        expected_df = self.rest_of_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=2, rightMargin=4,
+                                                         closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
+        # Aplicar la lógica para reemplazar los valores en el rango especificado
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: np.nan if (np.issubdtype(type(x), np.number) and
+                                                                                   ((x > 2) & (x <= 4))) else x))
+        # Interpolar solo en columnas numéricas
+        numeric_columns = expected_df.select_dtypes(include=[np.number]).columns
+        expected_df[numeric_columns] = expected_df[numeric_columns].interpolate(method='linear', limit_direction='both')
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+
+        # # Caso 2
+        # expected_df = self.rest_of_dataset.copy()
+        # result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=2, rightMargin=4,
+        #                                                  closureType=Closure(3), numOpOutput=Operation(0), axis_param=1)
+        #
+        # expected_df = expected_df.apply(
+        #     lambda row: row.apply(lambda x: np.nan if np.issubdtype(type(x), np.number) and ((x >= 2) & (x <= 4)) else x).interpolate(
+        #         method='linear', limit_direction='both'), axis=1)
+        # pd.testing.assert_frame_equal(result, expected_df)
+        # print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+
+        # Caso 3
+        expected_df = self.rest_of_dataset.copy()
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=2, rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None)
+        print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
+
+        # Caso 4
+        expected_df = self.rest_of_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=0, rightMargin=3,
+                                                         closureType=Closure(0), numOpOutput=Operation(1),
+                                                         axis_param=None)
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        # Calcular la media de estas columnas numéricas
+        mean_value = only_numbers_df.mean().mean()
+        # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+        expected_df = expected_df.apply(
+            lambda col: col.apply(
+                lambda x: mean_value if (np.issubdtype(type(x), np.number) and ((x > 0) & (x < 3))) else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+
+
+
+
+
+
+
+
+
 
     def execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests(self):
         """
