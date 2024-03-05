@@ -24,6 +24,6 @@ if __name__ == "__main__":
     # TODO: Implement the invariants external dataset tests
     # Execute all invariants external dataset tests
     invariantTestWithDatasets = InvariantsExternalDatasetTests()
-    invariantTestWithDatasets.executeAll_ExternalDatasetTests()
-    # invariantTestWithDatasets.execute_checkInv_FixValue_NumOp_ExternalDatasetTests()
+    # invariantTestWithDatasets.executeAll_ExternalDatasetTests()
+    invariantTestWithDatasets.execute_checkInv_Interval_NumOp_ExternalDatasetTests()
 
