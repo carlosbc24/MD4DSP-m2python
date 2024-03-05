@@ -1058,7 +1058,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
         # esperado.
         # Crear un DataFrame de prueba
-        expected_df = self.rest_of_dataset[3400:3750].copy()
+        expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.65
         result_df = self.invariants.checkInv_FixValue_NumOp(expected_df,
                                                             fixValueInput=fixValueInput,
@@ -1068,9 +1068,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
         for col in numeric_columns:
-            # Inicializar variables para almacenar el valor más cercano y la diferencia mínima para cada columna
-            closest_value = None
-            min_diff = np.inf
 
             # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
             diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
@@ -1078,10 +1075,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
             idx_min = diff.idxmin()
 
-            # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
-            if diff[idx_min] < min_diff:
-                closest_value = expected_df.at[idx_min, col]
-                min_diff = diff[idx_min]
+            closest_value = expected_df.at[idx_min, col]
 
             # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
             expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
