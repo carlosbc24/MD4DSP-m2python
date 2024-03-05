@@ -18,12 +18,13 @@ if __name__ == "__main__":
     # ContractTestWithDatasets.executeAll_ExternalDatasetTests()
 
     # Execute all invariants simple tests
-    contracts_invariants_test = InvariantSimpleTest()
-    contracts_invariants_test.execute_All_SimpleTests()
+    # contracts_invariants_test = InvariantSimpleTest()
+    # contracts_invariants_test.execute_All_SimpleTests()
 
     # TODO: Implement the invariants external dataset tests
     # Execute all invariants external dataset tests
     invariantTestWithDatasets = InvariantsExternalDatasetTests()
-    invariantTestWithDatasets.executeAll_ExternalDatasetTests()
-    # invariantTestWithDatasets.execute_checkInv_FixValue_NumOp_ExternalDatasetTests()
-
+    # invariantTestWithDatasets.executeAll_ExternalDatasetTests()
+    # invariantTestWithDatasets.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests()
+    # invariantTestWithDatasets.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests()
+    invariantTestWithDatasets.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests()

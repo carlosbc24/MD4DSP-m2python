@@ -542,7 +542,7 @@ class ContractsInvariants:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
 
-            elif specialTypeInput == SpecialType.OUTLIER:#TODO:Probar
+            elif specialTypeInput == SpecialType.OUTLIER:
                 threshold = 1.5
                 if axis_param is None:
                     Q1 = dataDictionary_copy.stack().quantile(0.25)

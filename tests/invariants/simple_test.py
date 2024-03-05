@@ -1362,6 +1362,10 @@ class InvariantSimpleTest(unittest.TestCase):
             'D': 'float64'  # Convertir D a float64
         })
 
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result, expected)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
         # Caso 6
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
