@@ -661,10 +661,9 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                                 dataDictionary_copy[col] = dataDictionary_copy[col].median()
             elif axis_param == 1:
                 for idx, row in dataDictionary_copy.iterrows():
-                    if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
-                        for col in row.index:
-                            if dataDictionary_copy_mask.at[idx, col] == 1:
-                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].median()
+                    for col in row.index:
+                        if dataDictionary_copy_mask.at[idx, col] == 1:
+                            dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].median()
 
     elif field is not None:
         if field not in dataDictionary_copy.columns:
