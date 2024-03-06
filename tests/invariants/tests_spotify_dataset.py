@@ -2034,23 +2034,39 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset,
                                                                        specialTypeInput=specialTypeInput,
                                                                             missing_values=missing_values,
-                                                                       derivedTypeOutput=derivedTypeOutput, axis_param=None)
+                                                                       derivedTypeOutput=derivedTypeOutput, axis_param=0)
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for col in numeric_columns:
             # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
             most_frequent_list = expected_df[col].value_counts().index.tolist()
             most_frequent_value = most_frequent_list[0]
-            print(f"Most frequent value for {col}: {most_frequent_value}")
             expected_df[col] = expected_df[col].apply(lambda x: most_frequent_value if x in missing_values else x)
-        for col in result_df.columns:
             # Convertir el tipo de dato de la columna al tipo que presente result en la columna
             expected_df[col] = expected_df[col].astype(result_df[col].dtype)
-            print(f"Result_df: {col} - {result_df[col].dtype}")
-            print(f"Expected_df: {col} - {expected_df[col].dtype}")
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
-
+        # Caso 4
+        # Comprobar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
+        # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset,
+                                                                          specialTypeInput=specialTypeInput,
+                                                                       derivedTypeOutput=derivedTypeOutput,
+                                                                            missing_values=missing_values, axis_param=None)
+        # Obtener el valor más frecuente de entre todas las columnas numéricas del dataframe
+        most_frequent_list = expected_df.stack().value_counts().index.tolist()
+        most_frequent_value = most_frequent_list[0]
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: most_frequent_value if x in missing_values else x))
+        for col in expected_df.columns:
+            # Asignar el tipo de cada columna del dataframe result_df a la columna correspondiente en expected_df
+            expected_df[col] = expected_df[col].astype(result_df[col].dtype)
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
 
 
@@ -2629,7 +2645,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         # Caso 1
         # Comprobar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
-        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # en el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(0)
@@ -2650,7 +2666,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         # Comprobar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
-        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # en el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(1)
@@ -2670,7 +2686,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 3
         # Comprobar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
-        # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # el dataframe completo del batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(1)
@@ -2687,8 +2703,33 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             most_frequent_list = expected_df[col].value_counts().index.tolist()
             most_frequent_value = most_frequent_list[0]
             expected_df[col] = expected_df[col].apply(lambda x: most_frequent_value if x in missing_values else x)
+            # Convertir el tipo de dato de la columna al tipo que presente result en la columna
+            expected_df[col] = expected_df[col].astype(result_df[col].dtype)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+
+        # Caso 4
+        # Comprobar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
+        # las columnas numéricas del batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset,
+                                                                       specialTypeInput=specialTypeInput,
+                                                                       derivedTypeOutput=derivedTypeOutput,
+                                                                       missing_values=missing_values, axis_param=None)
+        # Obtener el valor más frecuente de entre todas las columnas numéricas del dataframe
+        most_frequent_list = expected_df.stack().value_counts().index.tolist()
+        most_frequent_value = most_frequent_list[0]
+        expected_df = expected_df.apply(
+            lambda col: col.apply(lambda x: most_frequent_value if x in missing_values else x))
+        for col in expected_df.columns:
+            # Asignar el tipo de cada columna del dataframe result_df a la columna correspondiente en expected_df
+            expected_df[col] = expected_df[col].astype(result_df[col].dtype)
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
     def execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests(self):
         """
