@@ -450,12 +450,23 @@ class ContractsInvariants:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
                             lambda x: mean_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
+                elif axis_param == 0:
+                    means = dataDictionary_copy.apply(lambda col: col[col.apply(lambda x:
+                            np.issubdtype(type(x), np.number))].mean() if np.issubdtype(col.dtype, np.number) else None)
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: means[col] if
+                                                        get_condition(x) else x)
+                elif axis_param == 1:
+                    dataDictionary_copy = dataDictionary_copy.T
+                    means = dataDictionary_copy.apply(lambda row: row[row.apply(lambda x:
+                                np.issubdtype(type(x), np.number))].mean() if np.issubdtype(row.dtype, np.number) else None)
+                    for row in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
+                            dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: means[row] if
+                                                        get_condition(x) else x)
 
-                elif axis_param == 0 or axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(
-                            lambda x: x if not (np.issubdtype(type(x), np.number) and get_condition(x))
-                            else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+                    dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.MEDIAN:
                 if axis_param == None:

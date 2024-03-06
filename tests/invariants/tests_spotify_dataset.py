@@ -1567,6 +1567,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
+        # Caso 5
+        expected_df = self.small_batch_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=50, rightMargin=60,
+                                                         closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
+
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
+                                            and ((x > 50) & (x < 60))) else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
 
 
@@ -1626,6 +1636,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+
+        # Caso 5
+        expected_df = self.rest_of_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=50, rightMargin=60,
+                                                         closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
+
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
+                                            and ((x > 50) & (x < 60))) else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
 
 
