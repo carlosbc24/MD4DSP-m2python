@@ -486,10 +486,45 @@ class ContractsInvariants:
                             else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
 
             elif numOpOutput == Operation.CLOSEST:
+                #TODO: ES MUY POCO EFICIENTE, HAY QUE OPTIMIZARLO Y NO FUNCIONA DEL TODO
+                only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 if axis_param is None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(), x)
-                        if get_condition(x) else x))
+                    indice_row=[]
+                    indice_col=[]
+                    values=[]
+                    for col in only_numbers_df.columns:
+                        for index, row in only_numbers_df.iterrows():
+                            if get_condition(row[col]):
+                                indice_row.append(index)
+                                indice_col.append(col)
+                                values.append(row[col])
+                    print(indice_row)
+                    print(indice_col)
+                    print(values)
+
+                    processed=[values[0]]
+                    closest_processed=[]
+                    closest_value=find_closest_value(only_numbers_df.stack(), values[0])
+                    closest_processed.append(closest_value)
+                    for i in range(len(values)):
+                        if values[i] not in processed:
+                            closest_value=find_closest_value(only_numbers_df.stack(), values[i])
+                            closest_processed.append(closest_value)
+                            processed.append(values[i])
+                    print(processed)
+                    print(closest_processed)
+                    for i in range(len(processed)):
+                        print(processed[i], closest_processed[i])
+                        dataDictionary_copy=dataDictionary_copy.replace(processed[i], closest_processed[i])
+
+
+
+                    # dataDictionary_copy = dataDictionary_copy.apply(
+                    #     lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(), x)
+                    #     if get_condition(x) else x))
+
+
+
                 elif axis_param == 0 or axis_param == 1:
                     # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
                     dataDictionary_copy = dataDictionary_copy.apply(

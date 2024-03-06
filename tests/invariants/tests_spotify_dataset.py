@@ -6,6 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from functions.contract_invariants import ContractsInvariants
+from helpers.auxiliar import find_closest_value
 from helpers.enumerations import Closure, DataType
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
@@ -1578,7 +1579,33 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
+        # Caso 7
+        expected_df = self.small_batch_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=50, rightMargin=60,
+                                                         closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        # Calcular la media de estas columnas numéricas
+        median_value = only_numbers_df.median().median()
+        # Reemplaza los valores en el intervalo con la mediana del DataFrame completo usando lambda
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: median_value if (np.issubdtype(type(x), np.number)
+                                                    and ((x >= 50) & (x < 60))) else x))
 
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 9
+        expected_df = self.small_batch_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=23, rightMargin=25,
+                                                         closureType=Closure(0), numOpOutput=Operation(3),
+                                                         axis_param=None)
+
+        #Sustituye los valores en el intervalo con el valor más cercano del dataframe completo
+        expected_df = expected_df.apply(
+            lambda col: col.apply(lambda x: find_closest_value(expected_df.stack(), x)
+            if np.issubdtype(type(x), np.number) and ((23<x) and (x<25)) else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
 
     # TODO: Implement the invariant tests with external dataset
@@ -1647,6 +1674,34 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        expected_df = self.rest_of_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=50, rightMargin=60,
+                                                         closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        # Calcular la media de estas columnas numéricas
+        median_value = only_numbers_df.median().median()
+        # Reemplaza los valores en el intervalo con la mediana del DataFrame completo usando lambda
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: median_value if (np.issubdtype(type(x), np.number)
+                                                    and ((x >= 50) & (x < 60))) else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 9
+        expected_df = self.rest_of_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=23, rightMargin=25,
+                                                         closureType=Closure(0), numOpOutput=Operation(3),
+                                                         axis_param=None)
+
+        #Sustituye los valores en el intervalo con el valor más cercano del dataframe completo
+        expected_df = expected_df.apply(
+            lambda col: col.apply(lambda x: find_closest_value(expected_df.stack(), x)
+            if np.issubdtype(type(x), np.number) and ((23<x) and (x<25)) else x))
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
 
 
