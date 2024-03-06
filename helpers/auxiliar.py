@@ -531,12 +531,24 @@ def specialTypeMean(dataDictionary_copy: pd.DataFrame, specialTypeInput: Special
                 # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: mean_value if (x in missing_values or pd.isnull(x)) else x))
-
-            elif axis_param == 0 or axis_param == 1:
-                dataDictionary_copy = dataDictionary_copy.apply(
-                    lambda col: col.apply(
-                        lambda x: x if not (x in missing_values or pd.isnull(x))
-                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+            elif axis_param == 0:
+                means = dataDictionary_copy.apply(
+                    lambda col: col[col.apply(lambda x: np.issubdtype(type(x), np.number))].mean() if np.issubdtype(
+                        col.dtype, np.number) else None)
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: x if not (x in missing_values or pd.isnull(x)) else means[col])
+            elif axis_param == 1:
+                dataDictionary_copy = dataDictionary_copy.T
+                means = dataDictionary_copy.apply(
+                    lambda row: row[row.apply(lambda x: np.issubdtype(type(x), np.number))].mean() if np.issubdtype(
+                        row.dtype, np.number) else None)
+                for row in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
+                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(
+                            lambda x: x if not (x in missing_values or pd.isnull(x)) else means[row])
+                dataDictionary_copy = dataDictionary_copy.T
         if specialTypeInput == SpecialType.INVALID:
             if axis_param == None:
                 # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
@@ -546,11 +558,22 @@ def specialTypeMean(dataDictionary_copy: pd.DataFrame, specialTypeInput: Special
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: mean_value if (x in missing_values) else x))
 
-            elif axis_param == 0 or axis_param == 1:
-                dataDictionary_copy = dataDictionary_copy.apply(
-                    lambda col: col.apply(
-                        lambda x: x if not (x in missing_values)
-                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+            elif axis_param == 0:
+                means = dataDictionary_copy.apply(lambda col: col[col.apply(lambda x:
+                        np.issubdtype(type(x), np.number))].mean() if np.issubdtype(col.dtype, np.number) else None)
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: x if not (x in missing_values) else means[col])
+            elif axis_param == 1:
+                dataDictionary_copy = dataDictionary_copy.T
+                means = dataDictionary_copy.apply(lambda row: row[row.apply(lambda x:
+                        np.issubdtype(type(x), np.number))].mean() if np.issubdtype(row.dtype, np.number) else None)
+                for row in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
+                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(
+                            lambda x: x if not (x in missing_values) else means[row])
+                dataDictionary_copy = dataDictionary_copy.T
 
         if specialTypeInput == SpecialType.OUTLIER:
             if axis_param is None:
@@ -582,11 +605,13 @@ def specialTypeMean(dataDictionary_copy: pd.DataFrame, specialTypeInput: Special
         elif field in dataDictionary_copy.columns:
             if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
                 if specialTypeInput == SpecialType.MISSING:
+                    mean = dataDictionary_copy[field].mean()
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: dataDictionary_copy[field].mean() if x in missing_values else x)
+                        lambda x: mean if x in missing_values else x)
                 if specialTypeInput == SpecialType.INVALID:
+                    mean = dataDictionary_copy[field].mean()
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: dataDictionary_copy[field].mean() if x in missing_values else x)
+                        lambda x: mean if x in missing_values else x)
                 if specialTypeInput == SpecialType.OUTLIER:
                     for idx, value in dataDictionary_copy[field].items():
                         if dataDictionary_copy_mask.at[idx, field] == 1:
