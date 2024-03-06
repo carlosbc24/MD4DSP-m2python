@@ -184,7 +184,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 5, 5], 'B': [1, 2, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                                 fixValueInput=0,
                                                                 derivedTypeOutput=DerivedType(0), axis_param=None)
         # Definir el resultado esperado
@@ -198,7 +198,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 5, 5], 'B': [1, 8, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                                 fixValueInput=5,
                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
         # Definir el resultado esperado
@@ -212,7 +212,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                                 fixValueInput=0,
                                                                 derivedTypeOutput=DerivedType(2), axis_param=1)
         # Definir el resultado esperado
@@ -226,7 +226,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 3, 5], 'B': [1, 8, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                                 fixValueInput=5,
                                                                 derivedTypeOutput=DerivedType(0), axis_param=0)
         # Definir el resultado esperado
@@ -240,7 +240,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 3, 5], 'B': [1, 8, 4, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 5, 6, 7, 8]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                                 fixValueInput=5,
                                                                 derivedTypeOutput=DerivedType(0), axis_param=1)
         # Definir el resultado esperado
@@ -255,7 +255,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 3, 5], 'B': [1, 8, 5, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 5, 6, 5, 8]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                                 fixValueInput=5,
                                                                 derivedTypeOutput=DerivedType(1), axis_param=1)
         # Definir el resultado esperado
@@ -271,7 +271,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': ["0", 2, 3, 3, 5], 'B': [1, 8, 5, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 5, 6, 5, 8]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                                 fixValueInput=5,
                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
         # Definir el resultado esperado
@@ -288,7 +288,7 @@ class InvariantSimpleTest(unittest.TestCase):
             {'A': [0, 2, "Ainhoa", "Ainhoa", 5], 'B': [1, 8, "Ainhoa", 4, 3], 'C': [1, 2, 3, 4, "Ainhoa"],
              'D': [4, 5, 6, 5, 8]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(0),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(0),
                                                                 fixValueInput="Ainhoa",
                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
         # Definir el resultado esperado
@@ -312,7 +312,7 @@ class InvariantSimpleTest(unittest.TestCase):
                                 'C': [1, pd.to_datetime('2021-01-01'), 3, 4, "Ainhoa"],
                                 'D': [pd.to_datetime('2021-01-01'), 5, "Ana", 5, 8]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic, dataTypeInput=DataType(0),
+        result = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary=datadic.copy(), dataTypeInput=DataType(0),
                                                                 fixValueInput="Ana",
                                                                 derivedTypeOutput=DerivedType(0), axis_param=0)
         # Definir el resultado esperado
@@ -353,7 +353,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(0), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [2, 3, 6, 5.5, 5], 'C': [1, 2, 3, 4, 5]})
@@ -371,7 +371,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 0, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(0), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [2, 2, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
@@ -389,7 +389,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 0, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(1), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [(0 + 2 + 3 + 4 + 5) / 5, 2, 3, 4, 5], 'B': [2, 3, 6, (2 + 3 + 6 + 5 + 0) / 5, 5],
@@ -408,7 +408,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 0, 6, 0, 5], 'C': [1, 2, 3, 4, 0]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(1), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
@@ -427,7 +427,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 0, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(2), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [3, 2, 3, 4, 5], 'B': [2, 3, 6, 3, 5], 'C': [1, 3, 3, 4, 5]})
@@ -445,7 +445,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 0, 6, 0, 5], 'C': [1, 2, 3, 4, 0]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(2), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 2, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
@@ -463,7 +463,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 3, 6, 0, 5], 'C': [1, 0, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(3), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [3, 3, 6, 3, 5], 'C': [1, 1, 3, 4, 5]})
@@ -476,7 +476,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic, dataTypeInput=DataType(2),
+        result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(3), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 3, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
@@ -500,7 +500,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(0), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso')
         # Definir el resultado esperado
@@ -515,7 +515,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(1), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso')
         # Definir el resultado esperado
@@ -531,7 +531,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(2), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso')
         # Definir el resultado esperado
@@ -546,7 +546,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(3), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso')
         # Definir el resultado esperado
@@ -562,7 +562,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
         field = 'A'
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(0), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso', field=field)
         # Definir el resultado esperado
@@ -578,7 +578,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
         field = 'A'
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(1), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso', field=field)
         # Definir el resultado esperado
@@ -594,7 +594,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
         field = 'A'
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(2), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso', field=field)
         # Definir el resultado esperado
@@ -610,7 +610,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
         field = 'A'
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                             closureType=Closure(3), dataTypeOutput=DataType(0),
                                                             fixValueOutput='Suspenso', field=field)
         # Definir el resultado esperado
@@ -637,7 +637,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Caso 1
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(0),
                                                                 axis_param=1)
@@ -650,7 +650,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Caso 2
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(3),
                                                                 derivedTypeOutput=DerivedType(0),
                                                                 axis_param=0)
@@ -663,7 +663,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Caso 3
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(2),
                                                                 derivedTypeOutput=DerivedType(0),
                                                                 axis_param=None)
@@ -677,7 +677,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(1),
                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
         # Definir el resultado esperado
@@ -692,7 +692,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                     closureType=Closure(1),
                                                                     derivedTypeOutput=DerivedType(1), axis_param=None)
         print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
@@ -701,7 +701,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(2), axis_param=1)
         # Definir el resultado esperado
@@ -716,7 +716,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                     closureType=Closure(1),
                                                                     derivedTypeOutput=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
@@ -728,7 +728,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                     closureType=Closure(1),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     axis_param=None, field=field)
@@ -739,7 +739,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(0),
                                                                 axis_param=1, field=field)
@@ -754,7 +754,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(1),
                                                                 axis_param=0, field=field)
@@ -769,7 +769,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic, leftMargin=0, rightMargin=5,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=5,
                                                                 closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(2),
                                                                 axis_param=1, field=field)
@@ -796,7 +796,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 4, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
@@ -813,7 +813,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(3), numOpOutput=Operation(0), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, np.NaN, 6, 0, 5], 'B': [0.5, np.NaN, 6, 0, 5], 'C': [1, np.NaN, 6, 0, 5]})
@@ -832,7 +832,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                              closureType=Closure(3), numOpOutput=Operation(0),
                                                              axis_param=None)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
@@ -841,7 +841,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=3,
                                                          closureType=Closure(0), numOpOutput=Operation(1),
                                                          axis_param=None)
         # Definir el resultado esperado
@@ -859,7 +859,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=3,
                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2.8, 3, 4, 5], 'B': [3.2, 3, 6, 0, 5], 'C': [3, 3, 3, 4, 5]})
@@ -876,7 +876,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=3,
                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 7 / 3, 3, 4, 5], 'B': [1, 3, 6, 0, 5], 'C': [1, 7 / 3, 3, 4, 5]})
@@ -893,7 +893,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=3,
                                                          closureType=Closure(2), numOpOutput=Operation(2),
                                                          axis_param=None)
         # Definir el resultado esperado
@@ -911,7 +911,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=3,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=3,
                                                          closureType=Closure(2), numOpOutput=Operation(2), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [1, 3, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
@@ -928,7 +928,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=4,
                                                          closureType=Closure(0), numOpOutput=Operation(3),
                                                          axis_param=None)
         # Definir el resultado esperado
@@ -942,7 +942,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=0, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=0, rightMargin=4,
                                                          closureType=Closure(0), numOpOutput=Operation(3), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 3, 2, 4, 5], 'B': [3, 2, 6, 0, 5], 'C': [2, 1, 2, 4, 5]})
@@ -958,7 +958,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                              closureType=Closure(3), numOpOutput=Operation(0),
                                                              axis_param=None, field=field)
         print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
@@ -968,7 +968,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(3), numOpOutput=Operation(0),
                                                          axis_param=None, field=field)
         # Definir el resultado esperado
@@ -985,7 +985,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(3), numOpOutput=Operation(1),
                                                          axis_param=None, field=field)
         # Definir el resultado esperado
@@ -1002,7 +1002,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(3), numOpOutput=Operation(2),
                                                          axis_param=None, field=field)
         # Definir el resultado esperado
@@ -1019,7 +1019,7 @@ class InvariantSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic, leftMargin=2, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(3), numOpOutput=Operation(3),
                                                          axis_param=None, field=field)
         # Definir el resultado esperado
@@ -1048,7 +1048,7 @@ class InvariantSimpleTest(unittest.TestCase):
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(0),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 missing_values=missing_values, axis_param=0)
         # Definir el resultado esperado
@@ -1073,7 +1073,7 @@ class InvariantSimpleTest(unittest.TestCase):
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 missing_values=missing_values, axis_param=0)
         # Definir el resultado esperado
@@ -1098,7 +1098,7 @@ class InvariantSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 axis_param=None)
         # Definir el resultado esperado
@@ -1116,7 +1116,7 @@ class InvariantSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 axis_param=0)
         # Definir el resultado esperado
@@ -1134,7 +1134,7 @@ class InvariantSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 axis_param=1)
         # Definir el resultado esperado
@@ -1154,7 +1154,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3]
         field = 'B'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(0),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 missing_values=missing_values, axis_param=0,
                                                                 field=field)
@@ -1181,7 +1181,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3]
         field = 'B'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 missing_values=missing_values, axis_param=0,
                                                                 field=field)
@@ -1207,7 +1207,7 @@ class InvariantSimpleTest(unittest.TestCase):
              'E': [1, 10, 3, 4, 1]})
         field = 'C'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                 axis_param=None, field=field)
         # Definir el resultado esperado
@@ -1228,7 +1228,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic,
+            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     dataTypeOutput=DataType(2), fixValueOutput=999,
                                                                     axis_param=None, field=field)
@@ -1253,7 +1253,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1276,7 +1276,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1302,7 +1302,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1329,7 +1329,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1348,7 +1348,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1373,7 +1373,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1399,7 +1399,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(1),
                                                                     missing_values=missing_values,
@@ -1422,7 +1422,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(1),
                                                                     missing_values=missing_values,
@@ -1449,7 +1449,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                         specialTypeInput=SpecialType(1),
                                                                         derivedTypeOutput=DerivedType(1),
                                                                         missing_values=missing_values,
@@ -1463,7 +1463,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     missing_values=missing_values,
@@ -1486,7 +1486,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     missing_values=missing_values,
@@ -1514,7 +1514,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                         specialTypeInput=SpecialType(1),
                                                                         derivedTypeOutput=DerivedType(2),
                                                                         missing_values=missing_values,
@@ -1528,7 +1528,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1555,7 +1555,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                         specialTypeInput=SpecialType(2),
                                                                         derivedTypeOutput=DerivedType(1),
                                                                         missing_values=missing_values,
@@ -1569,7 +1569,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1592,7 +1592,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1615,7 +1615,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(1),
                                                                     missing_values=missing_values,
@@ -1638,7 +1638,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(1),
                                                                     missing_values=missing_values,
@@ -1661,7 +1661,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     missing_values=missing_values,
@@ -1684,7 +1684,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     missing_values=missing_values,
@@ -1710,7 +1710,7 @@ class InvariantSimpleTest(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                         specialTypeInput=SpecialType(1),
                                                                         derivedTypeOutput=DerivedType(2),
                                                                         missing_values=missing_values,
@@ -1725,7 +1725,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1749,7 +1749,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1773,7 +1773,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = None
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(1),
                                                                     missing_values=missing_values,
@@ -1797,7 +1797,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(1),
                                                                     missing_values=missing_values,
@@ -1821,7 +1821,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = None
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(0),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     missing_values=missing_values,
@@ -1845,7 +1845,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     missing_values=missing_values,
@@ -1869,7 +1869,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'C'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
@@ -1893,7 +1893,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'C'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(1),
                                                                     missing_values=missing_values,
@@ -1917,7 +1917,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'C'
         # Aplicar la invariante
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic,
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(2),
                                                                     missing_values=missing_values,
@@ -1972,7 +1972,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4 / 3, 2 + 8 / 3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0],
              'D': [8.2, 8.2, 6, 4, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(0), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -1985,7 +1985,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0],
              'D': [1, 8.2, 6, 1, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(1), missing_values=missing_values,
                                                                 axis_param=None)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -1997,7 +1997,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 3.5, 1], 'B': [2, 3, 3.5, 6, 1], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(2), missing_values=missing_values,
                                                                 axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2010,7 +2010,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic,
+            result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
                                                                  specialTypeInput=SpecialType(0),
                                                                  numOpOutput=Operation(3),
                                                                  missing_values=missing_values,
@@ -2024,7 +2024,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [3, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(0),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(3), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2038,7 +2038,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4 / 3, 2 + 8 / 3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0],
              'D': [8.2, 8.2, 6, 4, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(0), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2051,7 +2051,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0],
              'D': [1, 8.2, 6, 1, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(1), missing_values=missing_values,
                                                                 axis_param=None)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2063,7 +2063,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 3.5, 1.5], 'B': [2, 3, 3.5, 6, 12], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(2), missing_values=missing_values,
                                                                 axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2076,7 +2076,7 @@ class InvariantSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 0], 'B': [2, 2, 3, 6, 12], 'C': [10, 3, 4, np.NaN, 0], 'D': [2, 8.2, 2, 2, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(3), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2090,7 +2090,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
 
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(1),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(3), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2107,7 +2107,7 @@ class InvariantSimpleTest(unittest.TestCase):
             'B': 'float64',  # Convertir B a float64
             'C': 'float64'  # Convertir C a float64
         })
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(0), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 11 Passed: got the dataframe expected")
@@ -2122,7 +2122,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 3.61], 'C': [3.61, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
 
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(1), missing_values=None,
                                                                 axis_param=None)
 
@@ -2138,7 +2138,7 @@ class InvariantSimpleTest(unittest.TestCase):
         })
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 1.5], 'C': [1.5, 1, 3, 3, 0], 'D': [1, 2.5, 6, 1, 2]})
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(2), missing_values=None,
                                                                 axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2154,7 +2154,7 @@ class InvariantSimpleTest(unittest.TestCase):
             'D': 'float64'  # Convertir D a float64
         })
 
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(3), missing_values=None,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -2169,7 +2169,7 @@ class InvariantSimpleTest(unittest.TestCase):
         expected_df = expected_df.astype({
             'D': 'float64'  # Convertir D a float64
         })
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(3), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 15 Passed: got the dataframe expected")
@@ -2185,7 +2185,7 @@ class InvariantSimpleTest(unittest.TestCase):
         })
         field = 'D'
         missing_values = [8.2]
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic, specialTypeInput=SpecialType(2),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(1), missing_values=missing_values,
                                                                 axis_param=0, field=field)
         pd.testing.assert_frame_equal(expected_df, result_df)

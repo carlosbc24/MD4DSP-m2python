@@ -1,11 +1,23 @@
 # Importing enumerations from packages
 from typing import Union
+from helpers.enumerations import Operator, DataType, DerivedType, SpecialType
 
-import numpy as np
 # Importing libraries
+import numpy as np
 import pandas as pd
 
-from helpers.enumerations import Operator, DataType, DerivedType, SpecialType
+
+def format_duration(seconds: float):
+    """
+    Format duration from seconds to hours, minutes, seconds and miliseconds
+
+    :param seconds (float): Duration in seconds
+    """
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    seconds = seconds % 60
+    miliseconds = seconds - int(seconds)
+    return f"{hours} hours, {minutes} minutes, {int(seconds)} seconds and {int(miliseconds * 1000)} miliseconds"
 
 
 def compare_numbers(rel_abs_number: Union[int, float], quant_rel_abs: Union[int, float], quant_op: Operator) -> bool:
@@ -324,13 +336,23 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
             if axis_param == 0 or axis_param == 1:
                 if specialTypeInput == SpecialType.MISSING:
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([row_or_col.iloc[i - 1]
-                                          if (value in missing_values or pd.isnull(value)) and i > 0 else value
-                                           for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
+                                                                                                  if (
+                                                                                                                 value in missing_values or pd.isnull(
+                                                                                                             value)) and i > 0 else value
+                                                                                                  for i, value in
+                                                                                                  enumerate(
+                                                                                                      row_or_col)],
+                                                                                                 index=row_or_col.index),
+                                                                    axis=axis_param)
                 else:
                     # Define la función lambda para reemplazar los valores dentro de missing values por el valor de la posición anterior
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                         value) else row_or_col.iloc[i - 1] if value in missing_values and i > 0 else value
-                              for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
+                                                                                                  for i, value in
+                                                                                                  enumerate(
+                                                                                                      row_or_col)],
+                                                                                                 index=row_or_col.index),
+                                                                    axis=axis_param)
 
             elif axis_param is None:
                 raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
@@ -340,14 +362,20 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
             if axis_param == 0 or axis_param == 1:
                 if specialTypeInput == SpecialType.MISSING:
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([row_or_col.iloc[i + 1]
-                                             if (value in missing_values or pd.isnull(value)) and i < len(row_or_col) - 1
-                                                else value for i, value in enumerate(row_or_col)], index=row_or_col.index),
-                                                    axis=axis_param)
+                                                                                                  if (
+                                                                                                                 value in missing_values or pd.isnull(
+                                                                                                             value)) and i < len(
+                        row_or_col) - 1
+                                                                                                  else value for
+                                                                                                  i, value in enumerate(
+                            row_or_col)], index=row_or_col.index),
+                                                                    axis=axis_param)
                 else:
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                                            value) else row_or_col.iloc[i + 1] if value in missing_values and i < len(
-                                            row_or_col) - 1 else value for i, value in enumerate(row_or_col)],
-                                                                     index=row_or_col.index), axis=axis_param)
+                        value) else row_or_col.iloc[i + 1] if value in missing_values and i < len(
+                        row_or_col) - 1 else value for i, value in enumerate(row_or_col)],
+                                                                                                 index=row_or_col.index),
+                                                                    axis=axis_param)
             elif axis_param is None:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
 
@@ -367,13 +395,16 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
                 if specialTypeInput == SpecialType.MISSING:
                     if missing_values is not None:
                         dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i - 1]
-                                                    if (value in missing_values or pd.isnull(value)) and i > 0 else value
-                                                        for i, value in enumerate(dataDictionary_copy[field])],
-                                                            index=dataDictionary_copy[field].index)
+                                                                if (value in missing_values or pd.isnull(
+                            value)) and i > 0 else value
+                                                                for i, value in enumerate(dataDictionary_copy[field])],
+                                                               index=dataDictionary_copy[field].index)
                     else:
-                        dataDictionary_copy[field] = pd.Series([dataDictionary_copy[field].iloc[i - 1] if pd.isnull(value)
-                                                    and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
-                                                        index=dataDictionary_copy[field].index)
+                        dataDictionary_copy[field] = pd.Series(
+                            [dataDictionary_copy[field].iloc[i - 1] if pd.isnull(value)
+                                                                       and i > 0 else value for i, value in
+                             enumerate(dataDictionary_copy[field])],
+                            index=dataDictionary_copy[field].index)
                 elif specialTypeInput == SpecialType.INVALID:
                     if missing_values is not None:
                         dataDictionary_copy[field] = pd.Series(
@@ -474,8 +505,9 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
                         for col in row.index:
                             if dataDictionary_copy_mask.at[idx, col] == 1:
                                 dataDictionary_copy.at[idx, col] = np.NaN
-                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].interpolate(method='linear',
-                                                                                                            limit_direction='both')
+                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].interpolate(
+                                    method='linear',
+                                    limit_direction='both')
     elif field is not None:
         if field not in dataDictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
@@ -624,7 +656,7 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
                         lambda x: x if not (x in missing_values or pd.isnull(x))
-                            else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number) and not np.isnan(x))].median()), axis=axis_param)
         if specialTypeInput == SpecialType.INVALID:
             if axis_param == None:
                 # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
@@ -639,7 +671,7 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
                         lambda x: x if not (x in missing_values)
-                            else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
 
         if specialTypeInput == SpecialType.OUTLIER:
             if axis_param is None:
@@ -707,8 +739,11 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
         if specialTypeInput == SpecialType.MISSING:
             if axis_param is None:
                 dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x:
-                                       find_closest_value(dataDictionary_copy.stack(), x) if x in missing_values else
-                                                                raise_error() if pd.isnull(x) else x))
+                                                                                      find_closest_value(
+                                                                                          dataDictionary_copy.stack(),
+                                                                                          x) if x in missing_values else
+                                                                                      raise_error() if pd.isnull(
+                                                                                          x) else x))
             elif axis_param == 0 or axis_param == 1:
                 # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
                 dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
@@ -717,7 +752,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
         if specialTypeInput == SpecialType.INVALID:
             if axis_param is None:
                 dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(lambda x: find_closest_value(
-                                                    dataDictionary_copy.stack(), x) if x in missing_values else x))
+                    dataDictionary_copy.stack(), x) if x in missing_values else x))
             elif axis_param == 0 or axis_param == 1:
                 # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
                 dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
@@ -728,24 +763,26 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                 for col_name in dataDictionary_copy.columns:
                     for idx, value in dataDictionary_copy[col_name].items():
                         if dataDictionary_copy_mask.at[idx, col_name] == 1:
-                            dataDictionary_copy.at[idx, col_name] = find_closest_value(dataDictionary_copy.stack(), value)
+                            dataDictionary_copy.at[idx, col_name] = find_closest_value(dataDictionary_copy.stack(),
+                                                                                       value)
             elif axis_param == 0 or axis_param == 1:
                 # Reemplazar los valores en la misma posicion que los 1 dataDictionary_copy_mask por el valor numérico más cercano a lo largo de las columnas y filas
                 for col_name in dataDictionary_copy.columns:
                     for idx, value in dataDictionary_copy[col_name].items():
                         if dataDictionary_copy_mask.at[idx, col_name] == 1:
-                            dataDictionary_copy.at[idx, col_name] = find_closest_value(dataDictionary_copy[col_name], value)
+                            dataDictionary_copy.at[idx, col_name] = find_closest_value(dataDictionary_copy[col_name],
+                                                                                       value)
     elif field is not None:
         if field not in dataDictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
         elif field in dataDictionary_copy.columns:
             if specialTypeInput == SpecialType.MISSING:
                 dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda x: find_closest_value(
-                                            dataDictionary_copy[field], x) if x in missing_values else raise_error()
-                                                if pd.isnull(x) else x)
+                    dataDictionary_copy[field], x) if x in missing_values else raise_error()
+                if pd.isnull(x) else x)
             if specialTypeInput == SpecialType.INVALID:
                 dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda x: find_closest_value(
-                                                    dataDictionary_copy[field], x) if x in missing_values else x)
+                    dataDictionary_copy[field], x) if x in missing_values else x)
             if specialTypeInput == SpecialType.OUTLIER:
                 for idx, value in dataDictionary_copy[field].items():
                     if dataDictionary_copy_mask.at[idx, field] == 1:
