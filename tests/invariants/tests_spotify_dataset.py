@@ -1,4 +1,5 @@
 import os
+import time
 import unittest
 
 import numpy as np
@@ -1691,14 +1692,54 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 9
         expected_df = self.rest_of_dataset.copy()
+        # start_time = time.time()
+
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=23, rightMargin=25,
-                                                         closureType=Closure(0), numOpOutput=Operation(3),
+                                                         closureType=Closure(1), numOpOutput=Operation(3),
                                                          axis_param=None)
 
-        #Sustituye los valores en el intervalo con el valor más cercano del dataframe completo
-        expected_df = expected_df.apply(
-            lambda col: col.apply(lambda x: find_closest_value(expected_df.stack(), x)
-            if np.issubdtype(type(x), np.number) and ((23<x) and (x<25)) else x))
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        indice_row = []
+        indice_col = []
+        values = []
+        for col in only_numbers_df.columns:
+            for index, row in only_numbers_df.iterrows():
+                if 23 < (row[col]) <= 25:
+                    indice_row.append(index)
+                    indice_col.append(col)
+                    values.append(row[col])
+
+        if values.__len__() > 0:
+            processed = [values[0]]
+            closest_processed = []
+            closest_value = find_closest_value(only_numbers_df.stack(), values[0])
+            closest_processed.append(closest_value)
+            for i in range(len(values)):
+                if values[i] not in processed:
+                    closest_value = find_closest_value(only_numbers_df.stack(), values[i])
+                    closest_processed.append(closest_value)
+                    processed.append(values[i])
+
+            # Recorrer todas las celdas del DataFrame
+            for i in range(len(expected_df.index)):
+                for j in range(len(expected_df.columns)):
+                    # Obtener el valor de la celda actual
+                    current_value = expected_df.iat[i, j]
+                    # Verificar si el valor está en la lista de valores a reemplazar
+                    if current_value in processed:
+                        # Obtener el índice correspondiente en la lista de valores a reemplazar
+                        replace_index = processed.index(current_value)
+                        # Obtener el valor más cercano correspondiente
+                        closest_value = closest_processed[replace_index]
+                        # Reemplazar el valor en el DataFrame
+                        expected_df.iat[i, j] = closest_value
+
+        # end_time = time.time()
+        #
+        # # Calcula la diferencia de tiempo
+        # execution_time = end_time - start_time
+        #
+        # print("Tiempo de ejecución:", execution_time, "segundos")
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")

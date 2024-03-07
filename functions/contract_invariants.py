@@ -1,4 +1,6 @@
 # Importing libraries
+import time
+
 import numpy as np
 import pandas as pd
 
@@ -202,25 +204,39 @@ class ContractsInvariants:
                     # Reemplaza 'fixValueInput' con la mediana del DataFrame completo usando lambda
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.replace(fixValueInput, median_value))
-                elif axis_param == 0 or axis_param == 1:
-                    # dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput, other=x.mean()), axis=axis_param)
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda x: x.apply(
-                            lambda y: y if not np.issubdtype(type(y), np.number) or y != fixValueInput
-                            else x[x.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+                elif axis_param == 0:
+                    for col in dataDictionary_copy.columns:
+                        if fixValueInput in dataDictionary_copy[col]:
+                            median=dataDictionary_copy[col].median()
+                            dataDictionary_copy[col] = dataDictionary_copy[col].replace(fixValueInput, median)
+                elif axis_param == 1:
+                    dataDictionary_copy = dataDictionary_copy.T
 
-            elif numOpOutput == Operation.CLOSEST:
+                    for row in dataDictionary_copy.columns:
+                        if fixValueInput in dataDictionary_copy[row]:
+                            median = dataDictionary_copy[row].median()
+                            dataDictionary_copy[row] = dataDictionary_copy[row].replace(fixValueInput, median)
+
+                    dataDictionary_copy = dataDictionary_copy.T
+
+            elif numOpOutput == Operation.CLOSEST:#TODO: Testear
                 if axis_param is None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(),
-                                                                           fixValueInput) if x == fixValueInput else x))
-                elif axis_param == 0 or axis_param == 1:
+                    closest_value=find_closest_value(dataDictionary_copy.stack(), fixValueInput)
+                    dataDictionary_copy=dataDictionary_copy.replace(fixValueInput, closest_value)
+                elif axis_param == 0:
                     # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(
-                            lambda x: find_closest_value(col, fixValueInput) if x == fixValueInput else x),
-                        axis=axis_param)
-
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number) and fixValueInput in dataDictionary_copy[col]:
+                            closest_value=find_closest_value(dataDictionary_copy[col], fixValueInput)
+                            dataDictionary_copy[col] = dataDictionary_copy[col].replace(fixValueInput, closest_value)
+                elif axis_param == 1:
+                    # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las filas
+                    dataDictionary_copy = dataDictionary_copy.T
+                    for row in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number) and fixValueInput in dataDictionary_copy[row]:
+                            closest_value=find_closest_value(dataDictionary_copy[row], fixValueInput)
+                            dataDictionary_copy[row] = dataDictionary_copy[row].replace(fixValueInput, closest_value)
+                    dataDictionary_copy = dataDictionary_copy.T
             else:
                 raise ValueError("No valid operator")
         elif field is not None:
@@ -234,15 +250,24 @@ class ContractsInvariants:
                             lambda x: x if x != fixValueInput else np.nan).interpolate(method='linear',
                                                                                        limit_direction='both')
                     elif numOpOutput == Operation.MEAN:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if x != fixValueInput else dataDictionary_copy[field].mean())
+                        if fixValueInput in dataDictionary_copy[field]:
+                            mean=dataDictionary_copy[field].mean()
+                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, mean)
+                        # dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                        #     lambda x: x if x != fixValueInput else dataDictionary_copy[field].mean())
                     elif numOpOutput == Operation.MEDIAN:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if x != fixValueInput else dataDictionary_copy[field].median())
+                        if fixValueInput in dataDictionary_copy[field]:
+                            median=dataDictionary_copy[field].median()
+                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, median)
+                        # dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                        #     lambda x: x if x != fixValueInput else dataDictionary_copy[field].median())
                     elif numOpOutput == Operation.CLOSEST:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if x != fixValueInput else find_closest_value(dataDictionary_copy[field],
-                                                                                      fixValueInput))
+                        if fixValueInput in dataDictionary_copy[field]:
+                            closest_value=find_closest_value(dataDictionary_copy[field], fixValueInput)
+                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, closest_value)
+                        # dataDictionary_copy[field] = dataDictionary_copy[field].apply(
+                        #     lambda x: x if x != fixValueInput else find_closest_value(dataDictionary_copy[field],
+                        #                                                               fixValueInput))
                 else:
                     raise ValueError("The field is not numeric")
 
@@ -486,7 +511,6 @@ class ContractsInvariants:
                             else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
 
             elif numOpOutput == Operation.CLOSEST:
-                #TODO: ES MUY POCO EFICIENTE, HAY QUE OPTIMIZARLO Y NO FUNCIONA DEL TODO
                 only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 if axis_param is None:
                     indice_row=[]
@@ -498,32 +522,31 @@ class ContractsInvariants:
                                 indice_row.append(index)
                                 indice_col.append(col)
                                 values.append(row[col])
-                    print(indice_row)
-                    print(indice_col)
-                    print(values)
 
-                    processed=[values[0]]
-                    closest_processed=[]
-                    closest_value=find_closest_value(only_numbers_df.stack(), values[0])
-                    closest_processed.append(closest_value)
-                    for i in range(len(values)):
-                        if values[i] not in processed:
-                            closest_value=find_closest_value(only_numbers_df.stack(), values[i])
-                            closest_processed.append(closest_value)
-                            processed.append(values[i])
-                    print(processed)
-                    print(closest_processed)
-                    for i in range(len(processed)):
-                        print(processed[i], closest_processed[i])
-                        dataDictionary_copy=dataDictionary_copy.replace(processed[i], closest_processed[i])
+                    if values.__len__()>0:
+                        processed=[values[0]]
+                        closest_processed=[]
+                        closest_value=find_closest_value(only_numbers_df.stack(), values[0])
+                        closest_processed.append(closest_value)
+                        for i in range(len(values)):
+                            if values[i] not in processed:
+                                closest_value=find_closest_value(only_numbers_df.stack(), values[i])
+                                closest_processed.append(closest_value)
+                                processed.append(values[i])
 
-
-
-                    # dataDictionary_copy = dataDictionary_copy.apply(
-                    #     lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(), x)
-                    #     if get_condition(x) else x))
-
-
+                        # Recorrer todas las celdas del DataFrame
+                        for i in range(len(dataDictionary_copy.index)):
+                            for j in range(len(dataDictionary_copy.columns)):
+                                # Obtener el valor de la celda actual
+                                current_value = dataDictionary_copy.iat[i, j]
+                                # Verificar si el valor está en la lista de valores a reemplazar
+                                if current_value in processed:
+                                    # Obtener el índice correspondiente en la lista de valores a reemplazar
+                                    replace_index = processed.index(current_value)
+                                    # Obtener el valor más cercano correspondiente
+                                    closest_value = closest_processed[replace_index]
+                                    # Reemplazar el valor en el DataFrame
+                                    dataDictionary_copy.iat[i, j] = closest_value
 
                 elif axis_param == 0 or axis_param == 1:
                     # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
