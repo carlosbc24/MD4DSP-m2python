@@ -640,6 +640,7 @@ class ContractsInvariants:
                                                             missing_values, axis_param, field)
                 elif axis_param == 0 or axis_param == 1:
                     dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
+                    print(dataDictionary_copy_copy['track_popularity'])
                     dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
                                                                           dataDictionary_copy_copy, axis_param, field)
 

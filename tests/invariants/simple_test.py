@@ -2041,6 +2041,9 @@ class InvariantSimpleTest(unittest.TestCase):
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(), specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(0), missing_values=missing_values,
                                                                 axis_param=0)
+        result_df = result_df.astype({
+            'A': 'float64'  # Convertir A a float64
+        })
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 

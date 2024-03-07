@@ -1,6 +1,9 @@
 # Importing functions and classes from packages
 import time
 
+import numpy as np
+import pandas as pd
+
 from helpers.auxiliar import format_duration
 from helpers.logger import set_logger, print_and_log
 from tests.contract_pre_post.simple_test import ContractSimpleTest

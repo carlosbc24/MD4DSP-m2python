@@ -477,18 +477,31 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
                         dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(
                             lambda x: np.nan if x in missing_values else x).interpolate(method='linear',
                                                                                         limit_direction='both')
+                # Iteramos sobre cada columna
+                for col in dataDictionary_copy.columns:
+                    # Para cada índice en la columna
+                    for idx in dataDictionary_copy.index:
+                        # Verificamos si el valor es NaN en el dataframe original
+                        if pd.isnull(dataDictionary_copy.at[idx, col]):
+                            # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                            dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+
+                # Retornamos el dataframe con los valores interpolados sobre los valoers invalidos, sin interpolar los NaN
+                # que había en el dataframe original
+                return dataDictionary_copy_copy
+
             elif axis_param == 1:
                 dataDictionary_copy_copy = dataDictionary_copy_copy.apply(
                     lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
                         method='linear', limit_direction='both'), axis=axis_param)
 
-            # Verificamos si hay algún valor nulo en el DataFrame
-            if dataDictionary_copy.isnull().any().any():
-                dataDictionary_copy = dataDictionary_copy.apply(lambda row: row.apply(
-                    lambda value: dataDictionary_copy_copy.at[row.name, value] if not pd.isnull(value) else value),
-                                                                axis=1)
-            else:
-                dataDictionary_copy = dataDictionary_copy_copy.copy()
+                # Verificamos si hay algún valor nulo en el DataFrame
+                if dataDictionary_copy.isnull().any().any():
+                    dataDictionary_copy = dataDictionary_copy.apply(lambda row: row.apply(
+                        lambda value: dataDictionary_copy_copy.at[row.name, value] if not pd.isnull(value) else value),
+                                                                    axis=1)
+                else:
+                    dataDictionary_copy = dataDictionary_copy_copy.copy()
 
         if specialTypeInput == SpecialType.OUTLIER:
             if axis_param == 0:
@@ -578,7 +591,15 @@ def specialTypeMean(dataDictionary_copy: pd.DataFrame, specialTypeInput: Special
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: mean_value if (x in missing_values) else x))
 
-            elif axis_param == 0 or axis_param == 1:
+            elif axis_param == 0:
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        mean = dataDictionary_copy[col].mean()
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: mean if x in missing_values else x)
+
+            elif axis_param == 1: # TODO: Pendiente de testear con datasets más grandes en el futuro
+
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
                         lambda x: x if not (x in missing_values)
@@ -600,7 +621,8 @@ def specialTypeMean(dataDictionary_copy: pd.DataFrame, specialTypeInput: Special
                     if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
                         for idx, value in dataDictionary_copy[col].items():
                             if dataDictionary_copy_mask.at[idx, col] == 1:
-                                dataDictionary_copy[col] = dataDictionary_copy[col].mean()
+                                dataDictionary_copy.at[idx, col] = dataDictionary_copy[col].mean()
+                                # dataDictionary_copy[col] = dataDictionary_copy[col].mean()
             elif axis_param == 1:
                 for idx, row in dataDictionary_copy.iterrows():
                     if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
@@ -652,11 +674,20 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
                         lambda x: median_value if (x in missing_values or pd.isnull(x)) else x))
-            elif axis_param == 0 or axis_param == 1:
+            elif axis_param == 0:
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        # Calcular la mediana sin tener en cuenta los valores nan
+                        median = dataDictionary_copy[col].median()
+                        # Reemplazar los valores en missing_values, así como los valores nulos de python, por la mediana
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: median if x in missing_values or pd.isnull(x) else x)
+            elif axis_param == 1: # TODO: Pendiente de testear con datasets más grandes en el futuro
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
                         lambda x: x if not (x in missing_values or pd.isnull(x))
-                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number) and not np.isnan(x))].median()), axis=axis_param)
+                        else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+
         if specialTypeInput == SpecialType.INVALID:
             if axis_param == None:
                 # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
@@ -667,7 +698,16 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: median_value if (x in missing_values) else x))
 
-            elif axis_param == 0 or axis_param == 1:
+
+            elif axis_param == 0:
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        # Calcular la mediana sin tener en cuenta los valores nan
+                        median = dataDictionary_copy[col].median()
+                        # Reemplazar los valores en missing_values, así como los valores nulos de python, por la mediana
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: median if x in missing_values else x)
+            elif axis_param == 1: # TODO: Pendiente de testear con datasets más grandes en el futuro
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(
                         lambda x: x if not (x in missing_values)
@@ -704,7 +744,7 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
             if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
                 if specialTypeInput == SpecialType.MISSING:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                        lambda x: dataDictionary_copy[field].median() if x in missing_values else x)
+                        lambda x: dataDictionary_copy[field].median() if x in missing_values or pd.isnull(x) else x)
                 if specialTypeInput == SpecialType.INVALID:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                         lambda x: dataDictionary_copy[field].median() if x in missing_values else x)
