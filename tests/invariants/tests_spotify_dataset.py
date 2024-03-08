@@ -1512,7 +1512,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO: Implement the invariant tests with external dataset
     def execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_NumOp
@@ -1607,8 +1606,93 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
+        # Caso 10
+        expected_df = self.small_batch_dataset.copy()# Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23, rightMargin=25,
+                                                         closureType=Closure(0), numOpOutput=Operation(3), axis_param=0)
 
-    # TODO: Implement the invariant tests with external dataset
+        # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x:
+                                find_closest_value(col, x) if np.issubdtype(type(x), np.number) and ((23<x) and (x<25)) else x),
+                                                        axis=0)
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        field = 'T'
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None, field=field)
+        print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
+
+        # Caso 12
+        expected_df = self.small_batch_dataset.copy()
+        field = 'key'
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(0),
+                                                         axis_param=None, field=field)
+        expected_df[field] = expected_df[field].apply(lambda x: np.nan if (2 <= x <= 4) else x).interpolate(method='linear',
+                                                                                                            limit_direction='both')
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
+
+        # Caso 13
+        expected_df = self.small_batch_dataset.copy()
+        field = 'key'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(1),
+                                                         axis_param=None, field=field)
+        expected_df[field] = expected_df[field].apply(lambda x: expected_df[field].mean() if (2 <= x <= 4) else x)
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
+
+        # Caso 14
+        expected_df = self.small_batch_dataset.copy()
+        field = 'key'
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(2),
+                                                         axis_param=None, field=field)
+        median=expected_df[field].median()
+        expected_df[field] = expected_df[field].apply(lambda x: median if (2 <= x <= 4) else x)
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
+
+        # Caso 15
+        expected_df = self.small_batch_dataset.copy()
+        field = 'key'
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4, closureType=Closure(2), numOpOutput=Operation(3),
+                                                         axis_param=None, field=field)
+
+        indice_row = []
+        values = []
+        processed = []
+        closest_processed = []
+
+        for index, value in expected_df[field].items():
+            if 2<=value<4:
+                indice_row.append(index)
+                values.append(value)
+        if values.__len__() > 0 and values is not None:
+            processed.append(values[0])
+            closest_processed.append(find_closest_value(expected_df[field], values[0]))
+            for i in range(1, len(values)):
+                if values[i] not in processed:
+                    closest_value = find_closest_value(expected_df[field], values[i])
+                    processed.append(values[i])
+                    closest_processed.append(closest_value)
+            for i, index in enumerate(indice_row):
+                expected_df.at[index, field] = closest_processed[processed.index(values[i])]
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
+
+
     def execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_NumOp
@@ -1744,6 +1828,115 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
 
+        # Caso 10
+        expected_df = self.rest_of_dataset.copy()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=23,
+                                                         rightMargin=25, closureType=Closure(0), numOpOutput=Operation(3),
+                                                         axis_param=0)
+
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        for col in only_numbers_df.columns:
+            indice_row = []
+            indice_col = []
+            values = []
+            processed = []
+            closest_processed = []
+
+            for index, value in only_numbers_df[col].items():
+                if (23 < value < 25):
+                    indice_row.append(index)
+                    indice_col.append(col)
+                    values.append(value)
+
+            if values.__len__() > 0 and values is not None:
+                processed.append(values[0])
+                closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
+
+                for i in range(1, len(values)):
+                    if values[i] not in processed:
+                        closest_value = find_closest_value(only_numbers_df[col], values[i])
+                        processed.append(values[i])
+                        closest_processed.append(closest_value)
+
+                for i, index in enumerate(indice_row):
+                    expected_df.at[index, col] = closest_processed[processed.index(values[i])]
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        field = 'T'
+        # Aplicar la invariante
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None, field=field)
+        print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
+
+        # Caso 12
+        expected_df = self.rest_of_dataset.copy()
+        field = 'key'
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4, closureType=Closure(3), numOpOutput=Operation(0),
+                                                         axis_param=None, field=field)
+        expected_df[field] = expected_df[field].apply(lambda x: np.nan if (2 <= x <= 4) else x).interpolate(method='linear',
+                                                                                                            limit_direction='both')
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
+
+        # Caso 13
+        expected_df = self.rest_of_dataset.copy()
+        field = 'key'
+        # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(1),
+                                                         axis_param=None, field=field)
+        mean=expected_df[field].mean()
+        expected_df[field] = expected_df[field].apply(lambda x: mean if (2 <= x <= 4) else x)
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
+
+        # Caso 14
+        expected_df = self.rest_of_dataset.copy()
+        field = 'key'
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(2),
+                                                         axis_param=None, field=field)
+        median=expected_df[field].median()
+        expected_df[field] = expected_df[field].apply(lambda x: median if (2 <= x <= 4) else x)
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
+
+        # Caso 15
+        expected_df = self.rest_of_dataset.copy()
+        field = 'key'
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4, closureType=Closure(2), numOpOutput=Operation(3),
+                                                         axis_param=None, field=field)
+
+        indice_row = []
+        values = []
+        processed = []
+        closest_processed = []
+
+        for index, value in expected_df[field].items():
+            if 2<=value<4:
+                indice_row.append(index)
+                values.append(value)
+        if values.__len__() > 0 and values is not None:
+            processed.append(values[0])
+            closest_processed.append(find_closest_value(expected_df[field], values[0]))
+            for i in range(1, len(values)):
+                if values[i] not in processed:
+                    closest_value = find_closest_value(expected_df[field], values[i])
+                    processed.append(values[i])
+                    closest_processed.append(closest_value)
+            for i, index in enumerate(indice_row):
+                expected_df.at[index, field] = closest_processed[processed.index(values[i])]
+
+        pd.testing.assert_frame_equal(result, expected_df)
+        print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
 
 

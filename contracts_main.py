@@ -67,7 +67,7 @@ def execute_invariants_external_dataset_tests():
     # Execute all invariants external dataset tests
     invariantTestWithDatasets = InvariantsExternalDatasetTests()
     # invariantTestWithDatasets.executeAll_ExternalDatasetTests()
-    invariantTestWithDatasets.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests()
+    invariantTestWithDatasets.execute_checkInv_Interval_NumOp_ExternalDatasetTests()
 
     end = time.time()
     total_time = end - start
