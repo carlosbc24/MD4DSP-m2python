@@ -1,4 +1,6 @@
 # Importing libraries
+import time
+
 import numpy as np
 import pandas as pd
 
@@ -144,7 +146,7 @@ class ContractsInvariants:
 
         # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
         dataDictionary_copy = dataDictionary.copy()
-
+        # TODO: Testear
         if field is None:
             if numOpOutput == Operation.INTERPOLATION:
                 # Aplicamos la interpolación lineal en el DataFrame
@@ -168,8 +170,7 @@ class ContractsInvariants:
                     # Calcular la media de estas columnas numéricas
                     mean_value = only_numbers_df.mean().mean()
                     # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.replace(fixValueInput, mean_value))
+                    dataDictionary_copy = dataDictionary_copy.replace(fixValueInput, mean_value)
                 elif axis_param == 0:
                     means = dataDictionary_copy.apply(
                         lambda col: col[col.apply(lambda x: np.issubdtype(type(x), np.number))].mean() if np.issubdtype(
@@ -200,27 +201,40 @@ class ContractsInvariants:
                     # Calcular la media de estas columnas numéricas
                     median_value = only_numbers_df.median().median()
                     # Reemplaza 'fixValueInput' con la mediana del DataFrame completo usando lambda
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.replace(fixValueInput, median_value))
-                elif axis_param == 0 or axis_param == 1:
-                    # dataDictionary_copy = dataDictionary_copy.apply(lambda x: x.where(x != fixValueInput, other=x.mean()), axis=axis_param)
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda x: x.apply(
-                            lambda y: y if not np.issubdtype(type(y), np.number) or y != fixValueInput
-                            else x[x.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+                    dataDictionary_copy = dataDictionary_copy.replace(fixValueInput, median_value)
+                elif axis_param == 0:
+                    for col in dataDictionary_copy.columns:
+                        if dataDictionary_copy[col].isin([fixValueInput]).any():
+                            median=dataDictionary_copy[col].median()
+                            dataDictionary_copy[col] = dataDictionary_copy[col].replace(fixValueInput, median)
+                elif axis_param == 1:
+                    dataDictionary_copy = dataDictionary_copy.T
+
+                    for row in dataDictionary_copy.columns:
+                        if dataDictionary_copy[row].isin([fixValueInput]).any():
+                            median = dataDictionary_copy[row].median()
+                            dataDictionary_copy[row] = dataDictionary_copy[row].replace(fixValueInput, median)
+
+                    dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.CLOSEST:
                 if axis_param is None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(),
-                                                                           fixValueInput) if x == fixValueInput else x))
-                elif axis_param == 0 or axis_param == 1:
+                    closest_value=find_closest_value(dataDictionary_copy.stack(), fixValueInput)
+                    dataDictionary_copy=dataDictionary_copy.replace(fixValueInput, closest_value)
+                elif axis_param == 0:
                     # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(
-                            lambda x: find_closest_value(col, fixValueInput) if x == fixValueInput else x),
-                        axis=axis_param)
-
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number) and dataDictionary_copy[col].isin([fixValueInput]).any():
+                            closest_value=find_closest_value(dataDictionary_copy[col], fixValueInput)
+                            dataDictionary_copy[col] = dataDictionary_copy[col].replace(fixValueInput, closest_value)
+                elif axis_param == 1:
+                    # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las filas
+                    dataDictionary_copy = dataDictionary_copy.T
+                    for row in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number) and dataDictionary_copy[row].isin([fixValueInput]).any():
+                            closest_value=find_closest_value(dataDictionary_copy[row], fixValueInput)
+                            dataDictionary_copy[row] = dataDictionary_copy[row].replace(fixValueInput, closest_value)
+                    dataDictionary_copy = dataDictionary_copy.T
             else:
                 raise ValueError("No valid operator")
         elif field is not None:
@@ -234,15 +248,17 @@ class ContractsInvariants:
                             lambda x: x if x != fixValueInput else np.nan).interpolate(method='linear',
                                                                                        limit_direction='both')
                     elif numOpOutput == Operation.MEAN:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if x != fixValueInput else dataDictionary_copy[field].mean())
+                        if dataDictionary_copy[field].isin([fixValueInput]).any():
+                            mean=dataDictionary_copy[field].mean()
+                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, mean)
                     elif numOpOutput == Operation.MEDIAN:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if x != fixValueInput else dataDictionary_copy[field].median())
+                        if dataDictionary_copy[field].isin([fixValueInput]).any():
+                            median=dataDictionary_copy[field].median()
+                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, median)
                     elif numOpOutput == Operation.CLOSEST:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if x != fixValueInput else find_closest_value(dataDictionary_copy[field],
-                                                                                      fixValueInput))
+                        if dataDictionary_copy[field].isin([fixValueInput]).any():
+                            closest_value=find_closest_value(dataDictionary_copy[field], fixValueInput)
+                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, closest_value)
                 else:
                     raise ValueError("The field is not numeric")
 
@@ -337,13 +353,15 @@ class ContractsInvariants:
         if field is None:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                 if axis_param == 1:  # Aplica la función lambda a nivel de fila
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda fila: fila.apply(
-                        lambda value: dataDictionary_copy.loc[
-                            fila.name].value_counts().idxmax() if get_condition(value) else value), axis=axis_param)
+                    dataDictionary_copy = dataDictionary_copy.T
+                    for row in dataDictionary_copy.columns:
+                        most_frequent=dataDictionary_copy[row].value_counts().idxmax()
+                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: most_frequent if get_condition(x) else x)
+                    dataDictionary_copy = dataDictionary_copy.T
                 elif axis_param == 0:  # Aplica la función lambda a nivel de columna
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
-                        lambda value: dataDictionary_copy[
-                            columna.name].value_counts().idxmax() if get_condition(value) else value), axis=axis_param)
+                    for col in dataDictionary_copy.columns:
+                        most_frequent = dataDictionary_copy[col].value_counts().idxmax()
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: most_frequent if get_condition(x) else x)
                 else:  # Aplica la función lambda a nivel de dataframe
                     # En caso de empate de valor con más apariciones en el dataset, se toma el primer valor
                     valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
@@ -379,15 +397,14 @@ class ContractsInvariants:
 
             elif field in dataDictionary.columns:
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+                    most_frequent = dataDictionary_copy[field].value_counts().idxmax()
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value:
-                                                dataDictionary_copy[field].value_counts().idxmax() if get_condition(value)
-                                                                                                    else value)
+                                                most_frequent if get_condition(value) else value)
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
                     dataDictionary_copy[field] = pd.Series(
                         [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
-                        if get_condition(value) and i > 0 else value for i, value in
-                         enumerate(dataDictionary_copy[field])],
-                        index=dataDictionary_copy[field].index)
+                        if get_condition(value) and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
+                            index=dataDictionary_copy[field].index)
                 elif derivedTypeOutput == DerivedType.NEXT:
                     dataDictionary_copy[field] = pd.Series(
                         [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
@@ -450,12 +467,23 @@ class ContractsInvariants:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
                             lambda x: mean_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
+                elif axis_param == 0:
+                    means = dataDictionary_copy.apply(lambda col: col[col.apply(lambda x:
+                            np.issubdtype(type(x), np.number))].mean() if np.issubdtype(col.dtype, np.number) else None)
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: means[col] if
+                                                        get_condition(x) else x)
+                elif axis_param == 1:
+                    dataDictionary_copy = dataDictionary_copy.T
+                    means = dataDictionary_copy.apply(lambda row: row[row.apply(lambda x:
+                                np.issubdtype(type(x), np.number))].mean() if np.issubdtype(row.dtype, np.number) else None)
+                    for row in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
+                            dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: means[row] if
+                                                        get_condition(x) else x)
 
-                elif axis_param == 0 or axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(
-                            lambda x: x if not (np.issubdtype(type(x), np.number) and get_condition(x))
-                            else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].mean()), axis=axis_param)
+                    dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.MEDIAN:
                 if axis_param == None:
@@ -468,22 +496,88 @@ class ContractsInvariants:
                         lambda col: col.apply(
                             lambda x: median_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
 
-                elif axis_param == 0 or axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(
-                            lambda x: x if not (np.issubdtype(type(x), np.number) and get_condition(x))
-                            else col[col.apply(lambda z: np.issubdtype(type(z), np.number))].median()), axis=axis_param)
+                elif axis_param == 0:
+                    for col in dataDictionary_copy.columns:
+                        median=dataDictionary_copy[col].median()
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
+                            lambda x: x if not get_condition(x) else median)
+                elif axis_param == 1:
+                    dataDictionary_copy = dataDictionary_copy.T
+                    for row in dataDictionary_copy.columns:
+                        median=dataDictionary_copy[row].median()
+                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(
+                            lambda x: x if not get_condition(x) else median)
+                    dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.CLOSEST:
+                only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 if axis_param is None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(lambda x: find_closest_value(dataDictionary_copy.stack(), x)
-                        if get_condition(x) else x))
-                elif axis_param == 0 or axis_param == 1:
+                    indice_row=[]
+                    indice_col=[]
+                    values=[]
+                    for col in only_numbers_df.columns:
+                        for index, row in only_numbers_df.iterrows():
+                            if get_condition(row[col]):
+                                indice_row.append(index)
+                                indice_col.append(col)
+                                values.append(row[col])
+
+                    if values.__len__()>0:
+                        processed=[values[0]]
+                        closest_processed=[]
+                        closest_value=find_closest_value(only_numbers_df.stack(), values[0])
+                        closest_processed.append(closest_value)
+                        for i in range(len(values)):
+                            if values[i] not in processed:
+                                closest_value=find_closest_value(only_numbers_df.stack(), values[i])
+                                closest_processed.append(closest_value)
+                                processed.append(values[i])
+
+                        # Recorrer todas las celdas del DataFrame
+                        for i in range(len(dataDictionary_copy.index)):
+                            for j in range(len(dataDictionary_copy.columns)):
+                                # Obtener el valor de la celda actual
+                                current_value = dataDictionary_copy.iat[i, j]
+                                # Verificar si el valor está en la lista de valores a reemplazar
+                                if current_value in processed:
+                                    # Obtener el índice correspondiente en la lista de valores a reemplazar
+                                    replace_index = processed.index(current_value)
+                                    # Obtener el valor más cercano correspondiente
+                                    closest_value = closest_processed[replace_index]
+                                    # Reemplazar el valor en el DataFrame
+                                    dataDictionary_copy.iat[i, j] = closest_value
+                else:
+                    if axis_param == 1:
+                        dataDictionary_copy = dataDictionary_copy.T
                     # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(
-                            lambda x: find_closest_value(col, x) if get_condition(x) else x), axis=axis_param)
+                    only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                    for col in only_numbers_df.columns:
+                        indice_row = []
+                        indice_col = []
+                        values = []
+                        processed = []
+                        closest_processed = []
+
+                        for index, value in only_numbers_df[col].items():
+                            if get_condition(value):
+                                indice_row.append(index)
+                                indice_col.append(col)
+                                values.append(value)
+
+                        if values:
+                            processed.append(values[0])
+                            closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
+
+                            for i in range(1, len(values)):
+                                if values[i] not in processed:
+                                    closest_value = find_closest_value(only_numbers_df[col], values[i])
+                                    processed.append(values[i])
+                                    closest_processed.append(closest_value)
+
+                            for i, index in enumerate(indice_row):
+                                dataDictionary_copy.at[index, col] = closest_processed[processed.index(values[i])]
+                    if axis_param == 1:
+                        dataDictionary_copy = dataDictionary_copy.T
             else:
                 raise ValueError("No valid operator")
 
@@ -498,11 +592,13 @@ class ContractsInvariants:
                             lambda x: x if not get_condition(x) else np.nan).interpolate(method='linear',
                                                                                          limit_direction='both')
                     elif numOpOutput == Operation.MEAN:
+                        mean=dataDictionary_copy[field].mean()
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not get_condition(x) else dataDictionary_copy[field].mean())
+                            lambda x: x if not get_condition(x) else mean)
                     elif numOpOutput == Operation.MEDIAN:
+                        median = dataDictionary_copy[field].median()
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not get_condition(x) else dataDictionary_copy[field].median())
+                            lambda x: x if not get_condition(x) else median)
                     elif numOpOutput == Operation.CLOSEST:
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                             lambda x: x if not get_condition(x) else find_closest_value(dataDictionary_copy[field], x))

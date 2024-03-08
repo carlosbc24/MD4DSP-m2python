@@ -431,11 +431,7 @@ class InvariantSimpleTest(unittest.TestCase):
                                                          fixValueInput=0, numOpOutput=Operation(2), axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [3, 2, 3, 4, 5], 'B': [2, 3, 6, 3, 5], 'C': [1, 3, 3, 4, 5]})
-        expected = expected.astype({
-            'A': 'float64',  # Convertir A a float64
-            'B': 'float64',  # Convertir B a float64
-            'C': 'float64'  # Convertir C a float64
-        })
+
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -449,11 +445,7 @@ class InvariantSimpleTest(unittest.TestCase):
                                                          fixValueInput=0, numOpOutput=Operation(2), axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 2, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
-        expected = expected.astype({
-            'A': 'float64',  # Convertir A a float64
-            'B': 'float64',  # Convertir B a float64
-            'C': 'float64'  # Convertir C a float64
-        })
+
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result, expected)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
