@@ -161,7 +161,7 @@ class ContractsPrePost:
         else:
             if field not in dataDictionary.columns:  # Se comprueba que la columna exista en el dataframe
                 raise ValueError(f"Column '{field}' not found in dataDictionary.")  # Caso 16.5
-            if dataDictionary[field].dtype in ['int', 'float']:
+            if np.issubdtype(dataDictionary[field].dtype, np.number):
                 return check_condition(dataDictionary[field].min(),
                                        dataDictionary[
                                            field].max()) if belongOp == Belong.BELONG else not check_condition(
