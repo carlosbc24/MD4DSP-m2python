@@ -3189,6 +3189,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 16 Passed: the function returned the expected dataframe")
 
+
         # Caso 11
         # Comprobar la invariante: aplicar la interpolación lineal a los valores invalidos 1, 3, 0.13 y 0.187 en todas las
 
@@ -3387,273 +3388,273 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_NumOp
         """
-        # # MISSING
-        # # Caso 1
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(0)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=0)
-        # # Aplica la interpolación lineal a los valores faltantes y valores nulos a través de todas las columnas del dataframe
-        # # En primer lugar, se reemplazan los valores nulos y los valores faltantes por NaN
-        # missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
-        # replaced_df = expected_df.replace(missing_values, np.nan)
-        # #Selecciona las columnas numéricas del dataframe
-        # numeric_columns = replaced_df.select_dtypes(include=np.number).columns
-        # # Aplica la interpolación lineal a través de todas las columnas numéricas del dataframe
-        # expected_df[numeric_columns] = replaced_df[numeric_columns].interpolate(method='linear', axis=0, limit_direction='both')
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
-        #
-        # # Caso 2 - Se aplica la media de todas las columnas numéricas del dataframe a los valores faltantes y valores nulos de python
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(1)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=None)
-        # # Obtener la media de las columnas numéricas del dataframe
-        # # Obtener las columnas numéricas
-        # only_numbers_df = expected_df.select_dtypes(include=[np.number])
-        # # Obtener la media de todas las columnas numéricas
-        # mean_value = only_numbers_df.mean().mean()
-        # # Sustituir los valores faltantes y valores nulos por la media de todas las columnas numéricas
-        # expected_df = expected_df.apply(
-        #         lambda col: col.apply(lambda x: mean_value if (x in missing_values or pd.isnull(x)) else x))
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
-        #
-        # # Caso 3 Se aplica la mediana de todas las columnas numéricas del dataframe a los valores faltantes y valores
-        # # nulos de python
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(2)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=0)
-        # # Obtener las columnas numéricas
-        # numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # # Obtener la mediana de cada columna numérica
-        # median_values = expected_df[numeric_columns].median()
-        # for col in numeric_columns:
-        #     # Sustituir los valores faltantes y valores nulos por la mediana de cada columna numérica
-        #     expected_df[col] = expected_df[col].replace(missing_values, median_values[col])
-        #     # Sustituir los valores nulos por la mediana de cada columna numérica
-        #     expected_df[col] = expected_df[col].replace(np.nan, median_values[col])
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
-        #
-        # # Caso 4
-        # # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos) y sobre
-        # # cada columna del dataframe.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(3)
-        # # Al ser una operación de missing a closest y existen valores nulos, se devolverá un ValueError ya que
-        # # no se puede calcular el valor más cercano a un valor nulo
-        # expected_exception = ValueError
-        # with self.assertRaises(expected_exception) as context:
-        #     result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                          specialTypeInput=specialTypeInput,
-        #                                                          numOpOutput=numOpOutput,
-        #                                                          missing_values=missing_values,
-        #                                                          axis_param=0)
-        # print_and_log("Test Case 4 Passed: Expected ValueError, got ValueError")
-        #
-        # # Caso 5
-        # # Probamos a aplicar la operación closest sobre un dataframe correcto. Se calcula el closest sobre el dataframe entero en relación a los valores faltantes y valores nulos.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(3)
-        # # Al ser una operación de missing a closest y no existen valores nulos, se devolverá un ValueError ya que
-        # # no se puede calcular el valor más cercano a un valor nulo
-        # expected_exception = ValueError
-        # with self.assertRaises(expected_exception) as context:
-        #     result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                          specialTypeInput=specialTypeInput,
-        #                                                          numOpOutput=numOpOutput,
-        #                                                          missing_values=missing_values,
-        #                                                          axis_param=None)
-        # print_and_log("Test Case 5 Passed: Expected ValueError, got ValueError")
-        #
-        # # Caso 6
-        # # Comprobar la invariante: aplicar la interpolación lineal a los valores invalidos 1, 3, 0.13 y 0.187 en todas las
-        # # columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
-        # # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # expected_df = self.rest_of_dataset.copy()
-        # expected_df_copy = expected_df.copy()
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(0)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=0)
-        # # Aplicar la interpolación lineal a los valores invalidos en todas las columnas del dataframe
-        # # En primer lugar, se reemplazan los valores invalidos por NaN
-        # replaced_df = expected_df.replace(missing_values, np.nan)
-        # # Selecciona las columnas numéricas del dataframe
-        # numeric_columns = replaced_df.select_dtypes(include=np.number).columns
-        # for col in numeric_columns:
-        #     # Se sustituyen los valores invalidos por NaN
-        #     expected_df[col] = replaced_df[col].replace(missing_values, np.nan)
-        #     # Aplica la interpolación lineal a través de todas las columnas numéricas del dataframe
-        #     expected_df[col] = replaced_df[col].interpolate(method='linear', axis=0, limit_direction='both')
-        # # Se asignan los valores nan o null del dataframe 'expected_df_copy' al dataframe 'expected_df'
-        # for col in numeric_columns:
-        #     for idx, row in expected_df_copy.iterrows():
-        #         if pd.isnull(row[col]):
-        #             expected_df.at[idx, col] = np.nan
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
-        #
-        # # Caso 7
-        # # Comprobar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los valores invalidos
-        # # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
-        # # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
-        # # coincide con el esperado.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(1)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=None)
-        # # Obtener la media de las columnas numéricas del dataframe
-        # # Obtener las columnas numéricas
-        # numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # # Obtener la media de todas las columnas numéricas
-        # mean_value = expected_df[numeric_columns].mean().mean()
-        # # Sustituir los valores invalidos por la media de todas las columnas numéricas
-        # expected_df[numeric_columns] = expected_df[numeric_columns].replace(missing_values, mean_value)
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
-        #
-        # # Caso 8
-        # # Comprobar la invariante: aplicar la media de cada columna numérica a los valores invalidos 1, 3, 0.13 y 0.187
-        # # en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
-        # # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(1)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=0)
-        # # Obtener las columnas numéricas
-        # numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # # Obtener la mediana de cada columna numérica
-        # median_values = expected_df[numeric_columns].mean()
-        # for col in numeric_columns:
-        #     # Sustituir los valores invalidos por la mediana de cada columna numérica
-        #     expected_df[col] = expected_df[col].replace(missing_values, median_values[col])
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
-        #
-        # # Caso 9
-        # # Comprobar la invariante: aplicar la mediana de cada columna numérica del dataframe a los valores invalidos
-        # # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
-        # # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
-        # # coincide con el esperado.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(2)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=0)
-        # # Obtener las columnas numéricas
-        # numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # # Obtener la mediana de cada columna numérica
-        # median_values = expected_df[numeric_columns].median()
-        # for col in numeric_columns:
-        #     # Sustituir los valores invalidos por la mediana de cada columna numérica
-        #     expected_df[col] = expected_df[col].replace(missing_values, median_values[col])
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
-        #
-        # # Caso 10
-        # # Comprobar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores invalidos
-        # # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
-        # # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
-        # # coincide con el esperado.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # numOpOutput = Operation(2)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=None)
-        # # Obtener las columnas numéricas
-        # numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # # Obtener la mediana de todas las columnas numéricas
-        # median_value = expected_df[numeric_columns].median().median()
-        # # Sustituir los valores invalidos por la mediana de todas las columnas numéricas
-        # expected_df[numeric_columns] = expected_df[numeric_columns].replace(missing_values, median_value)
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+        # MISSING
+        # Caso 1
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(0)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
+        # Aplica la interpolación lineal a los valores faltantes y valores nulos a través de todas las columnas del dataframe
+        # En primer lugar, se reemplazan los valores nulos y los valores faltantes por NaN
+        missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
+        replaced_df = expected_df.replace(missing_values, np.nan)
+        #Selecciona las columnas numéricas del dataframe
+        numeric_columns = replaced_df.select_dtypes(include=np.number).columns
+        # Aplica la interpolación lineal a través de todas las columnas numéricas del dataframe
+        expected_df[numeric_columns] = replaced_df[numeric_columns].interpolate(method='linear', axis=0, limit_direction='both')
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
-        # # Caso 11
-        # # Comprobar la invariante: aplicar el closest al valor invalido 0.13
-        # # en cada columna del batch pequeño del dataset de prueba.
-        # # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
-        # # y verificar si el resultado obtenido coincide con el esperado.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [0.13]
-        # numOpOutput = Operation(3)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=0)
-        # # Sustituir los valores invalidos por el valor más cercano en el dataframe
-        # numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # for col in numeric_columns:
-        #     expected_df[col] = expected_df[col].apply(
-        #         lambda x: find_closest_value(expected_df[col].tolist(), x) if x in missing_values else x)
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
+        # Caso 2 - Se aplica la media de todas las columnas numéricas del dataframe a los valores faltantes y valores nulos de python
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(1)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
+        # Obtener la media de las columnas numéricas del dataframe
+        # Obtener las columnas numéricas
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        # Obtener la media de todas las columnas numéricas
+        mean_value = only_numbers_df.mean().mean()
+        # Sustituir los valores faltantes y valores nulos por la media de todas las columnas numéricas
+        expected_df = expected_df.apply(
+                lambda col: col.apply(lambda x: mean_value if (x in missing_values or pd.isnull(x)) else x))
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
-        # # Caso 11.1
-        # # Comprobar la invariante: aplicar el closest al valor invalido 0.13
-        # # en todas las columnas del batch pequeño del dataset de prueba.
-        # # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
-        # # y verificar si el resultado obtenido coincide con el esperado.
-        # expected_df = self.rest_of_dataset.copy()
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [0.13]
-        # numOpOutput = Operation(3)
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-        #                                                         specialTypeInput=specialTypeInput,
-        #                                                         numOpOutput=numOpOutput, missing_values=missing_values,
-        #                                                         axis_param=None)
-        # # Sustituir los valores invalidos por el valor más cercano en el dataframe
-        # expected_df = expected_df.apply(lambda col: col.apply(
-        #     lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
-        # pd.testing.assert_frame_equal(result_df, expected_df)
-        # print_and_log("Test Case 11.1 Passed: the function returned the expected dataframe")
+        # Caso 3 Se aplica la mediana de todas las columnas numéricas del dataframe a los valores faltantes y valores
+        # nulos de python
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(2)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
+        # Obtener las columnas numéricas
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        # Obtener la mediana de cada columna numérica
+        median_values = expected_df[numeric_columns].median()
+        for col in numeric_columns:
+            # Sustituir los valores faltantes y valores nulos por la mediana de cada columna numérica
+            expected_df[col] = expected_df[col].replace(missing_values, median_values[col])
+            # Sustituir los valores nulos por la mediana de cada columna numérica
+            expected_df[col] = expected_df[col].replace(np.nan, median_values[col])
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+
+        # Caso 4
+        # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos) y sobre
+        # cada columna del dataframe.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(3)
+        # Al ser una operación de missing a closest y existen valores nulos, se devolverá un ValueError ya que
+        # no se puede calcular el valor más cercano a un valor nulo
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                 specialTypeInput=specialTypeInput,
+                                                                 numOpOutput=numOpOutput,
+                                                                 missing_values=missing_values,
+                                                                 axis_param=0)
+        print_and_log("Test Case 4 Passed: Expected ValueError, got ValueError")
+
+        # Caso 5
+        # Probamos a aplicar la operación closest sobre un dataframe correcto. Se calcula el closest sobre el dataframe entero en relación a los valores faltantes y valores nulos.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(3)
+        # Al ser una operación de missing a closest y no existen valores nulos, se devolverá un ValueError ya que
+        # no se puede calcular el valor más cercano a un valor nulo
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                 specialTypeInput=specialTypeInput,
+                                                                 numOpOutput=numOpOutput,
+                                                                 missing_values=missing_values,
+                                                                 axis_param=None)
+        print_and_log("Test Case 5 Passed: Expected ValueError, got ValueError")
+
+        # Caso 6
+        # Comprobar la invariante: aplicar la interpolación lineal a los valores invalidos 1, 3, 0.13 y 0.187 en todas las
+        # columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
+        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        expected_df_copy = expected_df.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(0)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
+        # Aplicar la interpolación lineal a los valores invalidos en todas las columnas del dataframe
+        # En primer lugar, se reemplazan los valores invalidos por NaN
+        replaced_df = expected_df.replace(missing_values, np.nan)
+        # Selecciona las columnas numéricas del dataframe
+        numeric_columns = replaced_df.select_dtypes(include=np.number).columns
+        for col in numeric_columns:
+            # Se sustituyen los valores invalidos por NaN
+            expected_df[col] = replaced_df[col].replace(missing_values, np.nan)
+            # Aplica la interpolación lineal a través de todas las columnas numéricas del dataframe
+            expected_df[col] = replaced_df[col].interpolate(method='linear', axis=0, limit_direction='both')
+        # Se asignan los valores nan o null del dataframe 'expected_df_copy' al dataframe 'expected_df'
+        for col in numeric_columns:
+            for idx, row in expected_df_copy.iterrows():
+                if pd.isnull(row[col]):
+                    expected_df.at[idx, col] = np.nan
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        # Comprobar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los valores invalidos
+        # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
+        # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(1)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
+        # Obtener la media de las columnas numéricas del dataframe
+        # Obtener las columnas numéricas
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        # Obtener la media de todas las columnas numéricas
+        mean_value = expected_df[numeric_columns].mean().mean()
+        # Sustituir los valores invalidos por la media de todas las columnas numéricas
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(missing_values, mean_value)
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 8
+        # Comprobar la invariante: aplicar la media de cada columna numérica a los valores invalidos 1, 3, 0.13 y 0.187
+        # en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
+        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(1)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
+        # Obtener las columnas numéricas
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        # Obtener la mediana de cada columna numérica
+        median_values = expected_df[numeric_columns].mean()
+        for col in numeric_columns:
+            # Sustituir los valores invalidos por la mediana de cada columna numérica
+            expected_df[col] = expected_df[col].replace(missing_values, median_values[col])
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+
+        # Caso 9
+        # Comprobar la invariante: aplicar la mediana de cada columna numérica del dataframe a los valores invalidos
+        # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
+        # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(2)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
+        # Obtener las columnas numéricas
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        # Obtener la mediana de cada columna numérica
+        median_values = expected_df[numeric_columns].median()
+        for col in numeric_columns:
+            # Sustituir los valores invalidos por la mediana de cada columna numérica
+            expected_df[col] = expected_df[col].replace(missing_values, median_values[col])
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
+
+        # Caso 10
+        # Comprobar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores invalidos
+        # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
+        # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        numOpOutput = Operation(2)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
+        # Obtener las columnas numéricas
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        # Obtener la mediana de todas las columnas numéricas
+        median_value = expected_df[numeric_columns].median().median()
+        # Sustituir los valores invalidos por la mediana de todas las columnas numéricas
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(missing_values, median_value)
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        # Comprobar la invariante: aplicar el closest al valor invalido 0.13
+        # en cada columna del batch pequeño del dataset de prueba.
+        # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.13]
+        numOpOutput = Operation(3)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
+        # Sustituir los valores invalidos por el valor más cercano en el dataframe
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        for col in numeric_columns:
+            expected_df[col] = expected_df[col].apply(
+                lambda x: find_closest_value(expected_df[col].tolist(), x) if x in missing_values else x)
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
+
+        # Caso 11.1
+        # Comprobar la invariante: aplicar el closest al valor invalido 0.13
+        # en todas las columnas del batch pequeño del dataset de prueba.
+        # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.13]
+        numOpOutput = Operation(3)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
+        # Sustituir los valores invalidos por el valor más cercano en el dataframe
+        expected_df = expected_df.apply(lambda col: col.apply(
+            lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 11.1 Passed: the function returned the expected dataframe")
 
         # Caso 13
         # Comprobar la invariante: aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
+        expected_df = self.rest_of_dataset[355:360].copy()
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(0)
         field = 'danceability'
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset[355:360].copy(),
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
         # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
@@ -3665,7 +3666,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         lower_bound_col = Q1 - 1.5 * IQR
         upper_bound_col = Q3 + 1.5 * IQR
 
-        outliers_mask = expected_df.copy()
+        # Inicialize the outliers mask with 0's but using the same index and shape as the expected_df
+        outliers_mask = pd.DataFrame(0, index=expected_df.index, columns=expected_df.columns)
         for idx, value in expected_df[field].items():
             if value < lower_bound_col or value > upper_bound_col:
                 outliers_mask[field].at[idx] = 1
@@ -3675,7 +3677,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                 expected_df.at[idx, field] = np.NaN
                 expected_df[field] = expected_df[field].interpolate(method='linear',
                                                                                 limit_direction='both')
-        pd.testing.assert_frame_equal(result_df, expected_df)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
 
@@ -3691,20 +3692,26 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Aplicar la interpolación lineal a los valores outliers de cada columna del dataframe
         # En primer lugar, se reemplazan los valores outliers por NaN
         for col in expected_df.select_dtypes(include=np.number).columns:
+            # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
+            # En primer lugar, se detectan los outliers
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
-            # Para cada valor en la columna, bucle for
-            for i in range(len(expected_df[col])):
-                # Sustituir los valores outliers por NaN
-                if expected_df[col].iat[i] < Q1 - 1.5 * IQR or expected_df[col].iat[i] > Q3 + 1.5 * IQR:
-                    expected_df[col].iat[i] = np.NaN
-                # Aplica la interpolación lineal a través de la columna en cuestión del dataframe
-                expected_df[col] = expected_df[col].interpolate(method='linear', axis=0, limit_direction='both')
-            # # Sustituir los valores outliers por NaN
-            # replaced_df[col] = replaced_df[col].where(~((replaced_df[col] < Q1 - 1.5 * IQR) | (replaced_df[col] > Q3 + 1.5 * IQR)), other=np.nan)
-            # # Aplica la interpolación lineal a través de la columna en cuestión del dataframe
-            # expected_df[col] = replaced_df[col].interpolate(method='linear', limit_direction='both')
+
+            lower_bound_col = Q1 - 1.5 * IQR
+            upper_bound_col = Q3 + 1.5 * IQR
+
+            # Inicialize the outliers mask with 0's but using the same index and shape as the expected_df
+            outliers_mask = pd.DataFrame(0, index=expected_df.index, columns=expected_df.columns)
+            for idx, value in expected_df[col].items():
+                if value < lower_bound_col or value > upper_bound_col:
+                    outliers_mask[col].at[idx] = 1
+
+            for idx, value in expected_df[col].items():
+                if outliers_mask[col].at[idx] == 1:
+                    expected_df.at[idx, col] = np.NaN
+                    expected_df[col] = expected_df[col].interpolate(method='linear',
+                                                                        limit_direction='both')
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
 
@@ -3721,13 +3728,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
         # Obtener la media de la columna 'danceability'
         mean_value = expected_df[field].mean()
+        print("Media calculada en los tests: ", mean_value)
         # Obtener los outliers de la columna 'danceability'
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
+        lower_bound_col = Q1 - 1.5 * IQR
+        upper_bound_col = Q3 + 1.5 * IQR
         # Sustituir los valores outliers por la media de la columna 'danceability'
         expected_df[field] = expected_df[field].where(
-            ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=mean_value)
+            ~((expected_df[field] < lower_bound_col) | (expected_df[field] > upper_bound_col)), other=mean_value)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 

@@ -703,6 +703,8 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                 # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
                 dataDictionary_copy = dataDictionary_copy.apply(
                     lambda col: col.apply(lambda x: median_value if (x in missing_values) else x))
+
+
             elif axis_param == 0:
                 for col in dataDictionary_copy.columns:
                     if np.issubdtype(dataDictionary_copy[col].dtype, np.number):

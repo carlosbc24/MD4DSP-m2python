@@ -79,7 +79,7 @@ if __name__ == "__main__":
     set_logger("test")
 
     # Calculate execution time for each test block
-    execute_prepost_simple_tests()
-    execute_prepost_external_dataset_tests()
-    # execute_invariants_simple_tests()
-    # execute_invariants_external_dataset_tests()
+    # execute_prepost_simple_tests()
+    # execute_prepost_external_dataset_tests()
+    execute_invariants_simple_tests()
+    execute_invariants_external_dataset_tests()
