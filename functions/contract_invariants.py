@@ -146,7 +146,6 @@ class ContractsInvariants:
 
         # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
         dataDictionary_copy = dataDictionary.copy()
-        # TODO: Testear
         if field is None:
             if numOpOutput == Operation.INTERPOLATION:
                 # Aplicamos la interpolación lineal en el DataFrame
@@ -522,7 +521,7 @@ class ContractsInvariants:
                                 indice_col.append(col)
                                 values.append(row[col])
 
-                    if values.__len__()>0:
+                    if values.__len__()>0 and values is not None:
                         processed=[values[0]]
                         closest_processed=[]
                         closest_value=find_closest_value(only_numbers_df.stack(), values[0])
@@ -564,7 +563,7 @@ class ContractsInvariants:
                                 indice_col.append(col)
                                 values.append(value)
 
-                        if values:
+                        if values.__len__() > 0 and values is not None:
                             processed.append(values[0])
                             closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
 
@@ -600,8 +599,25 @@ class ContractsInvariants:
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                             lambda x: x if not get_condition(x) else median)
                     elif numOpOutput == Operation.CLOSEST:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not get_condition(x) else find_closest_value(dataDictionary_copy[field], x))
+                        indice_row = []
+                        values = []
+                        processed = []
+                        closest_processed = []
+
+                        for index, value in dataDictionary_copy[field].items():
+                            if get_condition(value):
+                                indice_row.append(index)
+                                values.append(value)
+                        if values.__len__() > 0 and values is not None:
+                            processed.append(values[0])
+                            closest_processed.append(find_closest_value(dataDictionary_copy[field], values[0]))
+                            for i in range(1, len(values)):
+                                if values[i] not in processed:
+                                    closest_value = find_closest_value(dataDictionary_copy[field], values[i])
+                                    processed.append(values[i])
+                                    closest_processed.append(closest_value)
+                            for i, index in enumerate(indice_row):
+                                dataDictionary_copy.at[index, field] = closest_processed[processed.index(values[i])]
                 else:
                     raise ValueError("The field is not numeric")
 
@@ -736,7 +752,6 @@ class ContractsInvariants:
                                                             missing_values, axis_param, field)
                 elif axis_param == 0 or axis_param == 1:
                     dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
-                    print(dataDictionary_copy_copy['track_popularity'])
                     dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
                                                                           dataDictionary_copy_copy, axis_param, field)
 
