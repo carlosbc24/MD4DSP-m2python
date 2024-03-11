@@ -859,8 +859,8 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                             processed.append(values[0])
                             closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
 
-                            for i in range(1, len(missing_values)):
-                                if missing_values[i] not in processed:
+                            for i in range(1, len(values)):
+                                if values[i] not in processed:
                                     closest_value = find_closest_value(only_numbers_df[col], values[i])
                                     processed.append(values[i])
                                     closest_processed.append(closest_value)
@@ -985,8 +985,8 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                         processed.append(values[0])
                         closest_processed.append(find_closest_value(dataDictionary_copy[field], values[0]))
 
-                        for i in range(1, len(missing_values)):
-                            if missing_values[i] not in processed:
+                        for i in range(1, len(values)):
+                            if values[i] not in processed:
                                 closest_value = find_closest_value(dataDictionary_copy[field], values[i])
                                 processed.append(values[i])
                                 closest_processed.append(closest_value)
