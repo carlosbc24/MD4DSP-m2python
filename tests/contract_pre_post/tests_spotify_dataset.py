@@ -70,7 +70,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("--------------------------------------------------")
         print_and_log("")
 
-        for test_method in tqdm(test_methods, desc="Running Pre-Post Contracts Dataset Tests", unit="test"):
+        for test_method in tqdm(test_methods, desc="Running Pre-Post Contracts External Dataset Tests", unit="test"):
             test_method()
 
         print_and_log("")
