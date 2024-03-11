@@ -773,7 +773,7 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                         median=dataDictionary_copy[col].median()
                         for idx, value in dataDictionary_copy[col].items():
                             if dataDictionary_copy_mask.at[idx, col] == 1:
-                                dataDictionary_copy[idx, col] = median
+                                dataDictionary_copy.at[idx, col] = median
             elif axis_param == 1:
                 for idx, row in dataDictionary_copy.iterrows():
                     median=dataDictionary_copy.loc[idx].median()
@@ -826,7 +826,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
             only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
             if axis_param is None:
                 # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo del dataframe completo
-                if missing_values.__len__() > 0:
+                if len(missing_values) > 0:
                     indice_row = []
                     indice_col = []
                     values = []
@@ -839,7 +839,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                             elif pd.isnull(row[col]):
                                 raise_error()
 
-                    if values.__len__() > 0 and values is not None:
+                    if len(values) > 0 and values is not None:
                         processed = [values[0]]
                         closest_processed = []
                         closest_value = find_closest_value(only_numbers_df.stack(), values[0])
@@ -878,7 +878,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                     values = []
                     processed = []
                     closest_processed = []
-                    if missing_values.__len__() > 0 and missing_values is not None:
+                    if len(missing_values) > 0 and missing_values is not None:
                         for index, value in only_numbers_df[col].items():
                             if value in missing_values:
                                 indice_row.append(index)
@@ -887,7 +887,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                             elif pd.isnull(value):
                                 raise_error()
 
-                        if values.__len__() > 0 and values is not None:
+                        if len(values) > 0 and values is not None:
                             processed.append(values[0])
                             closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
 
@@ -910,7 +910,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
             only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
             if axis_param is None:
                 # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo del dataframe completo
-                if missing_values.__len__() > 0:
+                if len(missing_values) > 0:
                     indice_row = []
                     indice_col = []
                     values = []
@@ -921,7 +921,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                                 indice_col.append(col)
                                 values.append(row[col])
 
-                    if values.__len__() > 0 and values is not None:
+                    if len(values) > 0 and values is not None:
                         processed = [values[0]]
                         closest_processed = []
                         closest_value = find_closest_value(only_numbers_df.stack(), values[0])
@@ -956,14 +956,14 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                     values = []
                     processed = []
                     closest_processed = []
-                    if missing_values.__len__() > 0 and missing_values is not None:
+                    if len(missing_values) > 0 and missing_values is not None:
                         for index, value in only_numbers_df[col].items():
                             if value in missing_values:
                                 indice_row.append(index)
                                 indice_col.append(col)
                                 values.append(value)
 
-                        if values.__len__() > 0 and values is not None:
+                        if len(values) > 0 and values is not None:
                             processed.append(values[0])
                             closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
 
@@ -1005,7 +1005,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                 values = []
                 processed = []
                 closest_processed = []
-                if missing_values.__len__() > 0 and missing_values is not None:
+                if len(missing_values) > 0 and missing_values is not None:
                     for index, value in dataDictionary_copy[field].items():
                         if value in missing_values:
                             indice_row.append(index)
@@ -1013,7 +1013,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                         elif pd.isnull(value):
                             raise_error()
 
-                    if values.__len__() > 0 and values is not None:
+                    if len(values) > 0 and values is not None:
                         processed.append(values[0])
                         closest_processed.append(find_closest_value(dataDictionary_copy[field], values[0]))
 
@@ -1033,13 +1033,13 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                 values = []
                 processed = []
                 closest_processed = []
-                if missing_values.__len__() > 0 and missing_values is not None:
+                if len(missing_values) > 0 and missing_values is not None:
                     for index, value in dataDictionary_copy[field].items():
                         if value in missing_values:
                             indice_row.append(index)
                             values.append(value)
 
-                    if values.__len__() > 0 and values is not None:
+                    if len(values) > 0 and values is not None:
                         processed.append(values[0])
                         closest_processed.append(find_closest_value(dataDictionary_copy[field], values[0]))
 

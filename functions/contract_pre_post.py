@@ -27,13 +27,13 @@ class ContractsPrePost:
         if belongOp == Belong.BELONG:
             for field in fields:
                 if field not in dataDictionary.columns:
-                    return False  # Caso 1
-            return True  # Caso 2
+                    return False
+            return True
         elif belongOp == Belong.NOTBELONG:
             for field in fields:
                 if field not in dataDictionary.columns:
-                    return True  # Caso 3
-            return False  # Caso 4
+                    return True
+            return False
 
     def checkFixValueRange(self, value: Union[str, float, datetime], dataDictionary: pd.DataFrame, belongOp: Belong,
                            field: str = None,
@@ -56,29 +56,30 @@ class ContractsPrePost:
         :rtype: bool
         """
         dataDictionary = dataDictionary.replace({
-            np.nan: None})  # Se sustituyen los NaN por None para que no de error al hacer la comparacion de None con NaN. Como el dataframe es de floats, los None se convierten en NaN
+            np.nan: None})  # Replace NaN values with None to avoid error when comparing None with NaN. As the dataframe is of floats, the None are converted to NaN
         if value is not None and type(value) is not str and type(
-                value) is not pd.Timestamp:  # Antes del casteo se debe comprobar que value no sea None, str o datetime(Timestamp), para que solo se casteen los int
+                value) is not pd.Timestamp: # Before casting, it is checked that value is not None, str or datetime(Timestamp), so that only the int are casted
+            # Before casting, it is checked that value is not None, str or datetime(Timestamp), so that only the int are casted
             value = float(
-                value)  # Se castea el valor a float para que no de error al hacer un get por valor, porque al hacer un get detecta el valor como int
+                value)  # Cast the float to avoid errors when comparing the value with the values of the dataframe
 
         if field is None:
             if belongOp == Belong.BELONG:
                 if quant_op is None:  # Check if value is in dataDictionary
-                    return True if value in dataDictionary.values else False  # Caso 1 y 2
+                    return True if value in dataDictionary.values else False
                 else:
                     if quant_rel is not None and quant_abs is None:  # Check if value is in dataDictionary and if it meets the condition of quant_rel
-                        return True if value in dataDictionary.values and compare_numbers(  # Caso 3 y 4
+                        return True if value in dataDictionary.values and compare_numbers(
                             count_abs_frequency(value, dataDictionary) / dataDictionary.size,
                             quant_rel,
-                            quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo
-                        # Importante el dropna=False para que cuente los valores NaN en caso de que value sea None
+                            quant_op) else False  # If field is None, in place of looking in a column, it looks in the whole dataframe
+                        # Important to highlight that it is necessary to use dropna=False to count the NaN values in case value is None
                     elif quant_rel is not None and quant_abs is not None:
                         # Si se proporcionan los dos, se lanza un ValueError
                         raise ValueError(
-                            "quant_rel and quant_abs can't have different values than None at the same time")  # Caso 4.5
+                            "quant_rel and quant_abs can't have different values than None at the same time")
                     elif quant_abs is not None:
-                        return True if value in dataDictionary.values and compare_numbers(  # Caso 5 y 6
+                        return True if value in dataDictionary.values and compare_numbers(
                             count_abs_frequency(value, dataDictionary),
                             quant_abs,
                             quant_op) else False  # Si field es None, en lugar de buscar en una columna, busca en el dataframe completo

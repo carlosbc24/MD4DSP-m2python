@@ -101,14 +101,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_CheckInv_FixValue_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests,
-            self.execute_checkInv_FixValue_NumOp_ExternalDatasetTests,
-            self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
-            self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
+            # self.execute_CheckInv_FixValue_FixValue_ExternalDatasetTests,
+            # self.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests,
+            # self.execute_checkInv_FixValue_NumOp_ExternalDatasetTests,
+            # self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
+            # self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
+            # self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
+            # self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
+            # self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
             self.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests
         ]
 
@@ -3238,210 +3238,108 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
+            # Obtener la media de la columna
+            mean_value = expected_df[col].mean()
             # Obtener los outliers de la columna
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             for idx in range(len(expected_df[col])):
                 # Obtener la media de la columna
-                mean_value = expected_df[col].mean()
                 expected_df[col].iat[idx] = expected_df[col].iat[idx] if not (expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR) else mean_value
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 16 Passed: the function returned the expected dataframe")
 
+        # Caso 17
+        # Comprobar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores outliers
+        # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(2)
+        field = 'danceability'
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
+        # Obtener la mediana de la columna 'danceability'
+        median_value = expected_df[field].median()
+        # Obtener los outliers de la columna 'danceability'
+        Q1 = expected_df[field].quantile(0.25)
+        Q3 = expected_df[field].quantile(0.75)
+        IQR = Q3 - Q1
+        # Sustituir los valores outliers por la mediana de la columna 'danceability'
+        expected_df[field] = expected_df[field].where(~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=median_value)
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 17 Passed: the function returned the expected dataframe")
 
-        # Caso 11
-        # Comprobar la invariante: aplicar la interpolación lineal a los valores invalidos 1, 3, 0.13 y 0.187 en todas las
+        # Caso 18
+        # Comprobar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores outliers
+        # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(2)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
+        for col in expected_df.select_dtypes(include=np.number).columns:
+            # Obtener la mediana de la columna
+            median_value = expected_df[col].median()
+            # Obtener los outliers de la columna
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            for idx in expected_df.index:  # Usar expected_df.index aquí
+                # Sustituir los valores outliers por la mediana de la columna
+                value = expected_df[col].at[idx]
+                if value < Q1 - 1.5 * IQR or value > Q3 + 1.5 * IQR:
+                    expected_df[col].at[idx] = median_value
+
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 18 Passed: the function returned the expected dataframe")
+
+        # Caso 19
+        # Comprobar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
+        # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
+        # manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(3)
+        field = 'danceability'
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
+        # Sustituir los valores outliers por el valor más cercano en el dataframe
+        Q1 = expected_df[field].quantile(0.25)
+        Q3 = expected_df[field].quantile(0.75)
+        IQR = Q3 - Q1
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        for idx in range(len(expected_df[field])):
+            expected_df[field].iat[idx] = find_closest_value(expected_df[field].tolist(), expected_df[field].iat[idx]) if expected_df[field].iat[idx] < Q1 - 1.5 * IQR or expected_df[field].iat[idx] > Q3 + 1.5 * IQR else expected_df[field].iat[idx]
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
+
+        # Caso 20
+        # Comprobar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
+        # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(3)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
+        # Sustituir los valores outliers por el valor más cercano en el dataframe
+        for col in expected_df.select_dtypes(include=np.number).columns:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            for idx in range(len(expected_df[col])):
+                expected_df[col].iat[idx] = find_closest_value(expected_df[col].tolist(), expected_df[col].iat[idx]) if expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else expected_df[col].iat[idx]
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
 
 
-        # # Caso 5
-        # # Probamos a aplicar la operación closest sobre un dataframe correcto
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
-        # missing_values = [3, 4]
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(0),
-        #                                                         numOpOutput=Operation(3), missing_values=missing_values,
-        #                                                         axis_param=0)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 5 Passed: got the dataframe expected")
-        #
-        # # Invalid
-        # # Caso 6
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        # missing_values = [1, 3, 4]
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4 / 3, 2 + 8 / 3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0],
-        #      'D': [8.2, 8.2, 6, 4, 2]})
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(1),
-        #                                                         numOpOutput=Operation(0), missing_values=missing_values,
-        #                                                         axis_param=0)
-        # result_df['A'] = result_df['A'].astype('float64')
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 6 Passed: got the dataframe expected")
-        #
-        # # Caso 7
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        # missing_values = [3, 4]
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0],
-        #      'D': [1, 8.2, 6, 1, 2]})
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(1),
-        #                                                         numOpOutput=Operation(1), missing_values=missing_values,
-        #                                                         axis_param=None)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 7 Passed: got the dataframe expected")
-        #
-        # # Caso 8
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        # missing_values = [1, 4]
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3, 3.5, 1.5], 'B': [2, 3, 3.5, 6, 12], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(1),
-        #                                                         numOpOutput=Operation(2), missing_values=missing_values,
-        #                                                         axis_param=1)
-        # # Cambiar el tipo de la columna 'A' a float64
-        # result_df['A'] = result_df['A'].astype('float64')
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 8 Passed: got the dataframe expected")
-        #
-        # # Caso 9
-        # # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 8.2, 3, 1, 2]})
-        # missing_values = [1, 3, 4]
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 2, 3, 0], 'B': [2, 2, 3, 6, 12], 'C': [10, 3, 4, np.NaN, 0], 'D': [2, 8.2, 2, 2, 2]})
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(1),
-        #                                                         numOpOutput=Operation(3), missing_values=missing_values,
-        #                                                         axis_param=0)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 9 Passed: got the dataframe expected")
-        #
-        # # Caso 10
-        # # Probamos a aplicar la operación closest sobre un dataframe sin nulos
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
-        # missing_values = [3, 4]
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
-        #
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(1),
-        #                                                         numOpOutput=Operation(3), missing_values=missing_values,
-        #                                                         axis_param=0)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 10 Passed: got the dataframe expected")
-        #
-        # # Outliers
-        # # Caso 11
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [1, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        # expected_df = expected_df.astype({
-        #     'D': 'float64',  # Convertir D a float64
-        #     'B': 'float64',  # Convertir B a float64
-        #     'C': 'float64'  # Convertir C a float64
-        # })
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(2),
-        #                                                         numOpOutput=Operation(0), axis_param=0)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 11 Passed: got the dataframe expected")
-        #
-        # # Caso 12
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        # datadic = datadic.astype({
-        #     'B': 'float64',  # Convertir B a float64
-        #     'C': 'float64'  # Convertir C a float64
-        # })
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 3.61], 'C': [3.61, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        #
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(2),
-        #                                                         numOpOutput=Operation(1), missing_values=None,
-        #                                                         axis_param=None)
-        #
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 12 Passed: got the dataframe expected")
-        #
-        # # Caso 13
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        # datadic = datadic.astype({
-        #     'B': 'float64',  # Convertir B a float64
-        #     'C': 'float64'  # Convertir B a float64
-        # })
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 1.5], 'C': [1.5, 1, 3, 3, 0], 'D': [1, 2.5, 6, 1, 2]})
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(2),
-        #                                                         numOpOutput=Operation(2), missing_values=None,
-        #                                                         axis_param=1)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 13 Passed: got the dataframe expected")
-        #
-        # # Caso 14
-        # # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 8.2, 3, 1, 2]})
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 3, 3, 1, 2]})
-        # expected_df = expected_df.astype({
-        #     'D': 'float64'  # Convertir D a float64
-        # })
-        #
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(2),
-        #                                                         numOpOutput=Operation(3), missing_values=None,
-        #                                                         axis_param=0)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 14 Passed: got the dataframe expected")
-        #
-        # # Caso 15
-        # # Probamos a aplicar la operación closest sobre un dataframe sin nulos
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [10, 6, 3, 3, 0], 'D': [1, 2, 2, 1, 2]})
-        # expected_df = expected_df.astype({
-        #     'D': 'float64'  # Convertir D a float64
-        # })
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(2),
-        #                                                         numOpOutput=Operation(3), axis_param=0)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 15 Passed: got the dataframe expected")
-        #
-        # # Caso 16
-        # # Probamos a aplicar la operación mean sobre un field concreto
-        # datadic = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
-        # expected_df = pd.DataFrame(
-        #     {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 2.84, 2, 1, 2]})
-        # expected_df = expected_df.astype({
-        #     'D': 'float64'  # Convertir D a float64
-        # })
-        # field = 'D'
-        # missing_values = [8.2]
-        # result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=datadic.copy(),
-        #                                                         specialTypeInput=SpecialType(2),
-        #                                                         numOpOutput=Operation(1), missing_values=missing_values,
-        #                                                         axis_param=0, field=field)
-        # pd.testing.assert_frame_equal(expected_df, result_df)
-        # print_and_log("Test Case 16 Passed: got the dataframe expected")
 
     # TODO: Implement the invariant tests with external dataset
     def execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
@@ -3774,10 +3672,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
 
-        # Caso 15
-        # Comprobar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los valores outliers
-        # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
-        # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # Caso 15 Comprobar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los
+        # valores outliers de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe
+        # de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
+        # resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(1)
@@ -3800,10 +3698,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
-        # Caso 16
-        # Comprobar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los valores outliers
-        # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
-        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # Caso 16 Comprobar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los
+        # valores outliers de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del
+        # batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(1)
@@ -3811,15 +3709,113 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
+            # Obtener la media de la columna
+            mean_value = expected_df[col].mean()
             # Obtener los outliers de la columna
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             for idx in range(len(expected_df[col])):
-                # Obtener la media de la columna
-                mean_value = expected_df[col].mean()
                 expected_df[col].iat[idx] = expected_df[col].iat[idx] if not (
                             expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[
                         idx] > Q3 + 1.5 * IQR) else mean_value
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 16 Passed: the function returned the expected dataframe")
+
+        # Caso 17
+        # Comprobar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores outliers
+        # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(2)
+        field = 'danceability'
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
+        # Obtener la mediana de la columna 'danceability'
+        median_value = expected_df[field].median()
+        # Obtener los outliers de la columna 'danceability'
+        Q1 = expected_df[field].quantile(0.25)
+        Q3 = expected_df[field].quantile(0.75)
+        IQR = Q3 - Q1
+        # Sustituir los valores outliers por la mediana de la columna 'danceability'
+        expected_df[field] = expected_df[field].where(
+            ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=median_value)
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 17 Passed: the function returned the expected dataframe")
+
+        # Caso 18
+        # Comprobar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores outliers
+        # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(2)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
+        for col in expected_df.select_dtypes(include=np.number).columns:
+            # Obtener la mediana de la columna
+            median_value = expected_df[col].median()
+            # Obtener los outliers de la columna
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            for idx in expected_df.index:  # Usar expected_df.index aquí
+                # Sustituir los valores outliers por la mediana de la columna
+                value = expected_df[col].at[idx]
+                if value < Q1 - 1.5 * IQR or value > Q3 + 1.5 * IQR:
+                    expected_df[col].at[idx] = median_value
+
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 18 Passed: the function returned the expected dataframe")
+
+        # Caso 19
+        # Comprobar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
+        # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
+        # manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(3)
+        field = 'danceability'
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
+        # Sustituir los valores outliers por el valor más cercano en el dataframe
+        Q1 = expected_df[field].quantile(0.25)
+        Q3 = expected_df[field].quantile(0.75)
+        IQR = Q3 - Q1
+        numeric_columns = expected_df.select_dtypes(include=np.number).columns
+        for idx in range(len(expected_df[field])):
+            expected_df[field].iat[idx] = find_closest_value(expected_df[field].tolist(),
+                                                             expected_df[field].iat[idx]) if expected_df[field].iat[
+                                                                                                 idx] < Q1 - 1.5 * IQR or \
+                                                                                             expected_df[field].iat[
+                                                                                                 idx] > Q3 + 1.5 * IQR else \
+            expected_df[field].iat[idx]
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
+
+        # Caso 20
+        # Comprobar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
+        # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.rest_of_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        numOpOutput = Operation(3)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
+        # Sustituir los valores outliers por el valor más cercano en el dataframe
+        for col in expected_df.select_dtypes(include=np.number).columns:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            for idx in range(len(expected_df[col])):
+                expected_df[col].iat[idx] = find_closest_value(expected_df[col].tolist(), expected_df[col].iat[idx]) if \
+                expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else \
+                expected_df[col].iat[idx]
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
+

@@ -1,14 +1,12 @@
-# Importing libraries
-import time
 
 import numpy as np
 import pandas as pd
 
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeColRowOutliers, \
     apply_derivedType, specialTypeInterpolation, specialTypeMean, specialTypeMedian, specialTypeClosest
+
 # Importing functions and classes from packages
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType
-
 
 class ContractsInvariants:
     # FixValue - FixValue, FixValue - DerivedValue, FixValue - NumOp
@@ -30,8 +28,8 @@ class ContractsInvariants:
         Returns:
             dataDictionary with the FixValueInput and FixValueOutput values changed to the type dataTypeInput and dataTypeOutput respectively
         """
-        if dataTypeInput is not None and dataTypeOutput is not None:  # Si se especifican los tipos de dato, se realiza la transformación
-            # Función auxiliar que cambia los valores de FixValueInput y FixValueOutput al tipo de dato en DataTypeInput y DataTypeOutput respectivamente
+        if dataTypeInput is not None and dataTypeOutput is not None:  # If the data types are specified, the transformation is performed
+            # Auxiliary function that changes the values of FixValueInput and FixValueOutput to the data type in DataTypeInput and DataTypeOutput respectively
             fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput,
                                                                fixValueOutput)
 
@@ -50,8 +48,8 @@ class ContractsInvariants:
                                        derivedTypeOutput: DerivedType,
                                        dataTypeInput: DataType = None, axis_param: int = None,
                                        field: str = None) -> pd.DataFrame:
-        # Por defecto, si todos los valores son igual de frecuentes, se sustituye por el primer valor.
-        # Comprobar si solo se debe hacer para filas y columnas o también para el dataframe completo.
+        # By default, if all values are equally frequent, it is replaced by the first value.
+        # Check if it should only be done for rows and columns or also for the entire dataframe.
         """
         Check the invariant of the FixValue - DerivedValue relation
         Sustituye el valor proporcionado por el usuario por el valor derivado en el eje que se especifique por parámetros
@@ -60,47 +58,46 @@ class ContractsInvariants:
             dataTypeInput: data type of the input value
             FixValueInput: input value to check
             derivedTypeOutput: derived type of the output value
-            axis_param: axis to check the invariant
+            axis_param: axis to check the invariant - 0: column, None: dataframe
             field: field to check the invariant
 
             return: dataDictionary with the FixValueInput values replaced by the value derived from the operation derivedTypeOutput
         """
-        if dataTypeInput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+        if dataTypeInput is not None:  # If the data type is specified, the transformation is performed
             fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
-        # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
-
+            # Auxiliary function that changes the value of FixValueInput to the data type in DataTypeInput
         dataDictionary_copy = dataDictionary.copy()
 
         if field is None:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 1:  # Aplica la función lambda a nivel de fila
+                if axis_param == 1:  # Applies the lambda function at the row level
                     dataDictionary_copy = dataDictionary_copy.apply(lambda fila: fila.apply(
                         lambda value: dataDictionary_copy.loc[
                             fila.name].value_counts().idxmax() if value == fixValueInput else value), axis=axis_param)
-                elif axis_param == 0:  # Aplica la función lambda a nivel de columna
+                elif axis_param == 0:  # Applies the lambda function at the column level
                     dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
                         lambda value: dataDictionary_copy[
                             columna.name].value_counts().idxmax() if value == fixValueInput else value),
                                                                     axis=axis_param)
-                else:  # Aplica la función lambda a nivel de dataframe
-                    # En caso de empate de valor con más apariciones en el dataset, se toma el primer valor
+                else:  # Applies the lambda function at the dataframe level
+                    # In case of a tie of the value with the most appearances in the dataset, the first value is taken
                     valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
-                    # Reemplaza 'fixValueInput' con el valor más frecuente en el DataFrame completo usando lambda
+                    # Replace the values within the interval with the most frequent value in the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.replace(fixValueInput, valor_mas_frecuente))
-            # Si el valor es el primero, se asigna a np.nan
+            # If it is the first value, it is replaced by the previous value in the same column
             elif derivedTypeOutput == DerivedType.PREVIOUS:
-                # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
-                # Lambda que sustitutuye cualquier valor igual a FixValueInput del dataframe por el valor de la fila anterior en la misma columna
+                # Applies the lambda function at the column level or at the row level
+                # Lambda that replaces any value equal to FixValueInput in the dataframe with the value of the previous position in the same column
                 if axis_param is not None:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda x: x.where((x != fixValueInput) | x.shift(1).isna(),
                                           other=x.shift(1)), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-            # Si el valor es el último, se asigna a np.nan
+            # It assigns the value np.nan if it is the last value
             elif derivedTypeOutput == DerivedType.NEXT:
-                # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
+                # Applies the lambda function at the column level or at the row level
                 if axis_param is not None:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda x: x.where((x != fixValueInput) | x.shift(-1).isna(),
@@ -141,30 +138,30 @@ class ContractsInvariants:
         Returns:
             dataDictionary with the FixValueInput values replaced by the result of the operation numOpOutput
         """
-        if dataTypeInput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+        if dataTypeInput is not None:  # If it is specified, the transformation is performed
             fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
 
-        # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
+        # Auxiliary function that changes the value of 'FixValueInput' to the data type in 'DataTypeInput'
         dataDictionary_copy = dataDictionary.copy()
         if field is None:
             if numOpOutput == Operation.INTERPOLATION:
-                # Aplicamos la interpolación lineal en el DataFrame
+                # Applies linear interpolation to the entire DataFrame
                 dataDictionary_copy_copy = dataDictionary_copy.copy()
                 if axis_param == 0:
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy_copy[col].dtype, np.number):
-                            # Paso 1: Reemplazar los valores que cumplen la condición con NaN
+                            # Step 1: Replace the values that meet the condition with NaN
                             dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x == fixValueInput else x)
-                            # Paso 2: Interpolar los valores NaN resultantes
+                            # Step 2: Interpolate the resulting NaN values
                             dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
 
-                    # Iteramos sobre cada columna
+                    # Iterate over each column
                     for col in dataDictionary_copy.columns:
-                        # Para cada índice en la columna
+                        # For each index in the column
                         for idx in dataDictionary_copy.index:
-                            # Verificamos si el valor es NaN en el dataframe original
+                            # Verify if the value is NaN in the original dataframe
                             if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                # Replace the value with the corresponding one from dataDictionary_copy_copy
                                 dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
                     return dataDictionary_copy_copy
                 elif axis_param == 1:
@@ -172,17 +169,17 @@ class ContractsInvariants:
                     dataDictionary_copy = dataDictionary_copy.T
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy_copy[col].dtype, np.number):
-                            # Paso 1: Reemplazar los valores que cumplen la condición con NaN
+                            # Step 1: Replace the values that meet the condition with NaN
                             dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x == fixValueInput else x)
-                            # Paso 2: Interpolar los valores NaN resultantes
+                            # Step 2: Interpolate the resulting NaN values
                             dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
-                    # Iteramos sobre cada columna
+                    # Iterate over each column
                     for col in dataDictionary_copy.columns:
-                        # Para cada índice en la columna
+                        # For each index in the column
                         for idx in dataDictionary_copy.index:
-                            # Verificamos si el valor es NaN en el dataframe original
+                            # Verify if the value is NaN in the original dataframe
                             if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                # Replace the value with the corresponding one from dataDictionary_copy_copy
                                 dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
                     dataDictionary_copy_copy = dataDictionary_copy_copy.T
                     return dataDictionary_copy_copy
@@ -191,11 +188,11 @@ class ContractsInvariants:
 
             elif numOpOutput == Operation.MEAN:
                 if axis_param == None:
-                    # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+                    # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
-                    # Calcular la media de estas columnas numéricas
+                    # Calculate the mean of these numeric columns
                     mean_value = only_numbers_df.mean().mean()
-                    # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+                    # Replace 'fixValueInput' with the mean of the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.replace(fixValueInput, mean_value)
                 elif axis_param == 0:
                     means = dataDictionary_copy.apply(
@@ -222,11 +219,11 @@ class ContractsInvariants:
 
             elif numOpOutput == Operation.MEDIAN:
                 if axis_param == None:
-                    # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+                    # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
-                    # Calcular la media de estas columnas numéricas
+                    # Calculate the median of these numeric columns
                     median_value = only_numbers_df.median().median()
-                    # Reemplaza 'fixValueInput' con la mediana del DataFrame completo usando lambda
+                    # Replace 'fixValueInput' with the median of the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.replace(fixValueInput, median_value)
                 elif axis_param == 0:
                     for col in dataDictionary_copy.columns:
@@ -248,13 +245,13 @@ class ContractsInvariants:
                     closest_value=find_closest_value(dataDictionary_copy.stack(), fixValueInput)
                     dataDictionary_copy=dataDictionary_copy.replace(fixValueInput, closest_value)
                 elif axis_param == 0:
-                    # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
+                    # Replace 'fixValueInput' with the closest numeric value along the columns
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[col].dtype, np.number) and dataDictionary_copy[col].isin([fixValueInput]).any():
                             closest_value=find_closest_value(dataDictionary_copy[col], fixValueInput)
                             dataDictionary_copy[col] = dataDictionary_copy[col].replace(fixValueInput, closest_value)
                 elif axis_param == 1:
-                    # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las filas
+                    # Replace 'fixValueInput' with the closest numeric value along the rows
                     dataDictionary_copy = dataDictionary_copy.T
                     for row in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[row].dtype, np.number) and dataDictionary_copy[row].isin([fixValueInput]).any():
@@ -274,9 +271,9 @@ class ContractsInvariants:
                         dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: x if x != fixValueInput else np.nan)
                         dataDictionary_copy_copy[field]=dataDictionary_copy_copy[field].interpolate(method='linear',limit_direction='both')
                         for idx in dataDictionary_copy.index:
-                            # Verificamos si el valor es NaN en el dataframe original
+                            # Verify if the value is NaN in the original dataframe
                             if pd.isnull(dataDictionary_copy.at[idx, field]):
-                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                # Replace the value with the corresponding one from dataDictionary_copy_copy
                                 dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
                         return dataDictionary_copy_copy
                     elif numOpOutput == Operation.MEAN:
@@ -310,13 +307,13 @@ class ContractsInvariants:
         :param field: field to check the invariant
         :return: dataDictionary with the values of the interval changed to the value fixValueOutput
         """
-        if dataTypeOutput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+        if dataTypeOutput is not None:  # If it is specified, the transformation is performed
             vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
 
         dataDictionary_copy = dataDictionary.copy()
 
         if field is None:
-            # Aplicar el cambio en los valores dentro del intervalo
+            # Apply the lambda function to the entire dataframe
             if closureType == Closure.openOpen:
                 dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if (
                                 np.issubdtype(type(x), np.number) and leftMargin < x < rightMargin) else x))
@@ -371,7 +368,7 @@ class ContractsInvariants:
         """
         dataDictionary_copy = dataDictionary.copy()
 
-        # Definir la condición del intervalo basada en el tipo de cierre
+        # Define the interval condition according to the closure type
         def get_condition(x):
             if closureType == Closure.openOpen:
                 return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x < rightMargin)) else False
@@ -384,39 +381,38 @@ class ContractsInvariants:
 
         if field is None:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 1:  # Aplica la función lambda a nivel de fila
+                if axis_param == 1:  # Applies the lambda function at the row level
                     dataDictionary_copy = dataDictionary_copy.T
                     for row in dataDictionary_copy.columns:
                         most_frequent=dataDictionary_copy[row].value_counts().idxmax()
                         dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: most_frequent if get_condition(x) else x)
                     dataDictionary_copy = dataDictionary_copy.T
-                elif axis_param == 0:  # Aplica la función lambda a nivel de columna
+                elif axis_param == 0:  # Applies the lambda function at the column level
                     for col in dataDictionary_copy.columns:
                         most_frequent = dataDictionary_copy[col].value_counts().idxmax()
                         dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: most_frequent if get_condition(x) else x)
-                else:  # Aplica la función lambda a nivel de dataframe
-                    # En caso de empate de valor con más apariciones en el dataset, se toma el primer valor
+                else:  # Applies the lambda function at the dataframe level
+                    # In case of a tie of the value with the most appearances in the dataset, the first value is taken
                     valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
-                    # Reemplaza los valores dentro del intervalo con el valor más frecuente en el DataFrame completo usando lambda
+                    # Replace the values within the interval with the most frequent value in the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
                         lambda value: valor_mas_frecuente if get_condition(value) else value))
-            # No asigna nada a np.nan
+            # Doesn't assign anything to np.nan
             elif derivedTypeOutput == DerivedType.PREVIOUS:
-                # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
-                # Lambda que sustitutuye cualquier valor igual a FixValueInput del dataframe por el valor de la fila anterior en la misma columna
+                # Applies the lambda function at the column level or at the row level
+                # Lambda that replaces any value within the interval in the dataframe with the value of the previous position in the same column
                 if axis_param is not None:
-                    # Define una función lambda para reemplazar los valores dentro del intervalo por el valor de la
-                    # posición anterior
+                    # Define a lambda function to replace the values within the interval with the value of the previous position in the same column
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                         value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
                                   for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-            # No asigna nada a np.nan
+            # Doesn't assign anything to np.nan
             elif derivedTypeOutput == DerivedType.NEXT:
-                # Aplica la función lambda a nivel de columna (axis=0) o a nivel de fila (axis=1)
+                # Applies the lambda function at the column level or at the row level
                 if axis_param is not None:
-                    # Define la función lambda para reemplazar los valores dentro del intervalo por el valor de la siguiente posición
+                    # Define the lambda function to replace the values within the interval with the value of the next position in the same column
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                         value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
                                for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
@@ -454,6 +450,7 @@ class ContractsInvariants:
         :param dataDictionary: dataframe with the data
         :param leftMargin: left margin of the interval
         :param rightMargin: right margin of the interval
+        :param closureType: closure type of the interval
         :param numOpOutput: operation to check the invariant
         :param axis_param: axis to check the invariant
         :param field: field to check the invariant
@@ -470,25 +467,25 @@ class ContractsInvariants:
             elif closureType == Closure.closedClosed:
                 return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x <= rightMargin)) else False
 
-        # Función auxiliar que cambia el valor de FixValueInput al tipo de dato en DataTypeInput
+        # Auxiliary function that changes the value of 'FixValueInput' to the data type in 'DataTypeInput'
         dataDictionary_copy = dataDictionary.copy()
 
         if field is None:
             if numOpOutput == Operation.INTERPOLATION:
-                # Aplicamos la interpolación lineal en el DataFrame
+                # Applies linear interpolation to the entire DataFrame
                 dataDictionary_copy_copy=dataDictionary_copy.copy()
                 if axis_param == 0:
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
                             dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if get_condition(x) else x)
                             dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
-                    # Iteramos sobre cada columna
+                    # Iterate over each column
                     for col in dataDictionary_copy.columns:
-                        # Para cada índice en la columna
+                        # For each index in the column
                         for idx in dataDictionary_copy.index:
-                            # Verificamos si el valor es NaN en el dataframe original
+                            # Verify if the value is NaN in the original dataframe
                             if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                # Replace the value with the corresponding one from dataDictionary_copy_copy
                                 dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
                     return dataDictionary_copy_copy
                 elif axis_param == 1:
@@ -498,13 +495,13 @@ class ContractsInvariants:
                         if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
                             dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if get_condition(x) else x)
                             dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
-                    # Iteramos sobre cada columna
+                    # Iterate over each column
                     for col in dataDictionary_copy.columns:
-                        # Para cada índice en la columna
+                        # For each index in the column
                         for idx in dataDictionary_copy.index:
-                            # Verificamos si el valor es NaN en el dataframe original
+                            # Verify if the value is NaN in the original dataframe
                             if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                # Replace the value with the corresponding one from dataDictionary_copy_copy
                                 dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
                     dataDictionary_copy_copy = dataDictionary_copy_copy.T
                     return dataDictionary_copy_copy
@@ -513,11 +510,11 @@ class ContractsInvariants:
 
             elif numOpOutput == Operation.MEAN:
                 if axis_param == None:
-                    # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+                    # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
-                    # Calcular la media de estas columnas numéricas
+                    # Calculate the mean of these numeric columns
                     mean_value = only_numbers_df.mean().mean()
-                    # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+                    # Replace the values within the interval with the mean of the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
                             lambda x: mean_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
@@ -541,11 +538,11 @@ class ContractsInvariants:
 
             elif numOpOutput == Operation.MEDIAN:
                 if axis_param == None:
-                    # Seleccionar solo columnas con datos numéricos, incluyendo todos los tipos numéricos (int, float, etc.)
+                    # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
-                    # Calcular la media de estas columnas numéricas
+                    # Calculate the median of these numeric columns
                     median_value = only_numbers_df.median().median()
-                    # Reemplaza 'fixValueInput' con la mediana del DataFrame completo usando lambda
+                    # Replace the values within the interval with the median of the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
                             lambda x: median_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
@@ -587,23 +584,23 @@ class ContractsInvariants:
                                 closest_processed.append(closest_value)
                                 processed.append(values[i])
 
-                        # Recorrer todas las celdas del DataFrame
+                        # Iterate over each index and column
                         for i in range(len(dataDictionary_copy.index)):
                             for j in range(len(dataDictionary_copy.columns)):
-                                # Obtener el valor de la celda actual
+                                # Get the current value
                                 current_value = dataDictionary_copy.iat[i, j]
-                                # Verificar si el valor está en la lista de valores a reemplazar
+                                # Verify if the value it's in the list of values to replace
                                 if current_value in processed:
-                                    # Obtener el índice correspondiente en la lista de valores a reemplazar
+                                    # Get the index of the value in the list
                                     replace_index = processed.index(current_value)
-                                    # Obtener el valor más cercano correspondiente
+                                    # Get the nearest value to replace
                                     closest_value = closest_processed[replace_index]
-                                    # Reemplazar el valor en el DataFrame
+                                    # Replace the value in the dataframe
                                     dataDictionary_copy.iat[i, j] = closest_value
                 else:
                     if axis_param == 1:
                         dataDictionary_copy = dataDictionary_copy.T
-                    # Reemplazar 'fixValueInput' por el valor numérico más cercano a lo largo de las columnas
+                    # Replace the values within the interval with the closest numeric value along the columns
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                     for col in only_numbers_df.columns:
                         indice_row = []
@@ -618,7 +615,7 @@ class ContractsInvariants:
                                 indice_col.append(col)
                                 values.append(value)
 
-                        if values.__len__() > 0 and values is not None:
+                        if len(values) > 0 and values is not None:
                             processed.append(values[0])
                             closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
 
@@ -645,11 +642,11 @@ class ContractsInvariants:
                         dataDictionary_copy_copy = dataDictionary_copy.copy()
                         dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: np.nan if get_condition(x) else x)
                         dataDictionary_copy_copy[field]=dataDictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
-                        # Para cada índice en la columna
+                        # For each index in the column
                         for idx in dataDictionary_copy.index:
-                            # Verificamos si el valor es NaN en el dataframe original
+                            # Verify if the value is NaN in the original dataframe
                             if pd.isnull(dataDictionary_copy.at[idx, field]):
-                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                # Replace the value with the corresponding one from dataDictionary_copy_copy
                                 dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
                         return dataDictionary_copy_copy
                     elif numOpOutput == Operation.MEAN:
@@ -670,7 +667,7 @@ class ContractsInvariants:
                             if get_condition(value):
                                 indice_row.append(index)
                                 values.append(value)
-                        if values.__len__() > 0 and values is not None:
+                        if len(values) > 0 and values is not None:
                             processed.append(values[0])
                             closest_processed.append(find_closest_value(dataDictionary_copy[field], values[0]))
                             for i in range(1, len(values)):
@@ -699,39 +696,39 @@ class ContractsInvariants:
         :param field: field to check the invariant
         :return: dataDictionary with the values of the special type changed to the value fixValueOutput
         """
-        if dataTypeOutput is not None:  # Si se especifica el tipo de dato, se realiza la transformación
+        if dataTypeOutput is not None:  # If it is specified, the transformation is performed
             vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
 
         dataDictionary_copy = dataDictionary.copy()
 
         if field is None:
-            if specialTypeInput == SpecialType.MISSING:  # Incluye nulos, np.nan, None, etc y los valores de la lista missing_values
+            if specialTypeInput == SpecialType.MISSING:  # Include NaN values and the values in the list missing_values
                 dataDictionary_copy = dataDictionary_copy.replace(np.nan, fixValueOutput)
                 if missing_values is not None:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
 
-            elif specialTypeInput == SpecialType.INVALID:  # Solo incluye los valores de la lista missing_values
+            elif specialTypeInput == SpecialType.INVALID:  # Just include the values in the list missing_values
                 if missing_values is not None:
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
 
-            elif specialTypeInput == SpecialType.OUTLIER:
+            elif specialTypeInput == SpecialType.OUTLIER: # Replace the outliers with the value fixValueOutput
                 threshold = 1.5
                 if axis_param is None:
                     Q1 = dataDictionary_copy.stack().quantile(0.25)
                     Q3 = dataDictionary_copy.stack().quantile(0.75)
                     IQR = Q3 - Q1
-                    # Definir los límites para identificar outliers
+                    # Define the lower and upper bounds
                     lower_bound = Q1 - threshold * IQR
                     upper_bound = Q3 + threshold * IQR
-                    # Identificar outliers en el dataframe completo
+                    # Identify the outliers in the dataframe
                     numeric_values = dataDictionary_copy.select_dtypes(include=[np.number])
                     outliers = (numeric_values < lower_bound) | (numeric_values > upper_bound)
-                    # Reemplazar outliers por fixValueOutput
+                    # Replace the outliers with the value fixValueOutput
                     dataDictionary_copy[outliers] = fixValueOutput
 
-                elif axis_param == 0:#Se niega la condición para que se cumpla la condición de outliers, y se reemplaza por fixValueOutput en el else
+                elif axis_param == 0: # Negate the condition to replace the outliers with the value fixValueOutput
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[col], np.number):
                             dataDictionary_copy[col] = dataDictionary_copy[col].where(~((
@@ -741,7 +738,7 @@ class ContractsInvariants:
                                         dataDictionary_copy[col].quantile(0.75) - dataDictionary_copy[col].quantile(0.25)))),
                                                                                 other = fixValueOutput)
 
-                elif axis_param == 1:
+                elif axis_param == 1: # Negate the condition to replace the outliers with the value fixValueOutput
                     Q1 = dataDictionary_copy.quantile(0.25, axis="rows")
                     Q3 = dataDictionary_copy.quantile(0.75, axis="rows")
                     IQR = Q3 - Q1
@@ -803,9 +800,8 @@ class ContractsInvariants:
                                                         missing_values, axis_param, field)
 
             elif specialTypeInput == SpecialType.OUTLIER:
-                # IMPORTANTE: El valor de axis_param que se aplica a la función getOutliers() es el mismo qu el que se utiliza
-                # en la función apply_derivedTypeOutliers(). Por tanto, si se aplican los OUTLIERS a nivel de dataframe, no se podrá aplicar
-                # ni previous ni next.
+                # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
+                # If the outliers are applied at the dataframe level, previous and next cannot be applied.
 
                 if axis_param is None:
                     dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
