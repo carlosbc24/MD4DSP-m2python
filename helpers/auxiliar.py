@@ -913,7 +913,6 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                                     closest_value = closest_processed[replace_index]
                                     # Reemplazar el valor en el DataFrame
                                     dataDictionary_copy.iat[i, j] = closest_value
-
             else:
                 if axis_param == 1:
                     dataDictionary_copy = dataDictionary_copy.T
@@ -953,7 +952,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
             #     dataDictionary_copy = dataDictionary_copy.apply(lambda col: col.apply(
             #         lambda x: find_closest_value(col, x) if x in missing_values else x), axis=axis_param)
 
-        if specialTypeInput == SpecialType.OUTLIER:
+        if specialTypeInput == SpecialType.OUTLIER: #IMPROVE: Very inneficent
             if axis_param is None:
                 for col_name in dataDictionary_copy.columns:
                     for idx, value in dataDictionary_copy[col_name].items():
@@ -1022,7 +1021,7 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
                             dataDictionary_copy.at[index, field] = closest_processed[processed.index(values[i])]
                 # dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda x: find_closest_value(
                 #                                     dataDictionary_copy[field], x) if x in missing_values else x)
-            if specialTypeInput == SpecialType.OUTLIER:
+            if specialTypeInput == SpecialType.OUTLIER: #IMPROVE: Very inneficent
                 for idx, value in dataDictionary_copy[field].items():
                     if dataDictionary_copy_mask.at[idx, field] == 1:
                         dataDictionary_copy.at[idx, field] = find_closest_value(dataDictionary_copy[field], value)

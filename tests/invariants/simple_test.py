@@ -351,12 +351,12 @@ class InvariantSimpleTest(unittest.TestCase):
         # Caso 1
         # Comprobar la invariante: cambiar el valor fijo 0 por el valor de operación 0 (Interpolación) a nivel de columna
         # Crear un DataFrame de prueba
-        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        datadic = pd.DataFrame({'A': [1, 0, 0, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
         result = self.invariants.checkInv_FixValue_NumOp(dataDictionary=datadic.copy(), dataTypeInput=DataType(2),
                                                          fixValueInput=0, numOpOutput=Operation(0), axis_param=0)
         # Definir el resultado esperado
-        expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [2, 3, 6, 5.5, 5], 'C': [1, 2, 3, 4, 5]})
+        expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 3, 6, 5.5, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
             'A': 'float64',  # Convertir A a float64
             'B': 'float64',  # Convertir B a float64
@@ -786,12 +786,12 @@ class InvariantSimpleTest(unittest.TestCase):
         # Caso 1
         # Comprobar la invariante: cambiar el rango de valores (2, 4] por el valor de operación 0 (Interpolación) a nivel de columna
         # Crear un DataFrame de prueba
-        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 8], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=datadic.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
         # Definir el resultado esperado
-        expected = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 4, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        expected = pd.DataFrame({'A': [0, 2, 4, 6, 8], 'B': [2, 4, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
             'A': 'float64',  # Convertir A a float64
             'B': 'float64',  # Convertir B a float64

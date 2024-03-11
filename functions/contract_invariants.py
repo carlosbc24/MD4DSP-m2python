@@ -149,16 +149,43 @@ class ContractsInvariants:
         if field is None:
             if numOpOutput == Operation.INTERPOLATION:
                 # Aplicamos la interpolación lineal en el DataFrame
+                dataDictionary_copy_copy = dataDictionary_copy.copy()
                 if axis_param == 0:
                     for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                                lambda x: np.nan if x == fixValueInput else x).interpolate(method='linear',
-                                                                                           limit_direction='both')
+                        if np.issubdtype(dataDictionary_copy_copy[col].dtype, np.number):
+                            # Paso 1: Reemplazar los valores que cumplen la condición con NaN
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x == fixValueInput else x)
+                            # Paso 2: Interpolar los valores NaN resultantes
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+
+                    # Iteramos sobre cada columna
+                    for col in dataDictionary_copy.columns:
+                        # Para cada índice en la columna
+                        for idx in dataDictionary_copy.index:
+                            # Verificamos si el valor es NaN en el dataframe original
+                            if pd.isnull(dataDictionary_copy.at[idx, col]):
+                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+                    return dataDictionary_copy_copy
                 elif axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda row: row.apply(lambda x: np.nan if x == fixValueInput else x).interpolate(
-                            method='linear', limit_direction='both'), axis=axis_param)
+                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
+                    dataDictionary_copy = dataDictionary_copy.T
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy_copy[col].dtype, np.number):
+                            # Paso 1: Reemplazar los valores que cumplen la condición con NaN
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x == fixValueInput else x)
+                            # Paso 2: Interpolar los valores NaN resultantes
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                    # Iteramos sobre cada columna
+                    for col in dataDictionary_copy.columns:
+                        # Para cada índice en la columna
+                        for idx in dataDictionary_copy.index:
+                            # Verificamos si el valor es NaN en el dataframe original
+                            if pd.isnull(dataDictionary_copy.at[idx, col]):
+                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
+                    return dataDictionary_copy_copy
                 elif axis_param is None:
                     raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
@@ -243,9 +270,15 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
                     if numOpOutput == Operation.INTERPOLATION:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if x != fixValueInput else np.nan).interpolate(method='linear',
-                                                                                       limit_direction='both')
+                        dataDictionary_copy_copy = dataDictionary_copy.copy()
+                        dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: x if x != fixValueInput else np.nan)
+                        dataDictionary_copy_copy[field]=dataDictionary_copy_copy[field].interpolate(method='linear',limit_direction='both')
+                        for idx in dataDictionary_copy.index:
+                            # Verificamos si el valor es NaN en el dataframe original
+                            if pd.isnull(dataDictionary_copy.at[idx, field]):
+                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
+                        return dataDictionary_copy_copy
                     elif numOpOutput == Operation.MEAN:
                         if dataDictionary_copy[field].isin([fixValueInput]).any():
                             mean=dataDictionary_copy[field].mean()
@@ -443,16 +476,38 @@ class ContractsInvariants:
         if field is None:
             if numOpOutput == Operation.INTERPOLATION:
                 # Aplicamos la interpolación lineal en el DataFrame
+                dataDictionary_copy_copy=dataDictionary_copy.copy()
                 if axis_param == 0:
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                                lambda x: np.nan if get_condition(x) else x).interpolate(method='linear',
-                                                                                         limit_direction='both')
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if get_condition(x) else x)
+                            dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                    # Iteramos sobre cada columna
+                    for col in dataDictionary_copy.columns:
+                        # Para cada índice en la columna
+                        for idx in dataDictionary_copy.index:
+                            # Verificamos si el valor es NaN en el dataframe original
+                            if pd.isnull(dataDictionary_copy.at[idx, col]):
+                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+                    return dataDictionary_copy_copy
                 elif axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda row: row.apply(lambda x: np.nan if get_condition(x) else x).interpolate(
-                            method='linear', limit_direction='both'), axis=axis_param)
+                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
+                    dataDictionary_copy = dataDictionary_copy.T
+                    for col in dataDictionary_copy.columns:
+                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if get_condition(x) else x)
+                            dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                    # Iteramos sobre cada columna
+                    for col in dataDictionary_copy.columns:
+                        # Para cada índice en la columna
+                        for idx in dataDictionary_copy.index:
+                            # Verificamos si el valor es NaN en el dataframe original
+                            if pd.isnull(dataDictionary_copy.at[idx, col]):
+                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
+                    return dataDictionary_copy_copy
                 elif axis_param is None:
                     raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
@@ -587,9 +642,16 @@ class ContractsInvariants:
             elif field in dataDictionary.columns:
                 if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
                     if numOpOutput == Operation.INTERPOLATION:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not get_condition(x) else np.nan).interpolate(method='linear',
-                                                                                         limit_direction='both')
+                        dataDictionary_copy_copy = dataDictionary_copy.copy()
+                        dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: np.nan if get_condition(x) else x)
+                        dataDictionary_copy_copy[field]=dataDictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
+                        # Para cada índice en la columna
+                        for idx in dataDictionary_copy.index:
+                            # Verificamos si el valor es NaN en el dataframe original
+                            if pd.isnull(dataDictionary_copy.at[idx, field]):
+                                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                                dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
+                        return dataDictionary_copy_copy
                     elif numOpOutput == Operation.MEAN:
                         mean=dataDictionary_copy[field].mean()
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(

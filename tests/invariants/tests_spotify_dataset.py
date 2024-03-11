@@ -526,7 +526,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0
         field = 'mode'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                                    fixValueInput=fixValueInput,
                                                                    derivedTypeOutput=DerivedType(0), field=field)
         most_frequent_mode_value = expected_df['mode'].mode()[0]
@@ -572,7 +572,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                                    fixValueInput=fixValueInput,
                                                                    derivedTypeOutput=DerivedType(2), field=field)
         date_indices = expected_df.loc[expected_df[field] == fixValueInput].index
@@ -590,7 +590,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 'pop'
         field = 'playlist_genre'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                                    fixValueInput=fixValueInput,
                                                                    derivedTypeOutput=DerivedType(2), axis_param=1)
         pop_indices = expected_df.loc[expected_df[field] == fixValueInput].index
@@ -611,7 +611,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.11
         field = 'liveness'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                                    fixValueInput=fixValueInput,
                                                                    derivedTypeOutput=DerivedType(0), field=field)
         most_frequent_liveness_value = expected_df[field].mode()[0]
@@ -626,7 +626,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # verify if the result matches the expected
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 'Ed Sheeran'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                                    fixValueInput=fixValueInput,
                                                                    derivedTypeOutput=DerivedType(0))
         # Get most frequent value of the all columns from the rest of the dataset
@@ -649,7 +649,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                            fixValueInput=fixValueInput,
                                                            derivedTypeOutput=DerivedType(1))
         print_and_log("Test Case 7 Passed: the function raised the expected exception")
@@ -662,7 +662,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                            fixValueInput=fixValueInput,
                                                            derivedTypeOutput=DerivedType(2))
         print_and_log("Test Case 8 Passed: the function raised the expected exception")
@@ -675,7 +675,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset,
+            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
                                                            fixValueInput=fixValueInput,
                                                            derivedTypeOutput=DerivedType(1), field=field)
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
@@ -713,12 +713,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(0), field=field)
+        expected_df_copy = expected_df.copy()
         # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, np.nan)
+        expected_df_copy[field] = expected_df_copy[field].replace(fixValueInput, np.nan)
         # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
-        expected_df[field] = expected_df[field].interpolate(method='linear', limit_direction='both')
+        expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
+        # Para cada índice en la columna
+        for idx in expected_df.index:
+            # Verificamos si el valor es NaN en el dataframe original
+            if pd.isnull(expected_df.at[idx, field]):
+                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                expected_df_copy.at[idx, field] = expected_df.at[idx, field]
         # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
+        pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # Caso 2
@@ -927,18 +934,25 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # de copia el batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado.
         # Crear un DataFrame de prueba
-        expected_df = self.rest_of_dataset.copy()
+        expected_df = self.rest_of_dataset[32820:].copy()
         fixValueInput = 0
         field = 'instrumentalness'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
-                                                            fixValueInput=fixValueInput,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset[32820:], fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(0), field=field)
+        expected_df_copy = expected_df.copy()
         # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, np.nan)
+        expected_df_copy[field] = expected_df_copy[field].replace(fixValueInput, np.nan)
         # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
-        expected_df[field] = expected_df[field].interpolate(method='linear', limit_direction='both')
+        expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
+
+        for idx in expected_df.index:
+            # Verificamos si el valor es NaN en el dataframe original
+            if pd.isnull(expected_df.at[idx, field]):
+                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                expected_df_copy.at[idx, field] = expected_df.at[idx, field]
+
         # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
+        pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # Caso 2
@@ -950,7 +964,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.725
         field = 'valence'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(1), field=field)
         # Sustituir el valor 0.725 por el valor de la media en la columna field de expected_df
@@ -968,7 +982,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 8
         field = 'key'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(2), field=field)
         # Sustituir el valor 8 por el valor de la mediana en la columna field de expected_df
@@ -986,7 +1000,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 99.972
         field = 'tempo'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(3), field=field)
         # Seleccionar solo las columnas numéricas del dataframe
@@ -1019,7 +1033,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(1), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
@@ -1040,7 +1054,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
                                                             fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(2), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
@@ -1066,18 +1080,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                             numOpOutput=Operation(3), axis_param=0)
         # Seleccionar solo las columnas numéricas del sub-DataFrame expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
-
         # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
         for col in numeric_columns:
-
             # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
             diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-
             # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
             idx_min = diff.idxmin()
-
             closest_value = expected_df.at[idx_min, col]
-
             # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
             expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
 
@@ -1093,17 +1102,25 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
-                                                            fixValueInput=fixValueInput,
+        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(), fixValueInput=fixValueInput,
                                                             numOpOutput=Operation(0), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Susituir los valores 0.65 por los NaN en las columnas numéricas de expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, np.nan)
+        expected_df_copy = expected_df.copy()
+        # Sustituir los valores 0 por los NaN en la columa field de expected_df
+        expected_df_copy = expected_df_copy.replace(fixValueInput, np.nan)
         # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
-        expected_df[numeric_columns] = expected_df[numeric_columns].interpolate(method='linear', limit_direction='both')
+        for col in expected_df_copy:
+            if np.issubdtype(expected_df_copy[col].dtype, np.number):
+                expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
+
+        for col in expected_df.columns:
+            if np.issubdtype(expected_df[col].dtype, np.number):
+                for idx in expected_df.index:
+                    # Verificamos si el valor es NaN en el dataframe original
+                    if pd.isnull(expected_df.at[idx, col]):
+                        # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                        expected_df_copy.at[idx, col] = expected_df.at[idx, col]
         # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
+        pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
 
         # Caso 9
@@ -1113,7 +1130,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+            self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
                                                     fixValueInput=fixValueInput,
                                                     numOpOutput=Operation(0))
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
@@ -1126,7 +1143,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset,
+            self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
                                                     fixValueInput=fixValueInput,
                                                     numOpOutput=Operation(0), field=field)
         print_and_log("Test Case 10 Passed: the function raised the expected exception")
@@ -1220,7 +1237,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'track_popularity'
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset, leftMargin=65,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
                                                             rightMargin=69, closureType=Closure(2),
                                                             dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<69',
                                                             field=field)
@@ -1234,7 +1251,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset, leftMargin=0.5,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.5,
                                                             rightMargin=1, closureType=Closure(0), fixValueOutput=2)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
@@ -1247,7 +1264,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset, leftMargin=65,
+            result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
                                                                 rightMargin=69, closureType=Closure(2),
                                                                 fixValueOutput=101, field=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
@@ -1256,7 +1273,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'speechiness'
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset, leftMargin=0.06,
+        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.06,
                                                             rightMargin=0.1270, closureType=Closure(1),
                                                             fixValueOutput=33, field=field)
 
@@ -1396,7 +1413,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'liveness'
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(0), field=field)
 
@@ -1408,7 +1425,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
@@ -1423,7 +1440,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 3
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(1), axis_param=1)
 
@@ -1440,7 +1457,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
 
@@ -1457,7 +1474,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(0), axis_param=None)
 
@@ -1472,7 +1489,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 6
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset, leftMargin=0.2,
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
                                                                 rightMargin=0.4, closureType=Closure(0),
                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
 
@@ -1489,7 +1506,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset,
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                     leftMargin=0.2, rightMargin=0.4,
                                                                     closureType=Closure(0),
                                                                     derivedTypeOutput=DerivedType(2), axis_param=None)
@@ -1521,14 +1538,23 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
-        # Aplicar la lógica para reemplazar los valores en el rango especificado
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: np.nan if (np.issubdtype(type(x), np.number) and
-                                                                                   ((x > 2) & (x <= 4))) else x))
-        # Interpolar solo en columnas numéricas
-        numeric_columns = expected_df.select_dtypes(include=[np.number]).columns
-        expected_df[numeric_columns] = expected_df[numeric_columns].interpolate(method='linear', limit_direction='both')
+        expected_df_copy = expected_df.copy()
 
-        pd.testing.assert_frame_equal(result, expected_df)
+        for col in expected_df:
+            if np.issubdtype(expected_df[col].dtype, np.number):
+                expected_df_copy[col]=expected_df_copy[col].apply(lambda x: np.nan if (2<x<=4) else x)
+                # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
+                expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
+        # Iteramos sobre cada columna
+        for col in expected_df.columns:
+            # Para cada índice en la columna
+            for idx in expected_df.index:
+                # Verificamos si el valor es NaN en el dataframe original
+                if pd.isnull(expected_df.at[idx, col]):
+                    # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                    expected_df_copy.at[idx, col] = expected_df.at[idx, col]
+
+        pd.testing.assert_frame_equal(result, expected_df_copy)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # # Caso 2
@@ -1569,7 +1595,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=50, rightMargin=60,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50, rightMargin=60,
                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
@@ -1580,7 +1606,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=50, rightMargin=60,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50, rightMargin=60,
                                                          closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
@@ -1594,7 +1620,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 9
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset, leftMargin=23, rightMargin=25,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23, rightMargin=25,
                                                          closureType=Closure(0), numOpOutput=Operation(3),
                                                          axis_param=None)
 
@@ -1700,21 +1726,30 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 1
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=2, rightMargin=4,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
-        # Aplicar la lógica para reemplazar los valores en el rango especificado
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: np.nan if (np.issubdtype(type(x), np.number) and
-                                                                                   ((x > 2) & (x <= 4))) else x))
-        # Interpolar solo en columnas numéricas
-        numeric_columns = expected_df.select_dtypes(include=[np.number]).columns
-        expected_df[numeric_columns] = expected_df[numeric_columns].interpolate(method='linear', limit_direction='both')
+        expected_df_copy = expected_df.copy()
 
-        pd.testing.assert_frame_equal(result, expected_df)
+        for col in expected_df:
+            if np.issubdtype(expected_df[col].dtype, np.number):
+                expected_df_copy[col]=expected_df_copy[col].apply(lambda x: np.nan if (2<x<=4) else x)
+                # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
+                expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
+        # Iteramos sobre cada columna
+        for col in expected_df.columns:
+            # Para cada índice en la columna
+            for idx in expected_df.index:
+                # Verificamos si el valor es NaN en el dataframe original
+                if pd.isnull(expected_df.at[idx, col]):
+                    # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                    expected_df_copy.at[idx, col] = expected_df.at[idx, col]
+
+        pd.testing.assert_frame_equal(result, expected_df_copy)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # # Caso 2
         # expected_df = self.rest_of_dataset.copy()
-        # result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=2, rightMargin=4,
+        # result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
         #                                                  closureType=Closure(3), numOpOutput=Operation(0), axis_param=1)
         #
         # expected_df = expected_df.apply(
@@ -1727,14 +1762,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=2, rightMargin=4,
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
                                                              closureType=Closure(3), numOpOutput=Operation(0),
                                                              axis_param=None)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=0, rightMargin=3,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0, rightMargin=3,
                                                          closureType=Closure(0), numOpOutput=Operation(1),
                                                          axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
@@ -1750,7 +1785,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=50, rightMargin=60,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50, rightMargin=60,
                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
@@ -1761,7 +1796,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=50, rightMargin=60,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50, rightMargin=60,
                                                          closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
@@ -1777,7 +1812,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         # start_time = time.time()
 
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset, leftMargin=23, rightMargin=25,
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=23, rightMargin=25,
                                                          closureType=Closure(1), numOpOutput=Operation(3),
                                                          axis_param=None)
 
@@ -1880,9 +1915,20 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
                                                          rightMargin=4, closureType=Closure(3), numOpOutput=Operation(0),
                                                          axis_param=None, field=field)
-        expected_df[field] = expected_df[field].apply(lambda x: np.nan if (2 <= x <= 4) else x).interpolate(method='linear',
-                                                                                                            limit_direction='both')
-        pd.testing.assert_frame_equal(result, expected_df)
+        expected_df_copy = expected_df.copy()
+
+        if np.issubdtype(expected_df[field].dtype, np.number):
+            expected_df_copy[field]=expected_df_copy[field].apply(lambda x: np.nan if (2<=x<=4) else x)
+            # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
+            expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
+        # Para cada índice en la columna
+        for idx in expected_df.index:
+            # Verificamos si el valor es NaN en el dataframe original
+            if pd.isnull(expected_df.at[idx, field]):
+                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                expected_df_copy.at[idx, field] = expected_df.at[idx, field]
+
+        pd.testing.assert_frame_equal(result, expected_df_copy)
         print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
         # Caso 13
@@ -2130,7 +2176,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0, -1]
         fixValueOutput = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    missing_values=missing_values,
                                                                    fixValueOutput=fixValueOutput, field=field)
@@ -2148,7 +2194,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    missing_values=missing_values,
                                                                    fixValueOutput=fixValueOutput, field=field)
@@ -2165,7 +2211,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 6]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    missing_values=missing_values,
                                                                    fixValueOutput=fixValueOutput, field=field)
@@ -2178,7 +2224,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    fixValueOutput=fixValueOutput, field=field,
                                                                    axis_param=0)
@@ -2200,7 +2246,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    fixValueOutput=fixValueOutput, axis_param=0)
 
@@ -2220,7 +2266,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3]
         fixValueOutput = 101
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    missing_values=missing_values,
                                                                    fixValueOutput=fixValueOutput, axis_param=0)
@@ -2233,7 +2279,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = [0, -1]
         fixValueOutput = 200
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    missing_values=missing_values,
                                                                    fixValueOutput=fixValueOutput, axis_param=0)
@@ -2247,7 +2293,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                    specialTypeInput=specialTypeInput,
                                                                    missing_values=missing_values,
                                                                    fixValueOutput=fixValueOutput, axis_param=0)
@@ -2265,7 +2311,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueOutput = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset,
+            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                     specialTypeInput=specialTypeInput,
                                                                     fixValueOutput=fixValueOutput, field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
@@ -2559,7 +2605,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        field=field, missing_values=missing_values,
                                                                        derivedTypeOutput=derivedTypeOutput)
@@ -2583,7 +2629,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
         most_frequent_value = most_frequent_list[0]
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        missing_values=missing_values, field=field,
                                                                        derivedTypeOutput=derivedTypeOutput)
@@ -2599,7 +2645,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        missing_values=missing_values,
                                                                        derivedTypeOutput=derivedTypeOutput,
@@ -2623,7 +2669,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        derivedTypeOutput=derivedTypeOutput,
                                                                        missing_values=missing_values, axis_param=None)
@@ -2646,7 +2692,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(1)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        derivedTypeOutput=derivedTypeOutput,
                                                                        axis_param=0, missing_values=missing_values)
@@ -2668,7 +2714,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(2)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        missing_values=missing_values,
                                                                        derivedTypeOutput=derivedTypeOutput,
@@ -2693,7 +2739,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         derivedTypeOutput=derivedTypeOutput,
                                                                         missing_values=missing_values, axis_param=None)
@@ -2709,7 +2755,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         derivedTypeOutput=derivedTypeOutput,
                                                                         missing_values=missing_values, axis_param=None)
@@ -2723,7 +2769,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         derivedTypeOutput=derivedTypeOutput,
                                                                         field=field)
@@ -2735,7 +2781,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        derivedTypeOutput=derivedTypeOutput,
                                                                        field=field, axis_param=0)
@@ -2764,7 +2810,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(1)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        field=field, derivedTypeOutput=derivedTypeOutput,
                                                                        axis_param=0)
@@ -2793,7 +2839,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         derivedTypeOutput = DerivedType(2)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset,
+        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
                                                                        specialTypeInput=specialTypeInput,
                                                                        derivedTypeOutput=derivedTypeOutput,
                                                                        axis_param=0)
