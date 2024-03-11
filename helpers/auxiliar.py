@@ -445,22 +445,25 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
             if axis_param == 0:
                 for col in dataDictionary_copy.columns:
                     if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                            lambda x: np.nan if x in missing_values else x).interpolate(method='linear',
-                                                                                        limit_direction='both')
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: np.nan if x in missing_values else x)
+                        dataDictionary_copy[col]=dataDictionary_copy[col].interpolate(method='linear', limit_direction='both')
+
             elif axis_param == 1:
-                dataDictionary_copy = dataDictionary_copy.apply(
-                    lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
-                        method='linear', limit_direction='both'), axis=axis_param)
+                dataDictionary_copy= dataDictionary_copy.T
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: np.nan if x in missing_values else x)
+                        dataDictionary_copy[col]=dataDictionary_copy[col].interpolate(method='linear', limit_direction='both')
+                dataDictionary_copy = dataDictionary_copy.T
+
 
         if specialTypeInput == SpecialType.INVALID:
             # Aplicamos la interpolación lineal en el DataFrame
             if axis_param == 0:
-                for col in dataDictionary_copy_copy.columns:
+                for col in dataDictionary_copy.columns:
                     if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                        dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(
-                            lambda x: np.nan if x in missing_values else x).interpolate(method='linear',
-                                                                                        limit_direction='both')
+                        dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
+                        dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                 # Iteramos sobre cada columna
                 for col in dataDictionary_copy.columns:
                     # Para cada índice en la columna
@@ -469,23 +472,25 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
                         if pd.isnull(dataDictionary_copy.at[idx, col]):
                             # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
                             dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
-
-                # Retornamos el dataframe con los valores interpolados sobre los valoers invalidos, sin interpolar los NaN
-                # que había en el dataframe original
                 return dataDictionary_copy_copy
 
             elif axis_param == 1:
-                dataDictionary_copy_copy = dataDictionary_copy_copy.apply(
-                    lambda row: row.apply(lambda x: np.nan if x in missing_values else x).interpolate(
-                        method='linear', limit_direction='both'), axis=axis_param)
-
-                # Verificamos si hay algún valor nulo en el DataFrame
-                if dataDictionary_copy.isnull().any().any():
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda row: row.apply(
-                        lambda value: dataDictionary_copy_copy.at[row.name, value] if not pd.isnull(value) else value),
-                                                                    axis=1)
-                else:
-                    dataDictionary_copy = dataDictionary_copy_copy.copy()
+                dataDictionary_copy= dataDictionary_copy.T
+                dataDictionary_copy_copy = dataDictionary_copy_copy.T
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
+                        dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                    # Iteramos sobre cada columna
+                for col in dataDictionary_copy.columns:
+                    # Para cada índice en la columna
+                    for idx in dataDictionary_copy.index:
+                        # Verificamos si el valor es NaN en el dataframe original
+                        if pd.isnull(dataDictionary_copy.at[idx, col]):
+                            # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                            dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+                dataDictionary_copy_copy = dataDictionary_copy_copy.T
+                return dataDictionary_copy_copy
 
         if specialTypeInput == SpecialType.OUTLIER:
             if axis_param == 0:
@@ -493,17 +498,36 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
                     if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
                         for idx, value in dataDictionary_copy[col].items():
                             if dataDictionary_copy_mask.at[idx, col] == 1:
-                                dataDictionary_copy.at[idx, col] = np.NaN
-                                dataDictionary_copy[col] = dataDictionary_copy[col].interpolate(method='linear',
+                                dataDictionary_copy_copy.at[idx, col] = np.NaN
+                        dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].interpolate(method='linear',
                                                                                                 limit_direction='both')
+                for col in dataDictionary_copy.columns:
+                    # Para cada índice en la columna
+                    for idx in dataDictionary_copy.index:
+                        # Verificamos si el valor es NaN en el dataframe original
+                        if pd.isnull(dataDictionary_copy.at[idx, col]):
+                            # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                            dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+                return dataDictionary_copy_copy
             elif axis_param == 1:
-                for idx, row in dataDictionary_copy.iterrows():
-                    if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
-                        for col in row.index:
+                dataDictionary_copy_copy=dataDictionary_copy_copy.T
+                dataDictionary_copy=dataDictionary_copy.T
+                for col in dataDictionary_copy.columns:
+                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        for idx, value in dataDictionary_copy[col].items():
                             if dataDictionary_copy_mask.at[idx, col] == 1:
                                 dataDictionary_copy.at[idx, col] = np.NaN
-                                dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].interpolate(method='linear',
-                                                                                                            limit_direction='both')
+                        dataDictionary_copy[col] = dataDictionary_copy[col].interpolate(method='linear',
+                                                                                                limit_direction='both')
+                for col in dataDictionary_copy.columns:
+                    # Para cada índice en la columna
+                    for idx in dataDictionary_copy.index:
+                        # Verificamos si el valor es NaN en el dataframe original
+                        if pd.isnull(dataDictionary_copy.at[idx, col]):
+                            # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                            dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
+                dataDictionary_copy_copy = dataDictionary_copy_copy.T
+                return dataDictionary_copy_copy
     elif field is not None:
         if field not in dataDictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
@@ -511,26 +535,33 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
             raise ValueError("The field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
-            dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                lambda x: np.nan if x in missing_values else x).interpolate(method='linear', limit_direction='both')
+            dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
+            dataDictionary_copy[field]=dataDictionary_copy[field].interpolate(method='linear', limit_direction='both')
 
         if specialTypeInput == SpecialType.INVALID:
-            dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                lambda x: np.nan if x in missing_values else x).interpolate(method='linear', limit_direction='both')
+            dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
+            dataDictionary_copy[field] = dataDictionary_copy[field].interpolate(method='linear', limit_direction='both')
 
-            if dataDictionary_copy.isnull().any().any():
-                dataDictionary_copy = dataDictionary_copy.apply(lambda row: row.apply(
-                    lambda value: dataDictionary_copy_copy.at[row.name, value] if not pd.isnull(value) else value),
-                                                                axis=1)
-            else:
-                dataDictionary_copy = dataDictionary_copy_copy.copy()
+            # Para cada índice en la columna
+            for idx in dataDictionary_copy.index:
+                # Verificamos si el valor es NaN en el dataframe original
+                if pd.isnull(dataDictionary_copy.at[idx, field]):
+                    # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                    dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
+            return dataDictionary_copy_copy
 
         if specialTypeInput == SpecialType.OUTLIER:
             for idx, value in dataDictionary_copy[field].items():
                 if dataDictionary_copy_mask.at[idx, field] == 1:
                     dataDictionary_copy.at[idx, field] = np.NaN
-                    dataDictionary_copy[field] = dataDictionary_copy[field].interpolate(method='linear',
-                                                                                        limit_direction='both')
+            dataDictionary_copy[field] = dataDictionary_copy[field].interpolate(method='linear', limit_direction='both')
+            # Para cada índice en la columna
+            for idx in dataDictionary_copy.index:
+                # Verificamos si el valor es NaN en el dataframe original
+                if pd.isnull(dataDictionary_copy.at[idx, field]):
+                    # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                    dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
+            return dataDictionary_copy_copy
 
     return dataDictionary_copy
 
@@ -739,15 +770,16 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
             if axis_param == 0:
                 for col in dataDictionary_copy.columns:
                     if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
+                        median=dataDictionary_copy[col].median()
                         for idx, value in dataDictionary_copy[col].items():
                             if dataDictionary_copy_mask.at[idx, col] == 1:
-                                dataDictionary_copy[col] = dataDictionary_copy[col].median()
+                                dataDictionary_copy[idx, col] = median
             elif axis_param == 1:
                 for idx, row in dataDictionary_copy.iterrows():
+                    median=dataDictionary_copy.loc[idx].median()
                     for col in row.index:
                         if dataDictionary_copy_mask.at[idx, col] == 1:
-                            dataDictionary_copy.at[idx, col] = dataDictionary_copy.loc[idx].median()
-
+                            dataDictionary_copy.at[idx, col] = median
     elif field is not None:
         if field not in dataDictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
