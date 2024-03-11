@@ -66,8 +66,7 @@ def execute_invariants_external_dataset_tests():
 
     # Execute all invariants external dataset tests
     invariantTestWithDatasets = InvariantsExternalDatasetTests()
-    # invariantTestWithDatasets.executeAll_ExternalDatasetTests()
-    invariantTestWithDatasets.execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset()
+    invariantTestWithDatasets.executeAll_ExternalDatasetTests()
 
     end = time.time()
     total_time = end - start
@@ -80,7 +79,7 @@ if __name__ == "__main__":
 
     # Calculate execution time for each test block
     execute_prepost_simple_tests()
-    # execute_prepost_external_dataset_tests()
+    execute_prepost_external_dataset_tests()
     execute_invariants_simple_tests()
     execute_invariants_external_dataset_tests()
 
