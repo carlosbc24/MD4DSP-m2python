@@ -9,7 +9,6 @@
 ## Installation
 
 1. Clone the repository:
-
    ```bash
    git clone https://github.com/franjmelchor/MD4DSP-m2python.git
     ```
@@ -19,29 +18,45 @@
     cd your-project-directory
     ```
    
-3. Install the required dependencies using Anaconda:
-
+3. Crate a new conda enviroment:
    ```bash
-   conda create --name your-env-name python=3.11
-   conda activate your-env-name
+   conda create --name md4dsp python=3.11 -y
+   ```
+   
+4. Deactivate any previous environment and activate the new one:
+    ```bash
+    $ conda deactivate
+    $ conda activate md4dsp
+    ```
+
+5. Clean conda and pip caches:
+    ```shell
+    $ conda clean --all -y
+    $ pip cache purge
+    ```
+   This step will prevent you from retrieving libraries from the conda or pip caches, which may be incompatible with
+   the proyect's requirements. If you are sure that the libraries in the cache are compatible, you can skip this step.
+
+
+6. Install the required libraries:
+   ```bash
    pip install -r requirements.txt
    ```
 
-4. Run the tests:
 
+7. Run the contract tests:
    ```bash
     python ./contracts_main.py
     ```
 
-5. Check the results in the logs:
+8. Check the results in the logs:
 
 Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
 
-6. (Optional) Remove the environment created previously:
-
+9. (Optional) Remove the environment created previously:
    ```bash
    conda deactivate
-   conda remove --name your-env-name --all
+   conda remove --name md4dsp --all -y
    ```
 
 ## Project Structure

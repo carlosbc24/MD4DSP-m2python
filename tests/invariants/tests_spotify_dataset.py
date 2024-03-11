@@ -101,14 +101,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            # self.execute_CheckInv_FixValue_FixValue_ExternalDatasetTests,
-            # self.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests,
-            # self.execute_checkInv_FixValue_NumOp_ExternalDatasetTests,
-            # self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
-            # self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
-            # self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
-            # self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
-            # self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
+            self.execute_CheckInv_FixValue_FixValue_ExternalDatasetTests,
+            self.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests,
+            self.execute_checkInv_FixValue_NumOp_ExternalDatasetTests,
+            self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
+            self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
+            self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
+            self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
+            self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
             self.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests
         ]
 

@@ -1,16 +1,12 @@
+
 # Importing functions and classes from packages
 import time
-
-import numpy as np
-import pandas as pd
-
+from helpers.logger import set_logger
 from helpers.auxiliar import format_duration
-from helpers.logger import set_logger, print_and_log
-from tests.contract_pre_post.simple_test import ContractSimpleTest
-from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
 from tests.invariants.simple_test import InvariantSimpleTest
+from tests.contract_pre_post.simple_test import ContractSimpleTest
 from tests.invariants.tests_spotify_dataset import InvariantsExternalDatasetTests
-
+from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
 
 
 def execute_prepost_simple_tests():
@@ -28,6 +24,7 @@ def execute_prepost_simple_tests():
 
     print(f"Contract Simple Tests Duration: {format_duration(total_time)}")
 
+
 def execute_prepost_external_dataset_tests():
     """
     Execute all pre-post external dataset tests and calculate the duration of the execution.
@@ -42,6 +39,7 @@ def execute_prepost_external_dataset_tests():
     total_time = end - start
 
     print(f"Contract External Dataset Tests Duration: {format_duration(total_time)}")
+
 
 def execute_invariants_simple_tests():
     """
@@ -58,6 +56,7 @@ def execute_invariants_simple_tests():
 
     print(f"Invariants Simple Tests Duration: {format_duration(total_time)}")
 
+
 def execute_invariants_external_dataset_tests():
     """
     Execute all invariants external dataset tests and calculate the duration of the execution.
@@ -72,6 +71,7 @@ def execute_invariants_external_dataset_tests():
     total_time = end - start
 
     print(f"Invariants External Dataset Tests Duration: {format_duration(total_time)}")
+
 
 if __name__ == "__main__":
     # Set the logger to save the logs of the execution in the path logs/test
