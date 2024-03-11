@@ -3148,18 +3148,27 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        expected_df_copy = expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # En primer lugar, se reemplazan los valores outliers por NaN
-        for idx in range(len(expected_df[field])):
-            Q1 = expected_df[field].quantile(0.25)
-            Q3 = expected_df[field].quantile(0.75)
-            IQR = Q3 - Q1
+        Q1 = expected_df[field].quantile(0.25)
+        Q3 = expected_df[field].quantile(0.75)
+        IQR = Q3 - Q1
+        lowest_value=Q1 - 1.5 * IQR
+        upper_value=Q3 + 1.5 * IQR
+        for idx, value in expected_df[field].items():
             # Sustituir los valores outliers por NaN
-            if expected_df[field].iat[idx] < Q1 - 1.5 * IQR or expected_df[field].iat[idx] > Q3 + 1.5 * IQR:
-                expected_df[field].iat[idx] = np.NaN
-                expected_df[field] = expected_df[field].interpolate(method='linear', axis=0, limit_direction='both')
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        pd.testing.assert_frame_equal(result_df, expected_df)
+            if expected_df.at[idx, field] < lowest_value or expected_df.at[idx, field] > upper_value:
+                expected_df.at[idx, field] = np.NaN
+        expected_df[field] = expected_df[field].interpolate(method='linear', limit_direction='both')
+        # Para cada índice en la columna
+        for idx in expected_df.index:
+            # Verificamos si el valor es NaN en el dataframe original
+            if pd.isnull(expected_df.at[idx, field]):
+                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                expected_df_copy.at[idx, field] = expected_df.at[idx, field]
+
+        pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
 
         # Caso 14
@@ -3171,6 +3180,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, axis_param=0)
+        expected_df_copy=expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de cada columna del dataframe
         # En primer lugar, se reemplazan los valores outliers por NaN
         for col in expected_df.select_dtypes(include=np.number).columns:
@@ -3181,14 +3191,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             for i in range(len(expected_df[col])):
                 # Sustituir los valores outliers por NaN
                 if expected_df[col].iat[i] < Q1 - 1.5 * IQR or expected_df[col].iat[i] > Q3 + 1.5 * IQR:
-                    expected_df[col].iat[i] = np.NaN
+                    expected_df_copy[col].iat[i] = np.NaN
                 # Aplica la interpolación lineal a través de la columna en cuestión del dataframe
-                expected_df[col] = expected_df[col].interpolate(method='linear', axis=0, limit_direction='both')
-            # # Sustituir los valores outliers por NaN
-            # replaced_df[col] = replaced_df[col].where(~((replaced_df[col] < Q1 - 1.5 * IQR) | (replaced_df[col] > Q3 + 1.5 * IQR)), other=np.nan)
-            # # Aplica la interpolación lineal a través de la columna en cuestión del dataframe
-            # expected_df[col] = replaced_df[col].interpolate(method='linear', limit_direction='both')
-        pd.testing.assert_frame_equal(result_df, expected_df)
+            expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
+            for col in expected_df.columns:
+                # Para cada índice en la columna
+                for idx in expected_df.index:
+                    # Verificamos si el valor es NaN en el dataframe original
+                    if pd.isnull(expected_df.at[idx, col]):
+                        # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                        expected_df_copy.at[idx, col] = expected_df.at[idx, col]
+
+        pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
 
         # Caso 15
@@ -3687,7 +3701,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
                                                                 axis_param=None)
-        # Sustituir los valores invalidos por el valor más cercano en el dataframe
+        # # Sustituir los valores invalidos por el valor más cercano en el dataframe
         expected_df = expected_df.apply(lambda col: col.apply(
             lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -3696,34 +3710,34 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 13
         # Comprobar la invariante: aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset[355:360].copy()
+        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(0)
         field = 'danceability'
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset[355:360].copy(),
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        expected_df_copy = expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
-        # En primer lugar, se detectan los outliers
+        # En primer lugar, se reemplazan los valores outliers por NaN
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
-
-        lower_bound_col = Q1 - 1.5 * IQR
-        upper_bound_col = Q3 + 1.5 * IQR
-
-        # Inicialize the outliers mask with 0's but using the same index and shape as the expected_df
-        outliers_mask = pd.DataFrame(0, index=expected_df.index, columns=expected_df.columns)
+        lowest_value=Q1 - 1.5 * IQR
+        upper_value=Q3 + 1.5 * IQR
         for idx, value in expected_df[field].items():
-            if value < lower_bound_col or value > upper_bound_col:
-                outliers_mask[field].at[idx] = 1
-
-        for idx, value in expected_df[field].items():
-            if outliers_mask[field].at[idx] == 1:
+            # Sustituir los valores outliers por NaN
+            if expected_df.at[idx, field] < lowest_value or expected_df.at[idx, field] > upper_value:
                 expected_df.at[idx, field] = np.NaN
-                expected_df[field] = expected_df[field].interpolate(method='linear',
-                                                                                limit_direction='both')
-        pd.testing.assert_frame_equal(result_df, expected_df)
+        expected_df[field] = expected_df[field].interpolate(method='linear', limit_direction='both')
+        # Para cada índice en la columna
+        for idx in expected_df.index:
+            # Verificamos si el valor es NaN en el dataframe original
+            if pd.isnull(expected_df.at[idx, field]):
+                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                expected_df_copy.at[idx, field] = expected_df.at[idx, field]
+
+        pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
 
         # Caso 14
@@ -3735,30 +3749,29 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
                                                                 specialTypeInput=specialTypeInput,
                                                                 numOpOutput=numOpOutput, axis_param=0)
+        expected_df_copy=expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de cada columna del dataframe
         # En primer lugar, se reemplazan los valores outliers por NaN
         for col in expected_df.select_dtypes(include=np.number).columns:
-            # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
-            # En primer lugar, se detectan los outliers
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
+            # Para cada valor en la columna, bucle for
+            for i in range(len(expected_df[col])):
+                # Sustituir los valores outliers por NaN
+                if expected_df[col].iat[i] < Q1 - 1.5 * IQR or expected_df[col].iat[i] > Q3 + 1.5 * IQR:
+                    expected_df_copy[col].iat[i] = np.NaN
+                # Aplica la interpolación lineal a través de la columna en cuestión del dataframe
+            expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
+            for col in expected_df.columns:
+                # Para cada índice en la columna
+                for idx in expected_df.index:
+                    # Verificamos si el valor es NaN en el dataframe original
+                    if pd.isnull(expected_df.at[idx, col]):
+                        # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                        expected_df_copy.at[idx, col] = expected_df.at[idx, col]
 
-            lower_bound_col = Q1 - 1.5 * IQR
-            upper_bound_col = Q3 + 1.5 * IQR
-
-            # Inicialize the outliers mask with 0's but using the same index and shape as the expected_df
-            outliers_mask = pd.DataFrame(0, index=expected_df.index, columns=expected_df.columns)
-            for idx, value in expected_df[col].items():
-                if value < lower_bound_col or value > upper_bound_col:
-                    outliers_mask[col].at[idx] = 1
-
-            for idx, value in expected_df[col].items():
-                if outliers_mask[col].at[idx] == 1:
-                    expected_df.at[idx, col] = np.NaN
-                    expected_df[col] = expected_df[col].interpolate(method='linear',
-                                                                        limit_direction='both')
-        pd.testing.assert_frame_equal(result_df, expected_df)
+        pd.testing.assert_frame_equal(result_df, expected_df_copy)
         print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
 
         # Caso 15
