@@ -1852,13 +1852,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                         # Reemplazar el valor en el DataFrame
                         expected_df.iat[i, j] = closest_value
 
-        # end_time = time.time()
-        #
-        # # Calcula la diferencia de tiempo
-        # execution_time = end_time - start_time
-        #
-        # print("Tiempo de ejecución:", execution_time, "segundos")
-
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
@@ -3586,7 +3579,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
 
-        # Caso 11.1
+        # Caso 12
         # Comprobar la invariante: aplicar el closest al valor invalido 0.13
         # en todas las columnas del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
@@ -3603,7 +3596,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = expected_df.apply(lambda col: col.apply(
             lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 11.1 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
         # Caso 13
         # Comprobar la invariante: aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
@@ -3685,7 +3678,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
         # Obtener la media de la columna 'danceability'
         mean_value = expected_df[field].mean()
-        print("Media calculada en los tests: ", mean_value)
         # Obtener los outliers de la columna 'danceability'
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
