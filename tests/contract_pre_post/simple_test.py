@@ -11,7 +11,7 @@ from helpers.enumerations import Belong, Operator, Closure
 from helpers.logger import print_and_log
 
 
-class ContractSimpleTest(unittest.TestCase):
+class PrePostSimpleTest(unittest.TestCase):
     """
     Class to test the contracts with simple test cases
 
