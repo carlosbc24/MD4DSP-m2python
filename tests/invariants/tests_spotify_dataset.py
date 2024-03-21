@@ -2867,7 +2867,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO: Implement the invariant tests with external dataset
     def execute_SmallBatchTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_NumOp
@@ -3334,7 +3333,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
 
-    # TODO: Implement the invariant tests with external dataset
     def execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_NumOp

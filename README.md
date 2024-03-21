@@ -43,21 +43,29 @@
    pip install -r requirements.txt
    ```
 
-
-7. Run the contract tests:
-   ```bash
-    python ./contracts_main.py
-    ```
-
-8. Check the results in the logs:
-
-Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
-
-9. (Optional) Remove the environment created previously:
+7. (Optional) Remove the environment created previously:
    ```bash
    conda deactivate
    conda remove --name md4dsp --all -y
    ```
+   
+## Contract tests execution
+
+To run the contract tests, follow the next steps:
+
+
+1. Run the contract tests:
+   ```bash
+    python ./contracts_main.py
+    ```
+
+2. Check the results in the logs:
+
+Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
+
+# Generated contract calls via Acceleo (Code Generation)
+
+The contract calls are generated in a Python script via Acceleo. Once the generated is generated, it must be moved to the `generated_code` directory. The script to test the code generation is named `dataProcessing.py`. You'll just need to run the script to call the contracts. The dataset used to test this generated script must be named 'data_model.csv' and must be located in a parent directory to the generated script.
 
 ## Project Structure
 
@@ -69,6 +77,11 @@ MD4DSP-m2python/
 ├── functions/
 │ ├── contract_invariants.py
 │ └── contract_pre_post.py
+│
+├── generated_code/
+│ └── dataProcessing.py
+│
+├── data_model.csv
 │
 ├── helpers/
 │ ├── auxiliar.py
@@ -97,6 +110,8 @@ MD4DSP-m2python/
 ```
 
 - **`functions/`**: contains the main functions of the project. The functions are divided into two files: `contract_invariants.py` and `contract_pre_post.py`. The first file contains the functions of the invariants, and the second file contains the functions of the contracts.
+
+- **`data_model.csv`**: dataset used to test the contracts code calls generated via Acceleo.
 
 - **`helpers/`**: contains auxiliary functions that are used in the main functions. The file `auxiliar.py` contains the auxiliary functions, `enumerations.py` contains the enumerations used in the project, and `logger.py` contains the functions to log the results of the tests.
 
