@@ -13,18 +13,18 @@ class Invariants:
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
-    def checkInv_FixValue_FixValue(self, dataDictionary: pd.DataFrame, fixValueInput, fixValueOutput,
+    def transform_FixValue_FixValue(self, dataDictionary: pd.DataFrame, fixValueInput, fixValueOutput,
                                     dataTypeInput: DataType = None,
                                     dataTypeOutput: DataType = None, field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the FixValue - FixValue relation
+        Execute the data transformation of the FixValue - FixValue relation
         params:
             dataDictionary: dataframe with the data
             dataTypeInput: data type of the input value
             FixValueInput: input value to check
             dataTypeOutput: data type of the output value
             FixValueOutput: output value to check
-            field: field to check the invariant
+            field: field to execute the data transformation
         Returns:
             dataDictionary with the FixValueInput and FixValueOutput values changed to the type dataTypeInput and dataTypeOutput respectively
         """
@@ -44,22 +44,22 @@ class Invariants:
 
         return dataDictionary
 
-    def checkInv_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, fixValueInput,
+    def transform_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, fixValueInput,
                                         derivedTypeOutput: DerivedType,
                                         dataTypeInput: DataType = None, axis_param: int = None,
                                         field: str = None) -> pd.DataFrame:
         # By default, if all values are equally frequent, it is replaced by the first value.
         # Check if it should only be done for rows and columns or also for the entire dataframe.
         """
-        Check the invariant of the FixValue - DerivedValue relation
+        Execute the data transformation of the FixValue - DerivedValue relation
         Sustituye el valor proporcionado por el usuario por el valor derivado en el eje que se especifique por parámetros
         params:
             dataDictionary: dataframe with the data
             dataTypeInput: data type of the input value
             FixValueInput: input value to check
             derivedTypeOutput: derived type of the output value
-            axis_param: axis to check the invariant - 0: column, None: dataframe
-            field: field to check the invariant
+            axis_param: axis to execute the data transformation - 0: column, None: dataframe
+            field: field to execute the data transformation
 
             return: dataDictionary with the FixValueInput values replaced by the value derived from the operation derivedTypeOutput
         """
@@ -122,19 +122,19 @@ class Invariants:
 
         return dataDictionary_copy
 
-    def checkInv_FixValue_NumOp(self, dataDictionary: pd.DataFrame, fixValueInput, numOpOutput: Operation,
+    def transform_FixValue_NumOp(self, dataDictionary: pd.DataFrame, fixValueInput, numOpOutput: Operation,
                                  dataTypeInput: DataType = None, axis_param: int = None,
                                  field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the FixValue - NumOp relation
+        Execute the data transformation of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
         params:
             dataDictionary: dataframe with the data
             dataTypeInput: data type of the input value
             FixValueInput: input value to check
-            numOpOutput: operation to check the invariant
-            axis_param: axis to check the invariant
-            field: field to check the invariant
+            numOpOutput: operation to execute the data transformation
+            axis_param: axis to execute the data transformation
+            field: field to execute the data transformation
         Returns:
             dataDictionary with the FixValueInput values replaced by the result of the operation numOpOutput
         """
@@ -293,18 +293,18 @@ class Invariants:
 
         return dataDictionary_copy
 
-    def checkInv_Interval_FixValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
+    def transform_Interval_FixValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
                                     closureType: Closure, fixValueOutput, dataTypeOutput: DataType = None,
                                     field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the Interval - FixValue relation
+        Execute the data transformation of the Interval - FixValue relation
         :param dataDictionary: dataframe with the data
         :param leftMargin: left margin of the interval
         :param rightMargin: right margin of the interval
         :param closureType: closure type of the interval
         :param dataTypeOutput: data type of the output value
         :param fixValueOutput: output value to check
-        :param field: field to check the invariant
+        :param field: field to execute the data transformation
         :return: dataDictionary with the values of the interval changed to the value fixValueOutput
         """
         if dataTypeOutput is not None:  # If it is specified, the transformation is performed
@@ -350,18 +350,18 @@ class Invariants:
 
         return dataDictionary_copy
 
-    def checkInv_Interval_DerivedValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
+    def transform_Interval_DerivedValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
                                         closureType: Closure, derivedTypeOutput: DerivedType,
                                         axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the Interval - DerivedValue relation
+        Execute the data transformation of the Interval - DerivedValue relation
         :param dataDictionary: dataframe with the data
         :param leftMargin: left margin of the interval
         :param rightMargin: right margin of the interval
         :param closureType: closure type of the interval
         :param derivedTypeOutput: derived type of the output value
-        :param axis_param: axis to check the invariant
-        :param field: field to check the invariant
+        :param axis_param: axis to execute the data transformation
+        :param field: field to execute the data transformation
 
         :return: dataDictionary with the values of the interval changed to the
             value derived from the operation derivedTypeOutput
@@ -441,19 +441,19 @@ class Invariants:
 
         return dataDictionary_copy
 
-    def checkInv_Interval_NumOp(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
+    def transform_Interval_NumOp(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
                                  closureType: Closure, numOpOutput: Operation, axis_param: int = None,
                                  field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the FixValue - NumOp relation
+        Execute the data transformation of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
         :param dataDictionary: dataframe with the data
         :param leftMargin: left margin of the interval
         :param rightMargin: right margin of the interval
         :param closureType: closure type of the interval
-        :param numOpOutput: operation to check the invariant
-        :param axis_param: axis to check the invariant
-        :param field: field to check the invariant
+        :param numOpOutput: operation to execute the data transformation
+        :param axis_param: axis to execute the data transformation
+        :param field: field to execute the data transformation
         :return: dataDictionary with the values of the interval changed to the result of the operation numOpOutput
         """
 
@@ -682,18 +682,18 @@ class Invariants:
 
         return dataDictionary_copy
 
-    def checkInv_SpecialValue_FixValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
+    def transform_SpecialValue_FixValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
                                         fixValueOutput, dataTypeOutput: DataType = None, missing_values: list = None,
                                         axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the SpecialValue - FixValue relation
+        Execute the data transformation of the SpecialValue - FixValue relation
         :param dataDictionary: dataframe with the data
         :param specialTypeInput: special type of the input value
         :param dataTypeOutput: data type of the output value
         :param fixValueOutput: output value to check
         :param missing_values: list of missing values
-        :param axis_param: axis to check the invariant
-        :param field: field to check the invariant
+        :param axis_param: axis to execute the data transformation
+        :param field: field to execute the data transformation
         :return: dataDictionary with the values of the special type changed to the value fixValueOutput
         """
         if dataTypeOutput is not None:  # If it is specified, the transformation is performed
@@ -779,17 +779,17 @@ class Invariants:
 
         return dataDictionary_copy
 
-    def checkInv_SpecialValue_DerivedValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
+    def transform_SpecialValue_DerivedValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
                                             derivedTypeOutput: DerivedType, missing_values: list = None,
                                             axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the SpecialValue - DerivedValue relation
+        Execute the data transformation of the SpecialValue - DerivedValue relation
         :param dataDictionary: dataframe with the data
         :param specialTypeInput: special type of the input value
         :param derivedTypeOutput: derived type of the output value
         :param missing_values: list of missing values
-        :param axis_param: axis to check the invariant
-        :param field: field to check the invariant
+        :param axis_param: axis to execute the data transformation
+        :param field: field to execute the data transformation
         :return: dataDictionary with the values of the special type changed to the value derived from the operation derivedTypeOutput
         """
         dataDictionary_copy = dataDictionary.copy()
@@ -830,17 +830,17 @@ class Invariants:
 
         return dataDictionary_copy
 
-    def checkInv_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
+    def transform_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
                                      numOpOutput: Operation,
                                      missing_values: list = None, axis_param: int = None,
                                      field: str = None) -> pd.DataFrame:
         """
-        Check the invariant of the SpecialValue - NumOp relation
+        Execute the data transformation of the SpecialValue - NumOp relation
         :param dataDictionary: dataframe with the data
         :param specialTypeInput: special type of the input value
-        :param numOpOutput: operation to check the invariant
-        :param axis_param: axis to check the invariant
-        :param field: field to check the invariant
+        :param numOpOutput: operation to execute the data transformation
+        :param axis_param: axis to execute the data transformation
+        :param field: field to execute the data transformation
         :return: dataDictionary with the values of the special type changed to the result of the operation numOpOutput
         """
         dataDictionary_copy = dataDictionary.copy()

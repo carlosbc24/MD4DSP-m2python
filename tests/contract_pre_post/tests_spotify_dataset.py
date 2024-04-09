@@ -75,7 +75,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         print_and_log("")
         print_and_log("--------------------------------------------------")
-        print_and_log("------ DATASET PRE-POST TEST CASES FINISHED ------")
+        print_and_log("------ PRE-POST DATASET TEST CASES FINISHED ------")
         print_and_log("--------------------------------------------------")
         print_and_log("")
 

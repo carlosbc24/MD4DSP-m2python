@@ -56,7 +56,20 @@ To run the contract tests, follow the next steps:
 
 1. Run the contract tests:
    ```bash
-    python ./contracts_main.py
+    python ./test_contracts.py
+    ```
+
+2. Check the results in the logs:
+
+Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
+
+## Data transformation tests execution
+
+To run the data transformation tests, follow the next steps:
+
+1. Run the data transformation tests:
+   ```bash
+    python ./test_data_transformations.py
     ```
 
 2. Check the results in the logs:
@@ -76,55 +89,82 @@ MD4DSP-m2python/
 │
 ├── functions/
 │ ├── contract_invariants.py
-│ └── contract_pre_post.py
+│ ├── contract_pre_post.py
+│ └── data_transformations.py
 │
 ├── generated_code/
 │ └── dataProcessing.py
-│
-├── data_model.csv
 │
 ├── helpers/
 │ ├── auxiliar.py
 │ ├── enumerations.py
 │ └── logger.py
 │
-├── tests/
-│ ├── contract_pre_post/
-│ │ ├── simple_test.py
-│ │ └── tests_spotify_dataset.py
-│ │
-│ └── invariants/
-│   ├── simple_test.py
-│   └── tests_spotify_dataset
+├── logs/
+│ └── test/
+│   ├── ...
+│   └── testLog_<number>.log
 │
 ├── test_datasets/
 │ ├── spotify_songs/
 │   ├── spotify_songs.csv
 │   └── readme.md
 │
+├── tests/
+│ ├── contract_invariants/
+│ │ ├── simple_test.py
+│ │ └── tests_spotify_dataset.py
+│ │
+│ ├── contract_pre_post/
+│ │ ├── simple_test.py
+│ │ └── tests_spotify_dataset.py
+│ │
+│ └── data_transformations/
+│   ├── simple_test.py
+│   └── tests_spotify_dataset
+│
 ├── .gitignore
-├── contracts_main.py
+├── data_model.csv
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+├── test_contracts.py
+└── test_data_transformations.py
 
 ```
 
-- **`functions/`**: contains the main functions of the project. The functions are divided into two files: `contract_invariants.py` and `contract_pre_post.py`. The first file contains the functions of the invariants, and the second file contains the functions of the contracts.
+- **`functions/`**: contains the main functions of the project. The functions are divided into three files: `contract_invariants.py`, `contract_pre_post.py` and `data_transformations.py`. The first file contains the functions of the invariants, the second file contains the functions of the contracts, and the third file contains the functions of the data transformations.
 
-- **`data_model.csv`**: dataset used to test the contracts code calls generated via Acceleo.
+
+- **`generated_code/`**: contains the generated code via Acceleo. The generated code must be located in this directory.
+
 
 - **`helpers/`**: contains auxiliary functions that are used in the main functions. The file `auxiliar.py` contains the auxiliary functions, `enumerations.py` contains the enumerations used in the project, and `logger.py` contains the functions to log the results of the tests.
 
-- **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into two directories: `contract_pre_post` and `invariants`. The first directory contains the tests of the contracts, and the second directory contains the tests of the invariants. Each package contains simple tests and tests with the Spotify dataset.
+
+- **`logs/`**: contains the logs of the tests. The logs are stored in the directory `test`.
+
 
 - **`test_datasets/`**: contains the external datasets used in the tests. The datasets are divided into directories, and each directory contains the dataset and a readme file with the description of the dataset.
 
-- **`requirements.txt`**: file that contains the libraries needed to run the project.
 
-- **`contracts_main.py`**: main file of the project. It is the file that must be executed to run the tests.
+- **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into two directories: `contract_pre_post` and `invariants`. The first directory contains the tests of the contracts, and the second directory contains the tests of the invariants. Each package contains simple tests and tests with the Spotify dataset.
+
+
+- **`data_model.csv`**: dataset used to test the contracts code calls generated via Acceleo.
+
 
 - **`README.md`**: file that contains the documentation of the project.
   
+
+- **`requirements.txt`**: file that contains the libraries needed to run the project.
+
+
+- **`test_contracts.py`**: file to be executed to run the contract tests.
+
+
+- **`test_data_transformations.py`**: file to be executed to run the data transformation tests.
+
+
 ## External Documentation
 The external documentation of the project is available in the following link: https://unexes.sharepoint.com/:w:/s/PDI_i3lab/EYNMm7pMsX1HuIKz_PMWCi8Bl_ssrzRnvp3hQHimY363ng?e=d8Cvvh
   

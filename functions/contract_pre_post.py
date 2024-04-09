@@ -11,6 +11,7 @@ from helpers.enumerations import Belong, Operator, Closure
 
 
 class ContractsPrePost:
+
     def checkFieldRange(self, fields: list, dataDictionary: pd.DataFrame, belongOp: Belong) -> bool:
         """
         Check if fields meets the condition of belongOp in dataDictionary.

@@ -3,9 +3,9 @@
 import time
 from helpers.logger import set_logger
 from helpers.auxiliar import format_duration
-from tests.invariants.simple_test import InvariantSimpleTest
+from tests.contract_invariants.simple_test import InvariantsSimpleTest
 from tests.contract_pre_post.simple_test import PrePostSimpleTest
-from tests.invariants.tests_spotify_dataset import InvariantsExternalDatasetTests
+from tests.contract_invariants.tests_spotify_dataset import InvariantsExternalDatasetTests
 from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
 
 
@@ -48,8 +48,8 @@ def execute_invariants_simple_tests():
     start = time.time()
 
     # Execute all invariants simple tests
-    contracts_invariants_test = InvariantSimpleTest()
-    contracts_invariants_test.execute_All_SimpleTests()
+    contracts_data_transformation_test = InvariantsSimpleTest()
+    contracts_data_transformation_test.execute_All_SimpleTests()
 
     end = time.time()
     total_time = end - start
@@ -64,8 +64,8 @@ def execute_invariants_external_dataset_tests():
     start = time.time()
 
     # Execute all invariants external dataset tests
-    invariantTestWithDatasets = InvariantsExternalDatasetTests()
-    invariantTestWithDatasets.executeAll_ExternalDatasetTests()
+    invariantsTestWithDatasets = InvariantsExternalDatasetTests()
+    invariantsTestWithDatasets.executeAll_ExternalDatasetTests()
 
     end = time.time()
     total_time = end - start
@@ -77,8 +77,8 @@ if __name__ == "__main__":
     # Set the logger to save the logs of the execution in the path logs/test
     set_logger("test")
 
-    # Calculate execution time for each test block (pre-post and invariants)
+    # Calculate execution time for each test block (pre-post)
     execute_prepost_simple_tests()
     execute_prepost_external_dataset_tests()
-    execute_invariants_simple_tests()
-    execute_invariants_external_dataset_tests()
+    # execute_invariants_simple_tests()
+    # execute_invariants_external_dataset_tests()
