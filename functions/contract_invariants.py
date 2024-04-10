@@ -17,14 +17,14 @@ class Invariants:
                                    fixValueInput, fixValueOutput, belongOp: Belong = Belong.BELONG, dataTypeInput: DataType = None,
                                    dataTypeOutput: DataType = None, field: str = None) -> bool:
         """
-        Check the invariant of the FixValue - FixValue relation is satisfied in the dataDicionary_out
+        Check the invariant of the FixValue - FixValue relation (Mapping) is satisfied in the dataDicionary_out
         respect to the dataDictionary_in
         params:
             dataDictionary_in: dataframe with the input data
             dataDictionary_out: dataframe with the output data
             dataTypeInput: data type of the input value
             FixValueInput: input value to check
-            belongOp: operation to check the invariant
+            belongOp: condition to check the invariant
             dataTypeOutput: data type of the output value
             FixValueOutput: output value to check
             field: field to check the invariant
@@ -32,6 +32,30 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
+        if dataTypeInput is not None and dataTypeOutput is not None:  # If the data types are specified, the transformation is performed
+            # Auxiliary function that changes the values of FixValueInput and FixValueOutput to the data type in DataTypeInput and DataTypeOutput respectively
+            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput,
+                                                               fixValueOutput)
+        if field is None:
+            # Iterar sobre las filas y columnas de dataDictionary_in
+            for column_index, column_name in enumerate(dataDictionary_in.columns):
+                for row_index, value in dataDictionary_in[column_name].items():
+                    # Comprobar si el valor es igual a fixValueInput
+                    if value == fixValueInput:
+                        # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
+                        if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
+                            return False
+        elif field is not None:
+            if field in dataDictionary_in.columns and field in dataDictionary_out.columns:
+                for row_index, value in dataDictionary_in[field].items():
+                    # Comprobar si el valor es igual a fixValueInput
+                    if value == fixValueInput:
+                        # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
+                        if dataDictionary_out.loc[row_index, field] != fixValueOutput:
+                            return False
+            elif field not in dataDictionary_in.columns or dataDictionary_out.columns:
+                raise ValueError("The field does not exist in the dataframe")
+
         return True
 
     def checkInv_FixValue_DerivedValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,

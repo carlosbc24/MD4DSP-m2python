@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 # Importing functions and classes from packages
 from functions.contract_invariants import Invariants
-from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation
+from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong
 from helpers.logger import print_and_log
 
 
@@ -82,15 +82,15 @@ class InvariantsSimpleTest(unittest.TestCase):
         df = pd.DataFrame({'A': [0, 1, 2, 3, 4], 'B': [5, 4, 3, 2, 1]})
         # Definir el valor fijo y la condición para el cambio
         fixValueOutput = 999
-        # Aplicar la transformación de datos
-        result_df = self.invariants.checkInv_FixValue_FixValue(df, dataTypeInput=DataType(2), fixValueInput=2,
-                                                               dataTypeOutput=DataType(6),
-                                                               fixValueOutput=fixValueOutput)
-        # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [0, 1, fixValueOutput, 3, 4], 'B': [5, 4, 3, fixValueOutput, 1]})
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_FixValue_FixValue(df, expected_df, dataTypeInput=DataType(2), fixValueInput=2,
+                                                               dataTypeOutput=DataType(2),
+                                                               fixValueOutput=fixValueOutput, belongOp=Belong(0), field=None)
+        # Definir el resultado esperado
+
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Caso 2
         # Ejecutar la transformación de datos: cambiar el valor fijo 'Clara' por el valor fijo de fecha 2021-01-01
