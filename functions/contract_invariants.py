@@ -34,25 +34,43 @@ class Invariants:
         """
         if dataTypeInput is not None and dataTypeOutput is not None:  # If the data types are specified, the transformation is performed
             # Auxiliary function that changes the values of FixValueInput and FixValueOutput to the data type in DataTypeInput and DataTypeOutput respectively
-            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput,
-                                                               fixValueOutput)
+            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput, fixValueOutput)
+
         if field is None:
-            # Iterar sobre las filas y columnas de dataDictionary_in
-            for column_index, column_name in enumerate(dataDictionary_in.columns):
-                for row_index, value in dataDictionary_in[column_name].items():
-                    # Comprobar si el valor es igual a fixValueInput
-                    if value == fixValueInput:
-                        # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
-                        if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
-                            return False
+            if belongOp == Belong.BELONG:
+                # Iterar sobre las filas y columnas de dataDictionary_in
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
+                            if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
+                                return False
+            elif belongOp == Belong.NOTBELONG:
+                # Iterar sobre las filas y columnas de dataDictionary_in
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
+                            if dataDictionary_out.loc[row_index, column_name] == fixValueOutput:
+                                return False
         elif field is not None:
             if field in dataDictionary_in.columns and field in dataDictionary_out.columns:
-                for row_index, value in dataDictionary_in[field].items():
-                    # Comprobar si el valor es igual a fixValueInput
-                    if value == fixValueInput:
-                        # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
-                        if dataDictionary_out.loc[row_index, field] != fixValueOutput:
-                            return False
+                if belongOp == Belong.BELONG:
+                    for row_index, value in dataDictionary_in[field].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
+                            if dataDictionary_out.loc[row_index, field] != fixValueOutput:
+                                return False
+                elif belongOp == Belong.NOTBELONG:
+                    for row_index, value in dataDictionary_in[field].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
+                            if dataDictionary_out.loc[row_index, field] == fixValueOutput:
+                                return False
             elif field not in dataDictionary_in.columns or dataDictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
