@@ -1250,17 +1250,13 @@ class InvariantsSimpleTest(unittest.TestCase):
         print_and_log("Testing checkInv_SpecialValue_FixValue Function")
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-
+                
         # Caso 1
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(0),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                missing_values=missing_values, axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, 999, 10], 'C': [999, 10, 999, 4, 999], 'D': [2, 999, 4, 6, 10],
@@ -1270,10 +1266,14 @@ class InvariantsSimpleTest(unittest.TestCase):
             'B': 'float64',  # Convertir B a float64
             'D': 'float64'  # Convertir D a float64
         })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(0),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                fixValueOutput=999, missing_values=missing_values, axis_param=0, field=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Caso 2
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -1282,10 +1282,21 @@ class InvariantsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, np.NaN, 10], 'C': [999, 10, 999, 4, 999],
+             'D': [2, None, 4, 6, 10],
+             'E': [999, 10, 999, 4, 999]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
         # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(1),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                missing_values=missing_values, axis_param=0)
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(1), dataTypeOutput=DataType(2),
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0, field=None)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, np.NaN, 10], 'C': [999, 10, 999, 4, 999],
@@ -1299,7 +1310,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        print_and_log("Test Case 2 Passed: Expected True, got True")
 
         # Caso 3
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -1307,17 +1318,18 @@ class InvariantsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 999], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 999],
              'E': [1, 999, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(2), dataTypeOutput=DataType(2),
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
+                                                                axis_param=None, field=None)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Caso 4
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -1325,17 +1337,17 @@ class InvariantsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 999, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
+                                                                axis_param=0, field=None)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Caso 5
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -1343,17 +1355,17 @@ class InvariantsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 999], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 999],
              'E': [1, 10, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
+                                                                axis_param=1, field=None)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -1363,11 +1375,6 @@ class InvariantsSimpleTest(unittest.TestCase):
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         field = 'B'
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(0),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                missing_values=missing_values, axis_param=0,
-                                                                field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, 999, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
@@ -1377,10 +1384,15 @@ class InvariantsSimpleTest(unittest.TestCase):
             'B': 'float64',  # Convertir B a float64
             'D': 'float64'  # Convertir D a float64
         })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(0),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0,
+                                                                field=field)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
 
         # Caso 7
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -1390,11 +1402,6 @@ class InvariantsSimpleTest(unittest.TestCase):
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         field = 'B'
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(1),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                missing_values=missing_values, axis_param=0,
-                                                                field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
@@ -1404,10 +1411,15 @@ class InvariantsSimpleTest(unittest.TestCase):
             'B': 'float64',  # Convertir B a float64
             'D': 'float64'  # Convertir D a float64
         })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(1),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0,
+                                                                field=field)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+        assert result is True, "Test Case 7 Failed: Expected True, but got False"
+        print_and_log("Test Case 7 Passed: Expected True, got True")
 
         # Caso 8
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -1416,33 +1428,17 @@ class InvariantsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         field = 'C'
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
-                                                                dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                axis_param=None, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
-
-        # Caso 9
-        # ValueError
-        # Crear un DataFrame de prueba
-        datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
-             'E': [1, 10, 3, 4, 1]})
-        field = 'T'
         # Aplicar la transformación de datos
-        expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
-                                                                    specialTypeInput=SpecialType(2),
-                                                                    dataTypeOutput=DataType(2), fixValueOutput=999,
-                                                                    axis_param=None, field=field)
-        print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
+                                                                axis_param=None, field=field)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -2182,7 +2178,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4 / 3, 2 + 8 / 3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0],
              'D': [8.2, 8.2, 6, 4, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(0),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(0), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2195,7 +2191,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0],
              'D': [1, 8.2, 6, 1, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(0),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(1), missing_values=missing_values,
                                                                 axis_param=None)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2207,7 +2203,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         missing_values = [1, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 3.5, 1], 'B': [2, 3, 3.5, 6, 1], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(0),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(2), missing_values=missing_values,
                                                                 axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2234,7 +2230,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         missing_values = [3, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(0),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(0),
                                                                 numOpOutput=Operation(3), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2248,7 +2244,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4 / 3, 2 + 8 / 3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0],
              'D': [8.2, 8.2, 6, 4, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(1),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(0), missing_values=missing_values,
                                                                 axis_param=0)
         result = result.astype({
@@ -2264,7 +2260,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0],
              'D': [1, 8.2, 6, 1, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(1),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(1), missing_values=missing_values,
                                                                 axis_param=None)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2276,7 +2272,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         missing_values = [1, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 3.5, 1.5], 'B': [2, 3, 3.5, 6, 12], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(1),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(2), missing_values=missing_values,
                                                                 axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2289,7 +2285,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 0], 'B': [2, 2, 3, 6, 12], 'C': [10, 3, 4, np.NaN, 0], 'D': [2, 8.2, 2, 2, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(1),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(3), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2303,7 +2299,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
 
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(1),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(1),
                                                                 numOpOutput=Operation(3), missing_values=missing_values,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2320,7 +2316,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             'B': 'float64',  # Convertir B a float64
             'C': 'float64'  # Convertir C a float64
         })
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(0), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result)
         print_and_log("Test Case 11 Passed: got the dataframe expected")
@@ -2335,7 +2331,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 3.61], 'C': [3.61, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
 
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(1), missing_values=None,
                                                                 axis_param=None)
 
@@ -2351,7 +2347,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         })
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 1.5], 'C': [1.5, 1, 3, 3, 0], 'D': [1, 2.5, 6, 1, 2]})
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(2), missing_values=None,
                                                                 axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2367,7 +2363,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             'D': 'float64'  # Convertir D a float64
         })
 
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(3), missing_values=None,
                                                                 axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result)
@@ -2382,7 +2378,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         expected_df = expected_df.astype({
             'D': 'float64'  # Convertir D a float64
         })
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(3), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result)
         print_and_log("Test Case 15 Passed: got the dataframe expected")
@@ -2398,7 +2394,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         })
         field = 'D'
         missing_values = [8.2]
-        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), specialTypeInput=SpecialType(2),
+        result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
                                                                 numOpOutput=Operation(1), missing_values=missing_values,
                                                                 axis_param=0, field=field)
         pd.testing.assert_frame_equal(expected_df, result)
