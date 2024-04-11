@@ -86,7 +86,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(2), fixValueInput=2,
                                                                dataTypeOutput=DataType(2),
-                                                               fixValueOutput=fixValueOutput, belongOp=Belong(0), field=None)
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(0), field=None)
 
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
@@ -104,7 +104,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(0), fixValueInput='Clara',
                                                                dataTypeOutput=DataType(3),
-                                                               fixValueOutput=fixValueOutput, belongOp=Belong(0), field=None)
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(0), field=None)
 
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
@@ -159,7 +159,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 2.0, 2.0, 2.0]})
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, fixValueInput=3.0,
-                                                            fixValueOutput=fixValueOutput, belongOp=Belong(0), field=None)
+                                                            fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(0), field=None)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
@@ -178,7 +178,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df,
                                                             dataTypeInput=DataType(2), fixValueInput=2,
                                                             dataTypeOutput=DataType(2),
-                                                            fixValueOutput=fixValueOutput, belongOp=Belong(1),
+                                                            fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(1),
                                                             field=None)
 
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
@@ -198,7 +198,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df,
                                                             dataTypeInput=DataType(0), fixValueInput='Clara',
                                                             dataTypeOutput=DataType(3),
-                                                            fixValueOutput=fixValueOutput, belongOp=Belong(1),
+                                                            fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(1),
                                                             field=None)
 
         assert result is False, "Test Case 7 Failed: Expected False, but got True"
@@ -223,7 +223,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                             dataTypeInput=DataType(1),
                                                             fixValueInput=pd.to_datetime('2021-01-01'),
                                                             dataTypeOutput=DataType(4),
-                                                            fixValueOutput=fixValueOutput, belongOp=Belong(1), field=None)
+                                                            fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(1), field=None)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, got False")
@@ -240,7 +240,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df,
                                                             dataTypeInput=DataType(0), fixValueInput='Clara',
                                                             dataTypeOutput=DataType(6),
-                                                            fixValueOutput=fixValueOutput, belongOp=Belong(1), field=None)
+                                                            fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(1), field=None)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
@@ -257,7 +257,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df,
                                                             fixValueInput=3.0,
-                                                            fixValueOutput=fixValueOutput, belongOp=Belong(1),
+                                                            fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(1),
                                                             field=None)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 10 Failed: Expected False, but got True"
@@ -277,7 +277,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(0), fixValueInput='Clara',
                                                                dataTypeOutput=DataType(3),
-                                                               fixValueOutput=fixValueOutput, belongOp=Belong(0), field=field)
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(0), field=field)
 
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
@@ -296,10 +296,84 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(0), fixValueInput='Clara',
                                                                dataTypeOutput=DataType(3),
-                                                               fixValueOutput=fixValueOutput, belongOp=Belong(1), field=field)
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(0), belongOp_out=Belong(1), field=field)
 
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
+
+
+        # Caso 13
+        # Ejecutar la transformación de datos: cambiar el valor fijo 'Clara' por el valor fijo de fecha 2021-01-01
+        # Crear un DataFrame de prueba
+        df = pd.DataFrame(
+            {'A': ['Clara', 'Ana', 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', 'Ana', 'Ana']})
+        # Definir el valor fijo y la condición para el cambio
+        fixValueOutput = pd.to_datetime('2021-01-01')
+        field='A'
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': [fixValueOutput, 'Ana', fixValueOutput, 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', fixValueOutput, 'Ana']})
+
+        result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(0), fixValueInput='Clara',
+                                                               dataTypeOutput=DataType(3),
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(1), belongOp_out=Belong(0), field=field)
+
+        assert result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, got False")
+
+
+        # Caso 14
+        # Ejecutar la transformación de datos: cambiar el valor fijo 'Clara' por el valor fijo de fecha 2021-01-01
+        # Crear un DataFrame de prueba
+        df = pd.DataFrame(
+            {'A': ['Clara', 'Ana', 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', 'Ana', 'Ana']})
+        # Definir el valor fijo y la condición para el cambio
+        fixValueOutput = pd.to_datetime('2021-01-01')
+        field='A'
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': [fixValueOutput, 'Ana', fixValueOutput, 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', fixValueOutput, 'Ana']})
+
+        result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(0), fixValueInput='Carlos',
+                                                               dataTypeOutput=DataType(3),
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(1), belongOp_out=Belong(0), field=field)
+
+        assert result is True, "Test Case 14 Failed: Expected True, but got False"
+        print_and_log("Test Case 14 Passed: Expected True, got True")
+
+
+        # Caso 15
+        # Ejecutar la transformación de datos: cambiar el valor fijo 'Clara' por el valor fijo de fecha 2021-01-01
+        # Crear un DataFrame de prueba
+        df = pd.DataFrame(
+            {'A': ['Clara', 'Ana', 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', 'Ana', 'Ana']})
+        # Definir el valor fijo y la condición para el cambio
+        fixValueOutput = pd.to_datetime('2021-01-01')
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': [fixValueOutput, 'Ana', fixValueOutput, 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', fixValueOutput, 'Ana']})
+
+        result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(0), fixValueInput='Clara',
+                                                               dataTypeOutput=DataType(3),
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(1), belongOp_out=Belong(1), field=None)
+
+        assert result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, got False")
+
+
+        # Caso 16
+        # Ejecutar la transformación de datos: cambiar el valor fijo 'Clara' por el valor fijo de fecha 2021-01-01
+        # Crear un DataFrame de prueba
+        df = pd.DataFrame(
+            {'A': ['Clara', 'Ana', 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', 'Ana', 'Ana']})
+        # Definir el valor fijo y la condición para el cambio
+        fixValueOutput = pd.to_datetime('2021-01-01')
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': [fixValueOutput, 'Ana', fixValueOutput, 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', fixValueOutput, 'Ana']})
+
+        result = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=df, dataDictionary_out=expected_df, dataTypeInput=DataType(0), fixValueInput='Carlos',
+                                                               dataTypeOutput=DataType(3),
+                                                               fixValueOutput=fixValueOutput, belongOp_in=Belong(1), belongOp_out=Belong(1), field=None)
+
+        assert result is True, "Test Case 16 Failed: Expected True, but got False"
+        print_and_log("Test Case 16 Passed: Expected True, got True")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
