@@ -216,9 +216,9 @@ class Invariants:
         return True
 
     def checkInv_SpecialValue_FixValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                                       specialTypeInput: SpecialType, fixValueOutput, belongOp: Belong = Belong.BELONG,
-                                       dataTypeOutput: DataType = None, missing_values: list = None,
-                                       axis_param: int = None, field: str = None) -> bool:
+                                       specialTypeInput: SpecialType, fixValueOutput, belongOp_in: Belong = Belong.BELONG,
+                                       belongOp_out: Belong = Belong.BELONG, dataTypeOutput: DataType = None,
+                                       missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the SpecialValue - FixValue relation is satisfied in the dataDicionary_out
         respect to the dataDictionary_in
@@ -236,6 +236,127 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
+        if dataTypeOutput is not None:  # If it is specified, the casting is performed
+            vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+
+        if field is None:
+            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                if specialTypeInput == SpecialType.MISSING:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values or pd.isnull(value):
+                                if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
+                                    return False
+                elif specialTypeInput == SpecialType.INVALID:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values:
+                                if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
+                                    return False
+                elif specialTypeInput == SpecialType.OUTLIER:
+                    return False
+
+            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                if specialTypeInput == SpecialType.MISSING:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values or pd.isnull(value):
+                                if dataDictionary_out.loc[row_index, column_name] == fixValueOutput:
+                                    return False
+                elif specialTypeInput == SpecialType.INVALID:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values:
+                                if dataDictionary_out.loc[row_index, column_name] == fixValueOutput:
+                                    return False
+                elif specialTypeInput == SpecialType.OUTLIER:
+                    return False
+
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+                if specialTypeInput == SpecialType.MISSING:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values or pd.isnull(value):
+                                return False
+                elif specialTypeInput == SpecialType.INVALID:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values:
+                                return False
+                elif specialTypeInput == SpecialType.OUTLIER:
+                    return False
+
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+                if specialTypeInput == SpecialType.MISSING:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values or pd.isnull(value):
+                                return False
+                elif specialTypeInput == SpecialType.INVALID:
+                    for column_index, column_name in enumerate(dataDictionary_in.columns):
+                        for row_index, value in dataDictionary_in[column_name].items():
+                            if value in missing_values:
+                                return False
+                elif specialTypeInput == SpecialType.OUTLIER:
+                    return False
+
+        elif field is not None:
+            if field in dataDictionary_in.columns and field in dataDictionary_out.columns:
+                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                    if specialTypeInput == SpecialType.MISSING:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values or pd.isnull(value):
+                                if dataDictionary_out.loc[row_index, field] != fixValueOutput:
+                                    return False
+                    elif specialTypeInput == SpecialType.INVALID:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values:
+                                if dataDictionary_out.loc[row_index, field] != fixValueOutput:
+                                    return False
+                    elif specialTypeInput == SpecialType.OUTLIER:
+                        return False
+
+                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                    if specialTypeInput == SpecialType.MISSING:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values or pd.isnull(value):
+                                if dataDictionary_out.loc[row_index, field] == fixValueOutput:
+                                    return False
+                    elif specialTypeInput == SpecialType.INVALID:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values:
+                                if dataDictionary_out.loc[row_index, field] == fixValueOutput:
+                                    return False
+                    elif specialTypeInput == SpecialType.OUTLIER:
+                        return False
+                elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+                    if specialTypeInput == SpecialType.MISSING:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values or pd.isnull(value):
+                                return False
+                    elif specialTypeInput == SpecialType.INVALID:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values:
+                                return False
+                    elif specialTypeInput == SpecialType.OUTLIER:
+                        return False
+
+                elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+                    if specialTypeInput == SpecialType.MISSING:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values or pd.isnull(value):
+                                return False
+                    elif specialTypeInput == SpecialType.INVALID:
+                        for row_index, value in dataDictionary_in[field].items():
+                            if value in missing_values:
+                                return False
+                    elif specialTypeInput == SpecialType.OUTLIER:
+                        return False
+
+            elif field not in dataDictionary_in.columns or dataDictionary_out.columns:
+                raise ValueError("The field does not exist in the dataframe")
+
+
         return True
 
     def checkInv_SpecialValue_DerivedValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
