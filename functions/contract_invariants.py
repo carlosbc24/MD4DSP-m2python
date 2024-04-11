@@ -254,7 +254,57 @@ class Invariants:
                                 if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
                                     return False
                 elif specialTypeInput == SpecialType.OUTLIER:
-                    return False
+                    threshold = 1.5
+                    if axis_param is None:
+                        Q1 = dataDictionary_in.stack().quantile(0.25)
+                        Q3 = dataDictionary_in.stack().quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the dataframe
+                        numeric_values = dataDictionary_in.select_dtypes(include=[np.number])
+                        for col in numeric_values.columns:
+                            for idx in numeric_values.index:
+                                value = numeric_values.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    if dataDictionary_out.loc[idx, col] != fixValueOutput:
+                                        return False
+                    elif axis_param == 0:
+                        # Iterate over each numeric column
+                        for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                            # Calculate the Q1, Q3, and IQR for each column
+                            Q1 = dataDictionary_in[col].quantile(0.25)
+                            Q3 = dataDictionary_in[col].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the column
+                            for idx in dataDictionary_in.index:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    if dataDictionary_out.loc[idx, col] != fixValueOutput:
+                                        return False
+                    elif axis_param == 1:
+                        # Iterate over each row
+                        for idx in dataDictionary_in.index:
+                            # Calculate the Q1, Q3, and IQR for each row
+                            Q1 = dataDictionary_in.loc[idx].quantile(0.25)
+                            Q3 = dataDictionary_in.loc[idx].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the row
+                            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    if dataDictionary_out.loc[idx, col] != fixValueOutput:
+                                        return False
 
             elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                 if specialTypeInput == SpecialType.MISSING:
@@ -270,7 +320,57 @@ class Invariants:
                                 if dataDictionary_out.loc[row_index, column_name] == fixValueOutput:
                                     return False
                 elif specialTypeInput == SpecialType.OUTLIER:
-                    return False
+                    threshold = 1.5
+                    if axis_param is None:
+                        Q1 = dataDictionary_in.stack().quantile(0.25)
+                        Q3 = dataDictionary_in.stack().quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the dataframe
+                        numeric_values = dataDictionary_in.select_dtypes(include=[np.number])
+                        for col in numeric_values.columns:
+                            for idx in numeric_values.index:
+                                value = numeric_values.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    if dataDictionary_out.loc[idx, col] == fixValueOutput:
+                                        return False
+                    elif axis_param == 0:
+                        # Iterate over each numeric column
+                        for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                            # Calculate the Q1, Q3, and IQR for each column
+                            Q1 = dataDictionary_in[col].quantile(0.25)
+                            Q3 = dataDictionary_in[col].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the column
+                            for idx in dataDictionary_in.index:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    if dataDictionary_out.loc[idx, col] == fixValueOutput:
+                                        return False
+                    elif axis_param == 1:
+                        # Iterate over each row
+                        for idx in dataDictionary_in.index:
+                            # Calculate the Q1, Q3, and IQR for each row
+                            Q1 = dataDictionary_in.loc[idx].quantile(0.25)
+                            Q3 = dataDictionary_in.loc[idx].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the row
+                            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    if dataDictionary_out.loc[idx, col] == fixValueOutput:
+                                        return False
 
             elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
                 if specialTypeInput == SpecialType.MISSING:
@@ -284,7 +384,54 @@ class Invariants:
                             if value in missing_values:
                                 return False
                 elif specialTypeInput == SpecialType.OUTLIER:
-                    return False
+                    threshold = 1.5
+                    if axis_param is None:
+                        Q1 = dataDictionary_in.stack().quantile(0.25)
+                        Q3 = dataDictionary_in.stack().quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the dataframe
+                        numeric_values = dataDictionary_in.select_dtypes(include=[np.number])
+                        for col in numeric_values.columns:
+                            for idx in numeric_values.index:
+                                value = numeric_values.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    return False
+                    elif axis_param == 0:
+                        # Iterate over each numeric column
+                        for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                            # Calculate the Q1, Q3, and IQR for each column
+                            Q1 = dataDictionary_in[col].quantile(0.25)
+                            Q3 = dataDictionary_in[col].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the column
+                            for idx in dataDictionary_in.index:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    return False
+                    elif axis_param == 1:
+                        # Iterate over each row
+                        for idx in dataDictionary_in.index:
+                            # Calculate the Q1, Q3, and IQR for each row
+                            Q1 = dataDictionary_in.loc[idx].quantile(0.25)
+                            Q3 = dataDictionary_in.loc[idx].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the row
+                            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    return False
 
             elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
                 if specialTypeInput == SpecialType.MISSING:
@@ -298,7 +445,54 @@ class Invariants:
                             if value in missing_values:
                                 return False
                 elif specialTypeInput == SpecialType.OUTLIER:
-                    return False
+                    threshold = 1.5
+                    if axis_param is None:
+                        Q1 = dataDictionary_in.stack().quantile(0.25)
+                        Q3 = dataDictionary_in.stack().quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the dataframe
+                        numeric_values = dataDictionary_in.select_dtypes(include=[np.number])
+                        for col in numeric_values.columns:
+                            for idx in numeric_values.index:
+                                value = numeric_values.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    return False
+                    elif axis_param == 0:
+                        # Iterate over each numeric column
+                        for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                            # Calculate the Q1, Q3, and IQR for each column
+                            Q1 = dataDictionary_in[col].quantile(0.25)
+                            Q3 = dataDictionary_in[col].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the column
+                            for idx in dataDictionary_in.index:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    return False
+                    elif axis_param == 1:
+                        # Iterate over each row
+                        for idx in dataDictionary_in.index:
+                            # Calculate the Q1, Q3, and IQR for each row
+                            Q1 = dataDictionary_in.loc[idx].quantile(0.25)
+                            Q3 = dataDictionary_in.loc[idx].quantile(0.75)
+                            IQR = Q3 - Q1
+                            # Define the lower and upper bounds
+                            lower_bound = Q1 - threshold * IQR
+                            upper_bound = Q3 + threshold * IQR
+                            # Identify the outliers in the row
+                            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                                value = dataDictionary_in.loc[idx, col]
+                                is_outlier = (value < lower_bound) or (value > upper_bound)
+                                if is_outlier:
+                                    return False
 
         elif field is not None:
             if field in dataDictionary_in.columns and field in dataDictionary_out.columns:
@@ -314,7 +508,21 @@ class Invariants:
                                 if dataDictionary_out.loc[row_index, field] != fixValueOutput:
                                     return False
                     elif specialTypeInput == SpecialType.OUTLIER:
-                        return False
+                        threshold = 1.5
+                        # Calculate the Q1, Q3, and IQR for each column
+                        Q1 = dataDictionary_in[field].quantile(0.25)
+                        Q3 = dataDictionary_in[field].quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the column
+                        for idx in dataDictionary_in.index:
+                            value = dataDictionary_in.loc[idx, field]
+                            is_outlier = (value < lower_bound) or (value > upper_bound)
+                            if is_outlier:
+                                if dataDictionary_out.loc[idx, field] != fixValueOutput:
+                                    return False
 
                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                     if specialTypeInput == SpecialType.MISSING:
@@ -328,7 +536,22 @@ class Invariants:
                                 if dataDictionary_out.loc[row_index, field] == fixValueOutput:
                                     return False
                     elif specialTypeInput == SpecialType.OUTLIER:
-                        return False
+                        threshold = 1.5
+                        # Calculate the Q1, Q3, and IQR for each column
+                        Q1 = dataDictionary_in[field].quantile(0.25)
+                        Q3 = dataDictionary_in[field].quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the column
+                        for idx in dataDictionary_in.index:
+                            value = dataDictionary_in.loc[idx, field]
+                            is_outlier = (value < lower_bound) or (value > upper_bound)
+                            if is_outlier:
+                                if dataDictionary_out.loc[idx, field] == fixValueOutput:
+                                    return False
+
                 elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
                     if specialTypeInput == SpecialType.MISSING:
                         for row_index, value in dataDictionary_in[field].items():
@@ -339,7 +562,20 @@ class Invariants:
                             if value in missing_values:
                                 return False
                     elif specialTypeInput == SpecialType.OUTLIER:
-                        return False
+                        threshold = 1.5
+                        # Calculate the Q1, Q3, and IQR for each column
+                        Q1 = dataDictionary_in[field].quantile(0.25)
+                        Q3 = dataDictionary_in[field].quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the column
+                        for idx in dataDictionary_in.index:
+                            value = dataDictionary_in.loc[idx, field]
+                            is_outlier = (value < lower_bound) or (value > upper_bound)
+                            if is_outlier:
+                                return False
 
                 elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
                     if specialTypeInput == SpecialType.MISSING:
@@ -351,7 +587,20 @@ class Invariants:
                             if value in missing_values:
                                 return False
                     elif specialTypeInput == SpecialType.OUTLIER:
-                        return False
+                        threshold = 1.5
+                        # Calculate the Q1, Q3, and IQR for each column
+                        Q1 = dataDictionary_in[field].quantile(0.25)
+                        Q3 = dataDictionary_in[field].quantile(0.75)
+                        IQR = Q3 - Q1
+                        # Define the lower and upper bounds
+                        lower_bound = Q1 - threshold * IQR
+                        upper_bound = Q3 + threshold * IQR
+                        # Identify the outliers in the column
+                        for idx in dataDictionary_in.index:
+                            value = dataDictionary_in.loc[idx, field]
+                            is_outlier = (value < lower_bound) or (value > upper_bound)
+                            if is_outlier:
+                                return False
 
             elif field not in dataDictionary_in.columns or dataDictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")
