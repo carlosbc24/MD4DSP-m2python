@@ -48,8 +48,8 @@ def execute_invariants_simple_tests():
     start = time.time()
 
     # Execute all invariants simple tests
-    contracts_data_transformation_test = InvariantsSimpleTest()
-    contracts_data_transformation_test.execute_All_SimpleTests()
+    contracts_invariant_test = InvariantsSimpleTest()
+    contracts_invariant_test.execute_All_SimpleTests()
 
     end = time.time()
     total_time = end - start
@@ -83,5 +83,5 @@ if __name__ == "__main__":
     # execute_invariants_simple_tests()
     # execute_invariants_external_dataset_tests()
 
-    contracts_data_transformation_test = InvariantsSimpleTest()
-    contracts_data_transformation_test.execute_checkInv_FixValue_FixValue()
+    contracts_invariant_test = InvariantsSimpleTest()
+    contracts_invariant_test.execute_checkInv_SpecialValue_FixValue()
