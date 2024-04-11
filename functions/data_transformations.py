@@ -696,7 +696,7 @@ class Invariants:
         :param field: field to execute the data transformation
         :return: dataDictionary with the values of the special type changed to the value fixValueOutput
         """
-        if dataTypeOutput is not None:  # If it is specified, the transformation is performed
+        if dataTypeOutput is not None:  # If it is specified, the casting is performed
             vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
 
         dataDictionary_copy = dataDictionary.copy()
