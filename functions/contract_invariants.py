@@ -14,7 +14,7 @@ class Invariants:
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
     def checkInv_FixValue_FixValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                                   fixValueInput, fixValueOutput, belongOp: Belong = Belong.BELONG, dataTypeInput: DataType = None,
+                                   fixValueInput, fixValueOutput, belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG, dataTypeInput: DataType = None,
                                    dataTypeOutput: DataType = None, field: str = None) -> bool:
         """
         Check the invariant of the FixValue - FixValue relation (Mapping) is satisfied in the dataDicionary_out
@@ -36,8 +36,9 @@ class Invariants:
             # Auxiliary function that changes the values of FixValueInput and FixValueOutput to the data type in DataTypeInput and DataTypeOutput respectively
             fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput, fixValueOutput)
 
+
         if field is None:
-            if belongOp == Belong.BELONG:
+            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                 # Iterar sobre las filas y columnas de dataDictionary_in
                 for column_index, column_name in enumerate(dataDictionary_in.columns):
                     for row_index, value in dataDictionary_in[column_name].items():
@@ -46,7 +47,7 @@ class Invariants:
                             # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
                             if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
                                 return False
-            elif belongOp == Belong.NOTBELONG:
+            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                 # Iterar sobre las filas y columnas de dataDictionary_in
                 for column_index, column_name in enumerate(dataDictionary_in.columns):
                     for row_index, value in dataDictionary_in[column_name].items():
@@ -55,22 +56,45 @@ class Invariants:
                             # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
                             if dataDictionary_out.loc[row_index, column_name] == fixValueOutput:
                                 return False
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            return False
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            return False
+
         elif field is not None:
             if field in dataDictionary_in.columns and field in dataDictionary_out.columns:
-                if belongOp == Belong.BELONG:
+                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                     for row_index, value in dataDictionary_in[field].items():
                         # Comprobar si el valor es igual a fixValueInput
                         if value == fixValueInput:
                             # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
                             if dataDictionary_out.loc[row_index, field] != fixValueOutput:
                                 return False
-                elif belongOp == Belong.NOTBELONG:
+                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                     for row_index, value in dataDictionary_in[field].items():
                         # Comprobar si el valor es igual a fixValueInput
                         if value == fixValueInput:
                             # Comprobar si el valor correspondiente en dataDictionary_out coincide con fixValueOutput
                             if dataDictionary_out.loc[row_index, field] == fixValueOutput:
                                 return False
+                elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+                    for row_index, value in dataDictionary_in[field].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            return False
+                elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+                    for row_index, value in dataDictionary_in[field].items():
+                        # Comprobar si el valor es igual a fixValueInput
+                        if value == fixValueInput:
+                            return False
             elif field not in dataDictionary_in.columns or dataDictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
@@ -199,12 +223,12 @@ class Invariants:
         Check the invariant of the SpecialValue - FixValue relation is satisfied in the dataDicionary_out
         respect to the dataDictionary_in
         params:
-            :param dataDictionary_in: dataframe with the data
-            :param dataDictionary_out: dataframe with the data
+            :param dataDictionary_in: input dataframe with the data
+            :param dataDictionary_out: output dataframe with the data
             :param specialTypeInput: special type of the input value
             :param dataTypeOutput: data type of the output value
             :param fixValueOutput: output value to check
-            :param belongOp: operation to check the invariant
+            :param belongOp: condition to check the invariant
             :param missing_values: list of missing values
             :param axis_param: axis to check the invariant
             :param field: field to check the invariant
