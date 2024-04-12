@@ -1297,16 +1297,6 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 specialTypeInput=SpecialType(1), dataTypeOutput=DataType(2),
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0), fixValueOutput=999,
                                                                 missing_values=missing_values, axis_param=0, field=None)
-        # Definir el resultado esperado
-        expected = pd.DataFrame(
-            {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, np.NaN, 10], 'C': [999, 10, 999, 4, 999],
-             'D': [2, None, 4, 6, 10],
-             'E': [999, 10, 999, 4, 999]})
-
-        expected = expected.astype({
-            'B': 'float64',  # Convertir B a float64
-            'D': 'float64'  # Convertir D a float64
-        })
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
@@ -1353,11 +1343,11 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+            {'A': [0, 2, 3, 4, -1], 'B': [2, 3, 4, 6, 0], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         # Definir el resultado esperado
         expected = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 999], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 999],
+            {'A': [0, 2, 3, 4, -1], 'B': [2, 3, 4, 6, 0], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 999],
              'E': [1, 10, 3, 4, 1]})
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(), dataDictionary_out=expected, specialTypeInput=SpecialType(2),
