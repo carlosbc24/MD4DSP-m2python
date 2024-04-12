@@ -6,7 +6,8 @@ from typing import Union
 import numpy as np
 import pandas as pd
 
-from helpers.auxiliar import compare_numbers, count_abs_frequency, getOutliers
+from helpers.auxiliar import compare_numbers, count_abs_frequency
+from helpers.transform_aux import getOutliers
 from helpers.enumerations import Belong, Operator, Closure
 
 
