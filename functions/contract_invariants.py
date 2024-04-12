@@ -228,7 +228,8 @@ class Invariants:
             :param specialTypeInput: special type of the input value
             :param dataTypeOutput: data type of the output value
             :param fixValueOutput: output value to check
-            :param belongOp: condition to check the invariant
+            :param belongOp_in: if condition to check the invariant
+            :param belongOp_out: then condition to check the invariant
             :param missing_values: list of missing values
             :param axis_param: axis to check the invariant
             :param field: field to check the invariant

@@ -1440,6 +1440,316 @@ class InvariantsSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
+
+
+
+
+
+
+
+
+        # Caso 9
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 999], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(0),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0),
+                                                                belongOp_out=Belong(1),
+                                                                fixValueOutput=999, missing_values=missing_values,
+                                                                axis_param=0, field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, got False")
+
+        # Caso 10
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 999, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(1),
+                                                                dataTypeOutput=DataType(2),
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0, field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, got False")
+
+        # Caso 11
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 999, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2),
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                fixValueOutput=999,
+                                                                axis_param=None, field=None)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, got False")
+
+        # Caso 12
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0),
+                                                                belongOp_out=Belong(1), fixValueOutput=999,
+                                                                axis_param=0, field=None)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
+
+        # Caso 13
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 0], 'C': [1, 10, 3, 4, -1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, -3]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 0], 'C': [1, 10, 3, 4, -1], 'D': [2, 3, 4, 6, 999],
+             'E': [1, 10, 3, 4, -3]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0),
+                                                                belongOp_out=Belong(1), fixValueOutput=999,
+                                                                axis_param=1, field=None)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, got False")
+
+        # Caso 14
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        field = 'B'
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(0),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0),
+                                                                belongOp_out=Belong(1), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0,
+                                                                field=field)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, got False")
+
+        # Caso 15
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        field = 'B'
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(1),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0),
+                                                                belongOp_out=Belong(1), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0,
+                                                                field=field)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, got False")
+
+        # Caso 16
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        field = 'C'
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(0),
+                                                                belongOp_out=Belong(1), fixValueOutput=999,
+                                                                axis_param=None, field=field)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, got False")
+
+        # Caso 17
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        field = 'B'
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(1),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(1),
+                                                                belongOp_out=Belong(0), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0,
+                                                                field=field)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, got False")
+
+        # Caso 18
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        field = 'C'
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(1),
+                                                                belongOp_out=Belong(0), fixValueOutput=999,
+                                                                axis_param=None, field=field)
+
+        # Caso 19
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        missing_values = [1, 3]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(1),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(1),
+                                                                belongOp_out=Belong(1), fixValueOutput=999,
+                                                                missing_values=missing_values, axis_param=0,
+                                                                field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, got False")
+
+        # Caso 20
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
+             'E': [1, 10, 3, 4, 1]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=datadic.copy(),
+                                                                dataDictionary_out=expected,
+                                                                specialTypeInput=SpecialType(2),
+                                                                dataTypeOutput=DataType(2), belongOp_in=Belong(1),
+                                                                belongOp_out=Belong(1), fixValueOutput=999,
+                                                                axis_param=None, field=None)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 20 Failed: Expected False, but got True"
+        print_and_log("Test Case 20 Passed: Expected False, got False")
+
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
