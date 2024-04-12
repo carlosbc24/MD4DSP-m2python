@@ -642,7 +642,8 @@ class Invariants:
             :param dataDictionary_out: dataframe with the data
             :param specialTypeInput: special type of the input value
             :param numOpOutput: operation to check the invariant
-            :param belongOp: operation to check the invariant
+            :param belongOp_in: if condition to check the invariant
+            :param belongOp_out: then condition to check the invariant
             :param missing_values: list of missing values
             :param axis_param: axis to check the invariant
             :param field: field to check the invariant
@@ -650,4 +651,16 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        return True
+
+        dataDictionary_copy_mask = None
+        result = None
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            dataDictionary_copy_mask = getOutliers(dataDictionary_in, field, axis_param)
+
+        if numOpOutput == Operation.INTERPOLATION:
+        elif numOpOutput == Operation.MEAN:
+        elif numOpOutput == Operation.MEDIAN:
+        elif numOpOutput == Operation.CLOSEST:
+
+        return result
