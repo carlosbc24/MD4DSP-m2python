@@ -1,12 +1,11 @@
-
+# Importing functions and classes from packages
 import numpy as np
 import pandas as pd
-
-from helpers.auxiliar import cast_type_FixValue, find_closest_value, getOutliers, apply_derivedTypeColRowOutliers, \
-    apply_derivedType, specialTypeInterpolation, specialTypeMean, specialTypeMedian, specialTypeClosest
-
-# Importing functions and classes from packages
+from helpers.auxiliar import cast_type_FixValue, find_closest_value
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType
+from helpers.transform_aux import getOutliers, specialTypeMean, specialTypeMedian, specialTypeClosest, \
+    specialTypeInterpolation, apply_derivedTypeColRowOutliers, apply_derivedType
+
 
 class Invariants:
     # FixValue - FixValue, FixValue - DerivedValue, FixValue - NumOp
