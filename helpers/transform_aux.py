@@ -180,10 +180,10 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
         if derivedTypeOutput == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 if specialTypeInput == SpecialType.MISSING:
-                    for col in dataDictionary_copy.columns:
+                    for col in dataDictionary_copy.columns: # Only missing
                         most_frequent = dataDictionary_copy[col].value_counts().idxmax()
                         dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: most_frequent if pd.isnull(x) else x)
-                if missing_values is not None:
+                if missing_values is not None: # It works for missing values and for invalid values
                     for col in dataDictionary_copy.columns:
                         most_frequent = dataDictionary_copy[col].value_counts().idxmax()
                         dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: most_frequent if x in missing_values else x)
