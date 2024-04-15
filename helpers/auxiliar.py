@@ -197,6 +197,41 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
     Returns:
         :return: True if the special type interpolation is applied correctly
         """
+    dataDictionary_in_copy = dataDictionary_in.copy()
+    if field is None:
+        if specialTypeInput == SpecialType.MISSING:
+            if axis_param == 0:
+                # Select only columns with numeric data, including all numeric types (int, float, etc.)
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    result = (dataDictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x).
+                                interpolate(method='linear', limit_direction='both').equals(dataDictionary_out[col_name]))
+                    if result is False:
+                        return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    result = (numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
+                                interpolate(method='linear', limit_direction='both').equals(dataDictionary_out[row]))
+                    if result is False:
+                        return False
+
+        if specialTypeInput == SpecialType.INVALID:
+            # Applies the linear interpolation in the DataFrame
+            if axis_param == 0:
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                        dataDictionary_in_copy[col] = (dataDictionary_in[col].apply(lambda x: np.nan if x in missing_values else x).
+                                                       interpolate(method='linear', limit_direction='both'))
+                # Iterate over each column
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    # For each index in the column
+                    for idx in dataDictionary_in.index:
+                        # Verify if the value is NaN in the original dataframe
+                        if pd.isnull(dataDictionary_in.at[idx, col]):
+                            # Replace the value with the corresponding one from dataDictionary_copy_copy
+                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+                result=dataDictionary_in_copy.equals(dataDictionary_out)
+                if result is False:
+                    return False
 
 
     return True
