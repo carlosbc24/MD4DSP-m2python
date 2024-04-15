@@ -136,7 +136,7 @@ def checkSpecialTypeInterpolation(dataDictionary_in: pd.DataFrame, dataDictionar
                                   axis_param: int = None, field: str = None) -> bool:
     """
     Check if the special type interpolation is applied correctly
-    params::
+    params:
         :param dataDictionary_in: dataframe with the data before the interpolation
         :param dataDictionary_out: dataframe with the data after the interpolation
         :param specialTypeInput: special type to apply the interpolation
@@ -150,8 +150,127 @@ def checkSpecialTypeInterpolation(dataDictionary_in: pd.DataFrame, dataDictionar
     Returns:
         :return: True if the special type interpolation is applied correctly
     """
+    result = True
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        result=checkInterpolationBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                        specialTypeInput=specialTypeInput,
+                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                        missing_values=missing_values, axis_param=axis_param,
+                                        field=field)
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkInterpolationBelongNotBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                        specialTypeInput=specialTypeInput,
+                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                        missing_values=missing_values, axis_param=axis_param,
+                                        field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result=checkInterpolationNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                        specialTypeInput=specialTypeInput,
+                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                        missing_values=missing_values, axis_param=axis_param,
+                                        field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkInterpolationNotBelongNotBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                        specialTypeInput=specialTypeInput,
+                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                        missing_values=missing_values, axis_param=axis_param,
+                                        field=field)
+
+    return True if result else False
+
+
+def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, specialTypeInput: SpecialType,
+                            dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                            axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are BELONG
+    params:
+        :param dataDictionary_in: dataframe with the data before the interpolation
+        :param dataDictionary_out: dataframe with the data after the interpolation
+        :param specialTypeInput: special type to apply the interpolation
+        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the interpolation
+        :param field: field to apply the interpolation
+
+    Returns:
+        :return: True if the special type interpolation is applied correctly
+        """
+
 
     return True
+
+
+def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                   specialTypeInput: SpecialType,
+                                   dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                                   axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in is BELONG and belongOp_out is NOTBELONG
+    params:
+        :param dataDictionary_in: dataframe with the data before the interpolation
+        :param dataDictionary_out: dataframe with the data after the interpolation
+        :param specialTypeInput: special type to apply the interpolation
+        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the interpolation
+        :param field: field to apply the interpolation
+
+    Returns:
+        :return: True if the special type interpolation is applied correctly
+        """
+
+
+    return True
+
+
+def checkInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                   specialTypeInput: SpecialType,
+                                   dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                                   axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in is NOTBELONG and belongOp_out is BELONG
+    params:
+        :param dataDictionary_in: dataframe with the data before the interpolation
+        :param dataDictionary_out: dataframe with the data after the interpolation
+        :param specialTypeInput: special type to apply the interpolation
+        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the interpolation
+        :param field: field to apply the interpolation
+
+    Returns:
+        :return: True if the special type interpolation is applied correctly
+        """
+
+
+    return True
+
+
+def checkInterpolationNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                   specialTypeInput: SpecialType,
+                                   dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                                   axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are NOTBELONG
+    params:
+        :param dataDictionary_in: dataframe with the data before the interpolation
+        :param dataDictionary_out: dataframe with the data after the interpolation
+        :param specialTypeInput: special type to apply the interpolation
+        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the interpolation
+        :param field: field to apply the interpolation
+
+    Returns:
+        :return: True if the special type interpolation is applied correctly
+        """
+
+
+    return True
+
+
 
 
 def checkSpecialTypeMean(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, specialTypeInput: SpecialType,
