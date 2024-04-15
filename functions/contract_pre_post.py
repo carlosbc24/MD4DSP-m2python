@@ -2,13 +2,12 @@
 from datetime import datetime
 # Importing functions and classes from packages
 from typing import Union
-
+from datetime import datetime
 import numpy as np
 import pandas as pd
-
 from helpers.auxiliar import compare_numbers, count_abs_frequency
-from helpers.transform_aux import getOutliers
 from helpers.enumerations import Belong, Operator, Closure
+from helpers.transform_aux import getOutliers
 
 
 class ContractsPrePost:
@@ -73,7 +72,7 @@ class ContractsPrePost:
                     if quant_rel is not None and quant_abs is None:  # Check if value is in dataDictionary and if it meets the condition of quant_rel
                         return True if value in dataDictionary.values and compare_numbers( # Case 3 y 4
                             count_abs_frequency(value, dataDictionary) / dataDictionary.size,
-                            quant_rel, 
+                            quant_rel,
                             quant_op) else False  # If field is None, in place of looking in a column, it looks in the whole dataframe
                         # Important to highlight that it is necessary to use dropna=False to count the NaN values in case value is None
                     elif quant_rel is not None and quant_abs is not None:
@@ -540,8 +539,7 @@ class ContractsPrePost:
                             raise ValueError(
                                 "quant_rel and quant_abs can't have different values than None at the same time")  # Case 19
                         else:
-                            raise ValueError(
-                                "Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")  # Case 20
+                            raise ValueError("Error: quant_rel or quant_abs should be provided when belongOp is BELONG and quant_op is not None")  # Case 20
                 else:
                     if belongOp == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                         # Check that there aren't any invalid values in the column specified by field
