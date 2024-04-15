@@ -1,7 +1,8 @@
 # Importing functions and classes from packages
 import numpy as np
 import pandas as pd
-from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_derivedType, check_derivedTypeColRowOutliers
+from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_derivedType, check_derivedTypeColRowOutliers, checkSpecialTypeInterpolation, \
+    checkSpecialTypeMean, checkSpecialTypeMedian, checkSpecialTypeClosest
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 
@@ -756,4 +757,40 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        return True
+
+        dataDictionary_outliers_mask = None
+        result = None
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            dataDictionary_outliers_mask = getOutliers(dataDictionary_in, field, axis_param)
+
+        if numOpOutput == Operation.INTERPOLATION:
+            result = checkSpecialTypeInterpolation(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                        specialTypeInput=specialTypeInput, belongOp_in=belongOp_in,
+                                                        belongOp_out=belongOp_out,
+                                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                                        missing_values=missing_values, axis_param=axis_param,
+                                                        field=field)
+        elif numOpOutput == Operation.MEAN:
+            result = checkSpecialTypeMean(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                        specialTypeInput=specialTypeInput, belongOp_in=belongOp_in,
+                                                        belongOp_out=belongOp_out,
+                                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                                        missing_values=missing_values, axis_param=axis_param,
+                                                        field=field)
+        elif numOpOutput == Operation.MEDIAN:
+            result = checkSpecialTypeMedian(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                        specialTypeInput=specialTypeInput, belongOp_in=belongOp_in,
+                                                        belongOp_out=belongOp_out,
+                                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                                        missing_values=missing_values, axis_param=axis_param,
+                                                        field=field)
+        elif numOpOutput == Operation.CLOSEST:
+            result = checkSpecialTypeClosest(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                        specialTypeInput=specialTypeInput, belongOp_in=belongOp_in,
+                                                        belongOp_out=belongOp_out,
+                                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                                        missing_values=missing_values, axis_param=axis_param,
+                                                        field=field)
+
+        return True if result else False
