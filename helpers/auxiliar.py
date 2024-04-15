@@ -1667,748 +1667,1380 @@ def checkSpecialTypeClosest(dataDictionary_in: pd.DataFrame, dataDictionary_out:
     return True
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-def check_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedType,
-                      dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                      belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
-                      missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+def checkMostFrequentBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                  specialTypeInput: SpecialType, missing_values: list, axis_param: int, field: str) -> bool:
     """
-    Check the derived type to the missing values of a dataframe
-    :param specialTypeInput: special type to apply to the missing values
-    :param derivedTypeOutput: derived type to apply to the missing values
-    :param dataDictionary_in: original dataframe with the data
-    :param dataDictionary_out: dataframe with the derived type applied to the missing values
-    :param belongOp_in: belong operator condition for the if block of the invariant
-    :param belongOp_out: belong operator condition for the else block of the invariant
-    :param missing_values: list of missing values
-    :param axis_param: axis to apply the derived type. If axis_param is None, the derived type is applied to the whole dataframe.
-    If axis_param is 0, the derived type is applied to each column. If axis_param is 1, the derived type is applied to each row.
-    :param field: field to apply the derived type.
+    Check if the special type most frequent is applied correctly when the input and output dataframes when belongOp_in is Belong and belongOp_out is BELONG
 
-    :return: True if the derived type is correctly applied to the missing values, False otherwise
+    params:
+
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the most frequent
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the most frequent
+    :param specialTypeInput: (SpecialType) Special type to apply the most frequent
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the most frequent
+    :param field: (str) Field to apply the most frequent
+
+    :return: True if the special type most frequent is applied correctly, False otherwise
     """
-    result = True
     if field is None:
-        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 0:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if dataDictionary_out.loc[row_index, column_name] != most_frequent:
-                                        return False
-                                else:  # If the output value isn't a missing value and isn't equal to the
-                                       # original value, then return False
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[row_index, column_name]:
-                                        return False
-                    if specialTypeInput == SpecialType.INVALID:
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values:
-                                    if dataDictionary_out.loc[row_index, column_name] != most_frequent:
-                                        return False
-                                else:  # If the output value isn't a missing value and isn't equal to the
-                                       # original value, then return False
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[row_index, column_name] and not(pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(dataDictionary_out.loc[row_index, column_name])):
-                                        return False
-                elif axis_param == 1:
-                    if specialTypeInput == SpecialType.MISSING:
-                    # Instead of iterating over the columns, we iterate over the rows to check the derived type
-                        for row_index, row in dataDictionary_in.iterrows():
-                            most_frequent = row.value_counts().idxmax()
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if dataDictionary_out.loc[row_index, column_index] != most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index]:
-                                        return False
-                    if specialTypeInput == SpecialType.INVALID:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            most_frequent = row.value_counts().idxmax()
-                            for column_index, value in row.items():
-                                if value in missing_values:
-                                    if dataDictionary_out.loc[row_index, column_index] != most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index] and not(pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-                elif axis_param is None:
-                    most_frequent = dataDictionary_in.stack().value_counts().idxmax()
-                    if specialTypeInput == SpecialType.MISSING:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if dataDictionary_out.loc[row_index, column_index] != most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index]:
-                                        return False
-                    if specialTypeInput == SpecialType.INVALID:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values:
-                                    if dataDictionary_out.loc[row_index, column_index] != most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index] and not(pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
-                # Check the previous value of the missing values
-                if axis_param == 0:
-                    if specialTypeInput == SpecialType.MISSING:
-                        # Manual check of the previous operacion to the missing values in the columns
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if row_index == 0:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                          row_index, column_name]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[row_index - 1, column_name]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name]:
-                                        return False
-
-                    else: # SPECIAL_TYPE is INVALID
-                          for column_index, column_name in enumerate(dataDictionary_in.columns):
-                              for row_index, value in dataDictionary_in[column_name].items():
-                                  if value in missing_values or pd.isnull(value):
-                                      if row_index == 0:
-                                          if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                          row_index, column_name]:
-                                              return False
-                                      else:
-                                          if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                              row_index - 1, column_name]:
-                                              return False
-                                  else:
-                                      if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                          row_index, column_name] and not (pd.isnull(
-                                          dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                          dataDictionary_out.loc[row_index, column_name])):
-                                          return False
-
-                elif axis_param == 1:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == 0:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                          row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                            row_index, column_index - 1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index]:
-                                        return False
-
-                    else:  # SPECIAL_TYPE is INVALID
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == 0:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                          row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                            row_index, column_index - 1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index] and not (pd.isnull(
-                                        dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                        dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-
-                elif axis_param is None:
-                    raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-
-            elif derivedTypeOutput == DerivedType.NEXT:
-                # Define the lambda function to replace the values within missing values by the value of the next position
-                if axis_param == 0:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if row_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                          row_index, column_name]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[row_index + 1, column_name]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name]:
-                                        return False
-
-                    else:  # SPECIAL_TYPE is INVALID
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if row_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                          row_index, column_name]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[row_index + 1, column_name]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name] and not (pd.isnull(
-                                        dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                        dataDictionary_out.loc[row_index, column_name])):
-                                        return False
-
-                elif axis_param == 1:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                          row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index+1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index]:
-                                        return False
-                    else: # SPECIAL_TYPE is INVALID
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                          row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index+1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index] and not (pd.isnull(
-                                        dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                        dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-
-                elif axis_param is None:
-                    raise ValueError("The axis cannot be None when applying the NEXT operation")
-
-        if belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 0:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if dataDictionary_out.loc[row_index, column_name] == most_frequent:
-                                        return False
-                                else:  # If the output value isn't a missing value and isn't equal to the
-                                    # original value, then return False
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name]:
-                                        return False
-                    if specialTypeInput == SpecialType.INVALID:
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values:
-                                    if dataDictionary_out.loc[row_index, column_name] == most_frequent:
-                                        return False
-                                else:  # If the output value isn't a missing value and isn't equal to the
-                                    # original value, then return False
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name] and not (
-                                            pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                            dataDictionary_out.loc[row_index, column_name])):
-                                        return False
-                elif axis_param == 1:
-                    if specialTypeInput == SpecialType.MISSING:
-                        # Instead of iterating over the columns, we iterate over the rows to check the derived type
-                        for row_index, row in dataDictionary_in.iterrows():
-                            most_frequent = row.value_counts().idxmax()
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if dataDictionary_out.loc[row_index, column_index] == most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index]:
-                                        return False
-                    if specialTypeInput == SpecialType.INVALID:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            most_frequent = row.value_counts().idxmax()
-                            for column_index, value in row.items():
-                                if value in missing_values:
-                                    if dataDictionary_out.loc[row_index, column_index] == most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index] and not (
-                                            pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                            dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-                elif axis_param is None:
-                    most_frequent = dataDictionary_in.stack().value_counts().idxmax()
-                    if specialTypeInput == SpecialType.MISSING:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if dataDictionary_out.loc[row_index, column_index] == most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index]:
-                                        return False
-                    if specialTypeInput == SpecialType.INVALID:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values:
-                                    if dataDictionary_out.loc[row_index, column_index] == most_frequent:
-                                        return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index] and not (
-                                            pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                            dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
-                # Check the previous value of the missing values
-                if axis_param == 0:
-                    if specialTypeInput == SpecialType.MISSING:
-                        # Manual check of the previous operacion to the missing values in the columns
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if row_index == 0:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                            row_index, column_name]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
-                                            row_index - 1, column_name]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name]:
-                                        return False
-
-                    else:  # SPECIAL_TYPE is INVALID
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if row_index == 0:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                            row_index, column_name]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
-                                            row_index - 1, column_name]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name] and not (pd.isnull(
-                                        dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                        dataDictionary_out.loc[row_index, column_name])):
-                                        return False
-
-                elif axis_param == 1:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == 0:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                            row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
-                                            row_index, column_index - 1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index]:
-                                        return False
-
-                    else:  # SPECIAL_TYPE is INVALID
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == 0:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                            row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
-                                            row_index, column_index - 1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index] and not (pd.isnull(
-                                        dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                        dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-
-                elif axis_param is None:
-                    raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-
-            elif derivedTypeOutput == DerivedType.NEXT:
-                # Define the lambda function to replace the values within missing values by the value of the next position
-                if axis_param == 0:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if row_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                            row_index, column_name]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
-                                            row_index + 1, column_name]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name]:
-                                        return False
-
-                    else:  # SPECIAL_TYPE is INVALID
-                        for column_index, column_name in enumerate(dataDictionary_in.columns):
-                            for row_index, value in dataDictionary_in[column_name].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if row_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                            row_index, column_name]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
-                                            row_index + 1, column_name]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                        row_index, column_name] and not (pd.isnull(
-                                        dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                        dataDictionary_out.loc[row_index, column_name])):
-                                        return False
-
-                elif axis_param == 1:
-                    if specialTypeInput == SpecialType.MISSING:
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                            row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
-                                            row_index, column_index + 1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index]:
-                                        return False
-                    else:  # SPECIAL_TYPE is INVALID
-                        for row_index, row in dataDictionary_in.iterrows():
-                            for column_index, value in row.items():
-                                if value in missing_values or pd.isnull(value):
-                                    if column_index == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                            row_index, column_index]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
-                                            row_index, column_index + 1]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
-                                        row_index, column_index] and not (pd.isnull(
-                                        dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                        dataDictionary_out.loc[row_index, column_index])):
-                                        return False
-
-                elif axis_param is None:
-                    raise ValueError("The axis cannot be None when applying the NEXT operation")
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if dataDictionary_out.loc[row_index, column_name] != most_frequent:
+                                return False
+                        else:  # If the output value isn't a missing value and isn't equal to the
+                            # original value, then return False
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                return False
+            if specialTypeInput == SpecialType.INVALID:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values:
+                            if dataDictionary_out.loc[row_index, column_name] != most_frequent:
+                                return False
+                        else:  # If the output value isn't a missing value and isn't equal to the
+                            # original value, then return False
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name] and not (
+                                    pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                    dataDictionary_out.loc[row_index, column_name])):
+                                return False
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                # Instead of iterating over the columns, we iterate over the rows to check the derived type
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if dataDictionary_out.loc[row_index, column_index] != most_frequent:
+                                return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values:
+                            if dataDictionary_out.loc[row_index, column_index] != most_frequent:
+                                return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (
+                                    pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                    dataDictionary_out.loc[row_index, column_index])):
+                                return False
+        elif axis_param is None:
+            most_frequent = dataDictionary_in.stack().value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if dataDictionary_out.loc[row_index, column_index] != most_frequent:
+                                return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values:
+                            if dataDictionary_out.loc[row_index, column_index] != most_frequent:
+                                return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (
+                                    pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                    dataDictionary_out.loc[row_index, column_index])):
+                                return False
 
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("The field is not in the dataframe")
 
         elif field in dataDictionary_in.columns:
-            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    most_frequent = dataDictionary_in[field].value_counts().idxmax()
-                    if specialTypeInput == SpecialType.MISSING:
-                        for idx, value in dataDictionary_in[field].items():
-                            if value in missing_values or pd.isnull(value):
-                                if dataDictionary_out.loc[idx, field] != most_frequent:
-                                    return False
-                            else:
-                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                    return False
-                    elif specialTypeInput == SpecialType.INVALID:
-                        for idx, value in dataDictionary_in[field].items():
-                            if value in missing_values:
-                                if dataDictionary_out.loc[idx, field] != most_frequent:
-                                    return False
-                            else:
-                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                    return False
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    if specialTypeInput == SpecialType.MISSING:
-                        if missing_values is not None:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if idx == 0:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
-                        else: # missing_values is None
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == 0:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
+            most_frequent = dataDictionary_in[field].value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values or pd.isnull(value):
+                        if dataDictionary_out.loc[idx, field] != most_frequent:
+                            return False
+                    else:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            return False
+            elif specialTypeInput == SpecialType.INVALID:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values:
+                        if dataDictionary_out.loc[idx, field] != most_frequent:
+                            return False
+                    else:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            return False
 
-                    elif specialTypeInput == SpecialType.INVALID:
-                        if missing_values is not None:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == 0:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not(pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(dataDictionary_out.loc[idx, field])):
-                                        return False
+    return True
 
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    if specialTypeInput == SpecialType.MISSING:
-                        if missing_values is not None:
-                            # result = (pd.Series([dataDictionary_in[field].iloc[i + 1]
-                            #                     if (value in missing_values or pd.isnull(value)) and i < len(dataDictionary_in[field]) - 1
-                            #                     else value for i, value in enumerate(dataDictionary_in[field])],
-                            #                    index=dataDictionary_in[field].index)
-                            #           .equals(dataDictionary_out[field]))
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if idx == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
 
+def checkMostFrequentBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                     specialTypeInput: SpecialType, missing_values: list, axis_param: int, field) -> bool:
+    """
+    Check if the special type most frequent is applied correctly when the input and output dataframes when belongOp_in is Belong and belongOp_out is NOTBELONG
+
+    params:
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the most frequent
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the most frequent
+    :param specialTypeInput: (SpecialType) Special type to apply the most frequent
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the most frequent
+    :param field: (str) Field to apply the most frequent
+
+    :return: True if the special type most frequent is applied correctly, False otherwise
+    """
+    if field is None:
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if dataDictionary_out.loc[row_index, column_name] == most_frequent:
+                                return False
+                        else:  # If the output value isn't a missing value and isn't equal to the
+                            # original value, then return False
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                return False
+            if specialTypeInput == SpecialType.INVALID:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values:
+                            if dataDictionary_out.loc[row_index, column_name] == most_frequent:
+                                return False
+                        else:  # If the output value isn't a missing value and isn't equal to the
+                            # original value, then return False
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name] and not (
+                                    pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_name])):
+                                return False
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                # Instead of iterating over the columns, we iterate over the rows to check the derived type
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if dataDictionary_out.loc[row_index, column_index] == most_frequent:
+                                return False
                         else:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
-
-                    elif specialTypeInput == SpecialType.INVALID:
-                        if missing_values is not None:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not(pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(dataDictionary_out.loc[idx, field])):
-                                        return False
-
-            if belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    most_frequent = dataDictionary_in[field].value_counts().idxmax()
-                    if specialTypeInput == SpecialType.MISSING:
-                        for idx, value in dataDictionary_in[field].items():
-                            if value in missing_values or pd.isnull(value):
-                                if dataDictionary_out.loc[idx, field] == most_frequent:
-                                    return False
-                            else:
-                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                    return False
-                    elif specialTypeInput == SpecialType.INVALID:
-                        for idx, value in dataDictionary_in[field].items():
-                            if value in missing_values:
-                                if dataDictionary_out.loc[idx, field] == most_frequent:
-                                    return False
-                            else:
-                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                    return False
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    if specialTypeInput == SpecialType.MISSING:
-                        if missing_values is not None:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if idx == 0:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx - 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
-                        else:  # missing_values is None
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == 0:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx - 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
-
-                    elif specialTypeInput == SpecialType.INVALID:
-                        if missing_values is not None:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == 0:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx - 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
-                                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                                            dataDictionary_out.loc[idx, field])):
-                                        return False
-
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    if specialTypeInput == SpecialType.MISSING:
-                        if missing_values is not None:
-                            # result = (pd.Series([dataDictionary_in[field].iloc[i + 1]
-                            #                     if (value in missing_values or pd.isnull(value)) and i < len(dataDictionary_in[field]) - 1
-                            #                     else value for i, value in enumerate(dataDictionary_in[field])],
-                            #                    index=dataDictionary_in[field].index)
-                            #           .equals(dataDictionary_out[field]))
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values or pd.isnull(value):
-                                    if idx == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx + 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
-
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values:
+                            if dataDictionary_out.loc[row_index, column_index] == most_frequent:
+                                return False
                         else:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx + 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                        return False
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (
+                                    pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_index])):
+                                return False
+        elif axis_param is None:
+            most_frequent = dataDictionary_in.stack().value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if dataDictionary_out.loc[row_index, column_index] == most_frequent:
+                                return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values:
+                            if dataDictionary_out.loc[row_index, column_index] == most_frequent:
+                                return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (
+                                    pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_index])):
+                                return False
 
-                    elif specialTypeInput == SpecialType.INVALID:
-                        if missing_values is not None:
-                            for idx, value in dataDictionary_in[field].items():
-                                if value in missing_values:
-                                    if idx == len(dataDictionary_in) - 1:
-                                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                                            return False
-                                    else:
-                                        if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx + 1, field]:
-                                            return False
-                                else:
-                                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
-                                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                                            dataDictionary_out.loc[idx, field])):
-                                        return False
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
 
-            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
-                if specialTypeInput == SpecialType.MISSING:
-                    for row_index, value in dataDictionary_in[field].items():
+        elif field in dataDictionary_in.columns:
+            most_frequent = dataDictionary_in[field].value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values or pd.isnull(value):
+                        if dataDictionary_out.loc[idx, field] == most_frequent:
+                            return False
+                    else:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            return False
+            elif specialTypeInput == SpecialType.INVALID:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values:
+                        if dataDictionary_out.loc[idx, field] == most_frequent:
+                            return False
+                    else:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            return False
+
+    return True
+
+
+
+def checkMostFrequentNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                     specialTypeInput: SpecialType, missing_values: list, axis_param: int, field) -> bool:
+    """
+    Check if the special type most frequent is applied correctly when the input and output dataframes when belongOp_in is NOTBELONG and belongOp_out is BELONG
+
+    params:
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the most frequent
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the most frequent
+    :param specialTypeInput: (SpecialType) Special type to apply the most frequent
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the most frequent
+    :param field: (str) Field to apply the most frequent
+
+    :return: True if the special type most frequent is applied correctly, False otherwise
+    """
+    if field is None:
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
                         if value in missing_values or pd.isnull(value):
                             return False
-                elif specialTypeInput == SpecialType.INVALID:
-                    for row_index, value in dataDictionary_in[field].items():
+            if specialTypeInput == SpecialType.INVALID:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values:
+                            return False
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                # Instead of iterating over the columns, we iterate over the rows to check the derived type
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values:
+                            return False
+        elif axis_param is None:
+            most_frequent = dataDictionary_in.stack().value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
                         if value in missing_values:
                             return False
 
-            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
-                if specialTypeInput == SpecialType.MISSING:
-                    for row_index, value in dataDictionary_in[field].items():
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            most_frequent = dataDictionary_in[field].value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values or pd.isnull(value):
+                        return False
+            elif specialTypeInput == SpecialType.INVALID:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values:
+                        return False
+
+    return True
+
+
+def checkMostFrequentNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                        specialTypeInput: SpecialType, missing_values: list, axis_param: int, field) -> bool:
+    """
+    Check if the special type most frequent is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are NOTBELONG
+
+    params:
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the most frequent
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the most frequent
+    :param specialTypeInput: (SpecialType) Special type to apply the most frequent
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the most frequent
+    :param field: (str) Field to apply the most frequent
+
+    :return: True if the special type most frequent is applied correctly, False otherwise
+    """
+    if field is None:
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
                         if value in missing_values or pd.isnull(value):
                             return False
-                elif specialTypeInput == SpecialType.INVALID:
-                    for row_index, value in dataDictionary_in[field].items():
+            if specialTypeInput == SpecialType.INVALID:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values:
+                            return False
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                # Instead of iterating over the columns, we iterate over the rows to check the derived type
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    most_frequent = row.value_counts().idxmax()
+                    for column_index, value in row.items():
+                        if value in missing_values:
+                            return False
+        elif axis_param is None:
+            most_frequent = dataDictionary_in.stack().value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+            if specialTypeInput == SpecialType.INVALID:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
                         if value in missing_values:
                             return False
 
-    return result
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            most_frequent = dataDictionary_in[field].value_counts().idxmax()
+            if specialTypeInput == SpecialType.MISSING:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values or pd.isnull(value):
+                        return False
+            elif specialTypeInput == SpecialType.INVALID:
+                for idx, value in dataDictionary_in[field].items():
+                    if value in missing_values:
+                        return False
+
+    return True
 
 
-def check_derivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionary_in: pd.DataFrame,
-                                    dataDictionary_out: pd.DataFrame, outliers_dataframe_mask: pd.DataFrame,
-                                    belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
-                                    axis_param: int = None, field: str = None) -> bool:
+def checkDerivedTypeMostFrequent(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, specialTypeInput: SpecialType,
+                                  belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
+                                  missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the derived type most frequent value is applied correctly
+    params:
+        :param dataDictionary_in: dataframe with the data before the MostFrequent
+        :param dataDictionary_out: dataframe with the data after the MostFrequent
+        :param specialTypeInput: special type to apply the MostFrequent
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the MostFrequent
+        :param field: field to apply the MostFrequent
+
+    Returns:
+        :return: True if the derived type most frequent value is applied correctly
+    """
+    result = True
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        result=checkMostFrequentBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                             specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                             axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkMostFrequentBelongNotBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result=checkMostFrequentNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkMostFrequentNotBelongNotBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                   specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                   axis_param=axis_param, field=field)
+
+    return True if result else False
+
+
+def checkDerivedTypePreviousBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                         specialTypeInput: SpecialType, missing_values: list, axis_param: int, field: str) -> bool:
+    """
+    Check if the derived type previous value is applied correctly when the input and output dataframes when belongOp_in is Belong and belongOp_out is BELONG
+
+    params:
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the previous
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the previous
+    :param specialTypeInput: (SpecialType) Special type to apply the previous
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the previous
+    :param field: (str) Field to apply the previous
+
+    :return: True if the derived type previous value is applied correctly, False otherwise
+    """
+    if field is None:
+        # Check the previous value of the missing values
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                # Manual check of the previous operacion to the missing values in the columns
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == 0:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index - 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == 0:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index - 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_name])):
+                                return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == 0:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index - 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == 0:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index - 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_index])):
+                                return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            if idx == 0:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+                else: # missing_values is None
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == 0:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == 0:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not(pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(dataDictionary_out.loc[idx, field])):
+                                return False
+
+    return True
+
+
+def checkDerivedTypePreviousBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                            specialTypeInput: SpecialType, missing_values: list, axis_param: int, field: str) -> bool:
+    """
+    Check if the derived type previous is applied correctly when the input and output dataframes when belongOp_in is Belong and belongOp_out is NOTBELONG
+
+    params:
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the previous
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the previous
+    :param specialTypeInput: (SpecialType) Special type to apply the previous
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the previous
+    :param field: (str) Field to apply the previous
+
+    :return: True if the derived type previous is applied correctly, False otherwise
+    """
+    if field is None:
+        # Check the previous value of the missing values
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                # Manual check of the previous operacion to the missing values in the columns
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == 0:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
+                                    row_index - 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == 0:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
+                                    row_index - 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_name])):
+                                return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == 0:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
+                                    row_index, column_index - 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == 0:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
+                                    row_index, column_index - 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_index])):
+                                return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            if idx == 0:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx - 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+                else:  # missing_values is None
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == 0:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx - 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == 0:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx - 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
+                                    pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
+                                dataDictionary_out.loc[idx, field])):
+                                return False
+
+    return True
+
+
+def checkDerivedTypePreviousNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                            specialTypeInput: SpecialType, missing_values: list, axis_param: int,
+                                            field: str) -> bool:
+    """
+    Check if the derived type previous value is applied correctly when the input and output dataframes when belongOp_in is NOTBELONG and belongOp_out is BELONG
+
+    params:
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the Previous
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the Previous
+    :param specialTypeInput: (SpecialType) Special type to apply the Previous
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the Previous
+    :param field: (str) Field to apply the Previous
+
+    :return: True if the derived type previous value is applied correctly, False otherwise
+    """
+    if field is None:
+        # Check the previous value of the missing values
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                # Manual check of the previous operacion to the missing values in the columns
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+                else:  # missing_values is None
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+    return True
+
+
+def checkDerivedTypePreviousNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                               specialTypeInput: SpecialType, missing_values: list, axis_param: int,
+                                                  field: str) -> bool:
+    """
+    Check if the derived type previous value is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are NOTBELONG
+
+    params:
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the Previous
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the Previous
+    :param specialTypeInput: (SpecialType) Special type to apply the Previous
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the Previous
+    :param field: (str) Field to apply the Previou
+
+    :return: True if the derived type previous value is applied correctly, False otherwise
+    """
+    if field is None:
+        # Check the previous value of the missing values
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                # Manual check of the previous operacion to the missing values in the columns
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+                else:  # missing_values is None
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+    return True
+
+
+def checkDerivedTypePrevious(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, specialTypeInput: SpecialType,
+                                  belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
+                                  missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the derived type previous value is applied correctly
+    params:
+        :param dataDictionary_in: dataframe with the data before the Previous
+        :param dataDictionary_out: dataframe with the data after th Previous
+        :param specialTypeInput: special type to apply the Previous
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the Previous
+        :param field: field to apply the Previous
+
+    Returns:
+        :return: True if the derived type previous value is applied correctly
+    """
+    result = True
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        result=checkDerivedTypePreviousBelongBelong(dataDictionary_in=dataDictionary_in,
+                                                    dataDictionary_out=dataDictionary_out,
+                                                    specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                    axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkDerivedTypePreviousBelongNotBelong(dataDictionary_in=dataDictionary_in,
+                                                       dataDictionary_out=dataDictionary_out,
+                                                       specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                       axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result=checkDerivedTypePreviousNotBelongBelong(dataDictionary_in=dataDictionary_in,
+                                                       dataDictionary_out=dataDictionary_out,
+                                                       specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                       axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkDerivedTypePreviousNotBelongNotBelong(dataDictionary_in=dataDictionary_in,
+                                                          dataDictionary_out=dataDictionary_out,
+                                                          specialTypeInput=specialTypeInput,
+                                                          missing_values=missing_values, axis_param=axis_param,
+                                                          field=field)
+
+    return True if result else False
+
+
+def checkDerivedTypeNextBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                     specialTypeInput: SpecialType, missing_values: list, axis_param: int, field: str) -> bool:
+    """
+    Check if the derived type next value is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are BELONG
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the next
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the next
+    :param specialTypeInput: (SpecialType) Special type to apply the next
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the next
+    :param field: (str) Field to apply the next
+
+    :return: True if the derived type next value is applied correctly, False otherwise
+    """
+    if field is None:
+        # Define the lambda function to replace the values within missing values by the value of the next position
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index + 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index + 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_name])):
+                                return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index + 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index + 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_index])):
+                                return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the NEXT operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            if idx == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+
+                else:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not(pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(dataDictionary_out.loc[idx, field])):
+                                return False
+
+    return True
+
+
+def checkDerivedTypeNextBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                     specialTypeInput: SpecialType, missing_values: list, axis_param: int, field: str) -> bool:
+    """
+    Check if the derived type next value is applied correctly when the input and output dataframes when belongOp_in is BELONG and belongOp_out is NOTBELONG
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the next
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the next
+    :param specialTypeInput: (SpecialType) Special type to apply the next
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the next
+    :param field: (str) Field to apply the next
+
+    :return: True if the derived type next value is applied correctly, False otherwise
+    """
+    if field is None:
+        # Define the lambda function to replace the values within missing values by the value of the next position
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
+                                    row_index + 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            if row_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index, column_name]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_name] == dataDictionary_in.loc[
+                                    row_index + 1, column_name]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_name])):
+                                return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
+                                    row_index, column_index + 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index]:
+                                return False
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            if column_index == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    row_index, column_index]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[row_index, column_index] == dataDictionary_in.loc[
+                                    row_index, column_index + 1]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                row_index, column_index] and not (pd.isnull(
+                                dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_index])):
+                                return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the NEXT operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            if idx == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx + 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+
+                else:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx + 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            if idx == len(dataDictionary_in) - 1:
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.loc[idx, field] == dataDictionary_in.loc[idx + 1, field]:
+                                    return False
+                        else:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
+                                    pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
+                                dataDictionary_out.loc[idx, field])):
+                                return False
+
+    return True
+
+
+def checkDerivedTypeNextNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                     specialTypeInput: SpecialType, missing_values: list, axis_param: int, field: str) -> bool:
+    """
+    Check if the derived type next value is applied correctly when the input and output dataframes when belongOp_in is NOTBELONG and belongOp_out is BELONG
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the next
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the next
+    :param specialTypeInput: (SpecialType) Special type to apply the next
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the next
+    :param field: (str) Field to apply the next
+
+    :return: True if the derived type next value is applied correctly, False otherwise
+    """
+    if field is None:
+        # Define the lambda function to replace the values within missing values by the value of the next position
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the NEXT operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+                else:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+    return True
+
+
+def checkDerivedTypeNextNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                     specialTypeInput: SpecialType, missing_values: list, axis_param: int, field: str) -> bool:
+    """
+    Check if the derived type next value is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are NOTBELONG
+    :param dataDictionary_in: (pd.DataFrame) Dataframe with the data before the next
+    :param dataDictionary_out: (pd.DataFrame) Dataframe with the data after the next
+    :param specialTypeInput: (SpecialType) Special type to apply the next
+    :param missing_values: (list) List of missing values
+    :param axis_param: (int) Axis to apply the next
+    :param field: (str) Field to apply the next
+
+    :return: True if the derived type next value is applied correctly, False otherwise
+    """
+    if field is None:
+        # Define the lambda function to replace the values within missing values by the value of the next position
+        if axis_param == 0:
+            if specialTypeInput == SpecialType.MISSING:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+            else:  # SPECIAL_TYPE is INVALID
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param == 1:
+            if specialTypeInput == SpecialType.MISSING:
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+            else:  # SPECIAL_TYPE is INVALID
+                for row_index, row in dataDictionary_in.iterrows():
+                    for column_index, value in row.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+        elif axis_param is None:
+            raise ValueError("The axis cannot be None when applying the NEXT operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            if specialTypeInput == SpecialType.MISSING:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+
+                else:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+            elif specialTypeInput == SpecialType.INVALID:
+                if missing_values is not None:
+                    for idx, value in dataDictionary_in[field].items():
+                        if value in missing_values:
+                            return False
+
+    return True
+
+
+def checkDerivedTypeNext(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, specialTypeInput: SpecialType,
+                                  belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
+                                  missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the derived type next value is applied correctly
+    params:
+        :param dataDictionary_in: dataframe with the data before the Next
+        :param dataDictionary_out: dataframe with the data after the Next
+        :param specialTypeInput: special type to apply the Next
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the Next
+        :param field: field to apply the Next
+
+    Returns:
+        :return: True if the derived type next value is applied correctly
+    """
+    result = True
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        result=checkDerivedTypeNextBelongBelong(dataDictionary_in=dataDictionary_in,
+                                                    dataDictionary_out=dataDictionary_out,
+                                                    specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                    axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkDerivedTypeNextBelongNotBelong(dataDictionary_in=dataDictionary_in,
+                                                       dataDictionary_out=dataDictionary_out,
+                                                       specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                       axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result=checkDerivedTypeNextNotBelongBelong(dataDictionary_in=dataDictionary_in,
+                                                       dataDictionary_out=dataDictionary_out,
+                                                       specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                       axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result=checkDerivedTypeNextNotBelongNotBelong(dataDictionary_in=dataDictionary_in,
+                                                          dataDictionary_out=dataDictionary_out,
+                                                          specialTypeInput=specialTypeInput,
+                                                          missing_values=missing_values, axis_param=axis_param,
+                                                          field=field)
+
+    return True if result else False
+
+
+def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionary_in: pd.DataFrame,
+                                   dataDictionary_out: pd.DataFrame, outliers_dataframe_mask: pd.DataFrame,
+                                   belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
+                                   axis_param: int = None, field: str = None) -> bool:
     """
     Check the derived type to the outliers of a dataframe
     :param derivedTypeOutput: derived type to apply to the outliers

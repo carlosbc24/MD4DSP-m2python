@@ -1,8 +1,10 @@
 # Importing functions and classes from packages
 import numpy as np
 import pandas as pd
-from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_derivedType, check_derivedTypeColRowOutliers, checkSpecialTypeInterpolation, \
-    checkSpecialTypeMean, checkSpecialTypeMedian, checkSpecialTypeClosest
+from helpers.auxiliar import cast_type_FixValue, find_closest_value, checkDerivedTypeColRowOutliers, \
+    checkSpecialTypeInterpolation, \
+    checkSpecialTypeMean, checkSpecialTypeMedian, checkSpecialTypeClosest, checkDerivedTypeMostFrequent, \
+    checkDerivedTypePrevious, checkDerivedTypeNext
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 
@@ -691,29 +693,46 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
+
+        dataDictionary_outliers_mask = None
         result = True
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            dataDictionary_outliers_mask = getOutliers(dataDictionary_in, field, axis_param)
+
         if field is None:
             if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
-                result = check_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_in,
-                                           dataDictionary_out, belongOp_in, belongOp_out,
-                                           missing_values, axis_param, field)
+                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+                    result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                          belongOp_in, belongOp_out, missing_values, axis_param, field)
+                elif derivedTypeOutput == DerivedType.PREVIOUS:
+                    result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                      belongOp_in, belongOp_out, missing_values, axis_param, field)
+                elif derivedTypeOutput == DerivedType.NEXT:
+                    result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                  belongOp_in, belongOp_out, missing_values, axis_param, field)
 
             elif specialTypeInput == SpecialType.OUTLIER:
                 # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
                 # If the outliers are applied at the dataframe level, previous and next cannot be applied.
 
                 if axis_param is None:
-                    ourliers_mask = getOutliers(dataDictionary_in, field, axis_param)
-                    missing_values = dataDictionary_in.where(ourliers_mask == 1).stack().tolist()
-                    result = check_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_in,
-                                               dataDictionary_out, belongOp_in, belongOp_out,
-                                               missing_values, axis_param, field)
+                    missing_values = dataDictionary_in.where(dataDictionary_outliers_mask == 1).stack().tolist()
+                    if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+                        result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                              belongOp_in, belongOp_out, missing_values, axis_param, field)
+                    elif derivedTypeOutput == DerivedType.PREVIOUS:
+                        result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                          belongOp_in, belongOp_out, missing_values, axis_param, field)
+                    elif derivedTypeOutput == DerivedType.NEXT:
+                        result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                      belongOp_in, belongOp_out, missing_values, axis_param, field)
+
                 elif axis_param == 0 or axis_param == 1:
-                    ourliers_mask = getOutliers(dataDictionary_in, field, axis_param)
-                    result = check_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
-                                                             dataDictionary_out,
-                                                             ourliers_mask, belongOp_in, belongOp_out,
-                                                             axis_param, field)
+                    result = checkDerivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
+                                                            dataDictionary_out,
+                                                            dataDictionary_outliers_mask, belongOp_in, belongOp_out,
+                                                            axis_param, field)
 
         elif field is not None:
             if field not in dataDictionary_in.columns:
@@ -721,16 +740,23 @@ class Invariants:
             elif field in dataDictionary_in.columns:
                 if np.issubdtype(dataDictionary_in[field].dtype, np.number):
                     if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
-                        result = check_derivedType(specialTypeInput, derivedTypeOutput,
-                                                   dataDictionary_in, dataDictionary_out,
-                                                   belongOp_in, belongOp_out,
-                                                   missing_values, axis_param, field)
+                        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+                            result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                                belongOp_in, belongOp_out, missing_values, axis_param,
+                                                                field)
+                        elif derivedTypeOutput == DerivedType.PREVIOUS:
+                            result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                            belongOp_in, belongOp_out, missing_values, axis_param,
+                                                            field)
+                        elif derivedTypeOutput == DerivedType.NEXT:
+                            result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                        belongOp_in, belongOp_out, missing_values, axis_param,
+                                                        field)
                     elif specialTypeInput == SpecialType.OUTLIER:
-                        ourliers_mask = getOutliers(dataDictionary_in, field, axis_param)
-                        result = check_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
-                                                                 dataDictionary_out, ourliers_mask,
-                                                                 belongOp_in, belongOp_out, axis_param,
-                                                                 field)
+                        result = checkDerivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
+                                                                dataDictionary_out, dataDictionary_outliers_mask,
+                                                                belongOp_in, belongOp_out, axis_param,
+                                                                field)
                 else:
                     raise ValueError("The field is not numeric")
 
@@ -759,7 +785,7 @@ class Invariants:
         """
 
         dataDictionary_outliers_mask = None
-        result = None
+        result = True
 
         if specialTypeInput == SpecialType.OUTLIER:
             dataDictionary_outliers_mask = getOutliers(dataDictionary_in, field, axis_param)
