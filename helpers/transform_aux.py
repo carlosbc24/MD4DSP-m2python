@@ -459,7 +459,7 @@ def specialTypeMean(dataDictionary_copy: pd.DataFrame, specialTypeInput: Special
 
     if field is None:
         if specialTypeInput == SpecialType.MISSING:
-            if axis_param == None:
+            if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 # Calculate the mean of these numeric columns
@@ -486,7 +486,7 @@ def specialTypeMean(dataDictionary_copy: pd.DataFrame, specialTypeInput: Special
                             lambda x: x if not (x in missing_values or pd.isnull(x)) else means[row])
                 dataDictionary_copy = dataDictionary_copy.T
         if specialTypeInput == SpecialType.INVALID:
-            if axis_param == None:
+            if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 # Calculate the mean of these numeric columns
@@ -576,7 +576,7 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
     """
     if field is None:
         if specialTypeInput == SpecialType.MISSING:
-            if axis_param == None:
+            if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 # Calculate the median of these numeric columns
@@ -603,7 +603,7 @@ def specialTypeMedian(dataDictionary_copy: pd.DataFrame, specialTypeInput: Speci
                 dataDictionary_copy = dataDictionary_copy.T
 
         if specialTypeInput == SpecialType.INVALID:
-            if axis_param == None:
+            if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 # Calculate the median of these numeric columns
