@@ -194,7 +194,7 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
                         most_frequent = dataDictionary_copy[row].value_counts().idxmax()
                         dataDictionary_copy[row] = dataDictionary_copy[row].apply(
                             lambda x: most_frequent if pd.isnull(x) else x)
-                if missing_values is not None:
+                if missing_values is not None: # It works for missing values, invalid values and outliers
                     for row in dataDictionary_copy.columns:
                         most_frequent = dataDictionary_copy[row].value_counts().idxmax()
                         dataDictionary_copy[row] = dataDictionary_copy[row].apply(
@@ -202,7 +202,7 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
                 dataDictionary_copy = dataDictionary_copy.T
             elif axis_param is None:
                 valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
-                if missing_values is not None:
+                if missing_values is not None: # It works for missing values, invalid values and outliers
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(lambda x: valor_mas_frecuente if x in missing_values else x))
                 if specialTypeInput == SpecialType.MISSING:
@@ -218,6 +218,7 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
                                           if (value in missing_values or pd.isnull(value)) and i > 0 else value
                                            for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else: # Define the lambda function to replace the values within missing values by the value of the previous position
+                    # It works for invalid values and outliers
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                         value) else row_or_col.iloc[i - 1] if value in missing_values and i > 0 else value
                               for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
@@ -233,7 +234,7 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
                                              if (value in missing_values or pd.isnull(value)) and i < len(row_or_col) - 1
                                                 else value for i, value in enumerate(row_or_col)], index=row_or_col.index),
                                                     axis=axis_param)
-                else:
+                else: # It works for invalid values and outliers
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
                                             value) else row_or_col.iloc[i + 1] if value in missing_values and i < len(
                                             row_or_col) - 1 else value for i, value in enumerate(row_or_col)],
@@ -251,7 +252,7 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
                 if specialTypeInput == SpecialType.MISSING:
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                         lambda x: most_frequent if pd.isnull(x) else x)
-                if missing_values is not None:
+                if missing_values is not None: # It works for missing values, invalid values and outliers
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                         lambda x: most_frequent if x in missing_values else x)
             elif derivedTypeOutput == DerivedType.PREVIOUS:
@@ -266,7 +267,7 @@ def apply_derivedType(specialTypeInput: SpecialType, derivedTypeOutput: DerivedT
                                                     and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
                                                         index=dataDictionary_copy[field].index)
                 elif specialTypeInput == SpecialType.INVALID:
-                    if missing_values is not None:
+                    if missing_values is not None: # It works for missing values, invalid values and outliers
                         dataDictionary_copy[field] = pd.Series(
                             [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
                             if value in missing_values and i > 0 else value for i, value in
