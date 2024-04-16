@@ -242,12 +242,13 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
                     return False
             # Applies the linear interpolation in the DataFrame
             if axis_param == 1:
-                dataDictionary_in_copy=dataDictionary_in_copy.T
-                dataDictionary_in=dataDictionary_in.T
+                dataDictionary_in_copy = dataDictionary_in_copy.T
+                dataDictionary_in = dataDictionary_in.T
                 for col in dataDictionary_in_copy.columns:
                     if np.issubdtype(dataDictionary_in_copy[col].dtype, np.number):
-                        dataDictionary_in_copy[col] = (dataDictionary_in_copy[col].apply(lambda x: np.nan if x in missing_values else x)
-                                                       .interpolate(method='linear', limit_direction='both'))
+                        dataDictionary_in_copy[col] = (
+                            dataDictionary_in_copy[col].apply(lambda x: np.nan if x in missing_values else x)
+                            .interpolate(method='linear', limit_direction='both'))
                     # Iterate over each column
                 for col in dataDictionary_in_copy.columns:
                     # For each index in the column
@@ -257,7 +258,7 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
 
-                dataDictionary_in=dataDictionary_in.T
+                dataDictionary_in = dataDictionary_in.T
                 dataDictionary_in_copy = dataDictionary_in_copy.T
                 result = dataDictionary_in_copy.equals(dataDictionary_out)
                 if result is False:
@@ -271,7 +272,7 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
                             if dataDictionary_outliers_mask.at[idx, col] == 1:
                                 dataDictionary_in_copy.at[idx, col] = np.NaN
                         dataDictionary_in_copy[col] = dataDictionary_in_copy[col].interpolate(method='linear',
-                                                                                                limit_direction='both')
+                                                                                              limit_direction='both')
                 for col in dataDictionary_in_copy.columns:
                     # For each índex in the column
                     for idx in dataDictionary_in_copy.index:
@@ -283,15 +284,15 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
                 if result is False:
                     return False
             elif axis_param == 1:
-                dataDictionary_copy_copy=dataDictionary_in_copy.T
-                dataDictionary_copy=dataDictionary_in.T
+                dataDictionary_copy_copy = dataDictionary_in_copy.T
+                dataDictionary_copy = dataDictionary_in.T
                 for col in dataDictionary_copy.columns:
                     if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
                         for idx, value in dataDictionary_copy[col].items():
                             if dataDictionary_outliers_mask.at[idx, col] == 1:
                                 dataDictionary_copy.at[idx, col] = np.NaN
                         dataDictionary_copy[col] = dataDictionary_copy[col].interpolate(method='linear',
-                                                                                                limit_direction='both')
+                                                                                        limit_direction='both')
                 for col in dataDictionary_copy.columns:
                     # For each índex in the column
                     for idx in dataDictionary_copy.index:
@@ -300,7 +301,7 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
                 dataDictionary_in_copy = dataDictionary_in_copy.T
-                dataDictionary_in=dataDictionary_in.T
+                dataDictionary_in = dataDictionary_in.T
                 result = dataDictionary_in_copy.equals(dataDictionary_out)
                 if result is False:
                     return False
@@ -313,14 +314,14 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
 
         if specialTypeInput == SpecialType.MISSING:
             dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values
-                                                else x).interpolate(method='linear', limit_direction='both'))
+            else x).interpolate(method='linear', limit_direction='both'))
             result = dataDictionary_in_copy.equals(dataDictionary_out)
             if result is False:
                 return False
 
         elif specialTypeInput == SpecialType.INVALID:
             dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values
-                                            else x).interpolate(method='linear', limit_direction='both'))
+            else x).interpolate(method='linear', limit_direction='both'))
             # For each índex in the column
             for idx in dataDictionary_in.index:
                 # Verify if the value is NaN in the original dataframe
@@ -336,7 +337,8 @@ def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictiona
             for idx, value in dataDictionary_in[field].items():
                 if dataDictionary_outliers_mask.at[idx, field] == 1:
                     dataDictionary_in.at[idx, field] = np.NaN
-            dataDictionary_in_copy[field] = dataDictionary_in[field].interpolate(method='linear', limit_direction='both')
+            dataDictionary_in_copy[field] = dataDictionary_in[field].interpolate(method='linear',
+                                                                                 limit_direction='both')
             # For each índex in the column
             for idx in dataDictionary_in.index:
                 # Verify if the value is NaN in the original dataframe
@@ -375,18 +377,199 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
             if axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    dataDictionary_in_copy[col_name] = (dataDictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x).
-                                              interpolate(method='linear', limit_direction='both'))
-
-
-
+                    dataDictionary_in_copy[col_name] = (
+                        dataDictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x).
+                        interpolate(method='linear', limit_direction='both'))
+                for value in missing_values:
+                    for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                        for idx in dataDictionary_in.index:
+                            if dataDictionary_in.at[idx, col_name] == value or pd.isnull(dataDictionary_in.at[idx, col_name]):
+                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
+                                    return True
+                            else:
+                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]:
+                                    return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
                     numeric_data = row.select_dtypes(include=[np.number])
-                    result = (numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
-                              interpolate(method='linear', limit_direction='both').equals(dataDictionary_out[row]))
-                    if result is False:
-                        return False
+                    dataDictionary_in_copy[row] = (
+                        numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
+                        interpolate(method='linear', limit_direction='both'))
+                for value in missing_values:
+                    for col_name in dataDictionary_in.columns:
+                        for idx in dataDictionary_in.index:
+                            if dataDictionary_in.at[idx, col_name] == value or pd.isnull(dataDictionary_in.at[idx, col_name]):
+                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
+                                    return True
+                            else:
+                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]:
+                                    return False
+
+        elif specialTypeInput == SpecialType.INVALID:
+            if axis_param == 0:
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    dataDictionary_in_copy[col] = (
+                        dataDictionary_in[col].apply(lambda x: np.nan if x in missing_values else x).
+                        interpolate(method='linear', limit_direction='both'))
+
+                # Iterate over each column
+                for col in dataDictionary_in.columns:
+                    # For each index in the column
+                    for idx in dataDictionary_in.index:
+                        # Verify if the value is NaN in the original dataframe
+                        if pd.isnull(dataDictionary_in.at[idx, col]):
+                            # Replace the value with the corresponding one from dataDictionary_copy_copy
+                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+
+                for value in missing_values:
+                    for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                        for idx in dataDictionary_in.index:
+                            if dataDictionary_in.at[idx, col] == value:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                    return True
+                            else:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
+                                    return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    dataDictionary_in_copy[row] = (
+                        numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
+                        interpolate(method='linear', limit_direction='both'))
+
+                # Iterate over each column
+                for col in dataDictionary_in.columns:
+                    # For each index in the column
+                    for idx in dataDictionary_in.index:
+                        # Verify if the value is NaN in the original dataframe
+                        if pd.isnull(dataDictionary_in.at[idx, col]):
+                            # Replace the value with the corresponding one from dataDictionary_copy_copy
+                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+
+                for value in missing_values:
+                    for col in dataDictionary_in.columns:
+                        for idx in dataDictionary_in.index:
+                            if dataDictionary_in.at[idx, col] == value:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                    return True
+                            else:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
+                                    return False
+
+        elif specialTypeInput == SpecialType.OUTLIER:
+            if axis_param == 0:
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col].items():
+                        if dataDictionary_outliers_mask.at[idx, col] == 1:
+                            dataDictionary_in_copy.at[idx, col] = np.NaN
+                    dataDictionary_in_copy[col] = dataDictionary_in_copy[col].interpolate(method='linear', limit_direction='both')
+
+                # Iterate over each column
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    # For each index in the column
+                    for idx in dataDictionary_in.index:
+                        # Verify if the value is NaN in the original dataframe
+                        if pd.isnull(dataDictionary_in.at[idx, col]):
+                            # Replace the value with the corresponding one from dataDictionary_copy_copy
+                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+
+                for value in missing_values:
+                    for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                        for idx in dataDictionary_in.index:
+                            if dataDictionary_in.at[idx, col] == value:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                    return True
+                            else:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
+                                    return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                        if dataDictionary_outliers_mask.at[idx, col] == 1:
+                            dataDictionary_in_copy.at[idx, col] = np.NaN
+                    # Interpolate the row
+                    dataDictionary_in_copy.loc[idx] = dataDictionary_in_copy.loc[idx].interpolate(method='linear', limit_direction='both')
+
+                # Iterate over each column
+                for col in dataDictionary_in.columns:
+                    # For each index in the column
+                    for idx in dataDictionary_in.index:
+                        # Verify if the value is NaN in the original dataframe
+                        if pd.isnull(dataDictionary_in.at[idx, col]):
+                            # Replace the value with the corresponding one from dataDictionary_copy_copy
+                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+
+                for value in missing_values:
+                    for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                        for idx in dataDictionary_in.index:
+                            if dataDictionary_in.at[idx, col] == value:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                    return True
+                            else:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
+                                    return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("The field is not numeric")
+
+        if specialTypeInput == SpecialType.MISSING:
+            dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values else x).
+                                             interpolate(method='linear', limit_direction='both'))
+
+            for value in missing_values:
+                for idx in dataDictionary_in.index:
+                    if dataDictionary_in.at[idx, field] == value or pd.isnull(
+                            dataDictionary_in.at[idx, field]):
+                        if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
+                            return True
+                    else:
+                        if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]:
+                            return False
+
+        elif specialTypeInput == SpecialType.INVALID:
+            dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values
+                else x).interpolate(method='linear', limit_direction='both'))
+
+            # For each index in the column
+            for idx in dataDictionary_in.index:
+                # Verify if the value is NaN in the original dataframe
+                if pd.isnull(dataDictionary_in.at[idx, field]):
+                    # Replace the value with the corresponding one from dataDictionary_copy_copy
+                    dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
+
+            for value in missing_values:
+                for idx in dataDictionary_in.index:
+                    if dataDictionary_in.at[idx, field] == value:
+                        if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
+                            return True
+                    else:
+                        if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]:
+                            return False
+
+        elif specialTypeInput == SpecialType.OUTLIER:
+            for idx, value in dataDictionary_in[field].items():
+                if dataDictionary_outliers_mask.at[idx, field] == 1:
+                    dataDictionary_in_copy.at[idx, field] = np.NaN
+            dataDictionary_in_copy[field] = dataDictionary_in_copy[field].interpolate(method='linear', limit_direction='both')
+
+            # For each index in the column
+            for idx in dataDictionary_in.index:
+                # Verify if the value is NaN in the original dataframe
+                if pd.isnull(dataDictionary_in.at[idx, field]):
+                    # Replace the value with the corresponding one from dataDictionary_copy_copy
+                    dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
+
+            for value in missing_values:
+                for idx in dataDictionary_in.index:
+                    if dataDictionary_in.at[idx, field] == value:
+                        if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
+                            return True
+                    else:
+                        if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]:
+                            return False
 
     return False
 
@@ -409,6 +592,92 @@ def checkInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDicti
     Returns:
         :return: True if the special type interpolation is applied correctly
         """
+    if field is None:
+        if specialTypeInput == SpecialType.MISSING:
+            if axis_param is None:
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
+                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
+                                    dataDictionary_in.at[idx, col_name]):
+                                return False
+            elif axis_param == 0:
+                # Select only columns with numeric data, including all numeric types (int, float, etc.)
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
+                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
+                                    dataDictionary_in.at[idx, col_name]):
+                                return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
+                    for col_name, value in numeric_data.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+        if specialTypeInput == SpecialType.INVALID:
+            if axis_param is None:
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number):
+                            if dataDictionary_in.at[idx, col_name] in missing_values:
+                                return False
+            elif axis_param == 0:
+                # Select only columns with numeric data, including all numeric types (int, float, etc.)
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number):
+                            if dataDictionary_in.at[idx, col_name] in missing_values:
+                                return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
+                    for col_name, value in numeric_data.items():
+                        if value in missing_values:
+                            return False
+        if specialTypeInput == SpecialType.OUTLIER:
+            if axis_param is None:
+                # Replace the missing values with the mean of the entire DataFrame using lambda
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
+                            return False
+            if axis_param == 0:
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col].items():
+                        if dataDictionary_outliers_mask.at[idx, col] == 1:
+                            return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    for col_name, value in numeric_data.items():
+                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
+                            return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        if specialTypeInput == SpecialType.MISSING:
+            for idx, value in dataDictionary_in[field].items():
+                if value in missing_values or pd.isnull(value):
+                    return False
+        if specialTypeInput == SpecialType.INVALID:
+            for idx, value in dataDictionary_in[field].items():
+                if value in missing_values:
+                    return False
+        if specialTypeInput == SpecialType.OUTLIER:
+            for idx, value in dataDictionary_in[field].items():
+                if dataDictionary_outliers_mask.at[idx, field] == 1:
+                    return False
 
     return True
 
@@ -431,6 +700,92 @@ def checkInterpolationNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDi
     Returns:
         :return: True if the special type interpolation is applied correctly
         """
+    if field is None:
+        if specialTypeInput == SpecialType.MISSING:
+            if axis_param is None:
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
+                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
+                                    dataDictionary_in.at[idx, col_name]):
+                                return False
+            elif axis_param == 0:
+                # Select only columns with numeric data, including all numeric types (int, float, etc.)
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
+                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
+                                    dataDictionary_in.at[idx, col_name]):
+                                return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
+                    for col_name, value in numeric_data.items():
+                        if value in missing_values or pd.isnull(value):
+                            return False
+        if specialTypeInput == SpecialType.INVALID:
+            if axis_param is None:
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number):
+                            if dataDictionary_in.at[idx, col_name] in missing_values:
+                                return False
+            elif axis_param == 0:
+                # Select only columns with numeric data, including all numeric types (int, float, etc.)
+                # Check the dataDictionary_out positions with missing values have been replaced with the mean
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if np.issubdtype(type(value), np.number):
+                            if dataDictionary_in.at[idx, col_name] in missing_values:
+                                return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
+                    for col_name, value in numeric_data.items():
+                        if value in missing_values:
+                            return False
+        if specialTypeInput == SpecialType.OUTLIER:
+            if axis_param is None:
+                # Replace the missing values with the mean of the entire DataFrame using lambda
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col_name].items():
+                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
+                            return False
+            if axis_param == 0:
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx, value in dataDictionary_in[col].items():
+                        if dataDictionary_outliers_mask.at[idx, col] == 1:
+                            return False
+            elif axis_param == 1:
+                for idx, row in dataDictionary_in.iterrows():
+                    numeric_data = row.select_dtypes(include=[np.number])
+                    for col_name, value in numeric_data.items():
+                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
+                            return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        if specialTypeInput == SpecialType.MISSING:
+            for idx, value in dataDictionary_in[field].items():
+                if value in missing_values or pd.isnull(value):
+                    return False
+        if specialTypeInput == SpecialType.INVALID:
+            for idx, value in dataDictionary_in[field].items():
+                if value in missing_values:
+                    return False
+        if specialTypeInput == SpecialType.OUTLIER:
+            for idx, value in dataDictionary_in[field].items():
+                if dataDictionary_outliers_mask.at[idx, field] == 1:
+                    return False
 
     return True
 
@@ -818,7 +1173,7 @@ def checkMeanBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                     for idx, value in dataDictionary_in[col].items():
                         if dataDictionary_outliers_mask.at[idx, col] == 1:
                             if dataDictionary_out.at[idx, col] != mean:
-                                    return True
+                                return True
                         else:
                             if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -831,7 +1186,7 @@ def checkMeanBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             if dataDictionary_out.at[idx, col_name] != mean:
-                                    return True
+                                return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, col_name]) and pd.isnull(
@@ -1781,6 +2136,60 @@ def checkSpecialTypeClosest(dataDictionary_in: pd.DataFrame, dataDictionary_out:
     Returns:
         :return: True if the special type closest is applied correctly
     """
+    result = True
+
+    if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
+        result = checkClosestBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                         specialTypeInput=specialTypeInput, belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+                                         dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                         missing_values=missing_values, axis_param=axis_param,
+                                         field=field)
+    # elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+    #     result = checkClosestNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+    #                                         specialTypeInput=specialTypeInput, belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+    #                                         dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+    #                                         missing_values=missing_values, axis_param=axis_param,
+    #                                         field=field)
+    # elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+    #     result = checkClosestNotBelongNotBelong(dataDictionary_in=dataDictionary_in,
+    #                                            dataDictionary_out=dataDictionary_out,
+    #                                            specialTypeInput=specialTypeInput, belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+    #                                            dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+    #                                            missing_values=missing_values, axis_param=axis_param,
+    #                                            field=field)
+
+    return True if result else False
+
+
+def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                               specialTypeInput: SpecialType, belongOp_in: Belong, belongOp_out: Belong,
+                               dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                               axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the special type closest is applied correctly when the input and output dataframes when belongOp_in is Belong
+    params::
+        :param dataDictionary_in: dataframe with the data before the closest
+        :param dataDictionary_out: dataframe with the data after the closest
+        :param specialTypeInput: special type to apply the closest
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the closest
+        :param field: field to apply the closest
+
+    Returns:
+        :return: True if the special type closest is applied correctly
+    """
+
+
+
+
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        return False
 
     return True
 
@@ -2363,7 +2772,7 @@ def checkDerivedTypePreviousBelongBelong(dataDictionary_in: pd.DataFrame, dataDi
                         else:
                             if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                                    dataDictionary_out.loc[idx, field])):
+                                dataDictionary_out.loc[idx, field])):
                                 return False
 
     return True
@@ -2844,7 +3253,7 @@ def checkDerivedTypeNextBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
                         else:
                             if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                                    dataDictionary_out.loc[idx, field])):
+                                dataDictionary_out.loc[idx, field])):
                                 return False
 
     return True
