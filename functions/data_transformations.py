@@ -186,7 +186,7 @@ class Invariants:
                     raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
             elif numOpOutput == Operation.MEAN:
-                if axis_param == None:
+                if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the mean of these numeric columns
@@ -217,7 +217,7 @@ class Invariants:
                     dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.MEDIAN:
-                if axis_param == None:
+                if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the median of these numeric columns
@@ -508,7 +508,7 @@ class Invariants:
                     raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
             elif numOpOutput == Operation.MEAN:
-                if axis_param == None:
+                if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the mean of these numeric columns
@@ -536,7 +536,7 @@ class Invariants:
                     dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.MEDIAN:
-                if axis_param == None:
+                if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the median of these numeric columns
