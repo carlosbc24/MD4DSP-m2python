@@ -1697,7 +1697,7 @@ def checkMostFrequentBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
                                 row_index, column_name]:
                                 return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for column_index, column_name in enumerate(dataDictionary_in.columns):
                     most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
                     for row_index, value in dataDictionary_in[column_name].items():
@@ -1724,7 +1724,7 @@ def checkMostFrequentBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                             if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
                                 row_index, column_index]:
                                 return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for row_index, row in dataDictionary_in.iterrows():
                     most_frequent = row.value_counts().idxmax()
                     for column_index, value in row.items():
@@ -1749,7 +1749,7 @@ def checkMostFrequentBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                             if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
                                 row_index, column_index]:
                                 return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for row_index, row in dataDictionary_in.iterrows():
                     for column_index, value in row.items():
                         if value in missing_values:
@@ -1817,7 +1817,7 @@ def checkMostFrequentBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictio
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
                                 row_index, column_name]:
                                 return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for column_index, column_name in enumerate(dataDictionary_in.columns):
                     most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
                     for row_index, value in dataDictionary_in[column_name].items():
@@ -1844,7 +1844,7 @@ def checkMostFrequentBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictio
                             if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
                                 row_index, column_index]:
                                 return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for row_index, row in dataDictionary_in.iterrows():
                     most_frequent = row.value_counts().idxmax()
                     for column_index, value in row.items():
@@ -1869,7 +1869,7 @@ def checkMostFrequentBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictio
                             if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
                                 row_index, column_index]:
                                 return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for row_index, row in dataDictionary_in.iterrows():
                     for column_index, value in row.items():
                         if value in missing_values:
@@ -1932,7 +1932,7 @@ def checkMostFrequentNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
                     for row_index, value in dataDictionary_in[column_name].items():
                         if value in missing_values or pd.isnull(value):
                             return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for column_index, column_name in enumerate(dataDictionary_in.columns):
                     most_frequent = dataDictionary_in[column_name].value_counts().idxmax()
                     for row_index, value in dataDictionary_in[column_name].items():
@@ -1946,7 +1946,7 @@ def checkMostFrequentNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
                     for column_index, value in row.items():
                         if value in missing_values or pd.isnull(value):
                             return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for row_index, row in dataDictionary_in.iterrows():
                     most_frequent = row.value_counts().idxmax()
                     for column_index, value in row.items():
@@ -1959,7 +1959,7 @@ def checkMostFrequentNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
                     for column_index, value in row.items():
                         if value in missing_values or pd.isnull(value):
                             return False
-            if specialTypeInput == SpecialType.INVALID:
+            elif specialTypeInput == SpecialType.INVALID:
                 for row_index, row in dataDictionary_in.iterrows():
                     for column_index, value in row.items():
                         if value in missing_values:
