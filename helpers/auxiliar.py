@@ -2476,6 +2476,39 @@ def checkClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
     Returns:
         :return: True if the special type closest is applied correctly
     """
+    if field is None:
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            if axis_param is None or axis_param == 0 or axis_param == 1:
+                # Replace the missing values with the closest numeric values
+                for i in range(len(dataDictionary_in.index)):
+                    for j in range(len(dataDictionary_in.columns)):
+                        for missing_value in missing_values:
+                            if dataDictionary_in.at[i, j] == missing_value or (pd.isnull(dataDictionary_in.at[i, j]) and specialTypeInput == SpecialType.MISSING):
+                                return False
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            if axis_param is None or axis_param == 0 or axis_param == 1:
+                for i in range(len(dataDictionary_in.index)):
+                    for j in range(len(dataDictionary_in.columns)):
+                        if dataDictionary_outliers_mask.at[i, j] == 1:
+                            return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            for i in range(len(dataDictionary_in.index)):
+                for missing_value in missing_values:
+                    if dataDictionary_in.at[i, field] == missing_value or (pd.isnull(dataDictionary_in.at[i, field]) and specialTypeInput == SpecialType.MISSING):
+                        return False
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            for i in range(len(dataDictionary_in.index)):
+                if dataDictionary_outliers_mask.at[i, field] == 1:
+                    return False
 
     return True
 
@@ -2500,6 +2533,38 @@ def checkClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictiona
     Returns:
         :return: True if the special type closest is applied correctly
     """
+    if field is None:
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            if axis_param is None or axis_param == 0 or axis_param == 1:
+                for i in range(len(dataDictionary_in.index)):
+                    for j in range(len(dataDictionary_in.columns)):
+                        for missing_value in missing_values:
+                            if dataDictionary_in.at[i, j] == missing_value or (pd.isnull(dataDictionary_in.at[i, j]) and specialTypeInput == SpecialType.MISSING):
+                                return False
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            if axis_param is None or axis_param == 0 or axis_param == 1:
+                for i in range(len(dataDictionary_in.index)):
+                    for j in range(len(dataDictionary_in.columns)):
+                        if dataDictionary_outliers_mask.at[i, j] == 1:
+                            return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            for i in range(len(dataDictionary_in.index)):
+                for missing_value in missing_values:
+                    if dataDictionary_in.at[i, field] == missing_value or (pd.isnull(dataDictionary_in.at[i, field]) and specialTypeInput == SpecialType.MISSING):
+                        return False
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            for i in range(len(dataDictionary_in.index)):
+                if dataDictionary_outliers_mask.at[i, field] == 1:
+                    return False
 
     return True
 
