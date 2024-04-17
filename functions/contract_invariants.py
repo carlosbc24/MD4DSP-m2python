@@ -115,9 +115,9 @@ class Invariants:
         return True
 
     def checkInv_FixValue_DerivedValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                                       fixValueInput, derivedTypeOutput: DerivedType, belongOp: Belong = Belong.BELONG,
-                                       dataTypeInput: DataType = None, axis_param: int = None,
-                                       field: str = None) -> bool:
+                                       fixValueInput, derivedTypeOutput: DerivedType, belongOp_in: Belong = Belong.BELONG,
+                                       belongOp_out: Belong = Belong.BELONG, dataTypeInput: DataType = None,
+                                       axis_param: int = None, field: str = None) -> bool:
         # By default, if all values are equally frequent, it is replaced by the first value.
         # Check if it should only be done for rows and columns or also for the entire dataframe.
         """
@@ -128,7 +128,8 @@ class Invariants:
             dataDictionary_out: dataframe with the output data
             dataTypeInput: data type of the input value
             FixValueInput: input value to check
-            belongOp: operation to check the invariant
+            belongOp_in: if condition to check the invariant
+            belongOp_out: then condition to check the invariant
             derivedTypeOutput: derived type of the output value
             axis_param: axis to check the invariant - 0: column, None: dataframe
             field: field to check the invariant
@@ -136,12 +137,13 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
+        # TODO: Implement the checkInv_FixValue_DerivedValue invariant
         return True
 
     def checkInv_FixValue_NumOp(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                                fixValueInput, numOpOutput: Operation, belongOp: Belong = Belong.BELONG,
-                                dataTypeInput: DataType = None, axis_param: int = None,
-                                field: str = None) -> bool:
+                                fixValueInput, numOpOutput: Operation, belongOp_in: Belong = Belong.BELONG,
+                                belongOp_out: Belong = Belong.BELONG, dataTypeInput: DataType = None,
+                                axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the FixValue - NumOp relation is satisfied in the dataDicionary_out
         respect to the dataDictionary_in
@@ -151,19 +153,21 @@ class Invariants:
             dataDictionary_out: dataframe with the output data
             dataTypeInput: data type of the input value
             FixValueInput: input value to check
-            belongOp: operation to check the invariant
+            belongOp_in: if condition to check the invariant
+            belongOp_out: then condition to check the invariant
             numOpOutput: operation to check the invariant
             axis_param: axis to check the invariant
             field: field to check the invariant
         Returns:
             dataDictionary with the FixValueInput values replaced by the result of the operation numOpOutput
         """
+        # TODO: Implement the checkInv_FixValue_NumOp invariant
         return True
 
     def checkInv_Interval_FixValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                    leftMargin: float, rightMargin: float, closureType: Closure, fixValueOutput,
-                                   belongOp: Belong = Belong.BELONG, dataTypeOutput: DataType = None,
-                                   field: str = None) -> bool:
+                                   belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
+                                   dataTypeOutput: DataType = None, field: str = None) -> bool:
         """
         Check the invariant of the Interval - FixValue relation is satisfied in the dataDicionary_out
         respect to the dataDictionary_in
@@ -174,19 +178,21 @@ class Invariants:
             :param rightMargin: right margin of the interval
             :param closureType: closure type of the interval
             :param dataTypeOutput: data type of the output value
-            :param belongOp: operation to check the invariant
+            :param belongOp_in: if condition to check the invariant
+            :param belongOp_out: then condition to check the invariant
             :param fixValueOutput: output value to check
             :param field: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
         """
+        # TODO: Implement the checkInv_Interval_FixValue invariant
         return True
 
     def checkInv_Interval_DerivedValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                        leftMargin: float, rightMargin: float,
                                        closureType: Closure, derivedTypeOutput: DerivedType,
-                                       belongOp: Belong = Belong.BELONG,
+                                       belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
                                        axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the Interval - DerivedValue relation is satisfied in the dataDicionary_out
@@ -198,13 +204,15 @@ class Invariants:
             :param rightMargin: right margin of the interval
             :param closureType: closure type of the interval
             :param derivedTypeOutput: derived type of the output value
-            :param belongOp: operation to check the invariant
+            :param belongOp_in: if condition to check the invariant
+            :param belongOp_out: then condition to check the invariant
             :param axis_param: axis to check the invariant
             :param field: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
         """
+        # TODO: Implement the checkInv_Interval_DerivedValue invariant
         return True
 
     def checkInv_Interval_NumOp(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
@@ -229,6 +237,7 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
+        # TODO: Implement the checkInv_Interval_NumOp invariant
         return True
 
     def checkInv_SpecialValue_FixValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
@@ -700,8 +709,26 @@ class Invariants:
         if specialTypeInput == SpecialType.OUTLIER:
             dataDictionary_outliers_mask = getOutliers(dataDictionary_in, field, axis_param)
 
-        if field is None:
-            if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            if axis_param is None:
+                missing_values = dataDictionary_in.where(dataDictionary_outliers_mask == 1).stack().tolist()
+
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+                result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                      belongOp_in, belongOp_out, missing_values, axis_param, field)
+            elif derivedTypeOutput == DerivedType.PREVIOUS:
+                result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                  belongOp_in, belongOp_out, missing_values, axis_param, field)
+            elif derivedTypeOutput == DerivedType.NEXT:
+                result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                              belongOp_in, belongOp_out, missing_values, axis_param, field)
+
+        elif specialTypeInput == SpecialType.OUTLIER:
+            # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
+            # If the outliers are applied at the dataframe level, previous and next cannot be applied.
+
+            if axis_param is None:
+                missing_values = dataDictionary_in.where(dataDictionary_outliers_mask == 1).stack().tolist()
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                     result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                                           belongOp_in, belongOp_out, missing_values, axis_param, field)
@@ -712,28 +739,11 @@ class Invariants:
                     result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                                   belongOp_in, belongOp_out, missing_values, axis_param, field)
 
-            elif specialTypeInput == SpecialType.OUTLIER:
-                # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
-                # If the outliers are applied at the dataframe level, previous and next cannot be applied.
-
-                if axis_param is None:
-                    missing_values = dataDictionary_in.where(dataDictionary_outliers_mask == 1).stack().tolist()
-                    if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                        result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                              belongOp_in, belongOp_out, missing_values, axis_param, field)
-                    elif derivedTypeOutput == DerivedType.PREVIOUS:
-                        result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                          belongOp_in, belongOp_out, missing_values, axis_param, field)
-                    elif derivedTypeOutput == DerivedType.NEXT:
-                        result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                      belongOp_in, belongOp_out, missing_values, axis_param, field)
-
-                elif axis_param == 0 or axis_param == 1:
-                    result = checkDerivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
-                                                            dataDictionary_out,
-                                                            dataDictionary_outliers_mask, belongOp_in, belongOp_out,
-                                                            axis_param, field)
-
+            elif axis_param == 0 or axis_param == 1:
+                result = checkDerivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
+                                                        dataDictionary_out,
+                                                        dataDictionary_outliers_mask, belongOp_in, belongOp_out,
+                                                        axis_param, field)
         elif field is not None:
             if field not in dataDictionary_in.columns:
                 raise ValueError("The field does not exist in the dataframe")
