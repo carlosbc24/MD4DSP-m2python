@@ -2144,19 +2144,19 @@ def checkSpecialTypeClosest(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                          dataDictionary_outliers_mask=dataDictionary_outliers_mask,
                                          missing_values=missing_values, axis_param=axis_param,
                                          field=field)
-    # elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
-    #     result = checkClosestNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
-    #                                         specialTypeInput=specialTypeInput, belongOp_in=belongOp_in, belongOp_out=belongOp_out,
-    #                                         dataDictionary_outliers_mask=dataDictionary_outliers_mask,
-    #                                         missing_values=missing_values, axis_param=axis_param,
-    #                                         field=field)
-    # elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
-    #     result = checkClosestNotBelongNotBelong(dataDictionary_in=dataDictionary_in,
-    #                                            dataDictionary_out=dataDictionary_out,
-    #                                            specialTypeInput=specialTypeInput, belongOp_in=belongOp_in, belongOp_out=belongOp_out,
-    #                                            dataDictionary_outliers_mask=dataDictionary_outliers_mask,
-    #                                            missing_values=missing_values, axis_param=axis_param,
-    #                                            field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result = checkClosestNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                            specialTypeInput=specialTypeInput, belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+                                            dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                            missing_values=missing_values, axis_param=axis_param,
+                                            field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkClosestNotBelongNotBelong(dataDictionary_in=dataDictionary_in,
+                                               dataDictionary_out=dataDictionary_out,
+                                               specialTypeInput=specialTypeInput, belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+                                               dataDictionary_outliers_mask=dataDictionary_outliers_mask,
+                                               missing_values=missing_values, axis_param=axis_param,
+                                               field=field)
 
     return True if result else False
 
@@ -2181,17 +2181,329 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
     Returns:
         :return: True if the special type closest is applied correctly
     """
+    if field is None:
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            if axis_param is None:
+                only_numbers_df=dataDictionary_in.select_dtypes(include=[np.number])
+                # Flatten the DataFrame into a single series of values
+                flattened_values = only_numbers_df.values.flatten().tolist()
 
+                # Create a dictionary to store the closest value for each missing value
+                closest_values = {}
 
+                # For each missing value, find the closest numeric value in the flattened series
+                for missing_value in missing_values:
+                    if missing_value not in closest_values:
+                        closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
 
+                # Replace the missing values with the closest numeric values
+                for i in range(len(dataDictionary_in.index)):
+                    for j in range(len(dataDictionary_in.columns)):
+                        current_value = dataDictionary_in.iat[i, j]
+                        if current_value in closest_values:
+                            if dataDictionary_out.at[i, j] != closest_values[current_value]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if pd.isnull(dataDictionary_in.at[i, j] and specialTypeInput == SpecialType.MISSING):
+                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
+                            if dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j]:
+                                return False
+            elif axis_param == 0:
+                # Iterate over each column
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    # Get the missing values in the current column
+                    missing_values_in_col = [val for val in missing_values if val in dataDictionary_in[col_name].values]
 
+                    # If there are no missing values in the column, skip the rest of the loop
+                    if not missing_values_in_col:
+                        continue
+
+                    # Flatten the column into a list of values
+                    flattened_values = dataDictionary_in[col_name].values.flatten().tolist()
+
+                    # Create a dictionary to store the closest value for each missing value
+                    closest_values = {}
+
+                    # For each missing value IN the column (more efficient), find the closest numeric value in the flattened series
+                    for missing_value in missing_values_in_col:
+                        if missing_value not in closest_values:
+                            closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
+
+                    # Replace the missing values with the closest numeric values in the column
+                    for i in range(len(dataDictionary_in.index)):
+                        current_value = dataDictionary_in.at[i, col_name]
+                        if current_value in closest_values:
+                            if dataDictionary_out.at[i, col_name] != closest_values[current_value]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if pd.isnull(dataDictionary_in.at[i, col_name] and specialTypeInput == SpecialType.MISSING):
+                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
+                            if dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]:
+                                return False
+            elif axis_param == 1:
+                # Iterate over each row
+                for row_idx in range(len(dataDictionary_in.index)):
+                    # Get the numeric values in the current row
+                    numeric_values_in_row = dataDictionary_in.iloc[row_idx].select_dtypes(include=[np.number]).values.tolist()
+
+                    # Get the missing values in the current row
+                    missing_values_in_row = [val for val in missing_values if val in numeric_values_in_row]
+
+                    # If there are no missing values in the row, skip the rest of the loop
+                    if not missing_values_in_row:
+                        continue
+
+                    # Create a dictionary to store the closest value for each missing value
+                    closest_values = {}
+
+                    # For each missing value IN the row (more efficient), find the closest numeric value in the numeric values
+                    for missing_value in missing_values_in_row:
+                        if missing_value not in closest_values:
+                            closest_values[missing_value] = find_closest_value(numeric_values_in_row, missing_value)
+
+                    # Replace the missing values with the closest numeric values in the row
+                    for col_name in dataDictionary_in.columns:
+                        current_value = dataDictionary_in.at[row_idx, col_name]
+                        if current_value in closest_values:
+                            if dataDictionary_out.at[row_idx, col_name] != closest_values[current_value]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if pd.isnull(dataDictionary_in.at[row_idx, col_name] and specialTypeInput == SpecialType.MISSING):
+                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
+                            if dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]:
+                                return False
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            if axis_param is None:
+                only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
+                # Flatten the DataFrame into a single series of values
+                flattened_values = only_numbers_df.values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each outlier value
+                closest_values = {}
+
+                # For each outlier value, find the closest numeric value in the flattened series
+                for i in range(len(dataDictionary_in.index)):
+                    for j in range(len(dataDictionary_in.columns)):
+                        if dataDictionary_outliers_mask.at[i, j] == 1:
+                            current_value = dataDictionary_in.iat[i, j]
+                            if current_value not in closest_values:
+                                closest_values[current_value] = find_closest_value(flattened_values, current_value)
+
+                # Replace the outlier values with the closest numeric values
+                for i in range(len(dataDictionary_in.index)):
+                    for j in range(len(dataDictionary_in.columns)):
+                        if dataDictionary_outliers_mask.at[i, j] == 1:
+                            current_value = dataDictionary_in.iat[i, j]
+                            if dataDictionary_out.at[i, j] != closest_values[current_value]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j]:
+                                return False
+            elif axis_param == 0:
+                # Iterate over each column
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    # Get the outlier values in the current column
+                    outlier_values_in_col = [dataDictionary_in.at[i, col_name] for i in range(len(dataDictionary_in.index))
+                                             if dataDictionary_outliers_mask.at[i, col_name] == 1]
+
+                    # If there are no outlier values in the column, skip the rest of the loop
+                    if not outlier_values_in_col:
+                        continue
+
+                    # Flatten the column into a list of values
+                    flattened_values = dataDictionary_in[col_name].values.flatten().tolist()
+
+                    # Create a dictionary to store the closest value for each outlier value
+                    closest_values = {}
+
+                    # For each outlier value IN the column (more efficient), find the closest numeric value in the flattened series
+                    for outlier_value in outlier_values_in_col:
+                        if outlier_value not in closest_values:
+                            closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
+
+                    # Replace the outlier values with the closest numeric values in the column
+                    for i in range(len(dataDictionary_in.index)):
+                        current_value = dataDictionary_in.at[i, col_name]
+                        if dataDictionary_outliers_mask.at[i, col_name] == 1:
+                            if dataDictionary_out.at[i, col_name] != closest_values[current_value]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]:
+                                return False
+            elif axis_param == 1:
+                # Iterate over each row
+                for row_idx in range(len(dataDictionary_in.index)):
+                    # Get the numeric values in the current row
+                    numeric_values_in_row = dataDictionary_in.iloc[row_idx].select_dtypes(include=[np.number]).values.tolist()
+
+                    # Get the outlier values in the current row
+                    outlier_values_in_row = [dataDictionary_in.at[row_idx, col_name] for col_name in dataDictionary_in.columns
+                                             if dataDictionary_outliers_mask.at[row_idx, col_name] == 1]
+
+                    # If there are no outlier values in the row, skip the rest of the loop
+                    if not outlier_values_in_row:
+                        continue
+
+                    # Create a dictionary to store the closest value for each outlier value
+                    closest_values = {}
+
+                    # For each outlier value IN the row (more efficient), find the closest numeric value in the numeric values
+                    for outlier_value in outlier_values_in_row:
+                        if outlier_value not in closest_values:
+                            closest_values[outlier_value] = find_closest_value(numeric_values_in_row, outlier_value)
+
+                    # Replace the outlier values with the closest numeric values in the row
+                    for col_name in dataDictionary_in.columns:
+                        current_value = dataDictionary_in.at[row_idx, col_name]
+                        if dataDictionary_outliers_mask.at[row_idx, col_name] == 1:
+                            if dataDictionary_out.at[row_idx, col_name] != closest_values[current_value]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]:
+                                return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
+            # Get the missing values in the current column
+            missing_values_in_col = [val for val in missing_values if val in dataDictionary_in[field].values]
+
+            # If there are no missing values in the column, skip the rest of the loop
+            if missing_values_in_col:
+                # Flatten the column into a list of values
+                flattened_values = dataDictionary_in[field].values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each missing value
+                closest_values = {}
+
+                # For each missing value IN the column (more efficient), find the closest numeric value in the flattened series
+                for missing_value in missing_values_in_col:
+                    if missing_value not in closest_values:
+                        closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
+
+                # Replace the missing values with the closest numeric values in the column
+                for i in range(len(dataDictionary_in.index)):
+                    current_value = dataDictionary_in.at[i, field]
+                    if current_value in closest_values:
+                        if dataDictionary_out.at[i, field] != closest_values[current_value]:
+                            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if dataDictionary_out.at[i, field] != dataDictionary_in.at[i, field]:
+                            return False
+
+        if specialTypeInput == SpecialType.OUTLIER:
+            # Get the outlier values in the current column
+            outlier_values_in_col = [dataDictionary_in.at[i, field] for i in range(len(dataDictionary_in.index))
+                                     if dataDictionary_outliers_mask.at[i, field] == 1]
+
+            # If there are no outlier values in the column, skip the rest of the loop
+            if outlier_values_in_col:
+                # Flatten the column into a list of values
+                flattened_values = dataDictionary_in[field].values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each outlier value
+                closest_values = {}
+
+                # For each outlier value IN the column (more efficient), find the closest numeric value in the flattened series
+                for outlier_value in outlier_values_in_col:
+                    if outlier_value not in closest_values:
+                        closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
+
+                # Replace the outlier values with the closest numeric values in the column
+                for i in range(len(dataDictionary_in.index)):
+                    current_value = dataDictionary_in.at[i, field]
+                    if dataDictionary_outliers_mask.at[i, field] == 1:
+                        if dataDictionary_out.at[i, field] != closest_values[current_value]:
+                            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if dataDictionary_out.at[i, field] != dataDictionary_in.at[i, field]:
+                            return False
 
     if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
         return True
     elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
         return False
+    else:
+        return True
+
+
+def checkClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                               specialTypeInput: SpecialType, belongOp_in: Belong, belongOp_out: Belong,
+                               dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                               axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the special type closest is applied correctly when the input and output dataframes when belongOp_in is NotBelong and belongOp_out is Belong
+    params::
+        :param dataDictionary_in: dataframe with the data before the closest
+        :param dataDictionary_out: dataframe with the data after the closest
+        :param specialTypeInput: special type to apply the closest
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the closest
+        :param field: field to apply the closest
+
+    Returns:
+        :return: True if the special type closest is applied correctly
+    """
 
     return True
+
+
+def checkClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                               specialTypeInput: SpecialType, belongOp_in: Belong, belongOp_out: Belong,
+                               dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                               axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the special type closest is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are NotBelong
+    params::
+        :param dataDictionary_in: dataframe with the data before the closest
+        :param dataDictionary_out: dataframe with the data after the closest
+        :param specialTypeInput: special type to apply the closest
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
+        :param missing_values: list of missing values
+        :param axis_param: axis to apply the closest
+        :param field: field to apply the closest
+
+    Returns:
+        :return: True if the special type closest is applied correctly
+    """
+
+    return True
+
+
 
 
 def checkMostFrequentBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
