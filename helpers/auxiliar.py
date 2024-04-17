@@ -391,7 +391,7 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     dataDictionary_in_copy[row] = (
                         numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
                         interpolate(method='linear', limit_direction='both'))
@@ -432,7 +432,7 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     dataDictionary_in_copy[row] = (
                         numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
                         interpolate(method='linear', limit_direction='both'))
@@ -613,7 +613,7 @@ def checkInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
@@ -636,7 +636,7 @@ def checkInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
@@ -655,7 +655,7 @@ def checkInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDicti
                             return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             return False
@@ -721,7 +721,7 @@ def checkInterpolationNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDi
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
@@ -744,7 +744,7 @@ def checkInterpolationNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDi
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
@@ -763,7 +763,7 @@ def checkInterpolationNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDi
                             return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             return False
@@ -893,7 +893,7 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     mean = numeric_data.mean()
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -940,7 +940,7 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     mean = numeric_data.mean()
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -986,7 +986,7 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                                 return False
             elif axis_param == 1:  # Iterate over each row
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     mean = numeric_data.mean()
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
@@ -1093,7 +1093,7 @@ def checkMeanBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     mean = numeric_data.mean()
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -1138,7 +1138,7 @@ def checkMeanBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     mean = numeric_data.mean()
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -1181,7 +1181,7 @@ def checkMeanBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     mean = numeric_data.mean()
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
@@ -1275,7 +1275,7 @@ def checkMeanNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
@@ -1298,7 +1298,7 @@ def checkMeanNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
@@ -1317,7 +1317,7 @@ def checkMeanNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
                             return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             return False
@@ -1383,7 +1383,7 @@ def checkMeanNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
@@ -1406,7 +1406,7 @@ def checkMeanNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
@@ -1425,7 +1425,7 @@ def checkMeanNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                             return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             return False
@@ -1556,7 +1556,7 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -1603,7 +1603,7 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -1649,7 +1649,7 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                 return False
             elif axis_param == 1:  # Iterate over each row
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
@@ -1756,7 +1756,7 @@ def checkMedianBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -1801,7 +1801,7 @@ def checkMedianBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
@@ -1844,7 +1844,7 @@ def checkMedianBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
@@ -1938,7 +1938,7 @@ def checkMedianNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
@@ -1961,7 +1961,7 @@ def checkMedianNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
@@ -1980,7 +1980,7 @@ def checkMedianNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                             return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             return False
@@ -2046,7 +2046,7 @@ def checkMedianNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
@@ -2069,7 +2069,7 @@ def checkMedianNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                                 return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     # Check if the missing values in the row have been replaced with the median in dataDictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
@@ -2088,7 +2088,7 @@ def checkMedianNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                             return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
+                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             return False
@@ -2207,7 +2207,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if pd.isnull(dataDictionary_in.at[i, j] and specialTypeInput == SpecialType.MISSING):
+                            if pd.isnull(dataDictionary_in.at[i, j]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                             if dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j]:
                                 return False
@@ -2242,7 +2242,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if pd.isnull(dataDictionary_in.at[i, col_name] and specialTypeInput == SpecialType.MISSING):
+                            if pd.isnull(dataDictionary_in.at[i, col_name]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                             if dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]:
                                 return False
@@ -2256,7 +2256,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                     missing_values_in_row = [val for val in missing_values if val in numeric_values_in_row]
 
                     # If there are no missing values in the row, skip the rest of the loop
-                    if not missing_values_in_row:
+                    if not missing_values_in_row and not pd.isnull(dataDictionary_in.iloc[row_idx]).any():
                         continue
 
                     # Create a dictionary to store the closest value for each missing value
@@ -2277,7 +2277,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if pd.isnull(dataDictionary_in.at[row_idx, col_name] and specialTypeInput == SpecialType.MISSING):
+                            if pd.isnull(dataDictionary_in.at[row_idx, col_name]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                             if dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]:
                                 return False
@@ -2392,7 +2392,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
             missing_values_in_col = [val for val in missing_values if val in dataDictionary_in[field].values]
 
             # If there are no missing values in the column, skip the rest of the loop
-            if missing_values_in_col:
+            if missing_values_in_col or pd.isnull(dataDictionary_in[field]).any():
                 # Flatten the column into a list of values
                 flattened_values = dataDictionary_in[field].values.flatten().tolist()
 
