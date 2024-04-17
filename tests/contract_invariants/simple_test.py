@@ -2179,8 +2179,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [3, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -2191,7 +2189,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(0),
-                                                                    missing_values=missing_values,
                                                                     axis_param=0, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2203,11 +2200,9 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         # Definir el resultado esperado
         expected = pd.DataFrame(
-            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 4, 2], 'C': [0, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 1, 2], 'C': [0, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
         expected = expected.astype({
             'A': 'float64'  # Convertir A a float64
         })
@@ -2215,7 +2210,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(0),
-                                                                    missing_values=missing_values,
                                                                     axis_param=1, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2227,8 +2221,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 10, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -2239,7 +2231,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(1),
-                                                                    missing_values=missing_values,
                                                                     axis_param=0, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2251,8 +2242,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 4, 1], 'C': [2, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -2263,7 +2252,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(1),
-                                                                    missing_values=missing_values,
                                                                     axis_param=1, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2275,8 +2263,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [0, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -2287,7 +2273,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(2),
-                                                                    missing_values=missing_values,
                                                                     axis_param=0, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2299,8 +2284,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 3, 2], 'C': [1, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -2311,7 +2294,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(2),
-                                                                    missing_values=missing_values,
                                                                     axis_param=1, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2380,7 +2362,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     specialTypeInput=SpecialType(1),
                                                                     derivedTypeOutput=DerivedType(0),
                                                                     missing_values=missing_values,
-                                                                    axis_param=1, field=field, belongOp_in=Belong(0),
+                                                                    field=field, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -2491,8 +2473,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         field = 'C'
         # Definir el resultado esperado
         expected = pd.DataFrame(
@@ -2504,7 +2484,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(0),
-                                                                    missing_values=missing_values,
                                                                     axis_param=1, field=field, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2516,8 +2495,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         field = 'C'
         # Definir el resultado esperado
         expected = pd.DataFrame(
@@ -2529,7 +2506,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(1),
-                                                                    missing_values=missing_values,
                                                                     axis_param=1, field=field, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
@@ -2541,8 +2517,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
         field = 'C'
         # Definir el resultado esperado
         expected = pd.DataFrame(
@@ -2554,13 +2528,679 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
                                                                     specialTypeInput=SpecialType(2),
                                                                     derivedTypeOutput=DerivedType(2),
-                                                                    missing_values=missing_values,
                                                                     axis_param=1, field=field, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 30 Failed: Expected True, but got False"
         print_and_log("Test Case 30 Passed: the function returned the expected dataframe")
+
+        # Caso 31
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 0, 0, 0, 0], 'B': [2, 12, 12, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+                                                                    specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(0),
+                                                                    missing_values=missing_values,
+                                                                    axis_param=0, belongOp_in=Belong(0),
+                                                                    belongOp_out=Belong(1), dataDictionary_out=expected)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 31 Failed: Expected False, but got True"
+        print_and_log("Test Case 31 Passed: the function returned the expected dataframe")
+
+        # Caso 32
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 3, 3, 4, 2], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 4, 2], 'D': [0, 8, 8, 4, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+                                                                    specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(0),
+                                                                    missing_values=missing_values,
+                                                                    axis_param=1, belongOp_in=Belong(0),
+                                                                    belongOp_out=Belong(1), dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 32 Failed: Expected False, but got True"
+        print_and_log("Test Case 32 Passed: the function returned the expected dataframe")
+
+        # Caso 33
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, 3, 3, 3, 3], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [3, 8, 8, 3, 2]})
+        expected = expected.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+                                                                    specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(0),
+                                                                    missing_values=missing_values,
+                                                                    axis_param=None, belongOp_in=Belong(1),
+                                                                    belongOp_out=Belong(0), dataDictionary_out=expected)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 33 Failed: Expected False, but got True"
+        print_and_log("Test Case 33 Passed: the function returned the expected dataframe")
+
+        # Caso 34
+        # Ejecutar la transformación de datos: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent)
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, None, 0, 0, 0], 'B': [2, 12, 12, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+                                                                    specialTypeInput=SpecialType(1),
+                                                                    derivedTypeOutput=DerivedType(0),
+                                                                    missing_values=missing_values,
+                                                                    axis_param=0, belongOp_in=Belong(1),
+                                                                    belongOp_out=Belong(0), dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 34 Failed: Expected False, but got True"
+        print_and_log("Test Case 34 Passed: the function returned the expected dataframe")
+
+        # Caso 35
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, None, 3, 4, 2], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 4, 2], 'D': [0, 8, 8, 4, 2]})
+        expected = expected.astype({
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64',  # Convertir C a float64
+            'D': 'float64'  # Convertir D a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+                                                                    specialTypeInput=SpecialType(1),
+                                                                    derivedTypeOutput=DerivedType(0),
+                                                                    missing_values=missing_values,
+                                                                    axis_param=1, belongOp_in=Belong(0),
+                                                                    belongOp_out=Belong(1), dataDictionary_out=expected)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 35 Failed: Expected False, but got True"
+        print_and_log("Test Case 35 Passed: the function returned the expected dataframe")
+
+        # Caso 36
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame(
+            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # Definir la lista de valores invalidos
+        missing_values = [1, 3, 4]
+        # Definir el resultado esperado
+        expected = pd.DataFrame(
+            {'A': [0, None, 3, 3, 4], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        expected = expected.astype({
+            'A': 'float64'  # Convertir A a float64
+        })
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+                                                                    specialTypeInput=SpecialType(0),
+                                                                    derivedTypeOutput=DerivedType(1),
+                                                                    missing_values=missing_values,
+                                                                    axis_param=0, belongOp_in=Belong(0),
+                                                                    belongOp_out=Belong(1), dataDictionary_out=expected)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 36 Failed: Expected True, but got False"
+        print_and_log("Test Case 36 Passed: the function returned the expected dataframe")
+
+        # # Caso 8
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, np.NaN, 3, 12, 12], 'C': [10, 0, 4, 12, 2], 'D': [10, 8, 8, 3, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64',  # Convertir A a float64
+        #     'C': 'float64',  # Convertir C a float64
+        #     'D': 'float64'  # Convertir D a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(1),
+        #                                                             derivedTypeOutput=DerivedType(1),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=1, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        # print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 9
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # # Aplicar la transformación de datos
+        # expected_exception = ValueError
+        # with self.assertRaises(expected_exception) as context:
+        #     result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                                 specialTypeInput=SpecialType(1),
+        #                                                                 derivedTypeOutput=DerivedType(1),
+        #                                                                 missing_values=missing_values,
+        #                                                                 axis_param=None, belongOp_in=Belong(0),
+        #                                                                 belongOp_out=Belong(0),
+        #                                                                 dataDictionary_out=expected)
+        # print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+        #
+        # # Caso 10
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, 3, 4, 1, 1], 'B': [2, 4, 12, 12, 12], 'C': [10, 0, 3, 2, 2], 'D': [8, 8, 8, 2, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(0),
+        #                                                             derivedTypeOutput=DerivedType(2),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=0, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 10 Failed: Expected True, but got False"
+        # print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 11
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 4, 12, 12], 'B': [2, 0, 3, 12, 12], 'C': [10, 0, 8, 1, 2], 'D': [1, 8, 8, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64',  # Convertir A a float64
+        #     'B': 'float64',  # Convertir B a float64
+        #     'C': 'float64',  # Convertir C a float64
+        #     'D': 'float64'  # Convertir D a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(1),
+        #                                                             derivedTypeOutput=DerivedType(2),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=1, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        # print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 12
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # # Aplicar la transformación de datos
+        # expected_exception = ValueError
+        # with self.assertRaises(expected_exception) as context:
+        #     result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                                 specialTypeInput=SpecialType(1),
+        #                                                                 derivedTypeOutput=DerivedType(2),
+        #                                                                 missing_values=missing_values,
+        #                                                                 axis_param=None, belongOp_in=Belong(0),
+        #                                                                 belongOp_out=Belong(0),
+        #                                                                 dataDictionary_out=expected)
+        # print_and_log("Test Case 12 Passed: expected ValueError, got ValueError")
+        #
+        # # Caso 13
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 3, 3], 'C': [3, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64',  # Convertir A a float64
+        #     'B': 'float64',  # Convertir B a float64
+        #     'C': 'float64'  # Convertir C a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(0),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=None, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        # print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 14
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # # Aplicar la transformación de datos
+        # expected_exception = ValueError
+        # with self.assertRaises(expected_exception) as context:
+        #     result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                                 specialTypeInput=SpecialType(2),
+        #                                                                 derivedTypeOutput=DerivedType(1),
+        #                                                                 missing_values=missing_values,
+        #                                                                 axis_param=None, belongOp_in=Belong(0),
+        #                                                                 belongOp_out=Belong(0),
+        #                                                                 dataDictionary_out=expected)
+        # print_and_log("Test Case 14 Passed: expected ValueError, got ValueError")
+        #
+        # # Caso 15
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [3, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(0),
+        #                                                             axis_param=0, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 15 Failed: Expected True, but got False"
+        # print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 16
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 1, 2], 'C': [0, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(0),
+        #                                                             axis_param=1, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 16 Failed: Expected True, but got False"
+        # print_and_log("Test Case 16 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 17
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 10, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(1),
+        #                                                             axis_param=0, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 17 Failed: Expected True, but got False"
+        # print_and_log("Test Case 17 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 18
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 4, 1], 'C': [2, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(1),
+        #                                                             axis_param=1, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 18 Failed: Expected True, but got False"
+        # print_and_log("Test Case 18 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 19
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [0, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(2),
+        #                                                             axis_param=0, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 19 Failed: Expected True, but got False"
+        # print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 20
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 3, 2], 'C': [1, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(2),
+        #                                                             axis_param=1, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        # print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 21
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # field = 'T'
+        # # Aplicar la transformación de datos
+        # expected_exception = ValueError
+        # with self.assertRaises(expected_exception) as context:
+        #     result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                                 specialTypeInput=SpecialType(1),
+        #                                                                 derivedTypeOutput=DerivedType(2),
+        #                                                                 missing_values=missing_values,
+        #                                                                 axis_param=None, field=field,
+        #                                                                 belongOp_in=Belong(0),
+        #                                                                 belongOp_out=Belong(0),
+        #                                                                 dataDictionary_out=expected)
+        # print_and_log("Test Case 21 Passed: expected ValueError, got ValueError")
+        #
+        # # Caso 22
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # field = 'A'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, 0, 0, 0, 0], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(0),
+        #                                                             derivedTypeOutput=DerivedType(0),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 22 Failed: Expected True, but got False"
+        # print_and_log("Test Case 22 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 23
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # field = 'A'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 0, 0, 0], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(1),
+        #                                                             derivedTypeOutput=DerivedType(0),
+        #                                                             missing_values=missing_values,
+        #                                                             field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 23 Failed: Expected True, but got False"
+        # print_and_log("Test Case 23 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 24
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = None
+        # field = 'A'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, 0, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(0),
+        #                                                             derivedTypeOutput=DerivedType(1),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 24 Failed: Expected True, but got False"
+        # print_and_log("Test Case 24 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 25
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # field = 'A'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, np.NaN, 3, 4], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(1),
+        #                                                             derivedTypeOutput=DerivedType(1),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 25 Failed: Expected True, but got False"
+        # print_and_log("Test Case 25 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 26
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = None
+        # field = 'A'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, 3, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(0),
+        #                                                             derivedTypeOutput=DerivedType(2),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        # print_and_log("Test Case 26 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 27
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # # Definir la lista de valores invalidos
+        # missing_values = [1, 3, 4]
+        # field = 'A'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 4, 1, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(1),
+        #                                                             derivedTypeOutput=DerivedType(2),
+        #                                                             missing_values=missing_values,
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 27 Failed: Expected True, but got False"
+        # print_and_log("Test Case 27 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 28
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # field = 'C'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [3, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(0),
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 28 Failed: Expected True, but got False"
+        # print_and_log("Test Case 28 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 29
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # field = 'C'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 10, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(1),
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 29 Failed: Expected True, but got False"
+        # print_and_log("Test Case 29 Passed: the function returned the expected dataframe")
+        #
+        # # Caso 30
+        # # Crear un DataFrame de prueba
+        # datadic = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # field = 'C'
+        # # Definir el resultado esperado
+        # expected = pd.DataFrame(
+        #     {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [0, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
+        # expected = expected.astype({
+        #     'A': 'float64'  # Convertir A a float64
+        # })
+        # # Aplicar la transformación de datos
+        # result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
+        #                                                             specialTypeInput=SpecialType(2),
+        #                                                             derivedTypeOutput=DerivedType(2),
+        #                                                             axis_param=1, field=field, belongOp_in=Belong(0),
+        #                                                             belongOp_out=Belong(0), dataDictionary_out=expected)
+        #
+        # # Verificar si el resultado obtenido coincide con el esperado
+        # assert result is True, "Test Case 30 Failed: Expected True, but got False"
+        # print_and_log("Test Case 30 Passed: the function returned the expected dataframe")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
