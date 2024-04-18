@@ -186,8 +186,88 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        # TODO: Implement the checkInv_Interval_FixValue invariant
-        return True
+        def get_condition(x):
+            if closureType == Closure.openOpen:
+                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x < rightMargin)) else False
+            elif closureType == Closure.openClosed:
+                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x <= rightMargin)) else False
+            elif closureType == Closure.closedOpen:
+                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x < rightMargin)) else False
+            elif closureType == Closure.closedClosed:
+                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x <= rightMargin)) else False
+
+
+        if dataTypeOutput is not None:  # If it is specified, the transformation is performed
+            vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+
+        if field is None:
+            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if get_condition(value):
+                            if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
+                                return False
+                        else: # Si el valor no es igual a fixValueInput
+                            if dataDictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(dataDictionary_out.loc[row_index, column_name])):
+                                return False
+            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if get_condition(value):
+                            if dataDictionary_out.loc[row_index, column_name] != fixValueOutput:
+                                return True
+                        else: # Si el valor no es igual a fixValueInput
+                            if dataDictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(dataDictionary_out.loc[row_index, column_name])):
+                                return False
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if get_condition(value):
+                            return False
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+                for column_index, column_name in enumerate(dataDictionary_in.columns):
+                    for row_index, value in dataDictionary_in[column_name].items():
+                        if get_condition(value):
+                            return False
+
+        elif field is not None:
+            if field not in dataDictionary_in.columns or dataDictionary_out.columns:
+                raise ValueError("The field does not exist in the dataframe")
+            if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+                raise ValueError("The field is not numeric")
+
+            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                for row_index, value in dataDictionary_in[field].items():
+                    if get_condition(value):
+                        if dataDictionary_out.loc[row_index, field] != fixValueOutput:
+                            return False
+                    else: # Si el valor no es igual a fixValueInput
+                        if dataDictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(dataDictionary_out.loc[row_index, field])):
+                            return False
+            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                for row_index, value in dataDictionary_in[field].items():
+                    if get_condition(value):
+                        if dataDictionary_out.loc[row_index, field] != fixValueOutput:
+                            return True
+                    else:
+                        if dataDictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(dataDictionary_out.loc[row_index, field])):
+                            return False
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+                for row_index, value in dataDictionary_in[field].items():
+                    if get_condition(value):
+                        return False
+            elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+                for row_index, value in dataDictionary_in[field].items():
+                    if get_condition(value):
+                        return False
+
+
+        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+            return True
+        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+            return False
+        else:
+            return True
 
     def checkInv_Interval_DerivedValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                        leftMargin: float, rightMargin: float,
