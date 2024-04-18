@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, checkDerivedTypeColRowOutliers, \
     checkSpecialTypeInterpolation, \
-    checkSpecialTypeMean, checkSpecialTypeMedian, checkSpecialTypeClosest, checkDerivedTypeMostFrequent, \
-    checkDerivedTypePrevious, checkDerivedTypeNext
+    checkSpecialTypeMean, checkSpecialTypeMedian, checkSpecialTypeClosest, checkSpecialTypeMostFrequent, \
+    checkSpecialTypePrevious, checkSpecialTypeNext, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 
@@ -212,8 +212,19 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        # TODO: Implement the checkInv_Interval_DerivedValue invariant
-        return True
+        result = True
+
+        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            result = checkIntervalMostFrequent(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
+                                               closureType, belongOp_in, belongOp_out, axis_param, field)
+        elif derivedTypeOutput == DerivedType.PREVIOUS:
+            result = checkIntervalPrevious(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
+                                           closureType, belongOp_in, belongOp_out, axis_param, field)
+        elif derivedTypeOutput == DerivedType.NEXT:
+            result = checkIntervalNext(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
+                                       closureType, belongOp_in, belongOp_out, axis_param, field)
+
+        return True if result else False
 
     def checkInv_Interval_NumOp(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                 leftMargin: float, rightMargin: float, closureType: Closure, numOpOutput: Operation,
@@ -714,13 +725,13 @@ class Invariants:
 
         if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                result = checkSpecialTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                                       belongOp_in, belongOp_out, missing_values, axis_param, field)
             elif derivedTypeOutput == DerivedType.PREVIOUS:
-                result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                result = checkSpecialTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                                   belongOp_in, belongOp_out, missing_values, axis_param, field)
             elif derivedTypeOutput == DerivedType.NEXT:
-                result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                result = checkSpecialTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                               belongOp_in, belongOp_out, missing_values, axis_param, field)
 
         elif specialTypeInput == SpecialType.OUTLIER:
@@ -730,13 +741,13 @@ class Invariants:
             if axis_param is None:
                 missing_values = dataDictionary_in.where(dataDictionary_outliers_mask == 1).stack().tolist()
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                    result = checkSpecialTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                                           belongOp_in, belongOp_out, missing_values, axis_param, field)
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                    result = checkSpecialTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                                       belongOp_in, belongOp_out, missing_values, axis_param, field)
                 elif derivedTypeOutput == DerivedType.NEXT:
-                    result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                    result = checkSpecialTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
                                                   belongOp_in, belongOp_out, missing_values, axis_param, field)
 
             elif axis_param == 0 or axis_param == 1:
@@ -751,17 +762,17 @@ class Invariants:
                 if np.issubdtype(dataDictionary_in[field].dtype, np.number):
                     if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
                         if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                            result = checkDerivedTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                                belongOp_in, belongOp_out, missing_values, axis_param,
-                                                                field)
+                            result = checkSpecialTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                                  belongOp_in, belongOp_out, missing_values, axis_param,
+                                                                  field)
                         elif derivedTypeOutput == DerivedType.PREVIOUS:
-                            result = checkDerivedTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                            belongOp_in, belongOp_out, missing_values, axis_param,
-                                                            field)
+                            result = checkSpecialTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                              belongOp_in, belongOp_out, missing_values, axis_param,
+                                                              field)
                         elif derivedTypeOutput == DerivedType.NEXT:
-                            result = checkDerivedTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                        belongOp_in, belongOp_out, missing_values, axis_param,
-                                                        field)
+                            result = checkSpecialTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
+                                                          belongOp_in, belongOp_out, missing_values, axis_param,
+                                                          field)
                     elif specialTypeInput == SpecialType.OUTLIER:
                         result = checkDerivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
                                                                 dataDictionary_out, dataDictionary_outliers_mask,
