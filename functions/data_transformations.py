@@ -1,7 +1,7 @@
 # Importing functions and classes from packages
 import numpy as np
 import pandas as pd
-from helpers.auxiliar import cast_type_FixValue, find_closest_value
+from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType
 from helpers.transform_aux import getOutliers, specialTypeMean, specialTypeMedian, specialTypeClosest, \
     specialTypeInterpolation, apply_derivedTypeColRowOutliers, apply_derivedType
@@ -367,35 +367,24 @@ class Invariants:
         """
         dataDictionary_copy = dataDictionary.copy()
 
-        # Define the interval condition according to the closure type
-        def get_condition(x):
-            if closureType == Closure.openOpen:
-                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x < rightMargin)) else False
-            elif closureType == Closure.openClosed:
-                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x <= rightMargin)) else False
-            elif closureType == Closure.closedOpen:
-                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x < rightMargin)) else False
-            elif closureType == Closure.closedClosed:
-                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x <= rightMargin)) else False
-
         if field is None:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                 if axis_param == 1:  # Applies the lambda function at the row level
                     dataDictionary_copy = dataDictionary_copy.T
                     for row in dataDictionary_copy.columns:
                         most_frequent=dataDictionary_copy[row].value_counts().idxmax()
-                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: most_frequent if get_condition(x) else x)
+                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: most_frequent if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
                     dataDictionary_copy = dataDictionary_copy.T
                 elif axis_param == 0:  # Applies the lambda function at the column level
                     for col in dataDictionary_copy.columns:
                         most_frequent = dataDictionary_copy[col].value_counts().idxmax()
-                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: most_frequent if get_condition(x) else x)
+                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: most_frequent if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
                 else:  # Applies the lambda function at the dataframe level
                     # In case of a tie of the value with the most appearances in the dataset, the first value is taken
                     valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
                     # Replace the values within the interval with the most frequent value in the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
-                        lambda value: valor_mas_frecuente if get_condition(value) else value))
+                        lambda value: valor_mas_frecuente if check_interval_condition(value, leftMargin, rightMargin, closureType) else value))
             # Doesn't assign anything to np.nan
             elif derivedTypeOutput == DerivedType.PREVIOUS:
                 # Applies the lambda function at the column level or at the row level
@@ -403,7 +392,7 @@ class Invariants:
                 if axis_param is not None:
                     # Define a lambda function to replace the values within the interval with the value of the previous position in the same column
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                        value) else row_or_col.iloc[i - 1] if get_condition(value) and i > 0 else value
+                        value) else row_or_col.iloc[i - 1] if check_interval_condition(value, leftMargin, rightMargin, closureType) and i > 0 else value
                                   for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
@@ -413,7 +402,7 @@ class Invariants:
                 if axis_param is not None:
                     # Define the lambda function to replace the values within the interval with the value of the next position in the same column
                     dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                        value) else row_or_col.iloc[i + 1] if get_condition(value) and i < len(row_or_col) - 1 else value
+                        value) else row_or_col.iloc[i + 1] if check_interval_condition(value, leftMargin, rightMargin, closureType) and i < len(row_or_col) - 1 else value
                                for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the NEXT operation")
@@ -426,16 +415,16 @@ class Invariants:
                 if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                     most_frequent = dataDictionary_copy[field].value_counts().idxmax()
                     dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value:
-                                                most_frequent if get_condition(value) else value)
+                                                most_frequent if check_interval_condition(value, leftMargin, rightMargin, closureType) else value)
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
                     dataDictionary_copy[field] = pd.Series(
                         [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
-                        if get_condition(value) and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
+                        if check_interval_condition(value, leftMargin, rightMargin, closureType) and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
                             index=dataDictionary_copy[field].index)
                 elif derivedTypeOutput == DerivedType.NEXT:
                     dataDictionary_copy[field] = pd.Series(
                         [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
-                        if get_condition(value) and i < len(dataDictionary_copy[field]) - 1 else value for i, value in
+                        if check_interval_condition(value, leftMargin, rightMargin, closureType) and i < len(dataDictionary_copy[field]) - 1 else value for i, value in
                          enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
 
         return dataDictionary_copy
@@ -455,17 +444,6 @@ class Invariants:
         :param field: field to execute the data transformation
         :return: dataDictionary with the values of the interval changed to the result of the operation numOpOutput
         """
-
-        def get_condition(x):
-            if closureType == Closure.openOpen:
-                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x < rightMargin)) else False
-            elif closureType == Closure.openClosed:
-                return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x <= rightMargin)) else False
-            elif closureType == Closure.closedOpen:
-                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x < rightMargin)) else False
-            elif closureType == Closure.closedClosed:
-                return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x <= rightMargin)) else False
-
         # Auxiliary function that changes the value of 'FixValueInput' to the data type in 'DataTypeInput'
         dataDictionary_copy = dataDictionary.copy()
 
@@ -476,7 +454,7 @@ class Invariants:
                 if axis_param == 0:
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if get_condition(x) else x)
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
                             dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                     # Iterate over each column
                     for col in dataDictionary_copy.columns:
@@ -492,7 +470,7 @@ class Invariants:
                     dataDictionary_copy = dataDictionary_copy.T
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if get_condition(x) else x)
+                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
                             dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                     # Iterate over each column
                     for col in dataDictionary_copy.columns:
@@ -516,14 +494,14 @@ class Invariants:
                     # Replace the values within the interval with the mean of the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
-                            lambda x: mean_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
+                            lambda x: mean_value if (np.issubdtype(type(x), np.number) and check_interval_condition(x, leftMargin, rightMargin, closureType)) else x))
                 elif axis_param == 0:
                     means = dataDictionary_copy.apply(lambda col: col[col.apply(lambda x:
                             np.issubdtype(type(x), np.number))].mean() if np.issubdtype(col.dtype, np.number) else None)
                     for col in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
                             dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: means[col] if
-                                                        get_condition(x) else x)
+                                                        check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
                 elif axis_param == 1:
                     dataDictionary_copy = dataDictionary_copy.T
                     means = dataDictionary_copy.apply(lambda row: row[row.apply(lambda x:
@@ -531,7 +509,7 @@ class Invariants:
                     for row in dataDictionary_copy.columns:
                         if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
                             dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: means[row] if
-                                                        get_condition(x) else x)
+                                                        check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
 
                     dataDictionary_copy = dataDictionary_copy.T
 
@@ -544,19 +522,19 @@ class Invariants:
                     # Replace the values within the interval with the median of the entire DataFrame using lambda
                     dataDictionary_copy = dataDictionary_copy.apply(
                         lambda col: col.apply(
-                            lambda x: median_value if (np.issubdtype(type(x), np.number) and get_condition(x)) else x))
+                            lambda x: median_value if (np.issubdtype(type(x), np.number) and check_interval_condition(x, leftMargin, rightMargin, closureType)) else x))
 
                 elif axis_param == 0:
                     for col in dataDictionary_copy.columns:
                         median=dataDictionary_copy[col].median()
                         dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                            lambda x: x if not get_condition(x) else median)
+                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
                 elif axis_param == 1:
                     dataDictionary_copy = dataDictionary_copy.T
                     for row in dataDictionary_copy.columns:
                         median=dataDictionary_copy[row].median()
                         dataDictionary_copy[row] = dataDictionary_copy[row].apply(
-                            lambda x: x if not get_condition(x) else median)
+                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
                     dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.CLOSEST:
@@ -567,7 +545,7 @@ class Invariants:
                     values=[]
                     for col in only_numbers_df.columns:
                         for index, row in only_numbers_df.iterrows():
-                            if get_condition(row[col]):
+                            if check_interval_condition(row[col], leftMargin, rightMargin, closureType):
                                 indice_row.append(index)
                                 indice_col.append(col)
                                 values.append(row[col])
@@ -609,7 +587,7 @@ class Invariants:
                         closest_processed = []
 
                         for index, value in only_numbers_df[col].items():
-                            if get_condition(value):
+                            if check_interval_condition(value, leftMargin, rightMargin, closureType):
                                 indice_row.append(index)
                                 indice_col.append(col)
                                 values.append(value)
@@ -639,7 +617,7 @@ class Invariants:
                 if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
                     if numOpOutput == Operation.INTERPOLATION:
                         dataDictionary_copy_copy = dataDictionary_copy.copy()
-                        dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: np.nan if get_condition(x) else x)
+                        dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
                         dataDictionary_copy_copy[field]=dataDictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
                         # For each index in the column
                         for idx in dataDictionary_copy.index:
@@ -651,11 +629,11 @@ class Invariants:
                     elif numOpOutput == Operation.MEAN:
                         mean=dataDictionary_copy[field].mean()
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not get_condition(x) else mean)
+                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else mean)
                     elif numOpOutput == Operation.MEDIAN:
                         median = dataDictionary_copy[field].median()
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not get_condition(x) else median)
+                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
                     elif numOpOutput == Operation.CLOSEST:
                         indice_row = []
                         values = []
@@ -663,7 +641,7 @@ class Invariants:
                         closest_processed = []
 
                         for index, value in dataDictionary_copy[field].items():
-                            if get_condition(value):
+                            if check_interval_condition(value, leftMargin, rightMargin, closureType):
                                 indice_row.append(index)
                                 values.append(value)
                         if len(values) > 0 and values is not None:
