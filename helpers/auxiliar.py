@@ -387,7 +387,7 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                 if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
                                     return True
                             else:
-                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]:
+                                if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
@@ -402,7 +402,7 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                 if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
                                     return True
                             else:
-                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]:
+                                if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                     return False
 
         elif specialTypeInput == SpecialType.INVALID:
@@ -428,7 +428,7 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
                                     return True
                             else:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
+                                if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
@@ -453,7 +453,7 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
                                     return True
                             else:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
+                                if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
                                     return False
 
         elif specialTypeInput == SpecialType.OUTLIER:
@@ -473,15 +473,14 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
 
-                for value in missing_values:
-                    for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                        for idx in dataDictionary_in.index:
-                            if dataDictionary_in.at[idx, col] == value:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
-                                    return True
-                            else:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
-                                    return False
+                for col in dataDictionary_outliers_mask.columns:
+                    for idx in dataDictionary_outliers_mask.index:
+                        if dataDictionary_outliers_mask.at[idx, col] == 1:
+                            if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                return True
+                        else:
+                            if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
+                                return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
                     for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
@@ -499,15 +498,14 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
 
-                for value in missing_values:
-                    for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                        for idx in dataDictionary_in.index:
-                            if dataDictionary_in.at[idx, col] == value:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
-                                    return True
-                            else:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]:
-                                    return False
+                for col in dataDictionary_outliers_mask.columns:
+                    for idx in dataDictionary_outliers_mask.index:
+                        if dataDictionary_outliers_mask.at[idx, col] == 1:
+                            if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                return True
+                        else:
+                            if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
+                                return False
 
     elif field is not None:
         if field not in dataDictionary_in.columns:
@@ -526,7 +524,7 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                         if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
                             return True
                     else:
-                        if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]:
+                        if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
                             return False
 
         elif specialTypeInput == SpecialType.INVALID:
@@ -541,12 +539,12 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                     dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
 
             for value in missing_values:
-                for idx in dataDictionary_in.index:
+                for idx in dataDictionary_in_copy.index:
                     if dataDictionary_in.at[idx, field] == value:
                         if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
                             return True
                     else:
-                        if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]:
+                        if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
                             return False
 
         elif specialTypeInput == SpecialType.OUTLIER:
@@ -562,14 +560,13 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                     # Replace the value with the corresponding one from dataDictionary_copy_copy
                     dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
 
-            for value in missing_values:
-                for idx in dataDictionary_in.index:
-                    if dataDictionary_in.at[idx, field] == value:
-                        if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
-                            return True
-                    else:
-                        if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]:
-                            return False
+            for idx in dataDictionary_outliers_mask.index:
+                if dataDictionary_outliers_mask.at[idx, field] == 1:
+                    if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
+                        return True
+                else:
+                    if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
+                        return False
 
     return False
 
@@ -875,7 +872,7 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                                 if dataDictionary_out.at[idx, col_name] != mean_value:
                                     return False
                             else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                                if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                     return False
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -889,7 +886,7 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                                 if dataDictionary_out.at[idx, col_name] != mean:
                                     return False
                             else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                                if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                     return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
@@ -901,7 +898,7 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                             if dataDictionary_out.at[idx, col_name] != mean:
                                 return False
                         else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                            if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                 return False
         if specialTypeInput == SpecialType.INVALID:
             if axis_param is None:
@@ -2199,15 +2196,15 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                 # Replace the missing values with the closest numeric values
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
-                        current_value = dataDictionary_in.iat[i, j]
+                        current_value = dataDictionary_in.iiloc[i, j]
                         if current_value in closest_values:
-                            if dataDictionary_out.at[i, j] != closest_values[current_value]:
+                            if dataDictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if pd.isnull(dataDictionary_in.at[i, j]) and specialTypeInput == SpecialType.MISSING:
+                            if pd.isnull(dataDictionary_in.iloc[i, j]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                             if (dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j])  and not(pd.isnull(dataDictionary_in.loc[i, j]) or pd.isnull(dataDictionary_out.loc[i, j])):
                                 return False
@@ -2294,17 +2291,17 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                 # For each outlier value, find the closest numeric value in the flattened series
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
-                        if dataDictionary_outliers_mask.at[i, j] == 1:
-                            current_value = dataDictionary_in.iat[i, j]
+                        if dataDictionary_outliers_mask.iloc[i, j] == 1:
+                            current_value = dataDictionary_in.iiloc[i, j]
                             if current_value not in closest_values:
                                 closest_values[current_value] = find_closest_value(flattened_values, current_value)
 
                 # Replace the outlier values with the closest numeric values
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
-                        if dataDictionary_outliers_mask.at[i, j] == 1:
-                            current_value = dataDictionary_in.iat[i, j]
-                            if dataDictionary_out.at[i, j] != closest_values[current_value]:
+                        if dataDictionary_outliers_mask.iloc[i, j] == 1:
+                            current_value = dataDictionary_in.iiloc[i, j]
+                            if dataDictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
@@ -2485,14 +2482,14 @@ def checkClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
                         for missing_value in missing_values:
-                            if dataDictionary_in.at[i, j] == missing_value or (pd.isnull(dataDictionary_in.at[i, j]) and specialTypeInput == SpecialType.MISSING):
+                            if dataDictionary_in.iloc[i, j] == missing_value or (pd.isnull(dataDictionary_in.iloc[i, j]) and specialTypeInput == SpecialType.MISSING):
                                 return False
 
         if specialTypeInput == SpecialType.OUTLIER:
             if axis_param is None or axis_param == 0 or axis_param == 1:
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
-                        if dataDictionary_outliers_mask.at[i, j] == 1:
+                        if dataDictionary_outliers_mask.iloc[i, j] == 1:
                             return False
 
     elif field is not None:
@@ -2541,14 +2538,14 @@ def checkClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictiona
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
                         for missing_value in missing_values:
-                            if dataDictionary_in.at[i, j] == missing_value or (pd.isnull(dataDictionary_in.at[i, j]) and specialTypeInput == SpecialType.MISSING):
+                            if dataDictionary_in.iloc[i, j] == missing_value or (pd.isnull(dataDictionary_in.iloc[i, j]) and specialTypeInput == SpecialType.MISSING):
                                 return False
 
         if specialTypeInput == SpecialType.OUTLIER:
             if axis_param is None or axis_param == 0 or axis_param == 1:
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
-                        if dataDictionary_outliers_mask.at[i, j] == 1:
+                        if dataDictionary_outliers_mask.iloc[i, j] == 1:
                             return False
 
     elif field is not None:
