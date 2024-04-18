@@ -2840,7 +2840,6 @@ def checkDerivedTypePreviousBelongBelong(dataDictionary_in: pd.DataFrame, dataDi
                                     return False
                             else:
                                 if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field] and not pd.isnull(dataDictionary_in.loc[idx - 1, field]):
-                                    print("Salida: ", dataDictionary_out.loc[idx, field], "Entrada: ", dataDictionary_in.loc[idx, field], "Previous:", dataDictionary_in.loc[idx - 1, field])
                                     return False
                         else:
                             if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
@@ -2935,19 +2934,19 @@ def checkDerivedTypePreviousBelongNotBelong(dataDictionary_in: pd.DataFrame, dat
                         value = dataDictionary_in.iloc[row_index, column_index]
                         if value in missing_values:
                             if column_index == 0:
-                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                if dataDictionary_out.iloc[row_index, column_index] != dataDictionary_in.iloc[
                                     row_index, column_index]:
                                     return True
                             else:
                                 if column_index - 1 in dataDictionary_in.columns:
-                                    if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                    if dataDictionary_out.iloc[row_index, column_index] != dataDictionary_in.iloc[
                                         row_index, column_index - 1]:
                                         return True
                         else:
-                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                            if dataDictionary_out.iloc[row_index, column_index] != dataDictionary_in.iloc[
                                 row_index, column_index] and not (
-                                    pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                    dataDictionary_out.loc[row_index, column_index])):
+                                    pd.isnull(dataDictionary_in.iloc[row_index, column_index]) and pd.isnull(
+                                    dataDictionary_out.iloc[row_index, column_index])):
                                 return False
 
         elif axis_param is None:
@@ -3430,18 +3429,18 @@ def checkDerivedTypeNextBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDic
                         value = dataDictionary_in.iloc[row_index, column_index]
                         if value in missing_values:
                             if column_index == len(row) - 1:
-                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                if dataDictionary_out.iloc[row_index, column_index] != dataDictionary_in.iloc[
                                     row_index, column_index]:
                                     return True
                             else:
-                                if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                                if dataDictionary_out.iloc[row_index, column_index] != dataDictionary_in.iloc[
                                     row_index, column_index + 1]:
                                     return True
                         else:
-                            if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                            if dataDictionary_out.iloc[row_index, column_index] != dataDictionary_in.iloc[
                                 row_index, column_index] and not (
-                                    pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                    dataDictionary_out.loc[row_index, column_index])):
+                                    pd.isnull(dataDictionary_in.iloc[row_index, column_index]) and pd.isnull(
+                                    dataDictionary_out.iloc[row_index, column_index])):
                                 return False
 
         elif axis_param is None:
