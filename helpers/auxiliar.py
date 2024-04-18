@@ -663,7 +663,7 @@ def checkInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDicti
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -771,7 +771,7 @@ def checkInterpolationNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDi
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -1001,7 +1001,7 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -1196,7 +1196,7 @@ def checkMeanBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -1325,7 +1325,7 @@ def checkMeanNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -1433,7 +1433,7 @@ def checkMeanNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -1664,7 +1664,7 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -1859,7 +1859,7 @@ def checkMedianBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -1988,7 +1988,7 @@ def checkMedianNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -2096,7 +2096,7 @@ def checkMedianNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionar
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING:
@@ -2209,7 +2209,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                         else:
                             if pd.isnull(dataDictionary_in.at[i, j]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                            if dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j]:
+                            if (dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j])  and not(pd.isnull(dataDictionary_in.loc[i, j]) or pd.isnull(dataDictionary_out.loc[i, j])):
                                 return False
             elif axis_param == 0:
                 # Iterate over each column
@@ -2244,7 +2244,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                         else:
                             if pd.isnull(dataDictionary_in.at[i, col_name]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                            if dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]:
+                            if (dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]) and not(pd.isnull(dataDictionary_in.loc[i, col_name]) or pd.isnull(dataDictionary_out.loc[i, col_name])):
                                 return False
             elif axis_param == 1:
                 # Iterate over each row
@@ -2279,7 +2279,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                         else:
                             if pd.isnull(dataDictionary_in.at[row_idx, col_name]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                            if dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]:
+                            if (dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]) and not(pd.isnull(dataDictionary_in.loc[row_idx, col_name]) or pd.isnull(dataDictionary_out.loc[row_idx, col_name])):
                                 return False
 
         if specialTypeInput == SpecialType.OUTLIER:
@@ -2310,7 +2310,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j]:
+                            if (dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j]) and not(pd.isnull(dataDictionary_in.loc[i, j]) or pd.isnull(dataDictionary_out.loc[i, j])):
                                 return False
             elif axis_param == 0:
                 # Iterate over each column
@@ -2344,7 +2344,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]:
+                            if (dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]) and not(pd.isnull(dataDictionary_in.loc[i, col_name]) or pd.isnull(dataDictionary_out.loc[i, col_name])):
                                 return False
             elif axis_param == 1:
                 # Iterate over each row
@@ -2378,13 +2378,13 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]:
+                            if (dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]) and not(pd.isnull(dataDictionary_in.loc[i, col_name]) or pd.isnull(dataDictionary_out.loc[i, col_name])):
                                 return False
 
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
@@ -2414,7 +2414,9 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                             elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.at[i, field] != dataDictionary_in.at[i, field]:
+                        if pd.isnull(dataDictionary_in.at[i, field]) and specialTypeInput == SpecialType.MISSING:
+                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
+                        if (dataDictionary_out.at[i, field] != dataDictionary_in.at[i, field]) and not(pd.isnull(dataDictionary_in.loc[i, field]) or pd.isnull(dataDictionary_out.loc[i, field])):
                             return False
 
         if specialTypeInput == SpecialType.OUTLIER:
@@ -2445,7 +2447,7 @@ def checkClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.D
                             elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.at[i, field] != dataDictionary_in.at[i, field]:
+                        if (dataDictionary_out.at[i, field] != dataDictionary_in.at[i, field]) and not(pd.isnull(dataDictionary_in.loc[i, field]) or pd.isnull(dataDictionary_out.loc[i, field])):
                             return False
 
     if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
@@ -2496,7 +2498,7 @@ def checkClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
@@ -2552,7 +2554,7 @@ def checkClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictiona
     elif field is not None:
         if field not in dataDictionary_in.columns:
             raise ValueError("Field not found in the dataDictionary_in")
-        if np.issubdtype(dataDictionary_in[field].dtype, np.number):
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
