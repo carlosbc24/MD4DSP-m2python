@@ -869,20 +869,14 @@ def checkSpecialTypeInterpolation(dataDictionary_in: pd.DataFrame, dataDictionar
     """
     result = True
 
-    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
-        result = checkInterpolationBelongBelong(dataDictionary_in=dataDictionary_in,
+    if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
+        result = checkInterpolationBelong(dataDictionary_in=dataDictionary_in,
                                                 dataDictionary_out=dataDictionary_out,
                                                 specialTypeInput=specialTypeInput,
+                                                belongOp_in=belongOp_in, belongOp_out=belongOp_out,
                                                 dataDictionary_outliers_mask=dataDictionary_outliers_mask,
                                                 missing_values=missing_values, axis_param=axis_param,
                                                 field=field)
-    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
-        result = checkInterpolationBelongNotBelong(dataDictionary_in=dataDictionary_in,
-                                                   dataDictionary_out=dataDictionary_out,
-                                                   specialTypeInput=specialTypeInput,
-                                                   dataDictionary_outliers_mask=dataDictionary_outliers_mask,
-                                                   missing_values=missing_values, axis_param=axis_param,
-                                                   field=field)
     elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
         result = checkInterpolationNotBelongBelong(dataDictionary_in=dataDictionary_in,
                                                    dataDictionary_out=dataDictionary_out,
@@ -901,177 +895,11 @@ def checkSpecialTypeInterpolation(dataDictionary_in: pd.DataFrame, dataDictionar
     return True if result else False
 
 
-def checkInterpolationBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                                   specialTypeInput: SpecialType,
-                                   dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                   axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in and belongOp_out are BELONG
-    params:
-        :param dataDictionary_in: dataframe with the data before the interpolation
-        :param dataDictionary_out: dataframe with the data after the interpolation
-        :param specialTypeInput: special type to apply the interpolation
-        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the interpolation
-        :param field: field to apply the interpolation
-
-    Returns:
-        :return: True if the special type interpolation is applied correctly
-        """
-    dataDictionary_in_copy = dataDictionary_in.copy()
-    if field is None:
-        if specialTypeInput == SpecialType.MISSING:
-            if axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    result = (dataDictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x).
-                              interpolate(method='linear', limit_direction='both').equals(dataDictionary_out[col_name]))
-                    if result is False:
-                        return False
-            elif axis_param == 1:
-                for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row.select_dtypes(include=[np.number])
-                    result = (numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
-                              interpolate(method='linear', limit_direction='both').equals(dataDictionary_out[row]))
-                    if result is False:
-                        return False
-
-        if specialTypeInput == SpecialType.INVALID:
-            # Applies the linear interpolation in the DataFrame
-            if axis_param == 0:
-                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    dataDictionary_in_copy[col] = (
-                        dataDictionary_in[col].apply(lambda x: np.nan if x in missing_values else x).
-                        interpolate(method='linear', limit_direction='both'))
-                # Iterate over each column
-                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    # For each index in the column
-                    for idx in dataDictionary_in.index:
-                        # Verify if the value is NaN in the original dataframe
-                        if pd.isnull(dataDictionary_in.at[idx, col]):
-                            # Replace the value with the corresponding one from dataDictionary_copy_copy
-                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
-                result = dataDictionary_in_copy.equals(dataDictionary_out)
-                if result is False:
-                    return False
-            # Applies the linear interpolation in the DataFrame
-            if axis_param == 1:
-                dataDictionary_in_copy = dataDictionary_in_copy.T
-                dataDictionary_in = dataDictionary_in.T
-                for col in dataDictionary_in_copy.columns:
-                    if np.issubdtype(dataDictionary_in_copy[col].dtype, np.number):
-                        dataDictionary_in_copy[col] = (
-                            dataDictionary_in_copy[col].apply(lambda x: np.nan if x in missing_values else x)
-                            .interpolate(method='linear', limit_direction='both'))
-                    # Iterate over each column
-                for col in dataDictionary_in_copy.columns:
-                    # For each index in the column
-                    for idx in dataDictionary_in_copy.index:
-                        # Verify if the value is NaN in the original dataframe
-                        if pd.isnull(dataDictionary_in_copy.at[idx, col]):
-                            # Replace the value with the corresponding one from dataDictionary_copy_copy
-                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
-
-                dataDictionary_in = dataDictionary_in.T
-                dataDictionary_in_copy = dataDictionary_in_copy.T
-                result = dataDictionary_in_copy.equals(dataDictionary_out)
-                if result is False:
-                    return False
-
-        if specialTypeInput == SpecialType.OUTLIER:
-            if axis_param == 0:
-                for col in dataDictionary_in_copy.columns:
-                    if np.issubdtype(dataDictionary_in_copy[col].dtype, np.number):
-                        for idx, value in dataDictionary_in_copy[col].items():
-                            if dataDictionary_outliers_mask.at[idx, col] == 1:
-                                dataDictionary_in_copy.at[idx, col] = np.NaN
-                        dataDictionary_in_copy[col] = dataDictionary_in_copy[col].interpolate(method='linear',
-                                                                                              limit_direction='both')
-                for col in dataDictionary_in_copy.columns:
-                    # For each índex in the column
-                    for idx in dataDictionary_in_copy.index:
-                        # Verify if the value is NaN in the original dataframe
-                        if pd.isnull(dataDictionary_in_copy.at[idx, col]):
-                            # Replace the value with the corresponding one from dataDictionary_copy_copy
-                            dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
-                result = dataDictionary_in_copy.equals(dataDictionary_out)
-                if result is False:
-                    return False
-            elif axis_param == 1:
-                dataDictionary_copy_copy = dataDictionary_in_copy.T
-                dataDictionary_copy = dataDictionary_in.T
-                for col in dataDictionary_copy.columns:
-                    if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                        for idx, value in dataDictionary_copy[col].items():
-                            if dataDictionary_outliers_mask.at[idx, col] == 1:
-                                dataDictionary_copy.at[idx, col] = np.NaN
-                        dataDictionary_copy[col] = dataDictionary_copy[col].interpolate(method='linear',
-                                                                                        limit_direction='both')
-                for col in dataDictionary_copy.columns:
-                    # For each índex in the column
-                    for idx in dataDictionary_copy.index:
-                        # Verify if the value is NaN in the original dataframe
-                        if pd.isnull(dataDictionary_copy.at[idx, col]):
-                            # Replace the value with the corresponding one from dataDictionary_copy_copy
-                            dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
-                dataDictionary_in_copy = dataDictionary_in_copy.T
-                dataDictionary_in = dataDictionary_in.T
-                result = dataDictionary_in_copy.equals(dataDictionary_out)
-                if result is False:
-                    return False
-
-    elif field is not None:
-        if field not in dataDictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
-            raise ValueError("The field is not numeric")
-
-        if specialTypeInput == SpecialType.MISSING:
-            dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values
-            else x).interpolate(method='linear', limit_direction='both'))
-            result = dataDictionary_in_copy.equals(dataDictionary_out)
-            if result is False:
-                return False
-
-        elif specialTypeInput == SpecialType.INVALID:
-            dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values
-            else x).interpolate(method='linear', limit_direction='both'))
-            # For each índex in the column
-            for idx in dataDictionary_in.index:
-                # Verify if the value is NaN in the original dataframe
-                if pd.isnull(dataDictionary_in.at[idx, field]):
-                    # Replace the value with the corresponding one from dataDictionary_copy_copy
-                    dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
-
-            result = dataDictionary_in_copy.equals(dataDictionary_out)
-            if result is False:
-                return False
-
-        elif specialTypeInput == SpecialType.OUTLIER:
-            for idx, value in dataDictionary_in[field].items():
-                if dataDictionary_outliers_mask.at[idx, field] == 1:
-                    dataDictionary_in.at[idx, field] = np.NaN
-            dataDictionary_in_copy[field] = dataDictionary_in[field].interpolate(method='linear',
-                                                                                 limit_direction='both')
-            # For each índex in the column
-            for idx in dataDictionary_in.index:
-                # Verify if the value is NaN in the original dataframe
-                if pd.isnull(dataDictionary_in.at[idx, field]):
-                    # Replace the value with the corresponding one from dataDictionary_copy_copy
-                    dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
-
-            result = dataDictionary_in_copy.equals(dataDictionary_out)
-            if result is False:
-                return False
-
-    return True
-
-
-def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                                      specialTypeInput: SpecialType,
-                                      dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                      axis_param: int = None, field: str = None) -> bool:
+def checkInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                specialTypeInput: SpecialType,
+                                belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
+                                dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                                axis_param: int = None, field: str = None) -> bool:
     """
     Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in is BELONG and belongOp_out is NOTBELONG
     params:
@@ -1095,30 +923,35 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                     dataDictionary_in_copy[col_name] = (
                         dataDictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x).
                         interpolate(method='linear', limit_direction='both'))
-                for value in missing_values:
-                    for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                        for idx in dataDictionary_in.index:
-                            if dataDictionary_in.at[idx, col_name] == value or pd.isnull(dataDictionary_in.at[idx, col_name]):
-                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
-                                    return True
-                            else:
-                                if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
+
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx in dataDictionary_in.index:
+                        if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(dataDictionary_in.at[idx, col_name]):
+                            if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                     return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
+                                return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     dataDictionary_in_copy[row] = (
                         numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
                         interpolate(method='linear', limit_direction='both'))
-                for value in missing_values:
-                    for col_name in dataDictionary_in.columns:
-                        for idx in dataDictionary_in.index:
-                            if dataDictionary_in.at[idx, col_name] == value or pd.isnull(dataDictionary_in.at[idx, col_name]):
-                                if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
-                                    return True
-                            else:
-                                if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
+                for col_name in dataDictionary_in.columns:
+                    for idx in dataDictionary_in.index:
+                        if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(dataDictionary_in.at[idx, col_name]):
+                            if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                     return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
+                                return False
 
         elif specialTypeInput == SpecialType.INVALID:
             if axis_param == 0:
@@ -1136,15 +969,16 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
 
-                for value in missing_values:
-                    for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                        for idx in dataDictionary_in.index:
-                            if dataDictionary_in.at[idx, col] == value:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
-                                    return True
-                            else:
-                                if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
-                                    return False
+                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    for idx in dataDictionary_in.index:
+                        if dataDictionary_in.at[idx, col] in missing_values:
+                            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                return True
+                        else:
+                            if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
+                                return False
             elif axis_param == 1:
                 for idx, row in dataDictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -1161,15 +995,17 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
 
-                for value in missing_values:
-                    for col in dataDictionary_in.columns:
-                        for idx in dataDictionary_in.index:
-                            if dataDictionary_in.at[idx, col] == value:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
-                                    return True
-                            else:
-                                if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
+                for col in dataDictionary_in.columns:
+                    for idx in dataDictionary_in.index:
+                        if dataDictionary_in.at[idx, col] in missing_values:
+                            if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                     return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
+                                return False
 
         elif specialTypeInput == SpecialType.OUTLIER:
             if axis_param == 0:
@@ -1192,7 +1028,10 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                     for idx in dataDictionary_outliers_mask.index:
                         if dataDictionary_outliers_mask.at[idx, col] == 1:
                             if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
-                                return True
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
                                 return False
@@ -1217,7 +1056,10 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                     for idx in dataDictionary_outliers_mask.index:
                         if dataDictionary_outliers_mask.at[idx, col] == 1:
                             if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
-                                return True
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
                                 return False
@@ -1232,15 +1074,17 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
             dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values else x).
                                              interpolate(method='linear', limit_direction='both'))
 
-            for value in missing_values:
-                for idx in dataDictionary_in.index:
-                    if dataDictionary_in.at[idx, field] == value or pd.isnull(
-                            dataDictionary_in.at[idx, field]):
-                        if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
-                            return True
-                    else:
-                        if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
+            for idx in dataDictionary_in.index:
+                if dataDictionary_in.at[idx, field] in missing_values or pd.isnull(
+                        dataDictionary_in.at[idx, field]):
+                    if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                             return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
+                else:
+                    if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
+                        return False
 
         elif specialTypeInput == SpecialType.INVALID:
             dataDictionary_in_copy[field] = (dataDictionary_in[field].apply(lambda x: np.nan if x in missing_values
@@ -1253,14 +1097,16 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
                     # Replace the value with the corresponding one from dataDictionary_copy_copy
                     dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
 
-            for value in missing_values:
-                for idx in dataDictionary_in_copy.index:
-                    if dataDictionary_in.at[idx, field] == value:
-                        if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
-                            return True
-                    else:
-                        if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
+            for idx in dataDictionary_in_copy.index:
+                if dataDictionary_in.at[idx, field] in missing_values:
+                    if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                             return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
+                else:
+                    if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
+                        return False
 
         elif specialTypeInput == SpecialType.OUTLIER:
             for idx, value in dataDictionary_in[field].items():
@@ -1278,12 +1124,20 @@ def checkInterpolationBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDicti
             for idx in dataDictionary_outliers_mask.index:
                 if dataDictionary_outliers_mask.at[idx, field] == 1:
                     if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
-                        return True
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
                 else:
                     if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not(pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
                         return False
 
-    return False
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        return False
+    else:
+        return True
 
 
 def checkInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
