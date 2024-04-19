@@ -85,3 +85,4 @@ if __name__ == "__main__":
 
     contracts_invariant_test = InvariantsSimpleTest()
     contracts_invariant_test.execute_checkInv_SpecialValue_NumOp()
+    contracts_invariant_test.execute_checkInv_SpecialValue_DerivedValue()
