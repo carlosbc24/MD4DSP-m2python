@@ -1379,18 +1379,13 @@ def checkSpecialTypeMean(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd
     """
     result = True
 
-    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
-        result = checkMeanBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+    if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
+        result = checkMeanBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
                                        specialTypeInput=specialTypeInput,
+                                       belongOp_in=belongOp_in, belongOp_out=belongOp_out,
                                        dataDictionary_outliers_mask=dataDictionary_outliers_mask,
                                        missing_values=missing_values, axis_param=axis_param,
                                        field=field)
-    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
-        result = checkMeanBelongNotBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
-                                          specialTypeInput=specialTypeInput,
-                                          dataDictionary_outliers_mask=dataDictionary_outliers_mask,
-                                          missing_values=missing_values, axis_param=axis_param,
-                                          field=field)
     elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
         result = checkMeanNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
                                           specialTypeInput=specialTypeInput,
@@ -1407,8 +1402,9 @@ def checkSpecialTypeMean(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd
     return True if result else False
 
 
-def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+def checkMeanBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                           specialTypeInput: SpecialType,
+                          belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
                           dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
                           axis_param: int = None, field: str = None) -> bool:
     """
@@ -1439,7 +1435,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                             if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
                                     dataDictionary_in.at[idx, col_name]):
                                 if dataDictionary_out.at[idx, col_name] != mean_value:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                     return False
@@ -1453,7 +1452,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                             if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
                                     dataDictionary_in.at[idx, col_name]):
                                 if dataDictionary_out.at[idx, col_name] != mean:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                     return False
@@ -1465,7 +1467,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
                             if dataDictionary_out.at[idx, col_name] != mean:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not(pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                                 return False
@@ -1481,7 +1486,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                         if np.issubdtype(type(value), np.number):
                             if dataDictionary_in.at[idx, col_name] in missing_values:
                                 if dataDictionary_out.at[idx, col_name] != mean_value:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                     idx, col_name] and not (
@@ -1497,7 +1505,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                         if np.issubdtype(type(value), np.number):
                             if dataDictionary_in.at[idx, col_name] in missing_values:
                                 if dataDictionary_out.at[idx, col_name] != mean:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                     idx, col_name] and not (
@@ -1512,7 +1523,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
                             if dataDictionary_out.at[idx, col_name] != mean:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                 idx, col_name] and not (
@@ -1531,7 +1545,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                     for idx, value in dataDictionary_in[col_name].items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             if dataDictionary_out.at[idx, col_name] != mean_value:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                 idx, col_name] and not (
@@ -1544,7 +1561,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                     for idx, value in dataDictionary_in[col].items():
                         if dataDictionary_outliers_mask.at[idx, col] == 1:
                             if dataDictionary_out.at[idx, col] != mean:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -1557,7 +1577,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             if dataDictionary_out.at[idx, col_name] != mean:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, col_name]) and
@@ -1576,7 +1599,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
             for idx, value in dataDictionary_in[field].items():
                 if value in missing_values or pd.isnull(value):
                     if dataDictionary_out.at[idx, field] != mean:
-                        return False
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
                 else:
                     if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
                         return False
@@ -1586,7 +1612,10 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
             for idx, value in dataDictionary_in[field].items():
                 if value in missing_values:
                     if dataDictionary_out.at[idx, field] != mean:
-                        return False
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
                 else:
                     if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
                             pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
@@ -1597,209 +1626,22 @@ def checkMeanBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: p
                 if dataDictionary_outliers_mask.at[idx, field] == 1:
                     mean = dataDictionary_in[field].mean()
                     if dataDictionary_out.at[idx, field] != mean:
-                        return False
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return  True
                 else:
                     if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
                             pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
                         dataDictionary_out.loc[idx, field])):
                         return False
 
-    return True
-
-
-def checkMeanBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                             specialTypeInput: SpecialType,
-                             dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                             axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type mean is applied correctly when the input and output dataframes when belongOp_in is Belong and belongOp_out is NOTBELONG
-    params::
-        :param dataDictionary_in: dataframe with the data before the mean
-        :param dataDictionary_out: dataframe with the data after the mean
-        :param specialTypeInput: special type to apply the mean
-        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the mean
-        :param field: field to apply the mean
-
-    Returns:
-        :return: True if the special type mean is applied correctly
-    """
-    if field is None:
-        if specialTypeInput == SpecialType.MISSING:
-            if axis_param is None:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
-                # Calculate the mean of these numeric columns
-                mean_value = only_numbers_df.mean().mean()
-                # Check the dataDictionary_out positions with missing values have been replaced with the mean
-                for col_name in dataDictionary_in.columns:
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    dataDictionary_in.at[idx, col_name]):
-                                if dataDictionary_out.at[idx, col_name] != mean_value:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
-                                    return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the dataDictionary_out positions with missing values have been replaced with the mean
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    mean = dataDictionary_in[col_name].mean()
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    dataDictionary_in.at[idx, col_name]):
-                                if dataDictionary_out.at[idx, col_name] != mean:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
-                                    return False
-            elif axis_param == 1:
-                for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    mean = numeric_data.mean()
-                    # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            if dataDictionary_out.at[idx, col_name] != mean:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
-                                return False
-        if specialTypeInput == SpecialType.INVALID:
-            if axis_param is None:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = dataDictionary_in
-                # Calculate the mean of these numeric columns
-                mean_value = only_numbers_df.mean().mean()
-                # Check the dataDictionary_out positions with missing values have been replaced with the mean
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if dataDictionary_in.at[idx, col_name] in missing_values:
-                                if dataDictionary_out.at[idx, col_name] != mean_value:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
-                                    idx, col_name] and not (pd.isnull(dataDictionary_in.loc[idx, col_name])
-                                                            and pd.isnull(dataDictionary_out.loc[idx, col_name])):
-                                    return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the dataDictionary_out positions with missing values have been replaced with the mean
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    mean = dataDictionary_in[col_name].mean()
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if dataDictionary_in.at[idx, col_name] in missing_values:
-                                if dataDictionary_out.at[idx, col_name] != mean:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
-                                    idx, col_name] and not (pd.isnull(dataDictionary_in.loc[idx, col_name])
-                                                            and pd.isnull(dataDictionary_out.loc[idx, col_name])):
-                                    return False
-            elif axis_param == 1:
-                for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    mean = numeric_data.mean()
-                    # Check if the missing values in the row have been replaced with the mean in dataDictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            if dataDictionary_out.at[idx, col_name] != mean:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col_name]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col_name])):
-                                return False
-        if specialTypeInput == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
-                # Calculate the mean of these numeric columns
-                mean_value = only_numbers_df.mean().mean()
-                # Replace the missing values with the mean of the entire DataFrame using lambda
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
-                            if dataDictionary_out.at[idx, col_name] != mean_value:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col_name]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col_name])):
-                                return False
-            if axis_param == 0:
-                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    mean = dataDictionary_in[col].mean()
-                    for idx, value in dataDictionary_in[col].items():
-                        if dataDictionary_outliers_mask.at[idx, col] == 1:
-                            if dataDictionary_out.at[idx, col] != mean:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col])):
-                                return False
-            elif axis_param == 1:
-                for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    mean = numeric_data.mean()
-                    for col_name, value in numeric_data.items():
-                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
-                            if dataDictionary_out.at[idx, col_name] != mean:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col_name]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col_name])):
-                                return False
-
-    elif field is not None:
-        if field not in dataDictionary_in.columns:
-            raise ValueError("Field not found in the dataDictionary_in")
-        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if specialTypeInput == SpecialType.MISSING:
-            # Check the dataDictionary_out positions with missing values have been replaced with the mean
-            mean = dataDictionary_in[field].mean()
-            for idx, value in dataDictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    if dataDictionary_out.at[idx, field] != mean:
-                        return True
-                else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                        return False
-        if specialTypeInput == SpecialType.INVALID:
-            # Check the dataDictionary_out positions with missing values have been replaced with the mean
-            mean = dataDictionary_in[field].mean()
-            for idx, value in dataDictionary_in[field].items():
-                if value in missing_values:
-                    if dataDictionary_out.at[idx, field] != mean:
-                        return True
-                else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
-                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                        dataDictionary_out.loc[idx, field])):
-                        return False
-        if specialTypeInput == SpecialType.OUTLIER:
-            for idx, value in dataDictionary_in[field].items():
-                if dataDictionary_outliers_mask.at[idx, field] == 1:
-                    mean = dataDictionary_in[field].mean()
-                    if dataDictionary_out.at[idx, field] != mean:
-                        return True
-                else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
-                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                        dataDictionary_out.loc[idx, field])):
-                        return False
-
-    return False
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        return False
+    else:
+        return True
 
 
 def checkMeanNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
@@ -2041,18 +1883,13 @@ def checkSpecialTypeMedian(dataDictionary_in: pd.DataFrame, dataDictionary_out: 
     """
     result = True
 
-    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
-        result = checkMedianBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+    if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
+        result = checkMedianBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
                                          specialTypeInput=specialTypeInput,
+                                         belongOp_in=belongOp_in, belongOp_out=belongOp_out,
                                          dataDictionary_outliers_mask=dataDictionary_outliers_mask,
                                          missing_values=missing_values, axis_param=axis_param,
                                          field=field)
-    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
-        result = checkMedianBelongNotBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
-                                            specialTypeInput=specialTypeInput,
-                                            dataDictionary_outliers_mask=dataDictionary_outliers_mask,
-                                            missing_values=missing_values, axis_param=axis_param,
-                                            field=field)
     elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
         result = checkMedianNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
                                             specialTypeInput=specialTypeInput,
@@ -2070,8 +1907,9 @@ def checkSpecialTypeMedian(dataDictionary_in: pd.DataFrame, dataDictionary_out: 
     return True if result else False
 
 
-def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+def checkMedianBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                             specialTypeInput: SpecialType,
+                            belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
                             dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
                             axis_param: int = None, field: str = None) -> bool:
     """
@@ -2102,7 +1940,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                             if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
                                     dataDictionary_in.at[idx, col_name]):
                                 if dataDictionary_out.at[idx, col_name] != median_value:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
                                     return False
@@ -2116,7 +1957,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                             if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
                                     dataDictionary_in.at[idx, col_name]):
                                 if dataDictionary_out.at[idx, col_name] != median:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
                                     return False
@@ -2128,7 +1972,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
                             if dataDictionary_out.at[idx, col_name] != median:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
                                 return False
@@ -2144,7 +1991,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                         if np.issubdtype(type(value), np.number):
                             if dataDictionary_in.at[idx, col_name] in missing_values:
                                 if dataDictionary_out.at[idx, col_name] != median_value:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                     idx, col_name] and not (
@@ -2160,7 +2010,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                         if np.issubdtype(type(value), np.number):
                             if dataDictionary_in.at[idx, col_name] in missing_values:
                                 if dataDictionary_out.at[idx, col_name] != median:
-                                    return False
+                                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                        return True
                             else:
                                 if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                     idx, col_name] and not (
@@ -2175,7 +2028,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
                             if dataDictionary_out.at[idx, col_name] != median:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                 idx, col_name] and not (
@@ -2194,7 +2050,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                     for idx, value in dataDictionary_in[col_name].items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             if dataDictionary_out.at[idx, col_name] != median_value:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
                                 idx, col_name] and not (
@@ -2207,7 +2066,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                     for idx, value in dataDictionary_in[col].items():
                         if dataDictionary_outliers_mask.at[idx, col] == 1:
                             if dataDictionary_out.at[idx, col] != median:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -2220,7 +2082,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                     for col_name, value in numeric_data.items():
                         if dataDictionary_outliers_mask.at[idx, col_name] == 1:
                             if dataDictionary_out.at[idx, col_name] != median:
-                                return False
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, col_name]) and
@@ -2239,7 +2104,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
             for idx, value in dataDictionary_in[field].items():
                 if value in missing_values or pd.isnull(value):
                     if dataDictionary_out.at[idx, field] != median:
-                        return False
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
                 else:
                     if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
                         return False
@@ -2249,7 +2117,10 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
             for idx, value in dataDictionary_in[field].items():
                 if value in missing_values:
                     if dataDictionary_out.at[idx, field] != median:
-                        return False
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
                 else:
                     if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
                             pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
@@ -2260,209 +2131,21 @@ def checkMedianBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                 if dataDictionary_outliers_mask.at[idx, field] == 1:
                     median = dataDictionary_in[field].median()
                     if dataDictionary_out.at[idx, field] != median:
-                        return False
+                        if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                            return True
                 else:
                     if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
-                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                        dataDictionary_out.loc[idx, field])):
+                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(dataDictionary_out.loc[idx, field])):
                         return False
 
-    return True
-
-
-def checkMedianBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
-                               specialTypeInput: SpecialType,
-                               dataDictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                               axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type median is applied correctly when the input and output dataframes when belongOp_in is Belong and belongOp_out is NOTBELONG
-    params::
-        :param dataDictionary_in: dataframe with the data before the median
-        :param dataDictionary_out: dataframe with the data after the median
-        :param specialTypeInput: special type to apply the median
-        :param dataDictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the median
-        :param field: field to apply the median
-
-    Returns:
-        :return: True if the special type median is applied correctly
-    """
-    if field is None:
-        if specialTypeInput == SpecialType.MISSING:
-            if axis_param is None:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
-                # Calculate the median of these numeric columns
-                median_value = only_numbers_df.median().median()
-                # Check the dataDictionary_out positions with missing values have been replaced with the median
-                for col_name in dataDictionary_in.columns:
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    dataDictionary_in.at[idx, col_name]):
-                                if dataDictionary_out.at[idx, col_name] != median_value:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
-                                    return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the dataDictionary_out positions with missing values have been replaced with the median
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    median = dataDictionary_in[col_name].median()
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if dataDictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    dataDictionary_in.at[idx, col_name]):
-                                if dataDictionary_out.at[idx, col_name] != median:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
-                                    return False
-            elif axis_param == 1:
-                for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    median = numeric_data.median()
-                    # Check if the missing values in the row have been replaced with the median in dataDictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            if dataDictionary_out.at[idx, col_name] != median:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
-                                return False
-        if specialTypeInput == SpecialType.INVALID:
-            if axis_param is None:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = dataDictionary_in
-                # Calculate the median of these numeric columns
-                median_value = only_numbers_df.median().median()
-                # Check the dataDictionary_out positions with missing values have been replaced with the median
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if dataDictionary_in.at[idx, col_name] in missing_values:
-                                if dataDictionary_out.at[idx, col_name] != median_value:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
-                                    idx, col_name] and not (pd.isnull(dataDictionary_in.loc[idx, col_name])
-                                                            and pd.isnull(dataDictionary_out.loc[idx, col_name])):
-                                    return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the dataDictionary_out positions with missing values have been replaced with the median
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    median = dataDictionary_in[col_name].median()
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if dataDictionary_in.at[idx, col_name] in missing_values:
-                                if dataDictionary_out.at[idx, col_name] != median:
-                                    return True
-                            else:
-                                if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[
-                                    idx, col_name] and not (pd.isnull(dataDictionary_in.loc[idx, col_name])
-                                                            and pd.isnull(dataDictionary_out.loc[idx, col_name])):
-                                    return False
-            elif axis_param == 1:
-                for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    median = numeric_data.median()
-                    # Check if the missing values in the row have been replaced with the median in dataDictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            if dataDictionary_out.at[idx, col_name] != median:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col_name]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col_name])):
-                                return False
-        if specialTypeInput == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
-                # Calculate the median of these numeric columns
-                median_value = only_numbers_df.median().median()
-                # Replace the missing values with the median of the entire DataFrame using lambda
-                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in dataDictionary_in[col_name].items():
-                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
-                            if dataDictionary_out.at[idx, col_name] != median_value:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col_name]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col_name])):
-                                return False
-            if axis_param == 0:
-                for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                    median = dataDictionary_in[col].median()
-                    for idx, value in dataDictionary_in[col].items():
-                        if dataDictionary_outliers_mask.at[idx, col] == 1:
-                            if dataDictionary_out.at[idx, col] != median:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col])):
-                                return False
-            elif axis_param == 1:
-                for idx, row in dataDictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    median = numeric_data.median()
-                    for col_name, value in numeric_data.items():
-                        if dataDictionary_outliers_mask.at[idx, col_name] == 1:
-                            if dataDictionary_out.at[idx, col_name] != median:
-                                return True
-                        else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
-                                    pd.isnull(dataDictionary_in.loc[idx, col_name]) and pd.isnull(
-                                dataDictionary_out.loc[idx, col_name])):
-                                return False
-
-    elif field is not None:
-        if field not in dataDictionary_in.columns:
-            raise ValueError("Field not found in the dataDictionary_in")
-        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if specialTypeInput == SpecialType.MISSING:
-            # Check the dataDictionary_out positions with missing values have been replaced with the median
-            median = dataDictionary_in[field].median()
-            for idx, value in dataDictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    if dataDictionary_out.at[idx, field] != median:
-                        return True
-                else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                        return False
-        if specialTypeInput == SpecialType.INVALID:
-            # Check the dataDictionary_out positions with missing values have been replaced with the median
-            median = dataDictionary_in[field].median()
-            for idx, value in dataDictionary_in[field].items():
-                if value in missing_values:
-                    if dataDictionary_out.at[idx, field] != median:
-                        return True
-                else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
-                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                        dataDictionary_out.loc[idx, field])):
-                        return False
-        if specialTypeInput == SpecialType.OUTLIER:
-            for idx, value in dataDictionary_in[field].items():
-                if dataDictionary_outliers_mask.at[idx, field] == 1:
-                    median = dataDictionary_in[field].median()
-                    if dataDictionary_out.at[idx, field] != median:
-                        return True
-                else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
-                            pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
-                        dataDictionary_out.loc[idx, field])):
-                        return False
-
-    return False
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        return False
+    else:
+        return True
 
 
 def checkMedianNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
