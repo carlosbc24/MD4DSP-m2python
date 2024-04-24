@@ -442,7 +442,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Caso 4
@@ -458,7 +458,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Caso 5
@@ -475,7 +475,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
@@ -492,7 +492,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, got True")
 
         # Caso 7
@@ -510,7 +510,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
         # Caso 8
@@ -535,7 +535,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # Caso 9
@@ -558,7 +558,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
         print_and_log("Test Case 9 Passed: Expected True, got True")
 
         print_and_log("")
@@ -601,7 +601,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Case 2
@@ -642,7 +642,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Caso 4
@@ -663,7 +663,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Caso 5
@@ -679,7 +679,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
@@ -695,7 +695,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, got True")
 
         # Caso 7
@@ -710,7 +710,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
         # Caso 8
@@ -725,7 +725,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         print_and_log("")
@@ -1081,7 +1081,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Caso 2
@@ -1111,7 +1111,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Caso 4
@@ -1126,7 +1126,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Caso 5
@@ -1145,21 +1145,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Caso 6
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
-        # Definir el resultado esperado
-        expected = pd.DataFrame({'A': [0, 3, 6, 0, 5], 'B': [1, 2, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0, rightMargin=5,
-                                                                closureType=Closure(0),
-                                                                derivedTypeOutput=DerivedType(2), axis_param=1,
-                                                                belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                dataDictionary_out=expected)
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 6 Passed: Expected True, got True")
-
-        # Caso 7
-        # Crear un DataFrame de prueba
-        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
@@ -1168,9 +1153,9 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     derivedTypeOutput=DerivedType(2), axis_param=None,
                                                                     belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                     dataDictionary_out=expected)
-        print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
+        print_and_log("Test Case 6 Passed: expected ValueError, got ValueError")
 
-        # Caso 8
+        # Caso 7
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'T'
@@ -1183,9 +1168,9 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     axis_param=None, field=field,
                                                                     belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                     dataDictionary_out=expected)
-        print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
+        print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
-        # Caso 9
+        # Caso 8
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
@@ -1199,10 +1184,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 9 Passed: Expected True, got True")
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
 
-        # Caso 10
+        # Caso 9
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
@@ -1216,10 +1201,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        print_and_log("Test Case 10 Passed: Expected True, got True")
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
 
-        # Caso 11
+        # Caso 10
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
@@ -1233,8 +1218,170 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                 dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 10 Failed: Expected True, but got False"
+        print_and_log("Test Case 10 Passed: Expected True, got True")
+
+        # Caso 11
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 2, 6, 0, 5], 'C': [0, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0,
+                                                                rightMargin=5,
+                                                                closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(0),
+                                                                axis_param=1,
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
+
+        # Caso 2
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [1, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0,
+                                                                rightMargin=5,
+                                                                closureType=Closure(3),
+                                                                derivedTypeOutput=DerivedType(0),
+                                                                axis_param=0,
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 12 Failed: Expected True, but got False"
+        print_and_log("Test Case 12 Passed: Expected True, got True")
+
+        # Caso 13
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [2, 2, 2, 2, 5], 'B': [2, 2, 6, 2, 5], 'C': [2, 2, 2, 2, 5]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=7,
+                                                                rightMargin=10,
+                                                                closureType=Closure(2),
+                                                                derivedTypeOutput=DerivedType(0),
+                                                                axis_param=None,
+                                                                belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        # Caso 14
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 3, 6, 0, 5], 'C': [0, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0,
+                                                                rightMargin=5,
+                                                                closureType=Closure(1),
+                                                                derivedTypeOutput=DerivedType(1), axis_param=0,
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 14 Failed: Expected True, but got False"
+        print_and_log("Test Case 14 Passed: Expected True, got True")
+
+        # Caso 15
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0,
+                                                                    rightMargin=5,
+                                                                    closureType=Closure(1),
+                                                                    derivedTypeOutput=DerivedType(1), axis_param=None,
+                                                                    belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                    dataDictionary_out=expected)
+        print_and_log("Test Case 15 Passed: expected ValueError, got ValueError")
+
+        # Caso 16
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0,
+                                                                    rightMargin=5,
+                                                                    closureType=Closure(1),
+                                                                    derivedTypeOutput=DerivedType(2), axis_param=None,
+                                                                    belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                    dataDictionary_out=expected)
+        print_and_log("Test Case 16 Passed: expected ValueError, got ValueError")
+
+        # Caso 17
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field = 'T'
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0,
+                                                                    rightMargin=5,
+                                                                    closureType=Closure(1),
+                                                                    derivedTypeOutput=DerivedType(2),
+                                                                    axis_param=None, field=field,
+                                                                    belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                    dataDictionary_out=expected)
+        print_and_log("Test Case 17 Passed: expected ValueError, got ValueError")
+
+        # Caso 18
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field = 'A'
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 0, 0, 0, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=-2,
+                                                                rightMargin=-1,
+                                                                closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(0),
+                                                                axis_param=1, field=field,
+                                                                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, got True")
+
+        # Caso 19
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field = 'A'
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 0, 2, 3, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=0,
+                                                                rightMargin=5,
+                                                                closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(1),
+                                                                axis_param=0, field=field,
+                                                                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 19 Failed: Expected True, but got False"
+        print_and_log("Test Case 19 Passed: Expected True, got True")
+
+        # Caso 20
+        # Crear un DataFrame de prueba
+        datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        field = 'A'
+        # Definir el resultado esperado
+        expected = pd.DataFrame({'A': [0, 3, 4, 5, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
+        # Aplicar la transformación de datos
+        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=datadic.copy(), leftMargin=10,
+                                                                rightMargin=50,
+                                                                closureType=Closure(0),
+                                                                derivedTypeOutput=DerivedType(2),
+                                                                axis_param=1, field=field,
+                                                                belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                dataDictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -1265,7 +1412,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Caso 2
@@ -1317,7 +1464,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Caso 5
@@ -1336,7 +1483,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
@@ -1355,7 +1502,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, got True")
 
         # Caso 7
@@ -1374,7 +1521,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                          axis_param=None, belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                          dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
         # Caso 8
@@ -1393,7 +1540,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # Caso 9
@@ -1408,7 +1555,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
         print_and_log("Test Case 9 Passed: Expected True, got True")
 
         # Caso 10
@@ -1423,7 +1570,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 10 Failed: Expected True, but got False"
         print_and_log("Test Case 10 Passed: Expected True, got True")
 
         # Caso 11
@@ -1455,7 +1602,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                          axis_param=None, field=field, belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 12 Failed: Expected True, but got False"
         print_and_log("Test Case 12 Passed: Expected True, got True")
 
         # Caso 13
@@ -1474,7 +1621,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Caso 14
@@ -1493,7 +1640,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                         dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 14 Failed: Expected True, but got False"
         print_and_log("Test Case 14 Passed: Expected True, got True")
 
         # Caso 15
@@ -1510,7 +1657,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                         dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
         print_and_log("")

@@ -1,11 +1,13 @@
-# Importing functions and classes from packages
+
+# Importing libraries
 import numpy as np
 import pandas as pd
-from helpers.auxiliar import cast_type_FixValue, find_closest_value, checkDerivedTypeColRowOutliers, \
-    checkSpecialTypeInterpolation, \
-    checkSpecialTypeMean, checkSpecialTypeMedian, checkSpecialTypeClosest, checkSpecialTypeMostFrequent, \
-    checkSpecialTypePrevious, checkSpecialTypeNext, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext, \
-    check_interval_condition
+
+# Importing functions and classes from packages
+from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
+from helpers.invariant_aux import checkSpecialTypeMostFrequent, checkSpecialTypePrevious, checkSpecialTypeNext, \
+    checkDerivedTypeColRowOutliers, checkSpecialTypeMedian, checkSpecialTypeInterpolation, checkSpecialTypeMean, \
+    checkSpecialTypeClosest, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 

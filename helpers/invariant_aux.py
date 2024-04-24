@@ -33,15 +33,14 @@ def checkIntervalMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
             for row_index, row in dataDictionary_in.iterrows():
                 most_frequent_value = row.value_counts().idxmax()
                 for column_index, value in row.items():
-                    column_name = dataDictionary_in.columns[column_index]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
-                        if dataDictionary_out.at[row_index, column_name] != most_frequent_value:
+                        if dataDictionary_out.at[row_index, column_index] != most_frequent_value:
                             if belongOp_out == Belong.BELONG:
                                 return False
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[row_index, column_name]:
+                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index]:
                             return False
         elif axis_param == 0:  # Applies the lambda function at the column level
             for col in dataDictionary_in.columns:
@@ -254,19 +253,20 @@ def checkIntervalPreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
-                for column_index in range(len(dataDictionary_in.columns)):
-                    value = dataDictionary_in.at[row_index, column_index]
+                for column_name, value in row.items():
+                    column_index = dataDictionary_in.columns.get_loc(column_name)
+                    value = dataDictionary_in.at[row_index, column_name]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
                         if column_index == 0:
-                            if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
-                                row_index, column_index]:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                row_index, column_name]:
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
                             if column_index - 1 in dataDictionary_in.columns:
-                                if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
+                                if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
                                     row_index, column_index - 1]:
                                     if belongOp_out == Belong.BELONG:
                                         return False
@@ -354,8 +354,8 @@ def checkIntervalPreviousNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDi
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
-                for column_index in range(len(dataDictionary_in.columns)):
-                    value = dataDictionary_in.at[row_index, column_index]
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
                         return False
         elif axis_param == 0:  # Applies at the column level
@@ -400,8 +400,8 @@ def checkIntervalPreviousNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dat
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
-                for column_index in range(len(dataDictionary_in.columns)):
-                    value = dataDictionary_in.at[row_index, column_index]
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
                         return False
         elif axis_param == 0:  # Applies at the column level
@@ -490,26 +490,28 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
-                for column_index in range(len(dataDictionary_in.columns)):
-                    value = dataDictionary_in.at[row_index, column_index]
+                for column_name, value in row.items():
+                    column_index = dataDictionary_in.columns.get_loc(column_name)
+                    next_column_name = dataDictionary_in.columns[column_index + 1]
+                    value = dataDictionary_in.at[row_index, column_name]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
                         if column_index == len(row) - 1:
-                            if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
-                                row_index, column_index]:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                row_index, column_name]:
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
-                                row_index, column_index + 1]:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                row_index, next_column_name]:
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                     else:
-                        if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
-                            row_index, column_index]:
+                        if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                            row_index, column_name]:
                             return False
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(dataDictionary_in.columns):
@@ -587,8 +589,8 @@ def checkIntervalNextNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
-                for column_index in range(len(dataDictionary_in.columns)):
-                    value = dataDictionary_in.at[row_index, column_index]
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
                         return False
         elif axis_param == 0:  # Applies at the column level
@@ -633,8 +635,8 @@ def checkIntervalNextNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDic
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
-                for column_index in range(len(dataDictionary_in.columns)):
-                    value = dataDictionary_in.at[row_index, column_index]
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
                         return False
         elif axis_param == 0:  # Applies at the column level
