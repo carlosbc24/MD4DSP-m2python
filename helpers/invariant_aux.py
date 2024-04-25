@@ -7,9 +7,662 @@ from helpers.auxiliar import find_closest_value, check_interval_condition
 from helpers.enumerations import DerivedType, Belong, SpecialType, Closure
 
 
+def checkFixValueMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                    fixValueInput, belongOp_out: Belong, axis_param: int, field: str) -> bool:
+    """
+        Check if the most frequent value is applied correctly on the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in is always BELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
+            :param fixValueInput: input value to apply the most frequent value
+            :param belongOp_out: (Belong) then condition to check the invariant
+            :param axis_param: (int) axis to apply the most frequent value
+            :param field: (str) field to apply the most frequent value
+
+        Returns:
+            :return: True if the most frequent value is applied correctly on the fix input value
+        """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                most_frequent_value = row.value_counts().idxmax()
+                for column_index, value in row.items():
+                    if value == fixValueInput:
+                        if dataDictionary_out.at[row_index, column_index] != most_frequent_value:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                            row_index, column_index]:
+                            return False
+        elif axis_param == 0:  # Applies the lambda function at the column level
+            for col in dataDictionary_in.columns:
+                most_frequent_value = dataDictionary_in[col].value_counts().idxmax()
+                for idx, value in dataDictionary_in[col].items():
+                    if value == fixValueInput:
+                        if dataDictionary_out.at[idx, col] != most_frequent_value:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col]:
+                            return False
+        else:  # Applies at the dataframe level
+            # Calculate the most frequent value
+            most_frequent_value = dataDictionary_in.stack().value_counts().idxmax()
+            for col_name in dataDictionary_in.columns:
+                for idx, value in dataDictionary_in[col_name].items():
+                    if value == fixValueInput:
+                        if dataDictionary_out.at[idx, col_name] != most_frequent_value:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                            return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            most_frequent_value = dataDictionary_in[field].value_counts().idxmax()
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    if dataDictionary_out.at[idx, field] != most_frequent_value:
+                        if belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_out == Belong.NOTBELONG:
+                            return True
+                else:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                        return False
+
+    if belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_out == Belong.NOTBELONG:
+        return False
+
+
+def checkFixValueMostFrequentNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                             fixValueInput, axis_param: int, field: str) -> bool:
+    """
+        Check if the most frequent value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in is NOTBELONG and belongOp_out is BELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
+            :param fixValueInput: input value to apply the most frequent value
+            :param axis_param: (int) axis to apply the most frequent value
+            :param field: (str) field to apply the most frequent value
+
+        Returns:
+            :return: True if the most frequent value is applied correctly to the fix input value
+    """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_index, value in row.items():
+                    if value == fixValueInput:
+                        return False
+        elif axis_param == 0:  # Applies the lambda function at the column level
+            for col in dataDictionary_in.columns:
+                for idx, value in dataDictionary_in[col].items():
+                    if value == fixValueInput:
+                        return False
+        else:  # Applies at the dataframe level
+            for col_name in dataDictionary_in.columns:
+                for idx, value in dataDictionary_in[col_name].items():
+                    if value == fixValueInput:
+                        return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    return False
+
+    return True
+
+
+def checkFixValueMostFrequentNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                                fixValueInput, axis_param: int, field: str) -> bool:
+    """
+        Check if the most frequent value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in and belongOp_out are NOTBELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
+            :param fixValueInput: input value to apply the most frequent value
+            :param axis_param: (int) axis to apply the most frequent value
+            :param field: (str) field to apply the most frequent value
+
+        Returns:
+            :return: True if the most frequent value is applied correctly to the fix input value
+    """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_index, value in row.items():
+                    if value == fixValueInput:
+                        return False
+        elif axis_param == 0:  # Applies the lambda function at the column level
+            for col in dataDictionary_in.columns:
+                for idx, value in dataDictionary_in[col].items():
+                    if value == fixValueInput:
+                        return False
+        else:  # Applies at the dataframe level
+            for col_name in dataDictionary_in.columns:
+                for idx, value in dataDictionary_in[col_name].items():
+                    if value == fixValueInput:
+                        return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    return False
+
+    return True
+
+
+def checkFixValueMostFrequent(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                              fixValueInput, belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
+                              axis_param: int = None, field: str = None) -> bool:
+    """
+        Check if the most frequent value is applied correctly on the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
+            :param fixValueInput: input value to apply the most frequent value
+            :param belongOp_in: (Belong) if condition to check the invariant
+            :param belongOp_out: (Belong) then condition to check the invariant
+            :param axis_param: (int) axis to apply the most frequent value
+            :param field: (str) field to apply the most frequent value
+
+        Returns:
+            :return: True if the most frequent value is applied correctly on the fix input value
+    """
+    result = True
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        result = checkFixValueMostFrequentBelong(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_out, axis_param, field)
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkFixValueMostFrequentBelong(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_out, axis_param, field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result = checkFixValueMostFrequentNotBelongBelong(dataDictionary_in, dataDictionary_out, fixValueInput, axis_param, field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkFixValueMostFrequentNotBelongNotBelong(dataDictionary_in, dataDictionary_out, fixValueInput, axis_param, field)
+
+    return True if result else False
+
+
+def checkFixValuePreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, fixValueInput,
+                                 belongOp_out: Belong, axis_param: int, field: str) -> bool:
+    """
+        Check if the previous value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in is always BELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the previous value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the previous value
+            :param fixValueInput: input value to apply the previous value
+            :param belongOp_out: (Belong) then condition to check the invariant
+            :param axis_param: (int) axis to apply the previous value
+            :param field: (str) field to apply the previous value
+
+        Returns:
+            :return: True if the previous value is applied correctly to the fix input value
+        """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_name, value in row.items():
+                    column_index = dataDictionary_in.columns.get_loc(column_name)
+                    value = dataDictionary_in.at[row_index, column_name]
+                    if value == fixValueInput:
+                        if column_index == 0:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                row_index, column_name]:
+                                if belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if column_index - 1 in dataDictionary_in.columns:
+                                if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                    row_index, column_index - 1]:
+                                    if belongOp_out == Belong.BELONG:
+                                        return False
+                                    elif belongOp_out == Belong.NOTBELONG:
+                                        return True
+                    else:
+                        if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
+                            row_index, column_index]:
+                            return False
+        elif axis_param == 0:  # Applies at the column level
+            for column_index, column_name in enumerate(dataDictionary_in.columns):
+                for row_index, value in dataDictionary_in[column_name].items():
+                    if value == fixValueInput:
+                        if row_index == 0:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                if belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index - 1, column_name] and (
+                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index - 1, column_name])):
+                                if belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_out == Belong.NOTBELONG:
+                                    return True
+                    else:
+                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                            row_index, column_name]:
+                            return False
+        else:  # Applies at the dataframe level
+            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    if idx == 0:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                else:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                        return False
+
+    if belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_out == Belong.NOTBELONG:
+        return False
+
+
+def checkFixValuePreviousNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                         fixValueInput, axis_param: int, field: str) -> bool:
+    """
+        Check if the previous value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in is NOTBELONG and belongOp_out is BELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the previous value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the previous value
+            :param fixValueInput: input value to apply the previous value
+            :param axis_param: (int) axis to apply the previous value
+            :param field: (str) field to apply the previous value
+
+        Returns:
+            :return: True if the previous value is applied correctly to the fix input value
+        """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
+                    if value == fixValueInput:
+                        return False
+        elif axis_param == 0:  # Applies at the column level
+            for column_index, column_name in enumerate(dataDictionary_in.columns):
+                for row_index, value in dataDictionary_in[column_name].items():
+                    if value == fixValueInput:
+                        return False
+        else:  # Applies at the dataframe level
+            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    return False
+
+    return True
+
+
+def checkFixValuePreviousNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                            fixValueInput, axis_param: int, field: str) -> bool:
+    """
+        Check if the previous value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in and belongOp_out are NOTBELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the previous value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the previous value
+            :param fixValueInput: input value to apply the previous value
+            :param axis_param: (int) axis to apply the previous value
+            :param field: (str) field to apply the previous value
+            :param axis_param: (int) axis to apply the previous value
+            :param field: (str) field to apply the previous value
+
+        Returns:
+            :return: True if the previous value is applied correctly to the fix input value
+    """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
+                    if value == fixValueInput:
+                        return False
+        elif axis_param == 0:  # Applies at the column level
+            for column_index, column_name in enumerate(dataDictionary_in.columns):
+                for row_index, value in dataDictionary_in[column_name].items():
+                    if value == fixValueInput:
+                        return False
+        else:  # Applies at the dataframe level
+            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    return False
+
+    return True
+
+
+def checkFixValuePrevious(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, fixValueInput,
+                          belongOp_in: Belong, belongOp_out: Belong,
+                          axis_param: int, field: str) -> bool:
+    """
+        Check if the previous value is applied correctly on the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the previous value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the previous value
+            :param fixValueInput: input value to apply the previous value
+            :param belongOp_in: (Belong) if condition to check the invariant
+            :param belongOp_out: (Belong) then condition to check the invariant
+            :param axis_param: (int) axis to apply the previous value
+            :param field: (str) field to apply the previous value
+
+        Returns:
+            :return: True if the previous value is applied correctly on the fix input value
+    """
+    result = True
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        result = checkFixValuePreviousBelong(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_out,
+                                                 axis_param, field)
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkFixValuePreviousBelong(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_out,
+                                                 axis_param, field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result = checkFixValuePreviousNotBelongBelong(dataDictionary_in, dataDictionary_out, fixValueInput,
+                                                          axis_param, field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkFixValuePreviousNotBelongNotBelong(dataDictionary_in, dataDictionary_out, fixValueInput,
+                                                             axis_param, field)
+
+    return True if result else False
+
+
+def checkFixValueNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, fixValueInput,
+                            belongOp_out: Belong, axis_param: int, field: str) -> bool:
+    """
+        Check if the next value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in is always BELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the next value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the next value
+            :param fixValueInput: input value to apply the next value
+            :param belongOp_out: (Belong) then condition to check the invariant
+            :param axis_param: (int) axis to apply the next value
+            :param field: (str) field to apply the next value
+
+        Returns:
+            :return: True if the next value is applied correctly to the fix input value
+        """
+    if field is None:
+        # TODO: fix this case when axis_param=1 for every invariant auxiliar functions
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_name, value in row.items():
+                    column_index = dataDictionary_in.columns.get_loc(column_name)
+                    next_column_name = dataDictionary_in.columns[column_index + 1]
+                    value = dataDictionary_in.at[row_index, column_name]
+                    if value == fixValueInput:
+                        if column_index == len(row) - 1:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                row_index, column_name]:
+                                if belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                row_index, next_column_name]:
+                                if belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_out == Belong.NOTBELONG:
+                                    return True
+                    else:
+                        if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                            row_index, column_name]:
+                            return False
+        elif axis_param == 0:  # Applies at the column level
+            for column_index, column_name in enumerate(dataDictionary_in.columns):
+                for row_index, value in dataDictionary_in[column_name].items():
+                    if value == fixValueInput:
+                        if row_index == len(dataDictionary_in) - 1:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index, column_name]:
+                                if belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_out == Belong.NOTBELONG:
+                                    return True
+                        else:
+                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                row_index + 1, column_name]:
+                                if belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_out == Belong.NOTBELONG:
+                                    return True
+                    else:
+                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                            row_index, column_name]:
+                            return False
+        else:  # Applies at the dataframe level
+            raise ValueError("The axis cannot be None when applying the NEXT operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    if idx == len(dataDictionary_in) - 1:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                else:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                        return False
+
+    if belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_out == Belong.NOTBELONG:
+        return False
+
+
+def checkFixValueNextNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                     fixValueInput, axis_param: int, field: str) -> bool:
+    """
+        Check if the next value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in is NOTBELONG and belongOp_out is BELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the next value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the next value
+            :param fixValueInput: input value to apply the next value
+            :param axis_param: (int) axis to apply the next value
+            :param field: (str) field to apply the next value
+
+        Returns:
+            :return: True if the next value is applied correctly to the fix input value
+    """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
+                    if value == fixValueInput:
+                        return False
+        elif axis_param == 0:  # Applies at the column level
+            for column_index, column_name in enumerate(dataDictionary_in.columns):
+                for row_index, value in dataDictionary_in[column_name].items():
+                    if value == fixValueInput:
+                        return False
+        else:  # Applies at the dataframe level
+            raise ValueError("The axis cannot be None when applying the NEXT operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    return False
+
+    return True
+
+
+def checkFixValueNextNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                        fixValueInput, axis_param: int, field: str) -> bool:
+    """
+        Check if the next value is applied correctly to the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in when belongOp_in is NOTBELONG and belongOp_out is NOTBELONG
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the next value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the next value
+            :param fixValueInput: input value to apply the next value
+            :param axis_param: (int) axis to apply the next value
+            :param field: (str) field to apply the next value
+
+        Returns:
+            :return: True if the next value is applied correctly to the fix input value
+    """
+    if field is None:
+        if axis_param == 1:  # Applies in a row level
+            for row_index, row in dataDictionary_in.iterrows():
+                for column_name, value in row.items():
+                    value = dataDictionary_in.at[row_index, column_name]
+                    if value == fixValueInput:
+                        return False
+        elif axis_param == 0:  # Applies at the column level
+            for column_index, column_name in enumerate(dataDictionary_in.columns):
+                for row_index, value in dataDictionary_in[column_name].items():
+                    if value == fixValueInput:
+                        return False
+        else:  # Applies at the dataframe level
+            raise ValueError("The axis cannot be None when applying the NEXT operation")
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        elif field in dataDictionary_in.columns:
+            for idx, value in dataDictionary_in[field].items():
+                if value == fixValueInput:
+                    return False
+
+    return True
+
+
+
+def checkFixValueNext(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame, fixValueInput,
+                      belongOp_in: Belong, belongOp_out: Belong,
+                      axis_param: int, field: str) -> bool:
+    """
+        Check if the next value is applied correctly on the fix input value
+        to the dataDictionary_out respect to the dataDictionary_in
+
+        params:
+            :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the next value
+            :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the next value
+            :param fixValueInput: input value to apply the next value
+            :param belongOp_in: (Belong) if condition to check the invariant
+            :param belongOp_out: (Belong) then condition to check the invariant
+            :param axis_param: (int) axis to apply the next value
+            :param field: (str) field to apply the next value
+
+        Returns:
+            :return: True if the next value is applied correctly on the fix input value
+    """
+    result = True
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        result = checkFixValueNextBelong(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_out,
+                                                 axis_param, field)
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkFixValueNextBelong(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_out,
+                                                 axis_param, field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result = checkFixValueNextNotBelongBelong(dataDictionary_in, dataDictionary_out, fixValueInput,
+                                                          axis_param, field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkFixValueNextNotBelongNotBelong(dataDictionary_in, dataDictionary_out, fixValueInput,
+                                                             axis_param, field)
+
+    return True if result else False
+
+
+
 def checkIntervalMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                     leftMargin: float, rightMargin: float, closureType: Closure,
-                                    belongOp_out: Belong = Belong.BELONG,
+                                    belongOp_out: Belong,
                                     axis_param: int = None, field: str = None) -> bool:
     """
     Check if the most frequent value is applied correctly on the interval
@@ -488,6 +1141,7 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
         :return: True if the next value is applied correctly on the interval
     """
     if field is None:
+        # TODO: fix this case when axis_param=1 for every invariant auxiliar functions
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
                 for column_name, value in row.items():

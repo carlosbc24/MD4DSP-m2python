@@ -7,9 +7,11 @@ import pandas as pd
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
 from helpers.invariant_aux import checkSpecialTypeMostFrequent, checkSpecialTypePrevious, checkSpecialTypeNext, \
     checkDerivedTypeColRowOutliers, checkSpecialTypeMedian, checkSpecialTypeInterpolation, checkSpecialTypeMean, \
-    checkSpecialTypeClosest, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext
+    checkSpecialTypeClosest, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext, \
+    checkFixValueMostFrequent, checkFixValuePrevious, checkFixValueNext
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
+
 
 
 class Invariants:
@@ -140,8 +142,21 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        # TODO: Implement the checkInv_FixValue_DerivedValue invariant
-        return True
+        if dataTypeInput is not None:  # If the data types are specified, the transformation is performed
+            # Auxiliary function that changes the values of FixValueInput to the data type in DataTypeInput
+            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, None,
+                                                               None)
+
+        result = True
+
+        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            result = checkFixValueMostFrequent(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param, field)
+        elif derivedTypeOutput == DerivedType.PREVIOUS:
+            result = checkFixValuePrevious(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param, field)
+        elif derivedTypeOutput == DerivedType.NEXT:
+            result = checkFixValueNext(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param, field)
+
+        return True if result else False
 
     def checkInv_FixValue_NumOp(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                 fixValueInput, numOpOutput: Operation, belongOp_in: Belong = Belong.BELONG,

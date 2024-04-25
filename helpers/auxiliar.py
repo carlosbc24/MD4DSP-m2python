@@ -89,47 +89,47 @@ def count_abs_frequency(value, dataDictionary: pd.DataFrame, field: str = None) 
         return count
 
 
-def cast_type_FixValue(dataTypeInput: DataType = None, FixValueInput=None, dataTypeOutput: DataType = None,
-                       FixValueOutput=None):
+def cast_type_FixValue(dataTypeInput: DataType = None, fixValueInput=None, dataTypeOutput: DataType = None,
+                       fixValueOutput=None):
     """
     Cast the value FixValueInput to the type dataTypeOutput and the value FixValueOutput to the type dataTypeOutput
 
     :param dataTypeInput: data type of the input value
-    :param FixValueInput: input value to cast
+    :param fixValueInput: input value to cast
     :param dataTypeOutput: data type of the output value
-    :param FixValueOutput: output value to cast
+    :param fixValueOutput: output value to cast
 
     :return: FixValueInput and FixValueOutput casted to the types dataTypeInput and dataTypeOutput respectively
     """
-    if dataTypeInput is not None and FixValueInput is not None:
+    if dataTypeInput is not None and fixValueInput is not None:
         if dataTypeInput == DataType.STRING:
-            FixValueInput = str(FixValueInput)
+            fixValueInput = str(fixValueInput)
         elif dataTypeInput == DataType.TIME:
-            FixValueInput = pd.to_datetime(FixValueInput)
+            fixValueInput = pd.to_datetime(fixValueInput)
         elif dataTypeInput == DataType.INTEGER:
-            FixValueInput = int(FixValueInput)
+            fixValueInput = int(fixValueInput)
         elif dataTypeInput == DataType.DATETIME:
-            FixValueInput = pd.to_datetime(FixValueInput)
+            fixValueInput = pd.to_datetime(fixValueInput)
         elif dataTypeInput == DataType.BOOLEAN:
-            FixValueInput = bool(FixValueInput)
+            fixValueInput = bool(fixValueInput)
         elif dataTypeInput == DataType.DOUBLE or dataTypeInput == DataType.FLOAT:
-            FixValueInput = float(FixValueInput)
+            fixValueInput = float(fixValueInput)
 
-    if dataTypeOutput is not None and FixValueOutput is not None:
+    if dataTypeOutput is not None and fixValueOutput is not None:
         if dataTypeOutput == DataType.STRING:
-            FixValueOutput = str(FixValueOutput)
+            fixValueOutput = str(fixValueOutput)
         elif dataTypeOutput == DataType.TIME:
-            FixValueOutput = pd.to_datetime(FixValueOutput)
+            fixValueOutput = pd.to_datetime(fixValueOutput)
         elif dataTypeOutput == DataType.INTEGER:
-            FixValueOutput = int(FixValueOutput)
+            fixValueOutput = int(fixValueOutput)
         elif dataTypeOutput == DataType.DATETIME:
-            FixValueOutput = pd.to_datetime(FixValueOutput)
+            fixValueOutput = pd.to_datetime(fixValueOutput)
         elif dataTypeOutput == DataType.BOOLEAN:
-            FixValueOutput = bool(FixValueOutput)
+            fixValueOutput = bool(fixValueOutput)
         elif dataTypeOutput == DataType.DOUBLE or dataTypeOutput == DataType.FLOAT:
-            FixValueOutput = float(FixValueOutput)
+            fixValueOutput = float(fixValueOutput)
 
-    return FixValueInput, FixValueOutput
+    return fixValueInput, fixValueOutput
 
 
 def find_closest_value(numeric_values: list, value: Union[int, float]) -> Union[int, float]:
