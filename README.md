@@ -98,7 +98,9 @@ MD4DSP-m2python/
 ├── helpers/
 │ ├── auxiliar.py
 │ ├── enumerations.py
-│ └── logger.py
+│ ├── invariant_aux.py
+│ ├── logger.py
+│ └── transform_aux.py
 │
 ├── logs/
 │ └── test/
@@ -138,7 +140,7 @@ MD4DSP-m2python/
 - **`generated_code/`**: contains the generated code via Acceleo. The generated code must be located in this directory.
 
 
-- **`helpers/`**: contains auxiliary functions that are used in the main functions. The file `auxiliar.py` contains the auxiliary functions, `enumerations.py` contains the enumerations used in the project, and `logger.py` contains the functions to log the results of the tests.
+- **`helpers/`**: contains auxiliary functions that are used in the main functions. The file `auxiliar.py` contains the auxiliary functions, `enumerations.py` contains the enumerations used in the project, `invariant_aux.py` contains the auxiliary functions of the invariants, `logger.py` contains the logger functions, and `transform_aux.py` contains the auxiliary functions of the data transformations.
 
 
 - **`logs/`**: contains the logs of the tests. The logs are stored in the directory `test`.
@@ -147,7 +149,7 @@ MD4DSP-m2python/
 - **`test_datasets/`**: contains the external datasets used in the tests. The datasets are divided into directories, and each directory contains the dataset and a readme file with the description of the dataset.
 
 
-- **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into two directories: `contract_pre_post` and `invariants`. The first directory contains the tests of the contracts, and the second directory contains the tests of the invariants. Each package contains simple tests and tests with the Spotify dataset.
+- **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into two directories: `contract_pre_post`, `contract_invariants` and `data_transformations`. Each directory contains the tests of the functions of the contracts, the invariants, and the data transformations, respectively.
 
 
 - **`data_model.csv`**: dataset used to test the contracts code calls generated via Acceleo.

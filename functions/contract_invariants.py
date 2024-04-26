@@ -1,13 +1,18 @@
-# Importing functions and classes from packages
+
+# Importing libraries
 import numpy as np
 import pandas as pd
-from helpers.auxiliar import cast_type_FixValue, find_closest_value, checkDerivedTypeColRowOutliers, \
-    checkSpecialTypeInterpolation, \
-    checkSpecialTypeMean, checkSpecialTypeMedian, checkSpecialTypeClosest, checkSpecialTypeMostFrequent, \
-    checkSpecialTypePrevious, checkSpecialTypeNext, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext, \
-    check_interval_condition
+
+# Importing functions and classes from packages
+from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
+from helpers.invariant_aux import checkSpecialTypeMostFrequent, checkSpecialTypePrevious, checkSpecialTypeNext, \
+    checkDerivedTypeColRowOutliers, checkSpecialTypeMedian, checkSpecialTypeInterpolation, checkSpecialTypeMean, \
+    checkSpecialTypeClosest, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext, \
+    checkFixValueMostFrequent, checkFixValuePrevious, checkFixValueNext
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
+
+
 
 
 class Invariants:
@@ -138,8 +143,21 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        # TODO: Implement the checkInv_FixValue_DerivedValue invariant
-        return True
+        if dataTypeInput is not None:  # If the data types are specified, the transformation is performed
+            # Auxiliary function that changes the values of FixValueInput to the data type in DataTypeInput
+            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, None,
+                                                               None)
+
+        result = True
+
+        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            result = checkFixValueMostFrequent(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param, field)
+        elif derivedTypeOutput == DerivedType.PREVIOUS:
+            result = checkFixValuePrevious(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param, field)
+        elif derivedTypeOutput == DerivedType.NEXT:
+            result = checkFixValueNext(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param, field)
+
+        return True if result else False
 
     def checkInv_FixValue_NumOp(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                 fixValueInput, numOpOutput: Operation, belongOp_in: Belong = Belong.BELONG,
@@ -162,8 +180,53 @@ class Invariants:
         Returns:
             dataDictionary with the FixValueInput values replaced by the result of the operation numOpOutput
         """
-        # TODO: Implement the checkInv_FixValue_NumOp invariant
-        return True
+
+        if dataTypeInput is not None:  # If the data types are specified, the transformation is performed
+            # Auxiliary function that changes the values of FixValueInput to the data type in DataTypeInput
+            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, None,
+                                                               None)
+        result = True
+
+        if numOpOutput == Operation.INTERPOLATION:
+            result = checkFixValueInterpolation(dataDictionary_in=dataDictionary_in,
+                                               dataDictionary_out=dataDictionary_out, fixValueInput=fixValueInput,
+                                               belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+                                               axis_param=axis_param, field=field)
+
+        elif numOpOutput == Operation.MEAN:
+            result = checkFixValueMean(dataDictionary_in=dataDictionary_in,
+                                       dataDictionary_out=dataDictionary_out, fixValueInput=fixValueInput,
+                                       belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+                                       axis_param=axis_param, field=field)
+        elif numOpOutput == Operation.MEDIAN:
+            result = checkFixValueMedian(dataDictionary_in=dataDictionary_in,
+                                       dataDictionary_out=dataDictionary_out, fixValueInput=fixValueInput,
+                                       belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+                                       axis_param=axis_param, field=field)
+        elif numOpOutput == Operation.CLOSEST:
+            result = checkFixValueClosest(dataDictionary_in=dataDictionary_in,
+                                       dataDictionary_out=dataDictionary_out, fixValueInput=fixValueInput,
+                                       belongOp_in=belongOp_in, belongOp_out=belongOp_out,
+                                       axis_param=axis_param, field=field)
+
+        return True if result else False
+
+    def checkFixValueInterpolation(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out,
+                                   axis_param, field):
+        pass
+
+    def checkFixValueMean(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param,
+                          field):
+        pass
+
+    def checkFixValueMedian(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param,
+                            field):
+        pass
+
+    def checkFixValueClosest(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out,
+                             axis_param,
+                             field):
+        pass
 
     def checkInv_Interval_FixValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                    leftMargin: float, rightMargin: float, closureType: Closure, fixValueOutput,
