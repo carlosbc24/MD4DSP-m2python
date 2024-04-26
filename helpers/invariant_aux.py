@@ -36,7 +36,7 @@ def checkFixValueMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[
+                        if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
                             row_index, column_index]:
                             return False
         elif axis_param == 0:  # Applies the lambda function at the column level
@@ -253,7 +253,7 @@ def checkFixValuePreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                                     elif belongOp_out == Belong.NOTBELONG:
                                         return True
                     else:
-                        if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
+                        if dataDictionary_out.iloc[row_index, column_index] != dataDictionary_in.iloc[
                             row_index, column_index]:
                             return False
         elif axis_param == 0:  # Applies at the column level
@@ -261,15 +261,17 @@ def checkFixValuePreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                 for row_index, value in dataDictionary_in[column_name].items():
                     if value == fixValueInput:
                         if row_index == 0:
-                            if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                row_index, column_name]:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                                row_index, column_name] or (
+                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index - 1, column_name])):
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                row_index - 1, column_name] and (
+                                row_index - 1, column_name] or (
                                     not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
                                 dataDictionary_out.loc[row_index - 1, column_name])):
                                 if belongOp_out == Belong.BELONG:
@@ -277,7 +279,7 @@ def checkFixValuePreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                     else:
-                        if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                        if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
                             row_index, column_name]:
                             return False
         else:  # Applies at the dataframe level
@@ -460,7 +462,6 @@ def checkFixValueNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
             for row_index, row in dataDictionary_in.iterrows():
                 for column_name, value in row.items():
                     column_index = dataDictionary_in.columns.get_loc(column_name)
-                    next_column_name = dataDictionary_in.columns[column_index + 1]
                     value = dataDictionary_in.at[row_index, column_name]
                     if value == fixValueInput:
                         if column_index == len(row) - 1:
@@ -471,8 +472,8 @@ def checkFixValueNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
-                                row_index, next_column_name]:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.iloc[
+                                row_index, column_index + 1]:
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
@@ -1141,12 +1142,10 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
         :return: True if the next value is applied correctly on the interval
     """
     if field is None:
-        # TODO: fix this case when axis_param=1 for every invariant auxiliar functions
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
                 for column_name, value in row.items():
                     column_index = dataDictionary_in.columns.get_loc(column_name)
-                    next_column_name = dataDictionary_in.columns[column_index + 1]
                     value = dataDictionary_in.at[row_index, column_name]
                     if check_interval_condition(value, leftMargin, rightMargin, closureType):
                         if column_index == len(row) - 1:
@@ -1157,8 +1156,8 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
-                                row_index, next_column_name]:
+                            if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.iloc[
+                                row_index, column_index + 1]:
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:

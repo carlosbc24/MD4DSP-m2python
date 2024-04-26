@@ -84,4 +84,4 @@ if __name__ == "__main__":
     # execute_invariants_external_dataset_tests()
 
     contracts_invariant_test = InvariantsSimpleTest()
-    contracts_invariant_test.execute_checkInv_Interval_DerivedValue()
+    contracts_invariant_test.execute_checkInv_FixValue_DerivedValue()
