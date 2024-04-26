@@ -1354,6 +1354,262 @@ def checkIntervalNext(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.Da
     return True if result else False
 
 
+def checkIntervalInterpolation(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                       leftMargin: float, rightMargin: float, closureType: Closure,
+                       belongOp_in: Belong, belongOp_out: Belong, axis_param: int = None, field: str = None) -> bool:
+    """
+    Check if the interpolation is applied correctly on the interval
+    to the dataDictionary_out respect to the dataDictionary_in
+
+    params:
+        :param dataDictionary_in: (pd.DataFrame) dataframe with the data before the interpolation
+        :param dataDictionary_out: (pd.DataFrame) dataframe with the data after the interpolation
+        :param leftMargin: (float) left margin of the interval
+        :param rightMargin: (float) right margin of the interval
+        :param closureType: (Closure) closure of the interval
+        :param belongOp_in: (Belong) if condition to check the invariant
+        :param belongOp_out: (Belong) then condition to check the invariant
+        :param axis_param: (int) axis to apply the interpolation
+        :param field: (str) field to apply the interpolation
+
+    Returns:
+        :return: True if the next value is applied correctly on the interval
+    """
+    result = True
+
+    if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
+        result = checkIntervalInterpolationBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                  leftMargin=leftMargin, rightMargin=rightMargin,
+                                                  closureType=closureType, belongOp_in=belongOp_in,
+                                                  belongOp_out=belongOp_out, axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.BELONG:
+        result = checkIntervalInterpolationNotBelongBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                  leftMargin=leftMargin, rightMargin=rightMargin,
+                                                  closureType=closureType, belongOp_in=belongOp_in,
+                                                  belongOp_out=belongOp_out, axis_param=axis_param, field=field)
+    elif belongOp_in == Belong.NOTBELONG and belongOp_out == Belong.NOTBELONG:
+        result = checkIntervalInterpolationNotBelongNotBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
+                                                  leftMargin=leftMargin, rightMargin=rightMargin,
+                                                  closureType=closureType, belongOp_in=belongOp_in,
+                                                  belongOp_out=belongOp_out, axis_param=axis_param, field=field)
+
+    return True if result else False
+
+
+def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                        leftMargin: float, rightMargin: float, closureType: Closure,
+                                        belongOp_in: Belong, belongOp_out: Belong, axis_param: int = None,
+                                        field: str = None) -> bool:
+    """
+    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in is BELONG and belongOp_out is NOTBELONG
+    params:
+        :param dataDictionary_in: dataframe with the data before the interpolation
+        :param dataDictionary_out: dataframe with the data after the interpolation
+        :param leftMargin: left margin of the interval
+        :param rightMargin: right margin of the interval
+        :param closureType: closure of the interval
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param axis_param: axis to apply the interpolation
+        :param field: field to apply the interpolation
+
+    Returns:
+        :return: True if the special type interpolation is applied correctly
+    """
+    dataDictionary_in_copy = dataDictionary_in.copy()
+    if field is None:
+        if axis_param == 0:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                dataDictionary_in_copy[col_name] = (
+                    dataDictionary_in[col_name].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x).
+                    interpolate(method='linear', limit_direction='both'))
+
+            # Iterate over each column
+            for col in dataDictionary_in.columns:
+                # For each index in the column
+                for idx in dataDictionary_in.index:
+                    # Verify if the value is NaN in the original dataframe
+                    if pd.isnull(dataDictionary_in.at[idx, col]):
+                        # Replace the value with the corresponding one from dataDictionary_in
+                        dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                for idx in dataDictionary_in.index:
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
+                        if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
+                            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not (
+                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(
+                                dataDictionary_out.at[idx, col_name])):
+                            return False
+        elif axis_param == 1:
+            for idx, row in dataDictionary_in.iterrows():
+                numeric_data = row[row.apply(lambda x: np.isreal(x))]
+                dataDictionary_in_copy[row] = (
+                    numeric_data[row].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x).
+                    interpolate(method='linear', limit_direction='both'))
+
+            # Iterate over each column
+            for col in dataDictionary_in.columns:
+                # For each index in the column
+                for idx in dataDictionary_in.index:
+                    # Verify if the value is NaN in the original dataframe
+                    if pd.isnull(dataDictionary_in.at[idx, col]):
+                        # Replace the value with the corresponding one from dataDictionary_in
+                        dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+
+            for idx in dataDictionary_in.index:
+                for col_name in dataDictionary_in.columns:
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
+                        if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
+                            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not (
+                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(
+                                dataDictionary_out.at[idx, col_name])):
+                            return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("The field is not numeric")
+
+        dataDictionary_in_copy[field] = (
+            dataDictionary_in[field].apply(
+                lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x).
+            interpolate(method='linear', limit_direction='both'))
+
+
+        # For each index in the column
+        for idx in dataDictionary_in.index:
+            # Verify if the value is NaN in the original dataframe
+            if pd.isnull(dataDictionary_in.at[idx, field]):
+                # Replace the value with the corresponding one from dataDictionary_in
+                dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
+
+        for idx in dataDictionary_in.index:
+            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
+                if dataDictionary_out.at[idx, field] != dataDictionary_in_copy.at[idx, field]:
+                    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                        return False
+                    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                        return True
+            else:
+                if (dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field]) and not (
+                        pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(
+                    dataDictionary_out.at[idx, field])):
+                    return False
+
+    if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+        return True
+    elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+        return False
+    else:
+        return True
+
+
+def checkIntervalInterpolationNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                        leftMargin: float, rightMargin: float, closureType: Closure,
+                                        belongOp_in: Belong, belongOp_out: Belong, axis_param: int = None,
+                                        field: str = None) -> bool:
+    """
+    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in is BELONG and belongOp_out is NOTBELONG
+    params:
+        :param dataDictionary_in: dataframe with the data before the interpolation
+        :param dataDictionary_out: dataframe with the data after the interpolation
+        :param leftMargin: left margin of the interval
+        :param rightMargin: right margin of the interval
+        :param closureType: closure of the interval
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param axis_param: axis to apply the interpolation
+        :param field: field to apply the interpolation
+
+    Returns:
+        :return: True if the special type interpolation is applied correctly
+    """
+    dataDictionary_in_copy = dataDictionary_in.copy()
+    if field is None:
+        if axis_param == 0:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                for idx in dataDictionary_in.index:
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
+                        return False
+        elif axis_param == 1:
+            for idx in dataDictionary_in.iterrows():
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
+                        return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("The field is not numeric")
+
+        for idx in dataDictionary_in.index:
+            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
+                return False
+
+    return True
+
+
+def checkIntervalInterpolationNotBelongNotBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
+                                        leftMargin: float, rightMargin: float, closureType: Closure,
+                                        belongOp_in: Belong, belongOp_out: Belong, axis_param: int = None,
+                                        field: str = None) -> bool:
+    """
+    Check if the special type interpolation is applied correctly when the input and output dataframes when belongOp_in is BELONG and belongOp_out is NOTBELONG
+    params:
+        :param dataDictionary_in: dataframe with the data before the interpolation
+        :param dataDictionary_out: dataframe with the data after the interpolation
+        :param leftMargin: left margin of the interval
+        :param rightMargin: right margin of the interval
+        :param closureType: closure of the interval
+        :param belongOp_in: if condition to check the invariant
+        :param belongOp_out: then condition to check the invariant
+        :param axis_param: axis to apply the interpolation
+        :param field: field to apply the interpolation
+
+    Returns:
+        :return: True if the special type interpolation is applied correctly
+    """
+    dataDictionary_in_copy = dataDictionary_in.copy()
+    if field is None:
+        if axis_param == 0:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                for idx in dataDictionary_in.index:
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
+                        return False
+        elif axis_param == 1:
+            for idx in dataDictionary_in.iterrows():
+                for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
+                        return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("The field is not in the dataframe")
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("The field is not numeric")
+
+        for idx in dataDictionary_in.index:
+            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
+                return False
+
+    return True
+
+
+
+
 def checkSpecialTypeInterpolation(dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                   specialTypeInput: SpecialType,
                                   belongOp_in: Belong = Belong.BELONG, belongOp_out: Belong = Belong.BELONG,
