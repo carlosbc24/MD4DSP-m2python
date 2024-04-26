@@ -9,7 +9,8 @@ from helpers.invariant_aux import checkSpecialTypeMostFrequent, checkSpecialType
     checkDerivedTypeColRowOutliers, checkSpecialTypeMedian, checkSpecialTypeInterpolation, checkSpecialTypeMean, \
     checkSpecialTypeClosest, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext, \
     checkFixValueMostFrequent, checkFixValuePrevious, checkFixValueNext, checkFixValueInterpolation, checkFixValueMean, \
-    checkFixValueMedian, checkFixValueClosest
+    checkFixValueMedian, checkFixValueClosest, checkIntervalInterpolation, checkIntervalMean, checkIntervalMedian, \
+    checkIntervalClosest
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 
