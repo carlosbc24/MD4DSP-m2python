@@ -8,7 +8,8 @@ from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_inter
 from helpers.invariant_aux import checkSpecialTypeMostFrequent, checkSpecialTypePrevious, checkSpecialTypeNext, \
     checkDerivedTypeColRowOutliers, checkSpecialTypeMedian, checkSpecialTypeInterpolation, checkSpecialTypeMean, \
     checkSpecialTypeClosest, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext, \
-    checkFixValueMostFrequent, checkFixValuePrevious, checkFixValueNext, checkIntervalInterpolation
+    checkFixValueMostFrequent, checkFixValuePrevious, checkFixValueNext, checkFixValueInterpolation, checkFixValueMean, \
+    checkFixValueMedian, checkFixValueClosest
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 
@@ -159,6 +160,7 @@ class Invariants:
 
         return True if result else False
 
+
     def checkInv_FixValue_NumOp(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                 fixValueInput, numOpOutput: Operation, belongOp_in: Belong = Belong.BELONG,
                                 belongOp_out: Belong = Belong.BELONG, dataTypeInput: DataType = None,
@@ -211,22 +213,7 @@ class Invariants:
 
         return True if result else False
 
-    def checkFixValueInterpolation(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out,
-                                   axis_param, field):
-        pass
 
-    def checkFixValueMean(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param,
-                          field):
-        pass
-
-    def checkFixValueMedian(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out, axis_param,
-                            field):
-        pass
-
-    def checkFixValueClosest(dataDictionary_in, dataDictionary_out, fixValueInput, belongOp_in, belongOp_out,
-                             axis_param,
-                             field):
-        pass
 
     def checkInv_Interval_FixValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                    leftMargin: float, rightMargin: float, closureType: Closure, fixValueOutput,
