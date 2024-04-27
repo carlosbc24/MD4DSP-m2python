@@ -1400,6 +1400,7 @@ def checkFixValueInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
             for col_name in dataDictionary_in.columns:
                 for idx in dataDictionary_in.index:
                     if dataDictionary_in.at[idx, col_name] == fixValueInput:
+                        if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
                             if belongOp_out == Belong.BELONG:
                                 return False
                             elif belongOp_out == Belong.NOTBELONG:
@@ -2161,8 +2162,8 @@ def checkFixValueClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
             # Iterate over each row
             for row_idx in range(len(dataDictionary_in.index)):
                 # Get the numeric values in the current row
-                numeric_values_in_row = dataDictionary_in.iloc[row_idx].select_dtypes(
-                    include=[np.number]).values.tolist()
+                row_df = pd.DataFrame([dataDictionary_in.iloc[row_idx]])
+                numeric_values_in_row = row_df.select_dtypes(include=[np.number]).values.tolist()
 
                 # Flatten the row into a list of values
                 flattened_values = [val for sublist in numeric_values_in_row for val in sublist]
