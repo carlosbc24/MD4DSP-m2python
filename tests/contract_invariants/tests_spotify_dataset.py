@@ -592,14 +592,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0
         field = 'mode'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
-        most_frequent_mode_value = expected_df['mode'].mode()[0]
-        expected_df['mode'] = expected_df['mode'].replace(fixValueInput, most_frequent_mode_value)
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            fixValueInput=fixValueInput,
+                                                                            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                        dataDictionary_out=result_df,
+                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueInput=fixValueInput,
+                                                                        derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         # Ejecutar la invariante: cambiar el valor fijo 'Katy Perry' de la columna 'artist_name'
@@ -609,21 +611,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'Katy Perry'
         field = 'track_artist'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(1), field=field)
-        # Sustituir el valor fijo definido por la variable 'fixValueInput' del dataframe expected por el valor previo a nivel de columna, es deicr, el valor en la misma columna pero en la fila anterior
-        # Identificar índices donde 'Katy Perry' es el valor en la columna 'track_artist'.
-        katy_perry_indices = expected_df.loc[expected_df[field] == fixValueInput].index
-
-        # Iterar sobre los índices y reemplazar cada 'Katy Perry' por el valor previo en la columna.
-        for idx in katy_perry_indices[::-1]:
-            if idx > 0:  # Asegura que no esté intentando acceder a un índice fuera de rango.
-                expected_df.at[idx, field] = expected_df.at[idx - 1, field]
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            fixValueInput=fixValueInput,
+                                                                            derivedTypeOutput=DerivedType(1), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                        dataDictionary_out=result_df,
+                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueInput=fixValueInput,
+                                                                        derivedTypeOutput=DerivedType(1), field=field)
+        assert result_invariant is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         # Ejecutar la invariante: cambiar el valor fijo de tipo fecha 2019-12-13 de
@@ -633,16 +630,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), field=field)
-        date_indices = expected_df.loc[expected_df[field] == fixValueInput].index
-        for idx in date_indices:
-            if idx < len(expected_df) - 1:
-                expected_df.at[idx, field] = expected_df.at[idx + 1, field]
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            fixValueInput=fixValueInput,
+                                                                            derivedTypeOutput=DerivedType(2), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                        dataDictionary_out=result_df,
+                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueInput=fixValueInput,
+                                                                        derivedTypeOutput=DerivedType(2), field=field)
+        assert result_invariant is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         # Inavriante. cambair el valor fijo 'pop' de la columna 'playlist_genre' por el valor derivado 2 (next)
@@ -652,18 +649,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'pop'
         field = 'playlist_genre'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                     fixValueInput=fixValueInput,
                                                                     derivedTypeOutput=DerivedType(2), axis_param=1)
-        pop_indices = expected_df.loc[expected_df[field] == fixValueInput].index
-        # Gets next column name to 'field' in the dataframe
-        next_column = expected_df.columns[expected_df.columns.get_loc(field) + 1]
-        for idx in pop_indices:
-            if next_column in expected_df.columns:
-                expected_df.at[idx, field] = expected_df.at[idx, next_column]
-        # Verify if the result matches the expected
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                        dataDictionary_out=result_df,
+                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueInput=fixValueInput,
+                                                                        derivedTypeOutput=DerivedType(2), axis_param=1)
+        assert result_invariant is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         # Check the invariant: chenged the fixed value 0.11 of the column 'liveness'
@@ -673,14 +668,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.11
         field = 'liveness'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
-        most_frequent_liveness_value = expected_df[field].mode()[0]
-        expected_df[field] = expected_df[field].replace(fixValueInput, most_frequent_liveness_value)
-        # Verify if the result matches the expected
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            fixValueInput=fixValueInput,
+                                                                            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                        dataDictionary_out=result_df,
+                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueInput=fixValueInput,
+                                                                        derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         # Check the invariant: chenged the fixed value 'Ed Sheeran' of all the dataset by the most frequent value
@@ -688,19 +685,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # verify if the result matches the expected
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'Ed Sheeran'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0))
-        # Get most frequent value of the all columns from small batch dataset
-
-        # Convertir el DataFrame a una Serie para contar los valores en todas las columnas
-        all_values = expected_df.melt(value_name="values")['values']
-        # Obtener el valor más frecuente
-        most_frequent_value = all_values.value_counts().idxmax()
-        expected_df = expected_df.replace(fixValueInput, most_frequent_value)
-        # Verify if the result matches the expected
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            fixValueInput=fixValueInput,
+                                                                            derivedTypeOutput=DerivedType(0))
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                        dataDictionary_out=result_df,
+                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueInput=fixValueInput,
+                                                                        derivedTypeOutput=DerivedType(0))
+        assert result_invariant is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         # Transformación de datos: exception after trying to gte previous value from all the dataset without specifying the column or
@@ -711,7 +705,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
+            result_df = self.data_transformations.transform_FixValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                fixValueInput=fixValueInput,
+                derivedTypeOutput=DerivedType(1))
+            result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                            dataDictionary_out=result_df,
+                                                            belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                             fixValueInput=fixValueInput,
                                                             derivedTypeOutput=DerivedType(1))
         print_and_log("Test Case 7 Passed: the function raised the expected exception")
@@ -724,9 +724,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(2))
+            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                fixValueInput=fixValueInput,
+                                                                                derivedTypeOutput=DerivedType(2))
+            result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                            dataDictionary_out=result_df,
+                                                                            belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            fixValueInput=fixValueInput,
+                                                                            derivedTypeOutput=DerivedType(2))
+
         print_and_log("Test Case 8 Passed: the function raised the expected exception")
 
         # Caso 9: exception after trying to get the previous value using a column level. The field doens't exist in the
@@ -737,10 +743,136 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1), field=field)
+            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                fixValueInput=fixValueInput,
+                                                                                derivedTypeOutput=DerivedType(1), field=field)
+            result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                              fixValueInput=fixValueInput,
+                                                                                derivedTypeOutput=DerivedType(1), field=field)
+
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
+
+        # tests with NOT BELONG
+
+        # Caso 10
+        # Ejecutar la invariante: cambiar el valor fijo 0 de la columna 'mode' por el valor derivado 0 (Most frequent)
+        # a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
+        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado
+        # Definir el resultado esperado
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0
+        field = 'mode'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, and got False")
+
+        # Caso 11
+        # Ejecutar la invariante: cambiar el valor fijo 'Katy Perry' de la columna 'artist_name'
+        # por el valor derivado 2 (Previous) a nivel de columna sobre el batch pequeño del dataset de prueba.
+        # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
+        # verificar si el resultado obtenido coincide con el esperado
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 'Katy Perry'
+        field = 'track_artist'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(1), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(1), field=field)
+        assert result_invariant is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12
+        # Ejecutar la invariante: cambiar el valor fijo de tipo fecha 2019-12-13 de
+        # la columna 'track_album_release_date' por el valor derivado 3 (Next) a nivel de columna sobre el batch pequeño
+        # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
+        # manualmente y verificar si el resultado obtenido coincide con el esperado
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = '2019-12-13'
+        field = 'track_album_release_date'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2), field=field)
+        assert result_invariant is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        # Inavriante. cambair el valor fijo 'pop' de la columna 'playlist_genre' por el valor derivado 2 (next)
+        # a nivel de fila sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
+        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 'pop'
+        field = 'playlist_genre'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), axis_param=1)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=1)
+        assert result_invariant is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Check the invariant: chenged the fixed value 0.11 of the column 'liveness'
+        # by the derived value 0 (most frequent) at column level on the small batch of the test dataset.
+        # On a copy of the small batch of the test dataset, change the values manually and verify if the result matches
+        # the expected
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0.11
+        field = 'liveness'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, and got False")
+
+        # Caso 15
+        # Check the invariant: chenged the fixed value 'Ed Sheeran' of all the dataset by the most frequent value
+        # from the small batch dataset. On a copy of the small batch of the test dataset, change the values manually and
+        # verify if the result matches the expected
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 'Ed Sheeran'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0))
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0))
+        assert result_invariant is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
 
     def execute_WholeDatasetTests_execute_checkInv_FixValue_DerivedValue_ExternalDataset(self):
         """
@@ -748,126 +880,123 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         # Caso 1
         # Ejecutar la invariante: cambiar el valor fijo 0 de la columna 'mode' por el valor derivado 0 (Most frequent)
-        # a nivel de columna sobre el resto del dataset. Sobre un dataframe de copia del batch pequeño
+        # a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
         # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
         # esperado
         # Definir el resultado esperado
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0
         field = 'mode'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
-        most_frequent_mode_value = expected_df['mode'].mode()[0]
-        expected_df['mode'] = expected_df['mode'].replace(fixValueInput, most_frequent_mode_value)
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         # Ejecutar la invariante: cambiar el valor fijo 'Katy Perry' de la columna 'artist_name'
-        # por el valor derivado 2 (Previous) a nivel de columna sobre el resto del dataset.
-        # Sobre un dataframe de copia del resto del dataset cambiar los valores manualmente y
+        # por el valor derivado 2 (Previous) a nivel de columna sobre el batch pequeño del dataset de prueba.
+        # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
         # verificar si el resultado obtenido coincide con el esperado
-        # Get rows from 2228 to 2240
-        subdataframe_2200 = self.data_dictionary.iloc[2227:2240]
-
-        expected_df = subdataframe_2200.copy()
+        expected_df = self.rest_of_dataset.copy()
         fixValueInput = 'Katy Perry'
         field = 'track_artist'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(subdataframe_2200,
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(1), field=field)
-        # Sustituir el valor fijo definido por la variable 'fixValueInput' del dataframe expected por el valor previo
-        # a nivel de columna, es deicr, el valor en la misma columna pero en la fila anterior Identificar índices
-        # donde 'Katy Perry' es el valor en la columna 'track_artist'.
-        # Identificar índices donde 'Katy Perry' es el valor en la columna 'field'.
-        katy_perry_indices = expected_df.loc[expected_df[field] == fixValueInput].index
-
-        # Iterar sobre los indices desde el ultimo hasta el primero, iterarlos inversamente
-        for idx in katy_perry_indices[::-1]:
-            if idx > 0:
-                expected_df.at[idx, field] = expected_df.at[idx - 1, field]
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(1), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(1), field=field)
+        assert result_invariant is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         # Ejecutar la invariante: cambiar el valor fijo de tipo fecha 2019-12-13 de
-        # la columna 'track_album_release_date' por el valor derivado 3 (Next) a nivel de columna sobre el resto del dataset.
-        # Sobre un dataframe de copia del resto del dataset cambiar los valores
+        # la columna 'track_album_release_date' por el valor derivado 3 (Next) a nivel de columna sobre el batch pequeño
+        # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
         # manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), field=field)
-        date_indices = expected_df.loc[expected_df[field] == fixValueInput].index
-        for idx in date_indices:
-            if idx < len(expected_df) - 1:
-                expected_df.at[idx, field] = expected_df.at[idx + 1, field]
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2), field=field)
+        assert result_invariant is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         # Inavriante. cambair el valor fijo 'pop' de la columna 'playlist_genre' por el valor derivado 2 (next)
-        # a nivel de fila sobre el resto del dataset. Sobre un dataframe de copia del resto del dataset cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # a nivel de fila sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
+        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
         # esperado
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 'pop'
         field = 'playlist_genre'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), axis_param=1)
-        pop_indices = expected_df.loc[expected_df[field] == fixValueInput].index
-        # Gets next column name to 'field' in the dataframe
-        next_column = expected_df.columns[expected_df.columns.get_loc(field) + 1]
-        for idx in pop_indices:
-            if next_column in expected_df.columns:
-                expected_df.at[idx, field] = expected_df.at[idx, next_column]
-        # Verify if the result matches the expected
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), axis_param=0)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
+        assert result_invariant is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         # Check the invariant: chenged the fixed value 0.11 of the column 'liveness'
-        # by the derived value 0 (most frequent) at column level on the rest of the dataset.
-        # On a copy of the rest of the dataset, change the values manually and verify if the result matches
+        # by the derived value 0 (most frequent) at column level on the small batch of the test dataset.
+        # On a copy of the small batch of the test dataset, change the values manually and verify if the result matches
         # the expected
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.11
         field = 'liveness'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
-        most_frequent_liveness_value = expected_df[field].mode()[0]
-        expected_df[field] = expected_df[field].replace(fixValueInput, most_frequent_liveness_value)
-        # Verify if the result matches the expected
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         # Check the invariant: chenged the fixed value 'Ed Sheeran' of all the dataset by the most frequent value
-        # from the rest of the dataset. On a copy of the rest of the dataset, change the values manually and
+        # from the small batch dataset. On a copy of the small batch of the test dataset, change the values manually and
         # verify if the result matches the expected
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 'Ed Sheeran'
-        result_df = self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0))
-        # Get most frequent value of the all columns from the rest of the dataset
-
-        # Convertir el DataFrame a una Serie para contar los valores en todas las columnas
-        all_values = expected_df.melt(value_name="values")['values']
-        # Obtener el valor más frecuente
-        most_frequent_value = all_values.value_counts().idxmax()
-        expected_df = expected_df.replace(fixValueInput, most_frequent_value)
-        # Verify if the result matches the expected
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0))
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0))
+        assert result_invariant is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         # Transformación de datos: exception after trying to gte previous value from all the dataset without specifying the column or
@@ -878,9 +1007,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1))
+            result_df = self.data_transformations.transform_FixValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                fixValueInput=fixValueInput,
+                derivedTypeOutput=DerivedType(1))
+            result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                              dataDictionary_out=result_df,
+                                                                              belongOp_in=Belong(0),
+                                                                              belongOp_out=Belong(0),
+                                                                              fixValueInput=fixValueInput,
+                                                                              derivedTypeOutput=DerivedType(1))
         print_and_log("Test Case 7 Passed: the function raised the expected exception")
 
         # Caso 8: exception after trying to get the next value from all the dataset without specifying the
@@ -891,9 +1027,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(2))
+            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                fixValueInput=fixValueInput,
+                derivedTypeOutput=DerivedType(2))
+            result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                              dataDictionary_out=result_df,
+                                                                              belongOp_in=Belong(0),
+                                                                              belongOp_out=Belong(0),
+                                                                              fixValueInput=fixValueInput,
+                                                                              derivedTypeOutput=DerivedType(2))
+
         print_and_log("Test Case 8 Passed: the function raised the expected exception")
 
         # Caso 9: exception after trying to get the previous value using a column level. The field doens't exist in the
@@ -904,10 +1048,138 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1), field=field)
+            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                fixValueInput=fixValueInput,
+                derivedTypeOutput=DerivedType(1), field=field)
+            result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                              fixValueInput=fixValueInput,
+                                                                              derivedTypeOutput=DerivedType(1),
+                                                                              field=field)
+
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
+
+        # tests with NOT BELONG
+
+        # Caso 10
+        # Ejecutar la invariante: cambiar el valor fijo 0 de la columna 'mode' por el valor derivado 0 (Most frequent)
+        # a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
+        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado
+        # Definir el resultado esperado
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0
+        field = 'mode'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, and got False")
+
+        # Caso 11
+        # Ejecutar la invariante: cambiar el valor fijo 'Katy Perry' de la columna 'artist_name'
+        # por el valor derivado 2 (Previous) a nivel de columna sobre el batch pequeño del dataset de prueba.
+        # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
+        # verificar si el resultado obtenido coincide con el esperado
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 'Katy Perry'
+        field = 'track_artist'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(1), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(1), field=field)
+        assert result_invariant is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12
+        # Ejecutar la invariante: cambiar el valor fijo de tipo fecha 2019-12-13 de
+        # la columna 'track_album_release_date' por el valor derivado 3 (Next) a nivel de columna sobre el batch pequeño
+        # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
+        # manualmente y verificar si el resultado obtenido coincide con el esperado
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = '2019-12-13'
+        field = 'track_album_release_date'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2), field=field)
+        assert result_invariant is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        # Inavriante. cambair el valor fijo 'pop' de la columna 'playlist_genre' por el valor derivado 2 (next)
+        # a nivel de fila sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
+        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 'pop'
+        field = 'playlist_genre'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), axis_param=1)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=1)
+        assert result_invariant is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Check the invariant: chenged the fixed value 0.11 of the column 'liveness'
+        # by the derived value 0 (most frequent) at column level on the small batch of the test dataset.
+        # On a copy of the small batch of the test dataset, change the values manually and verify if the result matches
+        # the expected
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0.11
+        field = 'liveness'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert result_invariant is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, and got False")
+
+        # Caso 15
+        # Check the invariant: chenged the fixed value 'Ed Sheeran' of all the dataset by the most frequent value
+        # from the small batch dataset. On a copy of the small batch of the test dataset, change the values manually and
+        # verify if the result matches the expected
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 'Ed Sheeran'
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0))
+        result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0))
+        assert result_invariant is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
 
     def execute_checkInv_FixValue_NumOp_ExternalDatasetTests(self):
         """
