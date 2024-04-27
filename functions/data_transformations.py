@@ -7,7 +7,7 @@ from helpers.transform_aux import getOutliers, specialTypeMean, specialTypeMedia
     specialTypeInterpolation, apply_derivedTypeColRowOutliers, apply_derivedType
 
 
-class Invariants:
+class DataTransformations:
     # FixValue - FixValue, FixValue - DerivedValue, FixValue - NumOp
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp

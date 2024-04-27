@@ -77,11 +77,14 @@ if __name__ == "__main__":
     # Set the logger to save the logs of the execution in the path logs/test
     set_logger("test")
 
+    # FINAL TESTS
     # Calculate execution time for each test block (pre-post)
     # execute_prepost_simple_tests()
     # execute_prepost_external_dataset_tests()
     # execute_invariants_simple_tests()
     # execute_invariants_external_dataset_tests()
 
-    contracts_invariant_test = InvariantsSimpleTest()
-    contracts_invariant_test.execute_checkInv_FixValue_NumOp()
+    # DEBUG TESTS
+    # Execute all pre-post simple tests
+    contracts_invariant_test = InvariantsExternalDatasetTests()
+    contracts_invariant_test.execute_checkInv_FixValue_FixValue_ExternalDatasetTests()
