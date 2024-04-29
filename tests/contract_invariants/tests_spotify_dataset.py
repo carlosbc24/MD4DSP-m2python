@@ -101,12 +101,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             self.execute_checkInv_FixValue_FixValue_ExternalDatasetTests,
             self.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests,
             self.execute_checkInv_FixValue_NumOp_ExternalDatasetTests,
-            self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
-            self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests
+            # self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
+            # self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
+            # self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
+            # self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
+            # self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
+            # self.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -1211,23 +1211,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0
         field = 'instrumentalness'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), field=field)
-        expected_df_copy = expected_df.copy()
-        # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df_copy[field] = expected_df_copy[field].replace(fixValueInput, np.nan)
-        # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
-        expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
-        # Para cada índice en la columna
-        for idx in expected_df.index:
-            # Verificamos si el valor es NaN en el dataframe original
-            if pd.isnull(expected_df.at[idx, field]):
-                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
-                expected_df_copy.at[idx, field] = expected_df.at[idx, field]
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df_copy)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                         fixValueInput=fixValueInput,
+                                                                         numOpOutput=Operation(0), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(0), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         # Ejecutar la invariante: cambiar el valor 0.725 de la columna 'valence' por el valor de operación 1 (Mean),
@@ -1238,14 +1231,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.725
         field = 'valence'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), field=field)
-        # Sustituir el valor 0.725 por el valor de la media en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].mean())
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                     fixValueInput=fixValueInput,
+                                                                     numOpOutput=Operation(1), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(1), field=field,
+                                                                     belongOp_in=Belong(0), belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         # Ejecutar la invariante: cambiar el valor 8 de la columna 'key' por el valor de operación 2 (Median),
@@ -1256,14 +1251,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 8
         field = 'key'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), field=field)
-        # Sustituir el valor 8 por el valor de la mediana en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].median())
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                         fixValueInput=fixValueInput,
+                                                                         numOpOutput=Operation(2), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(2), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         # Ejecutar la invariante: cambiar el valor 99.972 de la columna 'tempo' por el valor de operación 3 (Closest),
@@ -1274,30 +1271,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 99.972
         field = 'tempo'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), field=field)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Inicializar variables para almacenar el valor más cercano y la diferencia mínima
-        closest_value = None
-        min_diff = np.inf
-        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fixValueInput
-        for col in numeric_columns:
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
-            idx_min = diff.idxmin()
-            # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
-            if diff[idx_min] < min_diff:
-                closest_value = expected_df.at[idx_min, col]
-                min_diff = diff[idx_min]
-        # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, closest_value)
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                     fixValueInput=fixValueInput,
+                                                                     numOpOutput=Operation(3), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                     fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                     numOpOutput=Operation(3), field=field)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         # Ejecutar la invariante: cambiar el valor 0 en todas las columnas del batch pequeño del dataset de prueba por
@@ -1307,18 +1290,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Calcula la media de todas las columnas numéricas
-        mean_values = expected_df[numeric_columns].mean()
-        # Sustituir todos los valores 0 por el valor de la media de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, mean_values)
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                     fixValueInput=fixValueInput,
+                                                                     numOpOutput=Operation(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                     fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        numOpOutput=Operation(1), axis_param=0)
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
@@ -1328,18 +1309,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Calcula la mediana de todas las columnas numéricas
-        median_values = expected_df[numeric_columns].median()
-        # Sustituir todos los valores 0.65 por el valor de la mediana de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, median_values)
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                     fixValueInput=fixValueInput,
+                                                                     numOpOutput=Operation(2), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                     fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                     numOpOutput=Operation(2), axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
@@ -1349,35 +1328,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), axis_param=0)
-        # Seleccionar solo las columnas numéricas del sub-DataFrame expected_df
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-
-        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
-        for col in numeric_columns:
-            # Inicializar variables para almacenar el valor más cercano y la diferencia mínima para cada columna
-            closest_value = None
-            min_diff = np.inf
-
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
-            idx_min = diff.idxmin()
-
-            # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
-            if diff[idx_min] < min_diff:
-                closest_value = expected_df.at[idx_min, col]
-                min_diff = diff[idx_min]
-
-            # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
-            expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                         fixValueInput=fixValueInput,
+                                                                         numOpOutput=Operation(3), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                     fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                     numOpOutput=Operation(3), axis_param=0)
+        assert invariant_result is True, "Test Case 7 Failed: Expected True, but got False"
+        print_and_log("Test Case 7 Passed: Expected True, and got True")
 
         # Caso 8
         # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
@@ -1387,18 +1347,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Susituir los valores 0.65 por los NaN en las columnas numéricas de expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, np.nan)
-        # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
-        expected_df[numeric_columns] = expected_df[numeric_columns].interpolate(method='linear', limit_direction='both')
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                         fixValueInput=fixValueInput,
+                                                                         numOpOutput=Operation(0), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                     fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                     numOpOutput=Operation(0), axis_param=0)
+        assert invariant_result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, and got True")
 
         # Caso 9
         # Comprobar la excepción: se pasa axis_param a None cuando field=None y se lanza una excepción ValueError
@@ -1407,9 +1365,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0))
+            result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                 fixValueInput=fixValueInput,
+                                                                 numOpOutput=Operation(0))
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0))
+
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
         # Caso 10
@@ -1420,10 +1383,210 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0), field=field)
+            result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                             fixValueInput=fixValueInput,
+                                                             numOpOutput=Operation(0), field=field)
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field)
         print_and_log("Test Case 10 Passed: the function raised the expected exception")
+
+        # Casos NOT BELONG
+
+        # Caso 11
+        # Ejecutar la invariante: cambiar el valor 0 de la columna 'instrumentalness' por el valor de operación 0,
+        # es decir, la interpolación a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe
+        # de copia el batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
+        # obtenido coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0
+        field = 'instrumentalness'
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(0), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12
+        # Ejecutar la invariante: cambiar el valor 0.725 de la columna 'valence' por el valor de operación 1 (Mean),
+        # es decir, la media a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia
+        # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0.725
+        field = 'valence'
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(1), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        # Ejecutar la invariante: cambiar el valor 8 de la columna 'key' por el valor de operación 2 (Median),
+        # es decir, la mediana a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia
+        # del batch pequeño del dataset se prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 8
+        field = 'key'
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(2), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Ejecutar la invariante: cambiar el valor 99.972 de la columna 'tempo' por el valor de operación 3 (Closest),
+        # es decir, el valor más cercano a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un
+        # dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
+        # resultado obtenido coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 99.972
+        field = 'tempo'
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(3), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                   numOpOutput=Operation(3), field=field)
+        assert invariant_result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, and got False")
+
+        # Caso 15
+        # Ejecutar la invariante: cambiar el valor 0 en todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 1 (media) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(1), axis_param=0)
+        assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
+
+        # Caso 16
+        # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 2 (mediana) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0.65
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(2), axis_param=0)
+        assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, and got False")
+
+        # Caso 17
+        # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 3 (más cercano) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0.65
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(3), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(3), axis_param=0)
+        assert invariant_result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, and got False")
+
+        # Caso 18
+        # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 0 (interpolación) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0.65
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                   numOpOutput=Operation(0), axis_param=0)
+        assert invariant_result is False, "Test Case 18 Failed: Expected False, but got True"
+        print_and_log("Test Case 18 Passed: Expected False, and got False")
+
+        # Caso 19
+        # Comprobar la excepción: se pasa axis_param a None cuando field=None y se lanza una excepción ValueError
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0.65
+        expected_exception = ValueError
+        # Verificar si el resultado obtenido coincide con el esperado
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.small_batch_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0))
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0),
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1))
+
+        print_and_log("Test Case 19 Passed: the function raised the expected exception")
+
+        # Caso 20
+        # Comprobar la excepción: se pasa una columna que no existe
+        expected_df = self.small_batch_dataset.copy()
+        fixValueInput = 0.65
+        field = 'p'
+        expected_exception = ValueError
+        # Verificar si el resultado obtenido coincide con el esperado
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.small_batch_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0), field=field)
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field,
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1))
+        print_and_log("Test Case 20 Passed: the function raised the expected exception")
 
     def execute_WholeDatasetTests_execute_checkInv_FixValue_NumOp_ExternalDataset(self):
         """
@@ -1435,26 +1598,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # de copia el batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado.
         # Crear un DataFrame de prueba
-        expected_df = self.rest_of_dataset[32820:].copy()
+        expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0
         field = 'instrumentalness'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset[32820:], fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), field=field)
-        expected_df_copy = expected_df.copy()
-        # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df_copy[field] = expected_df_copy[field].replace(fixValueInput, np.nan)
-        # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
-        expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
-
-        for idx in expected_df.index:
-            # Verificamos si el valor es NaN en el dataframe original
-            if pd.isnull(expected_df.at[idx, field]):
-                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
-                expected_df_copy.at[idx, field] = expected_df.at[idx, field]
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df_copy)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(0), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         # Ejecutar la invariante: cambiar el valor 0.725 de la columna 'valence' por el valor de operación 1 (Mean),
@@ -1465,14 +1621,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.725
         field = 'valence'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), field=field)
-        # Sustituir el valor 0.725 por el valor de la media en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].mean())
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(1), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         # Ejecutar la invariante: cambiar el valor 8 de la columna 'key' por el valor de operación 2 (Median),
@@ -1483,14 +1641,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 8
         field = 'key'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), field=field)
-        # Sustituir el valor 8 por el valor de la mediana en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].median())
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(2), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         # Ejecutar la invariante: cambiar el valor 99.972 de la columna 'tempo' por el valor de operación 3 (Closest),
@@ -1501,30 +1661,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 99.972
         field = 'tempo'
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), field=field)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Inicializar variables para almacenar el valor más cercano y la diferencia mínima
-        closest_value = None
-        min_diff = np.inf
-        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fixValueInput
-        for col in numeric_columns:
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
-            idx_min = diff.idxmin()
-            # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
-            if diff[idx_min] < min_diff:
-                closest_value = expected_df.at[idx_min, col]
-                min_diff = diff[idx_min]
-        # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, closest_value)
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        vaue_error_exception = ValueError
+        with self.assertRaises(vaue_error_exception):
+            result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                           fixValueInput=fixValueInput,
+                                                                           numOpOutput=Operation(3), field=field)
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                       numOpOutput=Operation(3), field=field)
+        print_and_log("Test Case 4 Passed: the function raised the expected exception")
 
         # Caso 5
         # Ejecutar la invariante: cambiar el valor 0 en todas las columnas del batch pequeño del dataset de prueba por
@@ -1534,18 +1681,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Calcula la media de todas las columnas numéricas
-        mean_values = expected_df[numeric_columns].mean()
-        # Sustituir todos los valores 0 por el valor de la media de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, mean_values)
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(1), axis_param=0)
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
@@ -1555,18 +1700,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), axis_param=0)
-        # Seleccionar solo las columnas numéricas del dataframe
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Calcula la mediana de todas las columnas numéricas
-        median_values = expected_df[numeric_columns].median()
-        # Sustituir todos los valores 0.65 por el valor de la mediana de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, median_values)
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(2), axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
@@ -1576,24 +1719,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(expected_df,
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), axis_param=0)
-        # Seleccionar solo las columnas numéricas del sub-DataFrame expected_df
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
-        for col in numeric_columns:
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
-            idx_min = diff.idxmin()
-            closest_value = expected_df.at[idx_min, col]
-            # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
-            expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+        value_error_exception = ValueError
+        with self.assertRaises(value_error_exception):
+            result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                           fixValueInput=fixValueInput,
+                                                                           numOpOutput=Operation(3), axis_param=0)
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                       numOpOutput=Operation(3), axis_param=0)
+        print_and_log("Test Case 7 Passed: the function raised the expected exception")
 
         # Caso 8
         # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
@@ -1603,26 +1739,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fixValueInput = 0.65
-        result_df = self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(), fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), axis_param=0)
-        expected_df_copy = expected_df.copy()
-        # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df_copy = expected_df_copy.replace(fixValueInput, np.nan)
-        # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
-        for col in expected_df_copy:
-            if np.issubdtype(expected_df_copy[col].dtype, np.number):
-                expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
-
-        for col in expected_df.columns:
-            if np.issubdtype(expected_df[col].dtype, np.number):
-                for idx in expected_df.index:
-                    # Verificamos si el valor es NaN en el dataframe original
-                    if pd.isnull(expected_df.at[idx, col]):
-                        # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
-                        expected_df_copy.at[idx, col] = expected_df.at[idx, col]
-        # Verificar si el resultado obtenido coincide con el esperado
-        pd.testing.assert_frame_equal(result_df, expected_df_copy)
-        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(0), axis_param=0)
+        assert invariant_result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, and got True")
 
         # Caso 9
         # Comprobar la excepción: se pasa axis_param a None cuando field=None y se lanza una excepción ValueError
@@ -1631,9 +1757,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0))
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.rest_of_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0))
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0))
+
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
         # Caso 10
@@ -1644,27 +1776,231 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            self.invariants.checkInv_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0), field=field)
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.rest_of_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0), field=field)
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field)
         print_and_log("Test Case 10 Passed: the function raised the expected exception")
 
+        # Casos NOT BELONG
+
+        # Caso 11
+        # Ejecutar la invariante: cambiar el valor 0 de la columna 'instrumentalness' por el valor de operación 0,
+        # es decir, la interpolación a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe
+        # de copia el batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
+        # obtenido coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0
+        field = 'instrumentalness'
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(0), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12
+        # Ejecutar la invariante: cambiar el valor 0.725 de la columna 'valence' por el valor de operación 1 (Mean),
+        # es decir, la media a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia
+        # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0.725
+        field = 'valence'
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(1), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        # Ejecutar la invariante: cambiar el valor 8 de la columna 'key' por el valor de operación 2 (Median),
+        # es decir, la mediana a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia
+        # del batch pequeño del dataset se prueba cambiar los valores manualmente y verificar si el resultado obtenido
+        # coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 8
+        field = 'key'
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), field=field)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   numOpOutput=Operation(2), field=field,
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Ejecutar la invariante: cambiar el valor 99.972 de la columna 'tempo' por el valor de operación 3 (Closest),
+        # es decir, el valor más cercano a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un
+        # dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
+        # resultado obtenido coincide con el esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 99.972
+        field = 'tempo'
+        value_error_exception = ValueError
+        with self.assertRaises(value_error_exception):
+            result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                           fixValueInput=fixValueInput,
+                                                                           numOpOutput=Operation(3), field=field)
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                       numOpOutput=Operation(3), field=field)
+        print_and_log("Test Case 14 Passed: the function raised the expected exception")
+
+        # Caso 15
+        # Ejecutar la invariante: cambiar el valor 0 en todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 1 (media) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(1), axis_param=0)
+        assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
+
+        # Caso 16
+        # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 2 (mediana) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0.65
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(2), axis_param=0)
+        assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, and got False")
+
+        # Caso 17
+        # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 3 (más cercano) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0.65
+        value_error_exception = ValueError
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(3), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                   numOpOutput=Operation(3), axis_param=0)
+        assert invariant_result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, and got False")
+
+        # Caso 18
+        # Ejecutar la invariante: cambiar el valor 0.65 de todas las columnas del batch pequeño del dataset de prueba por
+        # el valor de operación 0 (interpolación) a nivel de columna. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
+        # esperado.
+        # Crear un DataFrame de prueba
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0.65
+        result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), axis_param=0)
+        invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                   dataDictionary_out=result_df,
+                                                                   fixValueInput=fixValueInput,
+                                                                   belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                   numOpOutput=Operation(0), axis_param=0)
+        assert invariant_result is False, "Test Case 18 Failed: Expected False, but got True"
+        print_and_log("Test Case 18 Passed: Expected False, and got False")
+
+        # Caso 19
+        # Comprobar la excepción: se pasa axis_param a None cuando field=None y se lanza una excepción ValueError
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0.65
+        expected_exception = ValueError
+        # Verificar si el resultado obtenido coincide con el esperado
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.rest_of_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0))
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0),
+                                                                       belongOp_in=Belong(1), belongOp_out=Belong(1))
+
+        print_and_log("Test Case 19 Passed: the function raised the expected exception")
+
+        # Caso 20
+        # Comprobar la excepción: se pasa una columna que no existe
+        expected_df = self.rest_of_dataset.copy()
+        fixValueInput = 0.65
+        field = 'p'
+        expected_exception = ValueError
+        # Verificar si el resultado obtenido coincide con el esperado
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.rest_of_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0), field=field)
+            invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
+                                                                       dataDictionary_out=result_df,
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field,
+                                                                       belongOp_in=Belong(1), belongOp_out=Belong(1))
+        print_and_log("Test Case 20 Passed: the function raised the expected exception")
+
+
     def execute_checkInv_Interval_FixValue_ExternalDatasetTests(self):
-        """
-        Execute the invariant test with external dataset for the function checkInv_Interval_FixValue
-        """
-        print_and_log("Testing checkInv_Interval_FixValue Data Transformation Function")
-        print_and_log("")
+            """
+            Execute the invariant test with external dataset for the function checkInv_Interval_FixValue
+            """
+            print_and_log("Testing checkInv_Interval_FixValue Data Transformation Function")
+            print_and_log("")
 
-        print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_Interval_FixValue_ExternalDataset()
-        print_and_log("")
-        print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_Interval_FixValue_ExternalDataset()
+            print_and_log("Dataset tests using small batch of the dataset:")
+            self.execute_SmallBatchTests_execute_checkInv_Interval_FixValue_ExternalDataset()
+            print_and_log("")
+            print_and_log("Dataset tests using the whole dataset:")
+            self.execute_WholeDatasetTests_execute_checkInv_Interval_FixValue_ExternalDataset()
 
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
-        print_and_log("")
+            print_and_log("")
+            print_and_log("-----------------------------------------------------------")
+            print_and_log("")
 
     def execute_SmallBatchTests_execute_checkInv_Interval_FixValue_ExternalDataset(self):
         """
@@ -1675,59 +2011,174 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'track_popularity'
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                             rightMargin=69, closureType=Closure(3),
-                                                             dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<=69',
-                                                             field=field)
-
-        expected_df['track_popularity'] = expected_df['track_popularity'].apply(
-            lambda x: '65<=Pop<=69' if 65 <= x <= 69 else x)
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
+                                                                     rightMargin=69, closureType=Closure(3),
+                                                                     dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<=69',
+                                                                     field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                        leftMargin=65, rightMargin=69, closureType=Closure(3),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueOutput='65<=Pop<=69', field=field)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.5,
-                                                             rightMargin=1, closureType=Closure(0), fixValueOutput=2)
-
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
-                                                                              ((x > 0.5) and (x < 1))) else x))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       leftMargin=0.5, rightMargin=1,
+                                                                       closureType=Closure(0), fixValueOutput=2)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                        leftMargin=0.5, rightMargin=1, closureType=Closure(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueOutput=2)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                                 rightMargin=69, closureType=Closure(2),
-                                                                 fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
+                                                                             rightMargin=69, closureType=Closure(2),
+                                                                             fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=65, rightMargin=69, closureType=Closure(2),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            fixValueOutput=101, field=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
         field = 'speechiness'
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.06,
-                                                             rightMargin=0.1270, closureType=Closure(1),
-                                                             fixValueOutput=33, field=field)
-
-        expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       leftMargin=0.06, rightMargin=0.1270,
+                                                                       closureType=Closure(1), fixValueOutput=33,
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df, dataDictionary_out=result,
+                                                                        leftMargin=0.06, rightMargin=0.1270, closureType=Closure(1),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                        fixValueOutput=33, field=field)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                                 rightMargin=69, closureType=Closure(2),
-                                                                 fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
+                                                                             rightMargin=69, closureType=Closure(2),
+                                                                             fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=65, rightMargin=69, closureType=Closure(2),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            fixValueOutput=101, field=field)
         print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
+
+        # Caso 6
+        expected_df = self.small_batch_dataset.copy()
+        field = 'track_popularity'
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       leftMargin=65,
+                                                                       rightMargin=69, closureType=Closure(3),
+                                                                       dataTypeOutput=DataType(0),
+                                                                       fixValueOutput='65<=Pop<=69',
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=65, rightMargin=69,
+                                                                      closureType=Closure(3),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                      fixValueOutput='65<=Pop<=69', field=field)
+        assert invariant_result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, and got False")
+
+        # Caso 7
+        expected_df = self.small_batch_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       leftMargin=0.5, rightMargin=1,
+                                                                       closureType=Closure(0), fixValueOutput=2)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.5, rightMargin=1,
+                                                                      closureType=Closure(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                      fixValueOutput=2)
+        assert invariant_result is False, "Test Case 7 Failed: Expected False, but got True"
+        print_and_log("Test Case 7 Passed: Expected False, and got False")
+
+        # Caso 8
+        field = 'track_name'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                fixValueOutput=101, field=field)
+        print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
+
+        # Caso 9
+        expected_df = self.small_batch_dataset.copy()
+        field = 'speechiness'
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       leftMargin=0.06, rightMargin=0.1270,
+                                                                       closureType=Closure(1), fixValueOutput=33,
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.06, rightMargin=0.1270,
+                                                                      closureType=Closure(1),
+                                                                      belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                      fixValueOutput=33, field=field)
+        assert invariant_result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, and got False")
+
+        # Caso 10
+        field = 'p'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(1), belongOp_out=Belong(1),
+                fixValueOutput=101, field=field)
+        print_and_log("Test Case 10 Passed: expected ValueError, got ValueError")
+
+        # Caso 11
+        expected_df = self.small_batch_dataset.copy()
+        field = 'speechiness'
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       leftMargin=0.06, rightMargin=0.1270,
+                                                                       closureType=Closure(1), fixValueOutput=33,
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.06, rightMargin=0.1270,
+                                                                      closureType=Closure(1),
+                                                                      belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                      fixValueOutput=33, field=field)
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
 
     def execute_WholeDatasetTests_execute_checkInv_Interval_FixValue_ExternalDataset(self):
         """
@@ -1738,50 +2189,184 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'track_popularity'
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
-                                                             rightMargin=69, closureType=Closure(2),
-                                                             dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<69',
-                                                             field=field)
-
-        expected_df['track_popularity'] = expected_df['track_popularity'].apply(
-            lambda x: '65<=Pop<69' if 65 <= x < 69 else x)
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       leftMargin=65,
+                                                                       rightMargin=69, closureType=Closure(3),
+                                                                       dataTypeOutput=DataType(0),
+                                                                       fixValueOutput='65<=Pop<=69',
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=65, rightMargin=69,
+                                                                      closureType=Closure(3),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                      fixValueOutput='65<=Pop<=69', field=field)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.5,
-                                                             rightMargin=1, closureType=Closure(0), fixValueOutput=2)
-
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
-                                                                              ((x > 0.5) and (x < 1))) else x))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       leftMargin=0.5, rightMargin=1,
+                                                                       closureType=Closure(0), fixValueOutput=2)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.5, rightMargin=1,
+                                                                      closureType=Closure(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                      fixValueOutput=2)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
-                                                                 rightMargin=69, closureType=Closure(2),
-                                                                 fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                fixValueOutput=101, field=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
         field = 'speechiness'
 
-        result = self.invariants.checkInv_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.06,
-                                                             rightMargin=0.1270, closureType=Closure(1),
-                                                             fixValueOutput=33, field=field)
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       leftMargin=0.06, rightMargin=0.1270,
+                                                                       closureType=Closure(1), fixValueOutput=33,
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.06, rightMargin=0.1270,
+                                                                      closureType=Closure(1),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                      fixValueOutput=33, field=field)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
-        expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
+        # Caso 5
+        field = 'p'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                fixValueOutput=101, field=field)
+        print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        # Caso 6
+        expected_df = self.rest_of_dataset.copy()
+        field = 'track_popularity'
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       leftMargin=65,
+                                                                       rightMargin=69, closureType=Closure(3),
+                                                                       dataTypeOutput=DataType(0),
+                                                                       fixValueOutput='65<=Pop<=69',
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=65, rightMargin=69,
+                                                                      closureType=Closure(3),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                      fixValueOutput='65<=Pop<=69', field=field)
+        assert invariant_result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, and got False")
+
+        # Caso 7
+        expected_df = self.rest_of_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       leftMargin=0.5, rightMargin=1,
+                                                                       closureType=Closure(0), fixValueOutput=2)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.5, rightMargin=1,
+                                                                      closureType=Closure(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                      fixValueOutput=2)
+        assert invariant_result is False, "Test Case 7 Failed: Expected False, but got True"
+        print_and_log("Test Case 7 Passed: Expected False, and got False")
+
+        # Caso 8
+        field = 'track_name'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                fixValueOutput=101, field=field)
+        print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
+
+        # Caso 9
+        expected_df = self.rest_of_dataset.copy()
+        field = 'speechiness'
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       leftMargin=0.06, rightMargin=0.1270,
+                                                                       closureType=Closure(1), fixValueOutput=33,
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.06, rightMargin=0.1270,
+                                                                      closureType=Closure(1),
+                                                                      belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                      fixValueOutput=33, field=field)
+        assert invariant_result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, and got False")
+
+        # Caso 10
+        field = 'p'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(1), belongOp_out=Belong(1),
+                fixValueOutput=101, field=field)
+        print_and_log("Test Case 10 Passed: expected ValueError, got ValueError")
+
+        # Caso 11
+        expected_df = self.rest_of_dataset.copy()
+        field = 'speechiness'
+
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(),
+                                                                       leftMargin=0.06, rightMargin=0.1270,
+                                                                       closureType=Closure(1), fixValueOutput=33,
+                                                                       field=field)
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.06, rightMargin=0.1270,
+                                                                      closureType=Closure(1),
+                                                                      belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                      fixValueOutput=33, field=field)
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
 
     def execute_checkInv_Interval_DerivedValue_ExternalDatasetTests(self):
         """

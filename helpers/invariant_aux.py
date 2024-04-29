@@ -1693,7 +1693,9 @@ def checkFixValueMeanBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                     elif belongOp_out == Belong.NOTBELONG:
                         return True
             else:
-                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
+                                pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(
+                                dataDictionary_out.at[idx, field])):
                     return False
 
     if belongOp_out == Belong.BELONG:
@@ -1889,7 +1891,9 @@ def checkFixValueMedianBelong(dataDictionary_in, dataDictionary_out, fixValueInp
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
+                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(
+                                dataDictionary_out.at[idx, col_name])):
                                 return False
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1905,7 +1909,9 @@ def checkFixValueMedianBelong(dataDictionary_in, dataDictionary_out, fixValueInp
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                            if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
+                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(
+                                dataDictionary_out.at[idx, col_name])):
                                 return False
         elif axis_param == 1:
             for idx, row in dataDictionary_in.iterrows():
@@ -1939,7 +1945,9 @@ def checkFixValueMedianBelong(dataDictionary_in, dataDictionary_out, fixValueInp
                     elif belongOp_out == Belong.NOTBELONG:
                         return True
             else:
-                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
+                                pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(
+                                dataDictionary_out.at[idx, field])):
                     return False
 
     if belongOp_out == Belong.BELONG:
@@ -2157,20 +2165,20 @@ def checkFixValueClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
 
                 # Replace the missing values with the closest numeric values in the column
                 for i in range(len(dataDictionary_in.index)):
-                    current_value = dataDictionary_in.at[i, col_name]
+                    current_value = dataDictionary_in[col_name].iloc[i]
                     if current_value == fixValueInput:
-                        if dataDictionary_out.at[i, col_name] != closest_value:
+                        if dataDictionary_out[col_name].iloc[i] != closest_value:
                             if belongOp_out == Belong.BELONG:
                                 return False
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if pd.isnull(dataDictionary_in.at[i, col_name]):
+                        if pd.isnull(dataDictionary_in[col_name].iloc[i]):
                             raise ValueError(
                                 "Error: it's not possible to apply the closest operation to the null values")
-                        if (dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]) and not (
-                                pd.isnull(dataDictionary_in.loc[i, col_name]) or pd.isnull(
-                                dataDictionary_out.loc[i, col_name])):
+                        if (dataDictionary_out[col_name].iloc[i] != dataDictionary_in[col_name].iloc[i]) and not (
+                                pd.isnull(dataDictionary_in[col_name].iloc[i]) or pd.isnull(
+                                dataDictionary_out[col_name].iloc[i])):
                             return False
         elif axis_param == 1:
             # Iterate over each row
@@ -2219,20 +2227,20 @@ def checkFixValueClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
 
         # Replace the missing values with the closest numeric values in the column
         for i in range(len(dataDictionary_in.index)):
-            current_value = dataDictionary_in.at[i, field]
+            current_value = dataDictionary_in[field].iloc[i]
             if current_value == fixValueInput:
-                if dataDictionary_out.at[i, field] != closest_value:
+                if dataDictionary_out[field].iloc[i] != closest_value:
                     if belongOp_out == Belong.BELONG:
                         return False
                     elif belongOp_out == Belong.NOTBELONG:
                         return True
             else:
-                if pd.isnull(dataDictionary_in.at[i, field]):
+                if pd.isnull(dataDictionary_in[field].iloc[i]):
                     raise ValueError(
                         "Error: it's not possible to apply the closest operation to the null values")
-                if (dataDictionary_out.at[i, field] != dataDictionary_in.at[i, field]) and not (
-                        pd.isnull(dataDictionary_in.loc[i, field]) or pd.isnull(
-                        dataDictionary_out.loc[i, field])):
+                if (dataDictionary_out[field].iloc[i] != dataDictionary_in[field].iloc[i]) and not (
+                        pd.isnull(dataDictionary_in[field].iloc[i]) or pd.isnull(
+                        dataDictionary_out[field].iloc[i])):
                     return False
 
     if belongOp_out == Belong.BELONG:
@@ -2274,7 +2282,7 @@ def checkFixValueClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDic
 
                 # Replace the missing values with the closest numeric values in the column
                 for i in range(len(dataDictionary_in.index)):
-                    current_value = dataDictionary_in.at[i, col_name]
+                    current_value = dataDictionary_in[col_name].iloc[i]
                     if current_value == fixValueInput:
                         return False
 
@@ -2284,7 +2292,7 @@ def checkFixValueClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDic
 
                 # Replace the missing values with the closest numeric values in the row
                 for col_name in dataDictionary_in.columns:
-                    current_value = dataDictionary_in.at[row_idx, col_name]
+                    current_value = dataDictionary_in[col_name].iloc[row_idx]
                     if current_value == fixValueInput:
                         return False
 
@@ -2295,7 +2303,7 @@ def checkFixValueClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDic
             raise ValueError("Field is not numeric")
         # Replace the missing values with the closest numeric values in the column
         for i in range(len(dataDictionary_in.index)):
-            current_value = dataDictionary_in.at[i, field]
+            current_value = dataDictionary_in[field].iloc[i]
             if current_value == fixValueInput:
                 return False
 
@@ -2333,7 +2341,7 @@ def checkFixValueClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, data
 
                 # Replace the missing values with the closest numeric values in the column
                 for i in range(len(dataDictionary_in.index)):
-                    current_value = dataDictionary_in.at[i, col_name]
+                    current_value = dataDictionary_in[col_name].iloc[i]
                     if current_value == fixValueInput:
                         return False
 
@@ -2343,7 +2351,7 @@ def checkFixValueClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, data
 
                 # Replace the missing values with the closest numeric values in the row
                 for col_name in dataDictionary_in.columns:
-                    current_value = dataDictionary_in.at[row_idx, col_name]
+                    current_value = dataDictionary_in[col_name].iloc[row_idx]
                     if current_value == fixValueInput:
                         return False
 
@@ -2355,7 +2363,7 @@ def checkFixValueClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, data
 
         # Replace the missing values with the closest numeric values in the column
         for i in range(len(dataDictionary_in.index)):
-            current_value = dataDictionary_in.at[i, field]
+            current_value = dataDictionary_in[field].iloc[i]
             if current_value == fixValueInput:
                 return False
 
