@@ -2996,31 +2996,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
         # Definir la lista de valores invalidos
-        missing_values = [1, 3, 4]
-        field = 'A'
-        # Definir el resultado esperado
-        expected = pd.DataFrame(
-            {'A': [0, None, np.NaN, 3, 4], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        expected = expected.astype({
-            'A': 'float64'  # Convertir A a float64
-        })
-        # Aplicar la transformación de datos
-        result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=datadic.copy(),
-                                                                    specialTypeInput=SpecialType(1),
-                                                                    derivedTypeOutput=DerivedType(1),
-                                                                    missing_values=missing_values,
-                                                                    axis_param=1, field=field, belongOp_in=Belong(0),
-                                                                    belongOp_out=Belong(0), dataDictionary_out=expected)
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 25 Failed: Expected True, but got False"
-        print_and_log("Test Case 25 Passed: Expected True, got True")
-
-        # Caso 26
-        # Crear un DataFrame de prueba
-        datadic = pd.DataFrame(
-            {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
-        # Definir la lista de valores invalidos
         missing_values = None
         field = 'A'
         # Definir el resultado esperado
@@ -3038,10 +3013,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 26 Failed: Expected True, but got False"
-        print_and_log("Test Case 26 Passed: Expected True, got True")
+        assert result is True, "Test Case 25 Failed: Expected True, but got False"
+        print_and_log("Test Case 25 Passed: Expected True, got True")
 
-        # Caso 27
+        # Caso 26
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3063,10 +3038,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 27 Failed: Expected True, but got False"
-        print_and_log("Test Case 27 Passed: Expected True, got True")
+        assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        print_and_log("Test Case 26 Passed: Expected True, got True")
 
-        # Caso 28
+        # Caso 27
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3085,10 +3060,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 28 Failed: Expected True, but got False"
-        print_and_log("Test Case 28 Passed: Expected True, got True")
+        assert result is True, "Test Case 27 Failed: Expected True, but got False"
+        print_and_log("Test Case 27 Passed: Expected True, got True")
 
-        # Caso 29
+        # Caso 28
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3107,10 +3082,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 29 Failed: Expected True, but got False"
-        print_and_log("Test Case 29 Passed: Expected True, got True")
+        assert result is True, "Test Case 28 Failed: Expected True, but got False"
+        print_and_log("Test Case 28 Passed: Expected True, got True")
 
-        # Caso 30
+        # Caso 29
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3129,10 +3104,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 30 Failed: Expected True, but got False"
-        print_and_log("Test Case 30 Passed: Expected True, got True")
+        assert result is True, "Test Case 29 Failed: Expected True, but got False"
+        print_and_log("Test Case 29 Passed: Expected True, got True")
 
-        # Caso 31
+        # Caso 30
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3153,10 +3128,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 31 Failed: Expected False, but got True"
-        print_and_log("Test Case 31 Passed: Expected True, got True")
+        assert result is False, "Test Case 30 Failed: Expected False, but got True"
+        print_and_log("Test Case 30 Passed: Expected True, got True")
 
-        # Caso 32
+        # Caso 31
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3177,10 +3152,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 32 Failed: Expected True, but got False"
-        print_and_log("Test Case 32 Passed: Expected True, got True")
+        assert result is True, "Test Case 31 Failed: Expected True, but got False"
+        print_and_log("Test Case 31 Passed: Expected True, got True")
 
-        # Caso 33
+        # Caso 32
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3203,10 +3178,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     axis_param=1, belongOp_in=Belong(0),
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 33 Failed: Expected False, but got True"
-        print_and_log("Test Case 33 Passed: Expected True, got True")
+        assert result is False, "Test Case 32 Failed: Expected False, but got True"
+        print_and_log("Test Case 32 Passed: Expected True, got True")
 
-        # Caso 34
+        # Caso 33
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3230,10 +3205,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 34 Failed: Expected False, but got True"
-        print_and_log("Test Case 34 Passed: Expected True, got True")
+        assert result is False, "Test Case 33 Failed: Expected False, but got True"
+        print_and_log("Test Case 33 Passed: Expected True, got True")
 
-        # Caso 35
+        # Caso 34
         # Ejecutar la transformación de datos: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent)
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
@@ -3251,10 +3226,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     axis_param=0, belongOp_in=Belong(1),
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 35 Failed: Expected False, but got True"
-        print_and_log("Test Case 35 Passed: Expected True, got True")
+        assert result is False, "Test Case 34 Failed: Expected False, but got True"
+        print_and_log("Test Case 34 Passed: Expected True, got True")
 
-        # Caso 36
+        # Caso 35
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3277,10 +3252,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 36 Failed: Expected True, but got False"
-        print_and_log("Test Case 36 Passed: Expected True, got True")
+        assert result is True, "Test Case 35 Failed: Expected True, but got False"
+        print_and_log("Test Case 35 Passed: Expected True, got True")
 
-        # Caso 37
+        # Caso 36
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3303,10 +3278,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 37 Failed: Expected True, but got False"
-        print_and_log("Test Case 37 Passed: Expected True, got True")
+        assert result is True, "Test Case 36 Failed: Expected True, but got False"
+        print_and_log("Test Case 36 Passed: Expected True, got True")
 
-        # Caso 38
+        # Caso 37
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3327,10 +3302,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 38 Failed: Expected True, but got False"
-        print_and_log("Test Case 38 Passed: Expected True, got True")
+        assert result is True, "Test Case 37 Failed: Expected True, but got False"
+        print_and_log("Test Case 37 Passed: Expected True, got True")
 
-        # Caso 39
+        # Caso 38
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -3346,9 +3321,9 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                         axis_param=None, belongOp_in=Belong(1),
                                                                         belongOp_out=Belong(1),
                                                                         dataDictionary_out=expected)
-        print_and_log("Test Case 39 Passed: expected ValueError, got ValueError")
+        print_and_log("Test Case 38 Passed: expected ValueError, got ValueError")
 
-        # Caso 40
+        # Caso 39
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3368,10 +3343,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 40 Failed: Expected True, but got False"
-        print_and_log("Test Case 40 Passed: Expected True, got True")
+        assert result is True, "Test Case 39 Failed: Expected True, but got False"
+        print_and_log("Test Case 39 Passed: Expected True, got True")
 
-        # Caso 41
+        # Caso 40
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3389,10 +3364,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(0), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 41 Failed: Expected False, but got True"
-        print_and_log("Test Case 41 Passed: Expected True, got True")
+        assert result is False, "Test Case 40 Failed: Expected False, but got True"
+        print_and_log("Test Case 40 Passed: Expected True, got True")
 
-        # Caso 42
+        # Caso 41
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3410,10 +3385,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 42 Failed: Expected True, but got False"
-        print_and_log("Test Case 42 Passed: Expected True, got True")
+        assert result is True, "Test Case 41 Failed: Expected True, but got False"
+        print_and_log("Test Case 41 Passed: Expected True, got True")
 
-        # Caso 43
+        # Caso 42
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3431,10 +3406,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 43 Failed: Expected False, but got True"
-        print_and_log("Test Case 43 Passed: Expected True, got True")
+        assert result is False, "Test Case 42 Failed: Expected False, but got True"
+        print_and_log("Test Case 42 Passed: Expected True, got True")
 
-        # Caso 44
+        # Caso 43
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3453,10 +3428,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 44 Failed: Expected True, but got False"
-        print_and_log("Test Case 44 Passed: Expected True, got True")
+        assert result is True, "Test Case 43 Failed: Expected True, but got False"
+        print_and_log("Test Case 43 Passed: Expected True, got True")
 
-        # Caso 45
+        # Caso 44
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3475,10 +3450,10 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 45 Failed: Expected False, but got True"
-        print_and_log("Test Case 45 Passed: Expected True, got True")
+        assert result is False, "Test Case 44 Failed: Expected False, but got True"
+        print_and_log("Test Case 44 Passed: Expected True, got True")
 
-        # Caso 46
+        # Caso 45
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [2, 2, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -3497,8 +3472,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                     belongOp_out=Belong(1), dataDictionary_out=expected)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 46 Failed: Expected True, but got False"
-        print_and_log("Test Case 46 Passed: Expected True, got True")
+        assert result is True, "Test Case 45 Failed: Expected True, but got False"
+        print_and_log("Test Case 45 Passed: Expected True, got True")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")

@@ -88,7 +88,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Select a small batch of the dataset (first 10 rows)
         self.small_batch_dataset = self.data_dictionary.head(10)
         # Select the rest of the dataset (from row 11 to the end)
-        self.rest_of_dataset = self.data_dictionary.iloc[10:]
+        self.rest_of_dataset = self.data_dictionary.iloc[10:].reset_index(drop=True)
 
     def executeAll_ExternalDatasetTests(self):
         """

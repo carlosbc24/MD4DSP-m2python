@@ -1,5 +1,4 @@
 import os
-import time
 import unittest
 
 import numpy as np
@@ -91,7 +90,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Select a small batch of the dataset (first 10 rows)
         self.small_batch_dataset = self.data_dictionary.head(10)
         # Select the rest of the dataset (from row 11 to the end)
-        self.rest_of_dataset = self.data_dictionary.iloc[10:]
+        self.rest_of_dataset = self.data_dictionary.iloc[10:].reset_index(drop=True)
 
     def executeAll_ExternalDatasetTests(self):
         """
@@ -101,11 +100,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             self.execute_checkInv_FixValue_FixValue_ExternalDatasetTests,
             self.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests,
             self.execute_checkInv_FixValue_NumOp_ExternalDatasetTests,
-            # self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
-            # self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
+            self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
+            self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
             # self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
-            # self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
-            # self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
+            self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
+            self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
             # self.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests
         ]
 
@@ -155,15 +154,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueInput = 67
         fixValueOutput = 1
         field = 'track_popularity'
-        result_df = self.data_transformations.transform_FixValue_FixValue(dataDictionary=self.small_batch_dataset.copy(), field=field,
-                                                                          fixValueInput=fixValueInput,
-                                                                          fixValueOutput=fixValueOutput)
+        result_df = self.data_transformations.transform_FixValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(), field=field,
+            fixValueInput=fixValueInput,
+            fixValueOutput=fixValueOutput)
         result_invariant = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=expected_df,
                                                                       dataDictionary_out=result_df,
                                                                       belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        dataTypeInput=DataType(2), fixValueInput=fixValueInput,
-                                                                      fixValueOutput=fixValueOutput, dataTypeOutput=DataType(2),
-                                                                        field=field)
+                                                                      dataTypeInput=DataType(2),
+                                                                      fixValueInput=fixValueInput,
+                                                                      fixValueOutput=fixValueOutput,
+                                                                      dataTypeOutput=DataType(2),
+                                                                      field=field)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result_invariant is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, and got True")
@@ -177,14 +179,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'All the Time - Don Diablo Remix'
         fixValueOutput = 'todos los tiempo - Don Diablo Remix'
-        result_df = self.data_transformations.transform_FixValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            fixValueInput=fixValueInput,
-                                                                            fixValueOutput=fixValueOutput)
+        result_df = self.data_transformations.transform_FixValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            fixValueOutput=fixValueOutput)
         result_invariant = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=expected_df,
                                                                       dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                       fixValueInput=fixValueInput,
-                                                                        fixValueOutput=fixValueOutput)
+                                                                      fixValueOutput=fixValueOutput)
         assert result_invariant is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
@@ -196,14 +199,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = '2019-07-05'
         fixValueOutput = True
-        result_df = self.data_transformations.transform_FixValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        fixValueInput=fixValueInput,
-                                                                        fixValueOutput=fixValueOutput)
+        result_df = self.data_transformations.transform_FixValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            fixValueOutput=fixValueOutput)
         result_invariant = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=expected_df,
                                                                       dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                       fixValueInput=fixValueInput,
-                                                                        fixValueOutput=fixValueOutput)
+                                                                      fixValueOutput=fixValueOutput)
         assert result_invariant is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, and got True")
 
@@ -214,14 +218,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'Maroon 5'
         fixValueOutput = 3.0
-        result_df = self.data_transformations.transform_FixValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        fixValueInput=fixValueInput,
-                                                                        fixValueOutput=fixValueOutput)
+        result_df = self.data_transformations.transform_FixValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            fixValueOutput=fixValueOutput)
         result_invariant = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=expected_df,
                                                                       dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                       fixValueInput=fixValueInput,
-                                                                        fixValueOutput=fixValueOutput)
+                                                                      fixValueOutput=fixValueOutput)
         assert result_invariant is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
@@ -232,14 +237,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 2.33e-5
         fixValueOutput = "Near 0"
-        result_df = self.data_transformations.transform_FixValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        fixValueInput=fixValueInput,
-                                                                        fixValueOutput=fixValueOutput)
+        result_df = self.data_transformations.transform_FixValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            fixValueOutput=fixValueOutput)
         result_invariant = self.invariants.checkInv_FixValue_FixValue(dataDictionary_in=expected_df,
                                                                       dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                      belongOp_in=Belong(0), belongOp_out=Belong(0),
                                                                       fixValueInput=fixValueInput,
-                                                                        fixValueOutput=fixValueOutput)
+                                                                      fixValueOutput=fixValueOutput)
         assert result_invariant is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, and got True")
 
@@ -346,7 +352,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                       fixValueOutput=fixValueOutput)
         assert result_invariant is False, "Test Case 10 Failed: Expected False, but got True"
         print_and_log("Test Case 10 Passed: Expected False, and got False")
-
 
     def execute_WholeDatasetTests_checkInv_FixValue_FixValue_ExternalDataset(self):
         """
@@ -592,14 +597,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0
         field = 'mode'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            fixValueInput=fixValueInput,
-                                                                            derivedTypeOutput=DerivedType(0), field=field)
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
         result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                                        dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueInput=fixValueInput,
-                                                                        derivedTypeOutput=DerivedType(0), field=field)
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
         assert result_invariant is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, and got True")
 
@@ -611,14 +617,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'Katy Perry'
         field = 'track_artist'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            fixValueInput=fixValueInput,
-                                                                            derivedTypeOutput=DerivedType(1), field=field)
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(1), field=field)
         result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                                        dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueInput=fixValueInput,
-                                                                        derivedTypeOutput=DerivedType(1), field=field)
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(1), field=field)
         assert result_invariant is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
@@ -630,14 +637,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            fixValueInput=fixValueInput,
-                                                                            derivedTypeOutput=DerivedType(2), field=field)
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), field=field)
         result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                                        dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueInput=fixValueInput,
-                                                                        derivedTypeOutput=DerivedType(2), field=field)
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2), field=field)
         assert result_invariant is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, and got True")
 
@@ -649,14 +657,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'pop'
         field = 'playlist_genre'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), axis_param=1)
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(2), axis_param=1)
         result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                                        dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueInput=fixValueInput,
-                                                                        derivedTypeOutput=DerivedType(2), axis_param=1)
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=1)
         assert result_invariant is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
@@ -668,14 +678,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.11
         field = 'liveness'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            fixValueInput=fixValueInput,
-                                                                            derivedTypeOutput=DerivedType(0), field=field)
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0), field=field)
         result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                                        dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueInput=fixValueInput,
-                                                                        derivedTypeOutput=DerivedType(0), field=field)
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
         assert result_invariant is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, and got True")
 
@@ -685,14 +696,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # verify if the result matches the expected
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 'Ed Sheeran'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            fixValueInput=fixValueInput,
-                                                                            derivedTypeOutput=DerivedType(0))
+        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            fixValueInput=fixValueInput,
+            derivedTypeOutput=DerivedType(0))
         result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                                        dataDictionary_out=result_df,
-                                                                        belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueInput=fixValueInput,
-                                                                        derivedTypeOutput=DerivedType(0))
+                                                                          dataDictionary_out=result_df,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          fixValueInput=fixValueInput,
+                                                                          derivedTypeOutput=DerivedType(0))
         assert result_invariant is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, and got True")
 
@@ -710,10 +722,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                 fixValueInput=fixValueInput,
                 derivedTypeOutput=DerivedType(1))
             result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                            dataDictionary_out=result_df,
-                                                            belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1))
+                                                                              dataDictionary_out=result_df,
+                                                                              belongOp_in=Belong(0),
+                                                                              belongOp_out=Belong(0),
+                                                                              fixValueInput=fixValueInput,
+                                                                              derivedTypeOutput=DerivedType(1))
         print_and_log("Test Case 7 Passed: the function raised the expected exception")
 
         # Caso 8: exception after trying to get the next value from all the dataset without specifying the
@@ -724,14 +737,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                fixValueInput=fixValueInput,
-                                                                                derivedTypeOutput=DerivedType(2))
+            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                fixValueInput=fixValueInput,
+                derivedTypeOutput=DerivedType(2))
             result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
-                                                                            dataDictionary_out=result_df,
-                                                                            belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            fixValueInput=fixValueInput,
-                                                                            derivedTypeOutput=DerivedType(2))
+                                                                              dataDictionary_out=result_df,
+                                                                              belongOp_in=Belong(0),
+                                                                              belongOp_out=Belong(0),
+                                                                              fixValueInput=fixValueInput,
+                                                                              derivedTypeOutput=DerivedType(2))
 
         print_and_log("Test Case 8 Passed: the function raised the expected exception")
 
@@ -743,12 +758,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                fixValueInput=fixValueInput,
-                                                                                derivedTypeOutput=DerivedType(1), field=field)
+            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                fixValueInput=fixValueInput,
+                derivedTypeOutput=DerivedType(1), field=field)
             result_invariant = self.invariants.checkInv_FixValue_DerivedValue(dataDictionary_in=expected_df,
                                                                               fixValueInput=fixValueInput,
-                                                                                derivedTypeOutput=DerivedType(1), field=field)
+                                                                              derivedTypeOutput=DerivedType(1),
+                                                                              field=field)
 
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
@@ -1212,8 +1229,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueInput = 0
         field = 'instrumentalness'
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         fixValueInput=fixValueInput,
-                                                                         numOpOutput=Operation(0), field=field)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
                                                                    fixValueInput=fixValueInput,
@@ -1232,13 +1249,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueInput = 0.725
         field = 'valence'
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     fixValueInput=fixValueInput,
-                                                                     numOpOutput=Operation(1), field=field)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
                                                                    fixValueInput=fixValueInput,
                                                                    numOpOutput=Operation(1), field=field,
-                                                                     belongOp_in=Belong(0), belongOp_out=Belong(0))
+                                                                   belongOp_in=Belong(0), belongOp_out=Belong(0))
         assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
@@ -1252,8 +1269,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueInput = 8
         field = 'key'
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         fixValueInput=fixValueInput,
-                                                                         numOpOutput=Operation(2), field=field)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
                                                                    fixValueInput=fixValueInput,
@@ -1272,13 +1289,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueInput = 99.972
         field = 'tempo'
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     fixValueInput=fixValueInput,
-                                                                     numOpOutput=Operation(3), field=field)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(3), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
-                                                                     fixValueInput=fixValueInput,
+                                                                   fixValueInput=fixValueInput,
                                                                    belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                     numOpOutput=Operation(3), field=field)
+                                                                   numOpOutput=Operation(3), field=field)
         assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
@@ -1291,13 +1308,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     fixValueInput=fixValueInput,
-                                                                     numOpOutput=Operation(1), axis_param=0)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(1), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
-                                                                     fixValueInput=fixValueInput,
+                                                                   fixValueInput=fixValueInput,
                                                                    belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        numOpOutput=Operation(1), axis_param=0)
+                                                                   numOpOutput=Operation(1), axis_param=0)
         assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, and got True")
 
@@ -1310,13 +1327,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     fixValueInput=fixValueInput,
-                                                                     numOpOutput=Operation(2), axis_param=0)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(2), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
-                                                                     fixValueInput=fixValueInput,
+                                                                   fixValueInput=fixValueInput,
                                                                    belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                     numOpOutput=Operation(2), axis_param=0)
+                                                                   numOpOutput=Operation(2), axis_param=0)
         assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, and got True")
 
@@ -1329,13 +1346,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         fixValueInput=fixValueInput,
-                                                                         numOpOutput=Operation(3), axis_param=0)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(3), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
-                                                                     fixValueInput=fixValueInput,
+                                                                   fixValueInput=fixValueInput,
                                                                    belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                     numOpOutput=Operation(3), axis_param=0)
+                                                                   numOpOutput=Operation(3), axis_param=0)
         assert invariant_result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, and got True")
 
@@ -1348,13 +1365,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fixValueInput = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         fixValueInput=fixValueInput,
-                                                                         numOpOutput=Operation(0), axis_param=0)
+                                                                       fixValueInput=fixValueInput,
+                                                                       numOpOutput=Operation(0), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                    dataDictionary_out=result_df,
-                                                                     fixValueInput=fixValueInput,
+                                                                   fixValueInput=fixValueInput,
                                                                    belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                     numOpOutput=Operation(0), axis_param=0)
+                                                                   numOpOutput=Operation(0), axis_param=0)
         assert invariant_result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, and got True")
 
@@ -1365,9 +1382,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 fixValueInput=fixValueInput,
-                                                                 numOpOutput=Operation(0))
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.small_batch_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0))
             invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                        dataDictionary_out=result_df,
                                                                        fixValueInput=fixValueInput,
@@ -1383,9 +1401,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), field=field)
+            result_df = self.data_transformations.transform_FixValue_NumOp(
+                dataDictionary=self.small_batch_dataset.copy(),
+                fixValueInput=fixValueInput,
+                numOpOutput=Operation(0), field=field)
             invariant_result = self.invariants.checkInv_FixValue_NumOp(dataDictionary_in=expected_df,
                                                                        dataDictionary_out=result_df,
                                                                        fixValueInput=fixValueInput,
@@ -1565,7 +1584,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        dataDictionary_out=result_df,
                                                                        fixValueInput=fixValueInput,
                                                                        numOpOutput=Operation(0),
-                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1))
+                                                                       belongOp_in=Belong(1), belongOp_out=Belong(1))
 
         print_and_log("Test Case 19 Passed: the function raised the expected exception")
 
@@ -1585,7 +1604,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        dataDictionary_out=result_df,
                                                                        fixValueInput=fixValueInput,
                                                                        numOpOutput=Operation(0), field=field,
-                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1))
+                                                                       belongOp_in=Belong(1), belongOp_out=Belong(1))
         print_and_log("Test Case 20 Passed: the function raised the expected exception")
 
     def execute_WholeDatasetTests_checkInv_FixValue_NumOp_ExternalDataset(self):
@@ -1984,23 +2003,22 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        belongOp_in=Belong(1), belongOp_out=Belong(1))
         print_and_log("Test Case 20 Passed: the function raised the expected exception")
 
-
     def execute_checkInv_Interval_FixValue_ExternalDatasetTests(self):
-            """
-            Execute the invariant test with external dataset for the function checkInv_Interval_FixValue
-            """
-            print_and_log("Testing checkInv_Interval_FixValue Data Transformation Function")
-            print_and_log("")
+        """
+        Execute the invariant test with external dataset for the function checkInv_Interval_FixValue
+        """
+        print_and_log("Testing checkInv_Interval_FixValue Data Transformation Function")
+        print_and_log("")
 
-            print_and_log("Dataset tests using small batch of the dataset:")
-            self.execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset()
-            print_and_log("")
-            print_and_log("Dataset tests using the whole dataset:")
-            self.execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset()
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset()
 
-            print_and_log("")
-            print_and_log("-----------------------------------------------------------")
-            print_and_log("")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
 
     def execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset(self):
         """
@@ -2011,15 +2029,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'track_popularity'
 
-        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                                     rightMargin=69, closureType=Closure(3),
-                                                                     dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<=69',
-                                                                     field=field)
+        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                       leftMargin=65,
+                                                                       rightMargin=69, closureType=Closure(3),
+                                                                       dataTypeOutput=DataType(0),
+                                                                       fixValueOutput='65<=Pop<=69',
+                                                                       field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
                                                                       dataDictionary_out=result,
-                                                                        leftMargin=65, rightMargin=69, closureType=Closure(3),
+                                                                      leftMargin=65, rightMargin=69,
+                                                                      closureType=Closure(3),
                                                                       belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueOutput='65<=Pop<=69', field=field)
+                                                                      fixValueOutput='65<=Pop<=69', field=field)
         assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, and got True")
 
@@ -2031,9 +2052,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        closureType=Closure(0), fixValueOutput=2)
         invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
                                                                       dataDictionary_out=result,
-                                                                        leftMargin=0.5, rightMargin=1, closureType=Closure(0),
+                                                                      leftMargin=0.5, rightMargin=1,
+                                                                      closureType=Closure(0),
                                                                       belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueOutput=2)
+                                                                      fixValueOutput=2)
         assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
@@ -2041,14 +2063,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                                             rightMargin=69, closureType=Closure(2),
-                                                                             fixValueOutput=101, field=field)
-            invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result,
-                                                                            leftMargin=65, rightMargin=69, closureType=Closure(2),
-                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                fixValueOutput=101, field=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
@@ -2059,10 +2083,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        leftMargin=0.06, rightMargin=0.1270,
                                                                        closureType=Closure(1), fixValueOutput=33,
                                                                        field=field)
-        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df, dataDictionary_out=result,
-                                                                        leftMargin=0.06, rightMargin=0.1270, closureType=Closure(1),
+        invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=expected_df,
+                                                                      dataDictionary_out=result,
+                                                                      leftMargin=0.06, rightMargin=0.1270,
+                                                                      closureType=Closure(1),
                                                                       belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                        fixValueOutput=33, field=field)
+                                                                      fixValueOutput=33, field=field)
         assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
@@ -2070,14 +2096,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                                             rightMargin=69, closureType=Closure(2),
-                                                                             fixValueOutput=101, field=field)
-            invariant_result = self.invariants.checkInv_Interval_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result,
-                                                                            leftMargin=65, rightMargin=69, closureType=Closure(2),
-                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(
+                dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
+                rightMargin=69, closureType=Closure(2),
+                fixValueOutput=101, field=field)
+            invariant_result = self.invariants.checkInv_Interval_FixValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=65, rightMargin=69, closureType=Closure(2),
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                fixValueOutput=101, field=field)
         print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
         # Caso 6
@@ -2394,203 +2422,240 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                         rightMargin=0.4, closureType=Closure(0),
-                                                                         derivedTypeOutput=DerivedType(0), field=field)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), field=field)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            derivedTypeOutput=DerivedType(0), field=field)
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
         assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                         rightMargin=0.4, closureType=Closure(0),
-                                                                         derivedTypeOutput=DerivedType(1), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=0)
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            derivedTypeOutput=DerivedType(1), axis_param=0)
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=0)
         assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                         rightMargin=0.4, closureType=Closure(0),
-                                                                         derivedTypeOutput=DerivedType(1), axis_param=1)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=1)
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            derivedTypeOutput=DerivedType(1), axis_param=1)
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=1)
         assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                             rightMargin=0.4, closureType=Closure(0),
-                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
         assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                             rightMargin=0.4, closureType=Closure(0),
-                                                                             derivedTypeOutput=DerivedType(0), axis_param=None)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), axis_param=None)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            derivedTypeOutput=DerivedType(0), axis_param=None)
+                                                                          derivedTypeOutput=DerivedType(0),
+                                                                          axis_param=None)
         assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                             rightMargin=0.4, closureType=Closure(0),
-                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
         assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                 leftMargin=0.2, rightMargin=0.4,
-                                                                                 closureType=Closure(0),
-                                                                                 derivedTypeOutput=DerivedType(2), axis_param=None)
-            invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result,
-                                                                                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                derivedTypeOutput=DerivedType(2), axis_param=None)
+            result = self.data_transformations.transform_Interval_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                leftMargin=0.2, rightMargin=0.4,
+                closureType=Closure(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
+            invariant_result = self.invariants.checkInv_Interval_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
-
 
         # Caso 8
         expected_df = self.small_batch_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                         rightMargin=0.4, closureType=Closure(0),
-                                                                         derivedTypeOutput=DerivedType(0), field=field)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), field=field)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(1),
-                                                                            derivedTypeOutput=DerivedType(0), field=field)
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
         assert invariant_result is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, and got False")
 
         # Caso 9
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                         rightMargin=0.4, closureType=Closure(0),
-                                                                         derivedTypeOutput=DerivedType(1), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=0)
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(1),
-                                                                            derivedTypeOutput=DerivedType(1), axis_param=0)
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=0)
         assert invariant_result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, and got False")
 
         # Caso 10
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                         rightMargin=0.4, closureType=Closure(0),
-                                                                         derivedTypeOutput=DerivedType(1), axis_param=1)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=1)
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(1),
-                                                                            derivedTypeOutput=DerivedType(1), axis_param=1)
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=1)
         assert invariant_result is False, "Test Case 10 Failed: Expected False, but got True"
         print_and_log("Test Case 10 Passed: Expected False, and got False")
 
         # Caso 11
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                             rightMargin=0.4, closureType=Closure(0),
-                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(1), belongOp_out=Belong(0),
-                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
         assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
         print_and_log("Test Case 11 Passed: Expected False, and got False")
 
         # Caso 12
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                             rightMargin=0.4, closureType=Closure(0),
-                                                                             derivedTypeOutput=DerivedType(0), axis_param=None)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), axis_param=None)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(1), belongOp_out=Belong(1),
-                                                                            derivedTypeOutput=DerivedType(0), axis_param=None)
+                                                                          derivedTypeOutput=DerivedType(0),
+                                                                          axis_param=None)
         assert invariant_result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, and got False")
 
         # Caso 13
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                             rightMargin=0.4, closureType=Closure(0),
-                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
 
         invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
                                                                           dataDictionary_out=result,
-                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
                                                                           belongOp_in=Belong(0), belongOp_out=Belong(1),
-                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
         assert invariant_result is False, "Test Case 13 Failed: Expected False, but got True"
         print_and_log("Test Case 13 Passed: Expected False, and got False")
 
         # Caso 14
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                 leftMargin=0.2, rightMargin=0.4,
-                                                                                 closureType=Closure(0),
-                                                                                 derivedTypeOutput=DerivedType(2), axis_param=None)
-            invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result,
-                                                                                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
-                                                                              belongOp_in=Belong(1), belongOp_out=Belong(0),
-                                                                                derivedTypeOutput=DerivedType(2), axis_param=None)
+            result = self.data_transformations.transform_Interval_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                leftMargin=0.2, rightMargin=0.4,
+                closureType=Closure(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
+            invariant_result = self.invariants.checkInv_Interval_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
         print_and_log("Test Case 14 Passed: expected ValueError, got ValueError")
 
     def execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset(self):
@@ -2862,13 +2927,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 1
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4,
+                                                         closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
         expected_df_copy = expected_df.copy()
 
         for col in expected_df:
             if np.issubdtype(expected_df[col].dtype, np.number):
-                expected_df_copy[col]=expected_df_copy[col].apply(lambda x: np.nan if (2<x<=4) else x)
+                expected_df_copy[col] = expected_df_copy[col].apply(lambda x: np.nan if (2 < x <= 4) else x)
                 # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
                 expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
         # Iteramos sobre cada columna
@@ -2898,16 +2964,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
-                                                              axis_param=None)
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                             leftMargin=2, rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0, rightMargin=3,
-                                                          closureType=Closure(0), numOpOutput=Operation(1),
-                                                          axis_param=None)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0,
+                                                         rightMargin=3,
+                                                         closureType=Closure(0), numOpOutput=Operation(1),
+                                                         axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         mean_value = only_numbers_df.mean().mean()
@@ -2921,52 +2989,62 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50,
+                                                         rightMargin=60,
+                                                         closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
-                                            and ((x > 50) & (x < 60))) else x))
+                                                                                       and ((x > 50) & (
+                            x < 60))) else x))
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
         # Caso 7
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50,
+                                                         rightMargin=60,
+                                                         closureType=Closure(2), numOpOutput=Operation(2),
+                                                         axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         median_value = only_numbers_df.median().median()
         # Reemplaza los valores en el intervalo con la mediana del DataFrame completo usando lambda
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: median_value if (np.issubdtype(type(x), np.number)
-                                                    and ((x >= 50) & (x < 60))) else x))
+        expected_df = expected_df.apply(
+            lambda col: col.apply(lambda x: median_value if (np.issubdtype(type(x), np.number)
+                                                             and ((x >= 50) & (x < 60))) else x))
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
 
         # Caso 9
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23, rightMargin=25,
-                                                          closureType=Closure(0), numOpOutput=Operation(3),
-                                                          axis_param=None)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23,
+                                                         rightMargin=25,
+                                                         closureType=Closure(0), numOpOutput=Operation(3),
+                                                         axis_param=None)
 
-        #Sustituye los valores en el intervalo con el valor más cercano del dataframe completo
+        # Sustituye los valores en el intervalo con el valor más cercano del dataframe completo
         expected_df = expected_df.apply(
             lambda col: col.apply(lambda x: find_closest_value(expected_df.stack(), x)
-            if np.issubdtype(type(x), np.number) and ((23<x) and (x<25)) else x))
+            if np.issubdtype(type(x), np.number) and ((23 < x) and (x < 25)) else x))
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
         # Caso 10
-        expected_df = self.small_batch_dataset.copy()# Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23, rightMargin=25,
-                                                          closureType=Closure(0), numOpOutput=Operation(3), axis_param=0)
+        expected_df = self.small_batch_dataset.copy()  # Aplicar la invariante
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23,
+                                                         rightMargin=25,
+                                                         closureType=Closure(0), numOpOutput=Operation(3), axis_param=0)
 
         # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
         expected_df = expected_df.apply(lambda col: col.apply(lambda x:
-                                find_closest_value(col, x) if np.issubdtype(type(x), np.number) and ((23<x) and (x<25)) else x),
-                                                        axis=0)
+                                                              find_closest_value(col, x) if np.issubdtype(type(x),
+                                                                                                          np.number) and (
+                                                                                                        (23 < x) and (
+                                                                                                            x < 25)) else x),
+                                        axis=0)
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
@@ -2976,19 +3054,22 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
-                                                              axis_param=None, field=field)
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                             leftMargin=2, rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None, field=field)
         print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
 
         # Caso 12
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(0),
-                                                          axis_param=None, field=field)
-        expected_df[field] = expected_df[field].apply(lambda x: np.nan if (2 <= x <= 4) else x).interpolate(method='linear',
-                                                                                                            limit_direction='both')
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(0),
+                                                         axis_param=None, field=field)
+        expected_df[field] = expected_df[field].apply(lambda x: np.nan if (2 <= x <= 4) else x).interpolate(
+            method='linear',
+            limit_direction='both')
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
@@ -2996,9 +3077,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(1),
-                                                          axis_param=None, field=field)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(1),
+                                                         axis_param=None, field=field)
         expected_df[field] = expected_df[field].apply(lambda x: expected_df[field].mean() if (2 <= x <= 4) else x)
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
@@ -3006,10 +3088,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 14
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(2),
-                                                          axis_param=None, field=field)
-        median=expected_df[field].median()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(2),
+                                                         axis_param=None, field=field)
+        median = expected_df[field].median()
         expected_df[field] = expected_df[field].apply(lambda x: median if (2 <= x <= 4) else x)
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
@@ -3018,8 +3101,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2,
-                                                          rightMargin=4, closureType=Closure(2), numOpOutput=Operation(3),
-                                                          axis_param=None, field=field)
+                                                         rightMargin=4, closureType=Closure(2),
+                                                         numOpOutput=Operation(3),
+                                                         axis_param=None, field=field)
 
         indice_row = []
         values = []
@@ -3027,7 +3111,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         closest_processed = []
 
         for index, value in expected_df[field].items():
-            if 2<=value<4:
+            if 2 <= value < 4:
                 indice_row.append(index)
                 values.append(value)
         if values.__len__() > 0 and values is not None:
@@ -3044,7 +3128,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
-
     def execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_NumOp
@@ -3052,13 +3135,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 1
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4,
+                                                         closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
         expected_df_copy = expected_df.copy()
 
         for col in expected_df:
             if np.issubdtype(expected_df[col].dtype, np.number):
-                expected_df_copy[col]=expected_df_copy[col].apply(lambda x: np.nan if (2<x<=4) else x)
+                expected_df_copy[col] = expected_df_copy[col].apply(lambda x: np.nan if (2 < x <= 4) else x)
                 # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
                 expected_df_copy[col] = expected_df_copy[col].interpolate(method='linear', limit_direction='both')
         # Iteramos sobre cada columna
@@ -3088,16 +3172,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
-                                                              axis_param=None)
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
+                                                             rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0, rightMargin=3,
-                                                          closureType=Closure(0), numOpOutput=Operation(1),
-                                                          axis_param=None)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0,
+                                                         rightMargin=3,
+                                                         closureType=Closure(0), numOpOutput=Operation(1),
+                                                         axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         mean_value = only_numbers_df.mean().mean()
@@ -3111,25 +3197,30 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50,
+                                                         rightMargin=60,
+                                                         closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
-                                            and ((x > 50) & (x < 60))) else x))
+                                                                                       and ((x > 50) & (
+                            x < 60))) else x))
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
         # Caso 7
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50,
+                                                         rightMargin=60,
+                                                         closureType=Closure(2), numOpOutput=Operation(2),
+                                                         axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         median_value = only_numbers_df.median().median()
         # Reemplaza los valores en el intervalo con la mediana del DataFrame completo usando lambda
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: median_value if (np.issubdtype(type(x), np.number)
-                                                    and ((x >= 50) & (x < 60))) else x))
+        expected_df = expected_df.apply(
+            lambda col: col.apply(lambda x: median_value if (np.issubdtype(type(x), np.number)
+                                                             and ((x >= 50) & (x < 60))) else x))
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
@@ -3138,9 +3229,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         # start_time = time.time()
 
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=23, rightMargin=25,
-                                                          closureType=Closure(1), numOpOutput=Operation(3),
-                                                          axis_param=None)
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=23,
+                                                         rightMargin=25,
+                                                         closureType=Closure(1), numOpOutput=Operation(3),
+                                                         axis_param=None)
 
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         indice_row = []
@@ -3181,12 +3273,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
-
         # Caso 10
         expected_df = self.rest_of_dataset.copy()
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=23,
-                                                          rightMargin=25, closureType=Closure(0), numOpOutput=Operation(3),
-                                                          axis_param=0)
+                                                         rightMargin=25, closureType=Closure(0),
+                                                         numOpOutput=Operation(3),
+                                                         axis_param=0)
 
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         for col in only_numbers_df.columns:
@@ -3223,21 +3315,23 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Aplicar la invariante
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
-                                                              axis_param=None, field=field)
+            result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
+                                                             rightMargin=4,
+                                                             closureType=Closure(3), numOpOutput=Operation(0),
+                                                             axis_param=None, field=field)
         print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
 
         # Caso 12
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
-                                                          rightMargin=4, closureType=Closure(3), numOpOutput=Operation(0),
-                                                          axis_param=None, field=field)
+                                                         rightMargin=4, closureType=Closure(3),
+                                                         numOpOutput=Operation(0),
+                                                         axis_param=None, field=field)
         expected_df_copy = expected_df.copy()
 
         if np.issubdtype(expected_df[field].dtype, np.number):
-            expected_df_copy[field]=expected_df_copy[field].apply(lambda x: np.nan if (2<=x<=4) else x)
+            expected_df_copy[field] = expected_df_copy[field].apply(lambda x: np.nan if (2 <= x <= 4) else x)
             # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
             expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
         # Para cada índice en la columna
@@ -3254,10 +3348,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
         # Aplicar la invariante
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(1),
-                                                          axis_param=None, field=field)
-        mean=expected_df[field].mean()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(1),
+                                                         axis_param=None, field=field)
+        mean = expected_df[field].mean()
         expected_df[field] = expected_df[field].apply(lambda x: mean if (2 <= x <= 4) else x)
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
@@ -3265,10 +3360,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 14
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
-        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(2),
-                                                          axis_param=None, field=field)
-        median=expected_df[field].median()
+        result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
+                                                         rightMargin=4,
+                                                         closureType=Closure(3), numOpOutput=Operation(2),
+                                                         axis_param=None, field=field)
+        median = expected_df[field].median()
         expected_df[field] = expected_df[field].apply(lambda x: median if (2 <= x <= 4) else x)
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 14 Passed: the function returned the expected dataframe")
@@ -3277,8 +3373,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
         result = self.invariants.checkInv_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
-                                                          rightMargin=4, closureType=Closure(2), numOpOutput=Operation(3),
-                                                          axis_param=None, field=field)
+                                                         rightMargin=4, closureType=Closure(2),
+                                                         numOpOutput=Operation(3),
+                                                         axis_param=None, field=field)
 
         indice_row = []
         values = []
@@ -3286,7 +3383,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         closest_processed = []
 
         for index, value in expected_df[field].items():
-            if 2<=value<4:
+            if 2 <= value < 4:
                 indice_row.append(index)
                 values.append(value)
         if values.__len__() > 0 and values is not None:
@@ -3302,14 +3399,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
-
-
-
-
-
-
-
-
 
     def execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests(self):
         """
@@ -3341,14 +3430,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0, -1]
         fixValueOutput = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                specialTypeInput=specialTypeInput, missing_values=missing_values,
-                                                                                fixValueOutput=fixValueOutput, field=field)
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
-                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field, axis_param=0)
         assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, and got True")
 
@@ -3361,14 +3452,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            specialTypeInput=specialTypeInput, missing_values=missing_values,
-                                                                            fixValueOutput=fixValueOutput, field=field)
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
-                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            field=field)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
         assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
@@ -3380,14 +3473,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 6]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                specialTypeInput=specialTypeInput,
-                                                                                missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
-                                                                            belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                          field=field)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
         assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, and got True")
 
@@ -3399,14 +3494,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            specialTypeInput=specialTypeInput,
-                                                                            fixValueOutput=fixValueOutput, field=field, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                            missing_values=None, fixValueOutput=fixValueOutput,
-                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=None, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field, axis_param=0)
         assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
@@ -3417,14 +3514,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         specialTypeInput = SpecialType(2)
         fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                specialTypeInput=specialTypeInput,
-                                                                                fixValueOutput=fixValueOutput, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, axis_param=0)
 
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                          fixValueOutput=fixValueOutput, belongOp_in=Belong(0),
-                                                                            belongOp_out=Belong(0), axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, belongOp_in=Belong(0),
+            belongOp_out=Belong(0), axis_param=0)
         assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, and got True")
 
@@ -3436,15 +3535,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3]
         fixValueOutput = 101
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                specialTypeInput=specialTypeInput,
-                                                                                missing_values=missing_values,
-                                                                              fixValueOutput=fixValueOutput, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                          missing_values=missing_values, fixValueOutput=fixValueOutput,
-                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                          axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
         assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, and got True")
 
@@ -3456,14 +3557,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = [0, -1]
         fixValueOutput = 200
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
-                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
         assert invariant_result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, and got True")
 
@@ -3475,13 +3578,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                            specialTypeInput=specialTypeInput,
-                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
-                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
-                                                                          axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            axis_param=0)
         assert invariant_result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, and got True")
 
@@ -3493,13 +3598,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueOutput = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                 specialTypeInput=specialTypeInput,
-                                                                                 fixValueOutput=fixValueOutput, field=field)
-            invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result, specialTypeInput=specialTypeInput,
-                                                                              fixValueOutput=fixValueOutput,
-                                                                              field=field)
+            result = self.data_transformations.transform_SpecialValue_FixValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput, field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result, specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput,
+                field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
         # Caso 10 - Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de la columna
@@ -3691,7 +3798,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                 belongOp_in=Belong(1), belongOp_out=Belong(0),
                 field=field)
         print_and_log("Test Case 18 Passed: expected ValueError, got ValueError")
-
 
     def execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset(self):
         """
@@ -4057,7 +4163,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                 field=field)
         print_and_log("Test Case 18 Passed: expected ValueError, got ValueError")
 
-
     def execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests(self):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_DerivedValue
@@ -4088,17 +4193,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
         derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                specialTypeInput=specialTypeInput,
-                                                                                field=field, missing_values=missing_values,
-                                                                                derivedTypeOutput=derivedTypeOutput)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              missing_values=missing_values,
-                                                                                derivedTypeOutput=derivedTypeOutput,
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                field=field)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
         assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, and got True")
 
@@ -4114,17 +4221,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
         most_frequent_value = most_frequent_list[0]
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                                    specialTypeInput=specialTypeInput,
-                                                                                    missing_values=missing_values, field=field,
-                                                                                    derivedTypeOutput=derivedTypeOutput)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              missing_values=missing_values,
-                                                                                derivedTypeOutput=derivedTypeOutput,
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                field=field)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, field=field,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
         assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
@@ -4136,17 +4245,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
         derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              missing_values=missing_values,
-                                                                                derivedTypeOutput=derivedTypeOutput,
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
         assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, and got True")
 
@@ -4158,17 +4269,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        missing_values=missing_values, axis_param=None)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              specialTypeInput=specialTypeInput,
-                                                                                missing_values=missing_values,
-                                                                              derivedTypeOutput=derivedTypeOutput,
-                                                                                dataDictionary_out=result_df,
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                axis_param=None)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values, axis_param=None)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            dataDictionary_out=result_df,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=None)
         assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
@@ -4180,17 +4293,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        axis_param=0, missing_values=missing_values)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              derivedTypeOutput=derivedTypeOutput,
-                                                                                missing_values=missing_values,
-                                                                              axis_param=0, belongOp_in=Belong(0),
-                                                                                belongOp_out=Belong(0))
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0, missing_values=missing_values)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values,
+            axis_param=0, belongOp_in=Belong(0),
+            belongOp_out=Belong(0))
         assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, and got True")
 
@@ -4202,17 +4317,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              missing_values=missing_values,
-                                                                                derivedTypeOutput=derivedTypeOutput,
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
         assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, and got True")
 
@@ -4226,17 +4343,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
-                                                                         missing_values=missing_values, axis_param=None)
-            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                                  dataDictionary_out=result,
-                                                                                    specialTypeInput=specialTypeInput,
-                                                                                  missing_values=missing_values,
-                                                                                    derivedTypeOutput=derivedTypeOutput,
-                                                                                  belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                    axis_param=None)
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
         # Caso 8 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
@@ -4249,17 +4368,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
-                                                                         missing_values=missing_values, axis_param=None)
-            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                                  dataDictionary_out=result,
-                                                                                    specialTypeInput=specialTypeInput,
-                                                                                  missing_values=missing_values,
-                                                                                  belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                    derivedTypeOutput=derivedTypeOutput,
-                                                                                  axis_param=None)
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                derivedTypeOutput=derivedTypeOutput,
+                axis_param=None)
         print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
 
         # Caso 9
@@ -4270,16 +4391,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
-                                                                         field=field)
-            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                                  dataDictionary_out=result,
-                                                                                    specialTypeInput=specialTypeInput,
-                                                                                  derivedTypeOutput=derivedTypeOutput,
-                                                                                    belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                  field=field)
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
         # Caso 10
@@ -4288,16 +4411,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        field=field, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                derivedTypeOutput=derivedTypeOutput,
-                                                                              field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
         assert invariant_result is True, "Test Case 10 Failed: Expected True, but got False"
         print_and_log("Test Case 10 Passed: Expected True, and got True")
 
@@ -4309,16 +4434,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        field=field, derivedTypeOutput=derivedTypeOutput,
-                                                                        axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              field=field, derivedTypeOutput=derivedTypeOutput,
-                                                                                belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            field=field, derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
         assert invariant_result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, and got True")
 
@@ -4330,15 +4457,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         specialTypeInput = SpecialType(2)
         derivedTypeOutput = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
-                                                                              dataDictionary_out=result_df,
-                                                                                specialTypeInput=specialTypeInput,
-                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
-                                                                                derivedTypeOutput=derivedTypeOutput,
-                                                                              axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
         assert invariant_result is True, "Test Case 12 Failed: Expected True, but got False"
         print_and_log("Test Case 12 Passed: Expected True, and got True")
 
@@ -4629,376 +4758,375 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert invariant_result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, and got False")
 
-
     def execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_DerivedValue
         """
-        # # Caso 1
-        # # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
-        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
-        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 0.146, 0.13, 0.187]
-        # field = 'acousticness'
-        # derivedTypeOutput = DerivedType(0)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     field=field, missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     field=field)
-        # assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
-        # print_and_log("Test Case 1 Passed: Expected True, and got True")
-        #
-        # # Caso 2
-        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
-        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
-        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [0.146, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(0)
-        # field = 'acousticness'
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values, field=field,
-        #     derivedTypeOutput=derivedTypeOutput)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     field=field)
-        # assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
-        # print_and_log("Test Case 2 Passed: Expected True, and got True")
-        #
-        # # Caso 3
-        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
-        # # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
-        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [0.146, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(0)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     axis_param=0)
-        # assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
-        # print_and_log("Test Case 3 Passed: Expected True, and got True")
-        #
-        # # Caso 4
-        # # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
-        # # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
-        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(0)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     missing_values=missing_values, axis_param=None)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     dataDictionary_out=result_df,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     axis_param=None)
-        # assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
-        # print_and_log("Test Case 4 Passed: Expected True, and got True")
-        #
-        # # Caso 5
-        # # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1 (Previous) en todas
-        # # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
-        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(1)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     axis_param=0, missing_values=missing_values)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     missing_values=missing_values,
-        #     axis_param=0, belongOp_in=Belong(0),
-        #     belongOp_out=Belong(0))
-        # assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
-        # print_and_log("Test Case 5 Passed: Expected True, and got True")
-        #
-        # # Caso 6
-        # # Ejecutar la invariante: cambiar los valores faltantes 1, 3, 0.13 y 0.187, así como los valores nulos de python por el valor derivado 2 (Next) en todas
-        # # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
-        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(2)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     axis_param=0)
-        # assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
-        # print_and_log("Test Case 6 Passed: Expected True, and got True")
-        #
-        # # Caso 7 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1
-        # # (Previous) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
-        # # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
-        # # el esperado. Expected ValueError
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(1)
-        # expected_exception = ValueError
-        # with self.assertRaises(expected_exception) as context:
-        #     result = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #         dataDictionary=self.rest_of_dataset.copy(),
-        #         specialTypeInput=specialTypeInput,
-        #         derivedTypeOutput=derivedTypeOutput,
-        #         missing_values=missing_values, axis_param=None)
-        #     invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #         dataDictionary_in=self.rest_of_dataset.copy(),
-        #         dataDictionary_out=result,
-        #         specialTypeInput=specialTypeInput,
-        #         missing_values=missing_values,
-        #         derivedTypeOutput=derivedTypeOutput,
-        #         belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #         axis_param=None)
-        # print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
-        #
-        # # Caso 8 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
-        # # (Next) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
-        # # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
-        # # el esperado. Expected ValueError
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(2)
-        # expected_exception = ValueError
-        # with self.assertRaises(expected_exception) as context:
-        #     result = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #         dataDictionary=self.rest_of_dataset.copy(),
-        #         specialTypeInput=specialTypeInput,
-        #         derivedTypeOutput=derivedTypeOutput,
-        #         missing_values=missing_values, axis_param=None)
-        #     invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #         dataDictionary_in=self.rest_of_dataset.copy(),
-        #         dataDictionary_out=result,
-        #         specialTypeInput=specialTypeInput,
-        #         missing_values=missing_values,
-        #         belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #         derivedTypeOutput=derivedTypeOutput,
-        #         axis_param=None)
-        # print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
-        #
-        # # Caso 9
-        # # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
-        # specialTypeInput = SpecialType(2)
-        # field = 'p'
-        # derivedTypeOutput = DerivedType(0)
-        # expected_exception = ValueError
-        # with self.assertRaises(expected_exception) as context:
-        #     result = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #         dataDictionary=self.rest_of_dataset.copy(),
-        #         specialTypeInput=specialTypeInput,
-        #         derivedTypeOutput=derivedTypeOutput,
-        #         field=field)
-        #     invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #         dataDictionary_in=self.rest_of_dataset.copy(),
-        #         dataDictionary_out=result,
-        #         specialTypeInput=specialTypeInput,
-        #         derivedTypeOutput=derivedTypeOutput,
-        #         belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #         field=field)
-        # print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
-        #
-        # # Caso 10
-        # # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 0 (Most Frequent) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(2)
-        # field = 'danceability'
-        # derivedTypeOutput = DerivedType(0)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     field=field, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     field=field, axis_param=0)
-        # assert invariant_result is True, "Test Case 10 Failed: Expected True, but got False"
-        # print_and_log("Test Case 10 Passed: Expected True, and got True")
-        #
-        # # Caso 11
-        # # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 1
-        # # (Previous) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
-        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(2)
-        # field = 'danceability'
-        # derivedTypeOutput = DerivedType(1)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     field=field, derivedTypeOutput=derivedTypeOutput,
-        #     axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     field=field, axis_param=0)
-        # assert invariant_result is True, "Test Case 11 Failed: Expected True, but got False"
-        # print_and_log("Test Case 11 Passed: Expected True, and got True")
-        #
-        # # Caso 12
-        # # Ejecutar la invariante: cambiar los valores outliers del dataframe completo por el valor derivado 2 (Next)
-        # # en todas las columnas del batch pequeño del dataset de prueba.
-        # # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
-        # # y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(2)
-        # derivedTypeOutput = DerivedType(2)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     axis_param=0)
-        # assert invariant_result is True, "Test Case 12 Failed: Expected True, but got False"
-        # print_and_log("Test Case 12 Passed: Expected True, and got True")
-        #
-        # # Caso 13
-        # # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
-        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
-        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(0)
-        # missing_values = [1, 0.146, 0.13, 0.187]
-        # field = 'acousticness'
-        # derivedTypeOutput = DerivedType(0)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     field=field, missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
-        #     field=field)
-        # assert invariant_result is False, "Test Case 13 Failed: Expected True, but got True"
-        # print_and_log("Test Case 13 Passed: Expected False, and got False")
-        #
-        # # Caso 14
-        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
-        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
-        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [0.146, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(0)
-        # field = 'acousticness'
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values, field=field,
-        #     derivedTypeOutput=derivedTypeOutput)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
-        #     field=field)
-        # assert invariant_result is False, "Test Case 14 Failed: Expected True, but got True"
-        # print_and_log("Test Case 14 Passed: Expected False, and got False")
-        #
-        # # Caso 15
-        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
-        # # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
-        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [0.146, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(0)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     dataDictionary_out=result_df,
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
-        #     axis_param=0)
-        # assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
-        # print_and_log("Test Case 15 Passed: Expected False, and got False")
-        #
-        # # Caso 16
-        # # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
-        # # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
-        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # specialTypeInput = SpecialType(1)
-        # missing_values = [1, 3, 0.13, 0.187]
-        # derivedTypeOutput = DerivedType(0)
-        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
-        #     dataDictionary=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     missing_values=missing_values, axis_param=None)
-        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
-        #     dataDictionary_in=self.rest_of_dataset.copy(),
-        #     specialTypeInput=specialTypeInput,
-        #     missing_values=missing_values,
-        #     derivedTypeOutput=derivedTypeOutput,
-        #     dataDictionary_out=result_df,
-        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
-        #     axis_param=None)
-        # assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
-        # print_and_log("Test Case 16 Passed: Expected False, and got False")
+        # Caso 1
+        # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 0.146, 0.13, 0.187]
+        field = 'acousticness'
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
+
+        # Caso 2
+        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.146, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        field = 'acousticness'
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, field=field,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
+
+        # Caso 3
+        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
+        # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.146, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
+
+        # Caso 4
+        # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
+        # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values, axis_param=None)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            dataDictionary_out=result_df,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=None)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
+
+        # Caso 5
+        # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1 (Previous) en todas
+        # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0, missing_values=missing_values)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values,
+            axis_param=0, belongOp_in=Belong(0),
+            belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
+
+        # Caso 6
+        # Ejecutar la invariante: cambiar los valores faltantes 1, 3, 0.13 y 0.187, así como los valores nulos de python por el valor derivado 2 (Next) en todas
+        # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
+
+        # Caso 7 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1
+        # (Previous) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
+        # el esperado. Expected ValueError
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(1)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                axis_param=None)
+        print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
+
+        # Caso 8 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
+        # (Next) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
+        # el esperado. Expected ValueError
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(2)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                derivedTypeOutput=derivedTypeOutput,
+                axis_param=None)
+        print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
+
+        # Caso 9
+        # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
+        specialTypeInput = SpecialType(2)
+        field = 'p'
+        derivedTypeOutput = DerivedType(0)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                field=field)
+        print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+
+        # Caso 10
+        # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 0 (Most Frequent) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(2)
+        field = 'danceability'
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 10 Failed: Expected True, but got False"
+        print_and_log("Test Case 10 Passed: Expected True, and got True")
+
+        # Caso 11
+        # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 1
+        # (Previous) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(2)
+        field = 'danceability'
+        derivedTypeOutput = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, and got True")
+
+        # Caso 12
+        # Ejecutar la invariante: cambiar los valores outliers del dataframe completo por el valor derivado 2 (Next)
+        # en todas las columnas del batch pequeño del dataset de prueba.
+        # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(2)
+        derivedTypeOutput = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
+        assert invariant_result is True, "Test Case 12 Failed: Expected True, but got False"
+        print_and_log("Test Case 12 Passed: Expected True, and got True")
+
+        # Caso 13
+        # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 0.146, 0.13, 0.187]
+        field = 'acousticness'
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 13 Failed: Expected True, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.146, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        field = 'acousticness'
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, field=field,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 14 Failed: Expected True, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, and got False")
+
+        # Caso 15
+        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
+        # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.146, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
+
+        # Caso 16
+        # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
+        # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values, axis_param=None)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            dataDictionary_out=result_df,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            axis_param=None)
+        assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, and got False")
 
         # Caso 17
         # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1 (Previous) en todas
@@ -5199,16 +5327,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_NumOp
         """
-        #MISSING
+        # MISSING
         # Caso 1
         expected_df = self.small_batch_dataset.copy()
         specialTypeInput = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(0)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Aplica la interpolación lineal a los valores faltantes y valores nulos a través de todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores nulos y los valores faltantes por NaN
         missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
@@ -5216,7 +5344,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Selecciona las columnas numéricas del dataframe
         numeric_columns = replaced_df.select_dtypes(include=np.number).columns
         # Aplica la interpolación lineal a través de todas las columnas numéricas del dataframe
-        expected_df[numeric_columns] = replaced_df[numeric_columns].interpolate(method='linear', axis=0, limit_direction='both')
+        expected_df[numeric_columns] = replaced_df[numeric_columns].interpolate(method='linear', axis=0,
+                                                                                limit_direction='both')
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
@@ -5227,9 +5356,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -5249,9 +5378,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de cada columna numérica
@@ -5272,15 +5401,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Para cada columna numérica, se sustituyen los valores faltantes y valores nulos por el valor más cercano
         # en el dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for col in numeric_columns:
             # Obtener el valor más cercano a cada valor faltante y valor nulo en la columna
-            expected_df[col] = expected_df[col].apply(lambda x: find_closest_value(expected_df[col].tolist(), x) if x in missing_values or pd.isnull(x) else x)
+            expected_df[col] = expected_df[col].apply(
+                lambda x: find_closest_value(expected_df[col].tolist(), x) if x in missing_values or pd.isnull(
+                    x) else x)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
@@ -5291,11 +5422,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Sustituir los valores faltantes y valores nulos por el valor más cercano en el dataframe
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values or pd.isnull(x) else x))
+        expected_df = expected_df.apply(lambda col: col.apply(
+            lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values or pd.isnull(
+                x) else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
@@ -5303,15 +5436,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar la interpolación lineal a los valores invalidos 1, 3, 0.13 y 0.187 en todas las
         # columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df =  self.small_batch_dataset.copy()
+        expected_df = self.small_batch_dataset.copy()
         expected_df_copy = expected_df.copy()
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(0)
-        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary= self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+        result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Aplicar la interpolación lineal a los valores invalidos en todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores invalidos por NaN
         replaced_df = expected_df.replace(missing_values, np.nan)
@@ -5340,9 +5473,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -5362,9 +5495,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de cada columna numérica
@@ -5385,9 +5518,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de cada columna numérica
@@ -5408,9 +5541,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de todas las columnas numéricas
@@ -5430,13 +5563,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for col in numeric_columns:
-            expected_df[col] = expected_df[col].apply(lambda x: find_closest_value(expected_df[col].tolist(), x) if x in missing_values else x)
+            expected_df[col] = expected_df[col].apply(
+                lambda x: find_closest_value(expected_df[col].tolist(), x) if x in missing_values else x)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
 
@@ -5450,11 +5584,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
+        expected_df = expected_df.apply(lambda col: col.apply(
+            lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
@@ -5466,16 +5601,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(0)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         expected_df_copy = expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # En primer lugar, se reemplazan los valores outliers por NaN
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
-        lowest_value=Q1 - 1.5 * IQR
-        upper_value=Q3 + 1.5 * IQR
+        lowest_value = Q1 - 1.5 * IQR
+        upper_value = Q3 + 1.5 * IQR
         for idx, value in expected_df[field].items():
             # Sustituir los valores outliers por NaN
             if expected_df.at[idx, field] < lowest_value or expected_df.at[idx, field] > upper_value:
@@ -5498,9 +5633,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(0)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
-        expected_df_copy=expected_df.copy()
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
+        expected_df_copy = expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de cada columna del dataframe
         # En primer lugar, se reemplazan los valores outliers por NaN
         for col in expected_df.select_dtypes(include=np.number).columns:
@@ -5534,8 +5669,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(1)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         # Obtener la media de la columna 'danceability'
         mean_value = expected_df[field].mean()
         # Obtener los outliers de la columna 'danceability'
@@ -5543,7 +5678,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
         # Sustituir los valores outliers por la media de la columna 'danceability'
-        expected_df[field] = expected_df[field].where(~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=mean_value)
+        expected_df[field] = expected_df[field].where(
+            ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=mean_value)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
@@ -5555,8 +5691,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la media de la columna
             mean_value = expected_df[col].mean()
@@ -5566,7 +5702,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             IQR = Q3 - Q1
             for idx in range(len(expected_df[col])):
                 # Obtener la media de la columna
-                expected_df[col].iat[idx] = expected_df[col].iat[idx] if not (expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR) else mean_value
+                expected_df[col].iat[idx] = expected_df[col].iat[idx] if not (
+                            expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[
+                        idx] > Q3 + 1.5 * IQR) else mean_value
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 16 Passed: the function returned the expected dataframe")
 
@@ -5579,8 +5717,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(2)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         # Obtener la mediana de la columna 'danceability'
         median_value = expected_df[field].median()
         # Obtener los outliers de la columna 'danceability'
@@ -5588,7 +5726,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
         # Sustituir los valores outliers por la mediana de la columna 'danceability'
-        expected_df[field] = expected_df[field].where(~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=median_value)
+        expected_df[field] = expected_df[field].where(
+            ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=median_value)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 17 Passed: the function returned the expected dataframe")
 
@@ -5600,8 +5739,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la mediana de la columna
             median_value = expected_df[col].median()
@@ -5627,15 +5766,20 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(3)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         # Sustituir los valores outliers por el valor más cercano en el dataframe
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for idx in range(len(expected_df[field])):
-            expected_df[field].iat[idx] = find_closest_value(expected_df[field].tolist(), expected_df[field].iat[idx]) if expected_df[field].iat[idx] < Q1 - 1.5 * IQR or expected_df[field].iat[idx] > Q3 + 1.5 * IQR else expected_df[field].iat[idx]
+            expected_df[field].iat[idx] = find_closest_value(expected_df[field].tolist(),
+                                                             expected_df[field].iat[idx]) if expected_df[field].iat[
+                                                                                                 idx] < Q1 - 1.5 * IQR or \
+                                                                                             expected_df[field].iat[
+                                                                                                 idx] > Q3 + 1.5 * IQR else \
+            expected_df[field].iat[idx]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
 
@@ -5647,19 +5791,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
         # Sustituir los valores outliers por el valor más cercano en el dataframe
         for col in expected_df.select_dtypes(include=np.number).columns:
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             for idx in range(len(expected_df[col])):
-                expected_df[col].iat[idx] = find_closest_value(expected_df[col].tolist(), expected_df[col].iat[idx]) if expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else expected_df[col].iat[idx]
+                expected_df[col].iat[idx] = find_closest_value(expected_df[col].tolist(), expected_df[col].iat[idx]) if \
+                expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else \
+                expected_df[col].iat[idx]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
-
-
 
     def execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
         """
@@ -5672,17 +5816,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(0)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Aplica la interpolación lineal a los valores faltantes y valores nulos a través de todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores nulos y los valores faltantes por NaN
         missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
         replaced_df = expected_df.replace(missing_values, np.nan)
-        #Selecciona las columnas numéricas del dataframe
+        # Selecciona las columnas numéricas del dataframe
         numeric_columns = replaced_df.select_dtypes(include=np.number).columns
         # Aplica la interpolación lineal a través de todas las columnas numéricas del dataframe
-        expected_df[numeric_columns] = replaced_df[numeric_columns].interpolate(method='linear', axis=0, limit_direction='both')
+        expected_df[numeric_columns] = replaced_df[numeric_columns].interpolate(method='linear', axis=0,
+                                                                                limit_direction='both')
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
@@ -5692,9 +5837,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
@@ -5702,7 +5847,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         mean_value = only_numbers_df.mean().mean()
         # Sustituir los valores faltantes y valores nulos por la media de todas las columnas numéricas
         expected_df = expected_df.apply(
-                lambda col: col.apply(lambda x: mean_value if (x in missing_values or pd.isnull(x)) else x))
+            lambda col: col.apply(lambda x: mean_value if (x in missing_values or pd.isnull(x)) else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
@@ -5713,9 +5858,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de cada columna numérica
@@ -5740,10 +5885,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                  specialTypeInput=specialTypeInput,
-                                                                  numOpOutput=numOpOutput,
-                                                                  missing_values=missing_values,
-                                                                  axis_param=0)
+                                                                 specialTypeInput=specialTypeInput,
+                                                                 numOpOutput=numOpOutput,
+                                                                 missing_values=missing_values,
+                                                                 axis_param=0)
         print_and_log("Test Case 4 Passed: Expected ValueError, got ValueError")
 
         # Caso 5
@@ -5757,10 +5902,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                  specialTypeInput=specialTypeInput,
-                                                                  numOpOutput=numOpOutput,
-                                                                  missing_values=missing_values,
-                                                                  axis_param=None)
+                                                                 specialTypeInput=specialTypeInput,
+                                                                 numOpOutput=numOpOutput,
+                                                                 missing_values=missing_values,
+                                                                 axis_param=None)
         print_and_log("Test Case 5 Passed: Expected ValueError, got ValueError")
 
         # Caso 6
@@ -5773,9 +5918,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(0)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Aplicar la interpolación lineal a los valores invalidos en todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores invalidos por NaN
         replaced_df = expected_df.replace(missing_values, np.nan)
@@ -5804,9 +5949,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -5826,9 +5971,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de cada columna numérica
@@ -5849,9 +5994,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de cada columna numérica
@@ -5872,9 +6017,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Obtener la mediana de todas las columnas numéricas
@@ -5894,9 +6039,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0.13]
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=0)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for col in numeric_columns:
@@ -5915,9 +6060,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0.13]
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                axis_param=None)
         # # Sustituir los valores invalidos por el valor más cercano en el dataframe
         expected_df = expected_df.apply(lambda col: col.apply(
             lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
@@ -5932,16 +6077,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(0)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         expected_df_copy = expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # En primer lugar, se reemplazan los valores outliers por NaN
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
-        lowest_value=Q1 - 1.5 * IQR
-        upper_value=Q3 + 1.5 * IQR
+        lowest_value = Q1 - 1.5 * IQR
+        upper_value = Q3 + 1.5 * IQR
         for idx, value in expected_df[field].items():
             # Sustituir los valores outliers por NaN
             if expected_df.at[idx, field] < lowest_value or expected_df.at[idx, field] > upper_value:
@@ -5964,9 +6109,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(0)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
-        expected_df_copy=expected_df.copy()
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
+        expected_df_copy = expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de cada columna del dataframe
         # En primer lugar, se reemplazan los valores outliers por NaN
         for col in expected_df.select_dtypes(include=np.number).columns:
@@ -6000,8 +6145,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(1)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         # Obtener la media de la columna 'danceability'
         mean_value = expected_df[field].mean()
         # Obtener los outliers de la columna 'danceability'
@@ -6024,8 +6169,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(1)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la media de la columna
             mean_value = expected_df[col].mean()
@@ -6035,8 +6180,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             IQR = Q3 - Q1
             for idx in range(len(expected_df[col])):
                 expected_df[col].iat[idx] = expected_df[col].iat[idx] if not (
-                            expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[
-                        idx] > Q3 + 1.5 * IQR) else mean_value
+                        expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[
+                    idx] > Q3 + 1.5 * IQR) else mean_value
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 16 Passed: the function returned the expected dataframe")
 
@@ -6049,8 +6194,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(2)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         # Obtener la mediana de la columna 'danceability'
         median_value = expected_df[field].median()
         # Obtener los outliers de la columna 'danceability'
@@ -6071,8 +6216,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(2)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la mediana de la columna
             median_value = expected_df[col].median()
@@ -6098,8 +6243,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         numOpOutput = Operation(3)
         field = 'danceability'
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, field=field, axis_param=0)
         # Sustituir los valores outliers por el valor más cercano en el dataframe
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
@@ -6111,7 +6256,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                                                  idx] < Q1 - 1.5 * IQR or \
                                                                                              expected_df[field].iat[
                                                                                                  idx] > Q3 + 1.5 * IQR else \
-            expected_df[field].iat[idx]
+                expected_df[field].iat[idx]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
 
@@ -6123,8 +6268,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(3)
         result_df = self.invariants.checkInv_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+                                                                specialTypeInput=specialTypeInput,
+                                                                numOpOutput=numOpOutput, axis_param=0)
         # Sustituir los valores outliers por el valor más cercano en el dataframe
         for col in expected_df.select_dtypes(include=np.number).columns:
             Q1 = expected_df[col].quantile(0.25)
@@ -6132,8 +6277,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             IQR = Q3 - Q1
             for idx in range(len(expected_df[col])):
                 expected_df[col].iat[idx] = find_closest_value(expected_df[col].tolist(), expected_df[col].iat[idx]) if \
-                expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else \
-                expected_df[col].iat[idx]
+                    expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else \
+                    expected_df[col].iat[idx]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
-

@@ -5967,8 +5967,14 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                     for col in dataDictionary_in.columns:
                         for idx, value in dataDictionary_in[col].items():
                             if outliers_dataframe_mask.at[idx, col] == 1 and idx != 0:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx - 1, col]:
-                                    return False
+                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
+                                # de la fila anterior de out
+                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
+                                    if dataDictionary_out.at[idx, col] != dataDictionary_out.at[idx - 1, col]:
+                                        return False
+                                else:
+                                    if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx - 1, col]:
+                                        return False
                             else:
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col] and not (
                                         pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -5979,8 +5985,14 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                         for col in row.index:
                             if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
                                 prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, prev_col]:
-                                    return False
+                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
+                                # de la fila anterior de out
+                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
+                                    if dataDictionary_out.at[idx, col] != dataDictionary_out.at[idx, prev_col]:
+                                        return False
+                                else:
+                                    if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, prev_col]:
+                                        return False
                             else:
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col] and not (
                                         pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -6045,8 +6057,14 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                     for col in dataDictionary_in.columns:
                         for idx, value in dataDictionary_in[col].items():
                             if outliers_dataframe_mask.at[idx, col] == 1 and idx != 0:
-                                if dataDictionary_out.at[idx, col] == dataDictionary_in.at[idx - 1, col]:
-                                    return False
+                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
+                                # de la fila anterior de out
+                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
+                                    if dataDictionary_out.at[idx, col] == dataDictionary_out.at[idx - 1, col]:
+                                        return False
+                                else:
+                                    if dataDictionary_out.at[idx, col] == dataDictionary_in.at[idx - 1, col]:
+                                        return False
                             else:
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col] and not (
                                         pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -6057,8 +6075,14 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                         for col in row.index:
                             if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
                                 prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
-                                if dataDictionary_out.at[idx, col] == dataDictionary_in.at[idx, prev_col]:
-                                    return False
+                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
+                                # de la fila anterior de out
+                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
+                                    if dataDictionary_out.at[idx, col] == dataDictionary_out.at[idx, prev_col]:
+                                        return False
+                                else:
+                                    if dataDictionary_out.at[idx, col] == dataDictionary_in.at[idx, prev_col]:
+                                        return False
                             else:
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col] and not (
                                         pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -6188,8 +6212,14 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                 elif derivedTypeOutput == DerivedType.PREVIOUS:
                     for idx, value in dataDictionary_in[field].items():
                         if outliers_dataframe_mask.at[idx, field] == 1 and idx != 0:
-                            if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx - 1, field]:
-                                return False
+                            # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
+                            # de la fila anterior de out
+                            if outliers_dataframe_mask.at[idx - 1, field] == 1:
+                                if dataDictionary_out.at[idx, field] != dataDictionary_out.at[idx - 1, field]:
+                                    return False
+                            else:
+                                if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx - 1, field]:
+                                    return False
                         else:
                             if dataDictionary_out.at[idx, field] != dataDictionary_in.at[idx, field] and not (
                                     pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
