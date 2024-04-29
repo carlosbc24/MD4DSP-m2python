@@ -525,13 +525,13 @@ class DataTransformations:
                             lambda x: median_value if (np.issubdtype(type(x), np.number) and check_interval_condition(x, leftMargin, rightMargin, closureType)) else x))
 
                 elif axis_param == 0:
-                    for col in dataDictionary_copy.columns:
+                    for col in dataDictionary_copy.select_dtypes(include=[np.number]).columns:
                         median=dataDictionary_copy[col].median()
                         dataDictionary_copy[col] = dataDictionary_copy[col].apply(
                             lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
                 elif axis_param == 1:
                     dataDictionary_copy = dataDictionary_copy.T
-                    for row in dataDictionary_copy.columns:
+                    for row in dataDictionary_copy.select_dtypes(include=[np.number]).columns:
                         median=dataDictionary_copy[row].median()
                         dataDictionary_copy[row] = dataDictionary_copy[row].apply(
                             lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
