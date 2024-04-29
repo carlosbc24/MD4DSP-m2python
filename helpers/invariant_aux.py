@@ -2461,10 +2461,16 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
     dataDictionary_in_copy = dataDictionary_in.copy()
     if field is None:
         if axis_param == 0:
-            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                dataDictionary_in_copy[col_name] = (
-                    dataDictionary_in[col_name].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x).
-                    interpolate(method='linear', limit_direction='both'))
+            for col_name in dataDictionary_in.columns:
+                numeric_data = dataDictionary_in[col_name][dataDictionary_in[col_name].apply(lambda x: np.isreal(x))]
+                # Apply the function to each element in the numeric data
+                for idx in range(len(numeric_data)):
+                    # Check if the element satisfies the interval condition
+                    if check_interval_condition(numeric_data.iloc[idx], leftMargin, rightMargin, closureType):
+                        # If it does, replace it with np.nan
+                        numeric_data.iloc[idx] = np.nan
+                # Interpolate the NaN
+                dataDictionary_in_copy[col_name] = numeric_data.interpolate(method='linear', limit_direction='both')
 
             # Iterate over each column
             for col in dataDictionary_in.columns:
@@ -2490,10 +2496,15 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
                             return False
         elif axis_param == 1:
             for idx, row in dataDictionary_in.iterrows():
-                numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                dataDictionary_in_copy[row] = (
-                    numeric_data[row].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x).
-                    interpolate(method='linear', limit_direction='both'))
+                numeric_data = dataDictionary_in.iloc[idx][dataDictionary_in.iloc[idx].apply(lambda x: np.isreal(x))]
+                # Apply the function to each element in the numeric data
+                for jdx in range(len(numeric_data)):
+                    # Check if the element satisfies the interval condition
+                    if check_interval_condition(numeric_data.iloc[jdx], leftMargin, rightMargin, closureType):
+                        # If it does, replace it with np.nan
+                        numeric_data.iloc[jdx] = np.nan
+                # Interpolate the NaN
+                dataDictionary_in_copy.loc[idx] = numeric_data.interpolate(method='linear', limit_direction='both')
 
             # Iterate over each column
             for col in dataDictionary_in.columns:
@@ -2524,10 +2535,13 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
         if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("The field is not numeric")
 
-        dataDictionary_in_copy[field] = (
-            dataDictionary_in[field].apply(
-                lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x).
-            interpolate(method='linear', limit_direction='both'))
+        for idx in dataDictionary_in[field].index:
+            # Check if the element satisfies the interval condition
+            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
+                # If it does, replace it with np.nan
+                dataDictionary_in_copy.at[idx, field] = np.nan
+        # Interpolate the NaN
+        dataDictionary_in_copy[field] = dataDictionary_in_copy[field].interpolate(method='linear', limit_direction='both')
 
 
         # For each index in the column
@@ -3302,17 +3316,19 @@ def checkIntervalClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                         closest_values[value] = find_closest_value(flattened_values, value)
 
             # Check if the closest values have been replaced in the dataDictionary_out
-            for idx, col_name in dataDictionary_in.items():
-                if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
-                    if dataDictionary_out.at[idx, col_name] != closest_values[col_name]:
-                        if belongOp_out == Belong.BELONG:
+            for idx, row in dataDictionary_in.iterrows():
+                for col_name in dataDictionary_in.columns:
+                    if (np.issubdtype(row[col_name], np.number) and check_interval_condition(row[col_name], leftMargin, rightMargin, closureType)
+                                    and not pd.isnull(row[col_name])):
+                        if dataDictionary_out.at[idx, col_name] != closest_values[row[col_name]]:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not (
+                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
                             return False
-                        elif belongOp_out == Belong.NOTBELONG:
-                            return True
-                else:
-                    if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not (
-                            pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
-                        return False
         elif axis_param == 0:
             for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                 # Flatten the column into a list of values
@@ -3353,7 +3369,7 @@ def checkIntervalClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
                 # Iterate over the values in the interval
                 for value in flattened_values:
                     # Check if the value is within the interval
-                    if np.isreal(value) and check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                    if np.issubdtype(value, np.number) and check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
                         # Check if the value is already in the dictionary
                         if value not in closest_values:
                             # Find the closest value to the current value in the interval
