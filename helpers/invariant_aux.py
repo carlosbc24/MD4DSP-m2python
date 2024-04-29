@@ -2172,7 +2172,7 @@ def checkFixValueClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
             # Replace the missing values with the closest numeric values
             for i in range(len(dataDictionary_in.index)):
                 for j in range(len(dataDictionary_in.columns)):
-                    current_value = dataDictionary_in.iiloc[i, j]
+                    current_value = dataDictionary_in.iloc[i, j]
                     if current_value == fixValueInput:
                         if dataDictionary_out.iloc[i, j] != closest_value:
                             if belongOp_out == Belong.BELONG:
@@ -2305,7 +2305,7 @@ def checkFixValueClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDic
             # Replace the missing values with the closest numeric values
             for i in range(len(dataDictionary_in.index)):
                 for j in range(len(dataDictionary_in.columns)):
-                    current_value = dataDictionary_in.iiloc[i, j]
+                    current_value = dataDictionary_in.iloc[i, j]
                     if current_value == fixValueInput:
                         return False
 
@@ -2364,7 +2364,7 @@ def checkFixValueClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, data
             # Replace the missing values with the closest numeric values
             for i in range(len(dataDictionary_in.index)):
                 for j in range(len(dataDictionary_in.columns)):
-                    current_value = dataDictionary_in.iiloc[i, j]
+                    current_value = dataDictionary_in.iloc[i, j]
                     if current_value == fixValueInput:
                         return False
 
@@ -2565,10 +2565,11 @@ def checkSpecialTypeInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDic
                 for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in dataDictionary_in.index:
                         if dataDictionary_in.at[idx, col] in missing_values:
-                            if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
-                                return False
-                            elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
-                                return True
+                            if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
+                                if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    return False
+                                elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
+                                    return True
                         else:
                             if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not(pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(dataDictionary_out.at[idx, col])):
                                 return False
@@ -4041,7 +4042,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                 # Replace the missing values with the closest numeric values
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
-                        current_value = dataDictionary_in.iiloc[i, j]
+                        current_value = dataDictionary_in.iloc[i, j]
                         if current_value in closest_values:
                             if dataDictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
@@ -4051,7 +4052,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                         else:
                             if pd.isnull(dataDictionary_in.iloc[i, j]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                            if (dataDictionary_out.loc[i, j] != dataDictionary_in.loc[i, j])  and not(pd.isnull(dataDictionary_in.loc[i, j]) or pd.isnull(dataDictionary_out.loc[i, j])):
+                            if (dataDictionary_out.iloc[i, j] != dataDictionary_in.iloc[i, j])  and not(pd.isnull(dataDictionary_in.iloc[i, j]) or pd.isnull(dataDictionary_out.iloc[i, j])):
                                 return False
             elif axis_param == 0:
                 # Iterate over each column
@@ -4137,7 +4138,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
                         if dataDictionary_outliers_mask.iloc[i, j] == 1:
-                            current_value = dataDictionary_in.iiloc[i, j]
+                            current_value = dataDictionary_in.iloc[i, j]
                             if current_value not in closest_values:
                                 closest_values[current_value] = find_closest_value(flattened_values, current_value)
 
@@ -4145,7 +4146,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
                         if dataDictionary_outliers_mask.iloc[i, j] == 1:
-                            current_value = dataDictionary_in.iiloc[i, j]
+                            current_value = dataDictionary_in.iloc[i, j]
                             if dataDictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                     return False
@@ -4181,12 +4182,19 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                         current_value = dataDictionary_in.at[i, col_name]
                         if dataDictionary_outliers_mask.at[i, col_name] == 1:
                             if dataDictionary_out.at[i, col_name] != closest_values[current_value]:
+                                print(dataDictionary_outliers_mask[col_name])
+                                print("OUT DF: ", dataDictionary_out[col_name])
+                                print("IN DF: ", dataDictionary_in[col_name])
+                                print("Column: ", col_name, "index: ", i)
+                                print("DataDictionary_out: ", dataDictionary_out.at[i, col_name], "Closest: ", closest_values[current_value])
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
+                                    print("a")
                                     return False
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
                             if (dataDictionary_out.loc[i, col_name] != dataDictionary_in.loc[i, col_name]) and not(pd.isnull(dataDictionary_in.loc[i, col_name]) or pd.isnull(dataDictionary_out.loc[i, col_name])):
+                                print("b")
                                 return False
             elif axis_param == 1:
                 # Iterate over each row
@@ -5985,14 +5993,8 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                         for col in row.index:
                             if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
                                 prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
-                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
-                                # de la fila anterior de out
-                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
-                                    if dataDictionary_out.at[idx, col] != dataDictionary_out.at[idx, prev_col]:
-                                        return False
-                                else:
-                                    if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, prev_col]:
-                                        return False
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, prev_col]:
+                                    return False
                             else:
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col] and not (
                                         pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(
@@ -6075,14 +6077,8 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                         for col in row.index:
                             if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
                                 prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
-                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
-                                # de la fila anterior de out
-                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
-                                    if dataDictionary_out.at[idx, col] == dataDictionary_out.at[idx, prev_col]:
-                                        return False
-                                else:
-                                    if dataDictionary_out.at[idx, col] == dataDictionary_in.at[idx, prev_col]:
-                                        return False
+                                if dataDictionary_out.at[idx, col] == dataDictionary_in.at[idx, prev_col]:
+                                    return False
                             else:
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col] and not (
                                         pd.isnull(dataDictionary_in.loc[idx, col]) and pd.isnull(

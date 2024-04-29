@@ -430,8 +430,8 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
         if specialTypeInput == SpecialType.OUTLIER:
             for idx, value in dataDictionary_copy[field].items():
                 if dataDictionary_copy_mask.at[idx, field] == 1:
-                    dataDictionary_copy.at[idx, field] = np.NaN
-            dataDictionary_copy[field] = dataDictionary_copy[field].interpolate(method='linear', limit_direction='both')
+                    dataDictionary_copy_copy.at[idx, field] = np.NaN
+            dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
             # For each índex in the column
             for idx in dataDictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
