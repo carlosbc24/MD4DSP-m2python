@@ -364,16 +364,16 @@ class Invariants:
 
         if numOpOutput == Operation.INTERPOLATION:
             result = checkIntervalInterpolation(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
-                                               closureType, belongOp_in, belongOp_out, axis_param, field)
+                                                closureType, belongOp_in, belongOp_out, axis_param, field)
         elif numOpOutput == Operation.MEAN:
             result = checkIntervalMean(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
-                                           closureType, belongOp_in, belongOp_out, axis_param, field)
+                                       closureType, belongOp_in, belongOp_out, axis_param, field)
         elif numOpOutput == Operation.MEDIAN:
             result = checkIntervalMedian(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
-                                       closureType, belongOp_in, belongOp_out, axis_param, field)
+                                         closureType, belongOp_in, belongOp_out, axis_param, field)
         elif numOpOutput == Operation.CLOSEST:
             result = checkIntervalClosest(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
-                                       closureType, belongOp_in, belongOp_out, axis_param, field)
+                                          closureType, belongOp_in, belongOp_out, axis_param, field)
 
         return True if result else False
 

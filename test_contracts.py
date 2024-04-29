@@ -81,10 +81,13 @@ if __name__ == "__main__":
     # Calculate execution time for each test block (pre-post)
     # execute_prepost_simple_tests()
     # execute_prepost_external_dataset_tests()
-    execute_invariants_simple_tests()
+    # execute_invariants_simple_tests()
     # execute_invariants_external_dataset_tests()
+
+    contracts_invariant_test = InvariantsSimpleTest()
+    contracts_invariant_test.execute_checkInv_Interval_NumOp()
 
     # DEBUG TESTS
     # Execute all pre-post simple tests
-    contracts_invariant_test = InvariantsExternalDatasetTests()
-    contracts_invariant_test.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests()
+    # contracts_invariant_test = InvariantsExternalDatasetTests()
+    # contracts_invariant_test.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests()
