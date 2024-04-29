@@ -44,7 +44,9 @@ def checkFixValueMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
                 most_frequent_value = dataDictionary_in[col].value_counts().idxmax()
                 for idx, value in dataDictionary_in[col].items():
                     if value == fixValueInput:
-                        if dataDictionary_out.at[idx, col] != most_frequent_value:
+                        if dataDictionary_out.at[idx, col] != most_frequent_value and not (
+                            pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(
+                            dataDictionary_out.at[idx, col])):
                             if belongOp_out == Belong.BELONG:
                                 return False
                             elif belongOp_out == Belong.NOTBELONG:
@@ -64,7 +66,9 @@ def checkFixValueMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                        if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and not (
+                            pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(
+                            dataDictionary_in.at[idx, col_name])):
                             return False
 
     elif field is not None:
@@ -75,13 +79,17 @@ def checkFixValueMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
             most_frequent_value = dataDictionary_in[field].value_counts().idxmax()
             for idx, value in dataDictionary_in[field].items():
                 if value == fixValueInput:
-                    if dataDictionary_out.at[idx, field] != most_frequent_value:
+                    if dataDictionary_out.at[idx, field] != most_frequent_value and not (
+                                    pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(
+                                    dataDictionary_out.at[idx, field])):
                         if belongOp_out == Belong.BELONG:
                             return False
                         elif belongOp_out == Belong.NOTBELONG:
                             return True
                 else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
+                                    pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(
+                                    dataDictionary_out.at[idx, field])):
                         return False
 
     if belongOp_out == Belong.BELONG:
@@ -262,25 +270,23 @@ def checkFixValuePreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                     if value == fixValueInput:
                         if row_index == 0:
                             if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
-                                row_index, column_name] or (
-                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                dataDictionary_out.loc[row_index - 1, column_name])):
+                                row_index, column_name]:
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                row_index - 1, column_name] or (
-                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                dataDictionary_out.loc[row_index - 1, column_name])):
+                                row_index - 1, column_name]:
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                     else:
                         if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
-                            row_index, column_name]:
+                            row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index - 1, column_name])):
                             return False
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
@@ -306,7 +312,10 @@ def checkFixValuePreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                                 return True
                 else:
                     if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
-                        return False
+                        if idx != 0 and (
+                                    not pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(
+                                dataDictionary_out.loc[idx - 1, field])):
+                            return False
 
     if belongOp_out == Belong.BELONG:
         return True
@@ -457,7 +466,6 @@ def checkFixValueNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
             :return: True if the next value is applied correctly to the fix input value
         """
     if field is None:
-        # TODO: fix this case when axis_param=1 for every invariant auxiliar functions
         if axis_param == 1:  # Applies in a row level
             for row_index, row in dataDictionary_in.iterrows():
                 for column_name, value in row.items():
@@ -480,7 +488,9 @@ def checkFixValueNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                     return True
                     else:
                         if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
-                            row_index, column_name]:
+                            row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                             return False
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(dataDictionary_in.columns):
@@ -502,7 +512,9 @@ def checkFixValueNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                     return True
                     else:
                         if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                            row_index, column_name]:
+                            row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                             return False
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the NEXT operation")
@@ -527,7 +539,9 @@ def checkFixValueNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                 else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and (
+                                    not pd.isnull(dataDictionary_in.at[idx, field]) and pd.isnull(
+                                dataDictionary_out.at[idx, field])):
                         return False
 
     if belongOp_out == Belong.BELONG:
@@ -2161,8 +2175,8 @@ def checkFixValueClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
             # Iterate over each row
             for row_idx in range(len(dataDictionary_in.index)):
                 # Get the numeric values in the current row
-                numeric_values_in_row = dataDictionary_in.iloc[row_idx].select_dtypes(
-                    include=[np.number]).values.tolist()
+                row_df = pd.DataFrame([dataDictionary_in.iloc[row_idx]])
+                numeric_values_in_row = row_df.select_dtypes(include=[np.number]).values.tolist()
 
                 # Flatten the row into a list of values
                 flattened_values = [val for sublist in numeric_values_in_row for val in sublist]
