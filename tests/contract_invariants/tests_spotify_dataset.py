@@ -3341,14 +3341,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0, -1]
         fixValueOutput = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput, missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
-        # Susituye los valores incluidos en missing_values, 0, None, así como los valores nulos de python de la cadena 'instrumentalness' por el valor de cadena 'SpecialValue' en expected_df
-        expected_df['instrumentalness'] = expected_df['instrumentalness'].apply(lambda x: fixValueOutput if x in missing_values else x)
-
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                                                fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2 - Ejecutar la invariante: cambiar los valores missing 1 y 3, así como los valores nulos de python
         # de la columna 'key' por el valor de cadena 'SpecialValue' en el batch pequeño del dataset de
@@ -3359,13 +3361,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput, missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
-        expected_df['key'] = expected_df['key'].apply(lambda x: fixValueOutput if x in missing_values else x)
-
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            specialTypeInput=specialTypeInput, missing_values=missing_values,
+                                                                            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            field=field)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3 - Ejecutar invariante cambiar los valores invalidos 1 y 3 por el valor de cadena 'SpecialValue'
         # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
@@ -3375,12 +3380,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 6]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
-        expected_df['key'] = expected_df['key'].apply(lambda x: fixValueOutput if x in missing_values else x)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                specialTypeInput=specialTypeInput,
+                                                                                missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
+                                                                            belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          field=field)
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         # Ejecutar la invariante: cambiar los outliers de la columna 'danceability' por el valor de cadena 'SpecialValue'
@@ -3390,20 +3399,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, field=field, axis_param=0)
-        # Obtener los outliers de la columna 'danceability' y sustituirlos por el valor de cadena 'SpecialValue' en expected_df
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        if np.issubdtype(expected_df[field].dtype, np.number):
-            expected_df[field] = expected_df[field].where(~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=fixValueOutput)
-            pd.testing.assert_frame_equal(result_df, expected_df)
-            print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
-        else:
-            # Print and log a warning message indicating the column is not numeric
-            print_and_log("Warning: The column 'danceability' is not numeric. The function returned the original dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            specialTypeInput=specialTypeInput,
+                                                                            fixValueOutput=fixValueOutput, field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                            missing_values=None, fixValueOutput=fixValueOutput,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         # Ejecutar la invariante: cambiar los valores outliers de todas las columnas del batch pequeño del dataset de
@@ -3412,19 +3417,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         specialTypeInput = SpecialType(2)
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                specialTypeInput=specialTypeInput,
+                                                                                fixValueOutput=fixValueOutput, axis_param=0)
 
-        # Obtener los outliers de todas las columnas que sean numéricas y sustituir los valores outliers por el valor de cadena 'SpecialValue' en expected_df
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for col in numeric_columns:
-            Q1 = expected_df[col].quantile(0.25)
-            Q3 = expected_df[col].quantile(0.75)
-            IQR = Q3 - Q1
-            expected_df[col] = expected_df[col].where(~((expected_df[col] < Q1 - 1.5 * IQR) | (expected_df[col] > Q3 + 1.5 * IQR)), other=fixValueOutput)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                          fixValueOutput=fixValueOutput, belongOp_in=Belong(0),
+                                                                            belongOp_out=Belong(0), axis_param=0)
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         # Ejecutar la invariante: cambiar los valores invalid 1 y 3 en todas las columnas numéricas del batch pequeño
@@ -3434,12 +3436,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3]
         fixValueOutput = 101
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                specialTypeInput=specialTypeInput,
+                                                                                missing_values=missing_values,
+                                                                              fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                          missing_values=missing_values, fixValueOutput=fixValueOutput,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         # Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de todas las columnas numéricas
@@ -3449,12 +3456,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = [0, -1]
         fixValueOutput = 200
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                     specialTypeInput=specialTypeInput,
                                                                     missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            axis_param=0)
+        assert invariant_result is True, "Test Case 7 Failed: Expected True, but got False"
+        print_and_log("Test Case 7 Passed: Expected True, and got True")
 
         # Caso 8
         # Ejecutar la invariante: cambiar los valores missing, así como el valor "Maroon 5" y "Katy Perry" de las columans de tipo string
@@ -3464,12 +3475,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                            specialTypeInput=specialTypeInput,
+                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                          dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+                                                                            missing_values=missing_values, fixValueOutput=fixValueOutput,
+                                                                          axis_param=0)
+        assert invariant_result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, and got True")
 
         # Caso 9
         # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
@@ -3479,161 +3493,570 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fixValueOutput = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     specialTypeInput=specialTypeInput,
-                                                                     fixValueOutput=fixValueOutput, field=field)
+            result = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                 specialTypeInput=specialTypeInput,
+                                                                                 fixValueOutput=fixValueOutput, field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result, specialTypeInput=specialTypeInput,
+                                                                              fixValueOutput=fixValueOutput,
+                                                                              field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+
+        # Caso 10 - Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de la columna
+        # 'instrumentalness' por el valor de cadena 'SpecialValue' en el batch pequeño del dataset de prueba. Sobre un
+        # dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
+        # resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [0, -1]
+        fixValueOutput = "SpecialValue"
+        field = 'instrumentalness'
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field, axis_param=0)
+        assert invariant_result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, and got False")
+
+        # Caso 11 - Ejecutar la invariante: cambiar los valores missing 1 y 3, así como los valores nulos de python
+        # de la columna 'key' por el valor de cadena 'SpecialValue' en el batch pequeño del dataset de
+        # prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
+        # verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3]
+        fixValueOutput = "SpecialValue"
+        field = 'key'
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12 - Ejecutar invariante cambiar los valores invalidos 1 y 3 por el valor de cadena 'SpecialValue'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 6]
+        fixValueOutput = "SpecialValue"
+        field = 'key'
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        # Ejecutar la invariante: cambiar los outliers de la columna 'danceability' por el valor de cadena 'SpecialValue'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        field = 'danceability'
+        fixValueOutput = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=None, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field, axis_param=0)
+        assert invariant_result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Ejecutar la invariante: cambiar los valores outliers de todas las columnas del batch pequeño del dataset de
+        # prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del dataset de
+        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        fixValueOutput = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, axis_param=0)
+
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, belongOp_in=Belong(0),
+            belongOp_out=Belong(1), axis_param=0)
+        assert invariant_result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, and got False")
+
+        # Caso 15
+        # Ejecutar la invariante: cambiar los valores invalid 1 y 3 en todas las columnas numéricas del batch pequeño
+        # del dataset de prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3]
+        fixValueOutput = 101
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(0),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
+
+        # Caso 16
+        # Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de todas las columnas numéricas
+        # del batch pequeño del dataset de prueba por el valor 200. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [0, -1]
+        fixValueOutput = 200
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, and got False")
+
+        # Caso 17
+        # Ejecutar la invariante: cambiar los valores missing, así como el valor "Maroon 5" y "Katy Perry" de las columans de tipo string
+        # del batch pequeño del dataset de prueba por el valor "SpecialValue". Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = ["Maroon 5", "Katy Perry"]
+        fixValueOutput = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, and got False")
+
+        # Caso 18
+        # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        field = 'p'
+        fixValueOutput = "SpecialValue"
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_FixValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput, field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result, specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput,
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                field=field)
+        print_and_log("Test Case 18 Passed: expected ValueError, got ValueError")
 
 
     def execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_FixValue
         """
-        # Caso 1 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 1 - Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de la columna
+        # 'instrumentalness' por el valor de cadena 'SpecialValue' en el batch pequeño del dataset de prueba. Sobre un
+        # dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
+        # resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(0)
         missing_values = [0, -1]
         fixValueOutput = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
-        expected_df['instrumentalness'] = expected_df['instrumentalness'].replace(np.NaN, 0)
-        expected_df['instrumentalness'] = expected_df['instrumentalness'].apply(
-            lambda x: fixValueOutput if x in missing_values else x)
-        # Cambair el dtype de la columna 'instrumentalness' a object
-        expected_df['instrumentalness'] = expected_df['instrumentalness'].astype('object')
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
-        # Caso 2 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 2 - Ejecutar la invariante: cambiar los valores missing 1 y 3, así como los valores nulos de python
+        # de la columna 'key' por el valor de cadena 'SpecialValue' en el batch pequeño del dataset de
+        # prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
+        # verificar si el resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(0)
         missing_values = [1, 3]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
-        expected_df['key'] = expected_df['key'].replace(np.NaN, 1)
-        expected_df['key'] = expected_df['key'].apply(
-            lambda x: fixValueOutput if x in missing_values else x)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
-
-        # Caso 3 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 3 - Ejecutar invariante cambiar los valores invalidos 1 y 3 por el valor de cadena 'SpecialValue'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(1)
         missing_values = [1, 6]
         fixValueOutput = "SpecialValue"
         field = 'key'
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
-        expected_df['key'] = expected_df['key'].apply(lambda x: fixValueOutput if x in missing_values else x)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field)
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
-        # Caso 4 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 4
+        # Ejecutar la invariante: cambiar los outliers de la columna 'danceability' por el valor de cadena 'SpecialValue'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, field=field,
-                                                                    axis_param=0)
-        # Obtener los outliers de la columna 'danceability' y sustituirlos por el valor de cadena 'SpecialValue' en expected_df
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        if np.issubdtype(expected_df[field].dtype, np.number):
-            expected_df[field] = expected_df[field].where(
-                ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=fixValueOutput)
-            pd.testing.assert_frame_equal(result_df, expected_df)
-            print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
-        else:
-            # Print and log a warning message indicating the column is not numeric
-            print_and_log(
-                "Warning: The column 'danceability' is not numeric. The function returned the original dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=None, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
-        # Caso 5 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 5
+        # Ejecutar la invariante: cambiar los valores outliers de todas las columnas del batch pequeño del dataset de
+        # prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del dataset de
+        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(2)
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, axis_param=0)
 
-        # Obtener los outliers de todas las columnas que sean numéricas y sustituir los valores outliers por el valor de cadena 'SpecialValue' en expected_df
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for col in numeric_columns:
-            Q1 = expected_df[col].quantile(0.25)
-            Q3 = expected_df[col].quantile(0.75)
-            IQR = Q3 - Q1
-            expected_df[col] = expected_df[col].where(
-                ~((expected_df[col] < Q1 - 1.5 * IQR) | (expected_df[col] > Q3 + 1.5 * IQR)), other=fixValueOutput)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, belongOp_in=Belong(0),
+            belongOp_out=Belong(0), axis_param=0)
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
-        # Caso 6 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 6
+        # Ejecutar la invariante: cambiar los valores invalid 1 y 3 en todas las columnas numéricas del batch pequeño
+        # del dataset de prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3]
         fixValueOutput = 101
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
-        # Caso 7 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 7
+        # Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de todas las columnas numéricas
+        # del batch pequeño del dataset de prueba por el valor 200. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(0)
         missing_values = [0, -1]
         fixValueOutput = 200
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.replace(np.NaN, 0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(0),
+            axis_param=0)
+        assert invariant_result is True, "Test Case 7 Failed: Expected True, but got False"
+        print_and_log("Test Case 7 Passed: Expected True, and got True")
 
-        # Caso 8 - Whole Dataset
-        expected_df = self.rest_of_dataset.copy()
+        # Caso 8
+        # Ejecutar la invariante: cambiar los valores missing, así como el valor "Maroon 5" y "Katy Perry" de las columans de tipo string
+        # del batch pequeño del dataset de prueba por el valor "SpecialValue". Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         specialTypeInput = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fixValueOutput = "SpecialValue"
-        result_df = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.replace(np.NaN, "Katy Perry")
-        expected_df = expected_df.apply(
-            lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            axis_param=0)
+        assert invariant_result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, and got True")
 
         # Caso 9
         # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         field = 'p'
         fixValueOutput = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                     specialTypeInput=specialTypeInput,
-                                                                     fixValueOutput=fixValueOutput, field=field)
+            result = self.data_transformations.transform_SpecialValue_FixValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput, field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result, specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput,
+                field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+
+        # Caso 10 - Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de la columna
+        # 'instrumentalness' por el valor de cadena 'SpecialValue' en el batch pequeño del dataset de prueba. Sobre un
+        # dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
+        # resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(0)
+        missing_values = [0, -1]
+        fixValueOutput = "SpecialValue"
+        field = 'instrumentalness'
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field, axis_param=0)
+        assert invariant_result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, and got False")
+
+        # Caso 11 - Ejecutar la invariante: cambiar los valores missing 1 y 3, así como los valores nulos de python
+        # de la columna 'key' por el valor de cadena 'SpecialValue' en el batch pequeño del dataset de
+        # prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
+        # verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3]
+        fixValueOutput = "SpecialValue"
+        field = 'key'
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput, missing_values=missing_values,
+            fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12 - Ejecutar invariante cambiar los valores invalidos 1 y 3 por el valor de cadena 'SpecialValue'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 6]
+        fixValueOutput = "SpecialValue"
+        field = 'key'
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        # Ejecutar la invariante: cambiar los outliers de la columna 'danceability' por el valor de cadena 'SpecialValue'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(2)
+        field = 'danceability'
+        fixValueOutput = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=None, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field, axis_param=0)
+        assert invariant_result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Ejecutar la invariante: cambiar los valores outliers de todas las columnas del batch pequeño del dataset de
+        # prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del dataset de
+        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(2)
+        fixValueOutput = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, axis_param=0)
+
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            fixValueOutput=fixValueOutput, belongOp_in=Belong(0),
+            belongOp_out=Belong(1), axis_param=0)
+        assert invariant_result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, and got False")
+
+        # Caso 15
+        # Ejecutar la invariante: cambiar los valores invalid 1 y 3 en todas las columnas numéricas del batch pequeño
+        # del dataset de prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3]
+        fixValueOutput = 101
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(0),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
+
+        # Caso 16
+        # Ejecutar la invariante: cambiar los valores missing, así como el valor 0 y el -1 de todas las columnas numéricas
+        # del batch pequeño del dataset de prueba por el valor 200. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(0)
+        missing_values = [0, -1]
+        fixValueOutput = 200
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, and got False")
+
+        # Caso 17
+        # Ejecutar la invariante: cambiar los valores missing, así como el valor "Maroon 5" y "Katy Perry" de las columans de tipo string
+        # del batch pequeño del dataset de prueba por el valor "SpecialValue". Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        specialTypeInput = SpecialType(0)
+        missing_values = ["Maroon 5", "Katy Perry"]
+        fixValueOutput = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df, specialTypeInput=specialTypeInput,
+            missing_values=missing_values, fixValueOutput=fixValueOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, and got False")
+
+        # Caso 18
+        # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
+        specialTypeInput = SpecialType(2)
+        field = 'p'
+        fixValueOutput = "SpecialValue"
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_FixValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput, field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_FixValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result, specialTypeInput=specialTypeInput,
+                fixValueOutput=fixValueOutput,
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                field=field)
+        print_and_log("Test Case 18 Passed: expected ValueError, got ValueError")
+
 
     def execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests(self):
         """
