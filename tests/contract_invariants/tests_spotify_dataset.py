@@ -24,53 +24,53 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Methods:
         executeAll_ExternalDatasetTests: execute all the invariant with external dataset tests
         execute_checkInv_FixValue_FixValue_ExternalDatasetTests: execute the invariant test with external dataset for
-        the function checkInv_FixValue_FixValue execute_SmallBatchTests_execute_checkInv_FixValue_FixValue_ExternalDataset:
+        the function checkInv_FixValue_FixValue execute_SmallBatchTests_checkInv_FixValue_FixValue_ExternalDataset:
         execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_FixValue
-        execute_WholeDatasetTests_execute_checkInv_FixValue_FixValue_ExternalDataset: execute the invariant test using the
+        execute_WholeDatasetTests_checkInv_FixValue_FixValue_ExternalDataset: execute the invariant test using the
         whole dataset for the function checkInv_FixValue_FixValue
         execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests: execute the invariant test with external dataset
         for the function checkInv_FixValue_DerivedValue
-        execute_SmallBatchTests_execute_checkInv_FixValue_DerivedValue_ExternalDataset: execute the invariant test using a
+        execute_SmallBatchTests_checkInv_FixValue_DerivedValue_ExternalDataset: execute the invariant test using a
         small batch of the dataset for the function checkInv_FixValue_DerivedValue
-        execute_WholeDatasetTests_execute_checkInv_FixValue_DerivedValue_ExternalDataset: execute the invariant test using
+        execute_WholeDatasetTests_checkInv_FixValue_DerivedValue_ExternalDataset: execute the invariant test using
         the whole dataset for the function checkInv_FixValue_DerivedValue
         execute_checkInv_FixValue_NumOp_ExternalDatasetTests: execute the invariant test with external dataset for
-        the function checkInv_FixValue_NumOp execute_SmallBatchTests_execute_checkInv_FixValue_NumOp_ExternalDataset: execute
+        the function checkInv_FixValue_NumOp execute_SmallBatchTests_checkInv_FixValue_NumOp_ExternalDataset: execute
         the invariant test using a small batch of the dataset for the function checkInv_FixValue_NumOp
-        execute_WholeDatasetTests_execute_checkInv_FixValue_NumOp_ExternalDataset: execute the invariant test using the whole
+        execute_WholeDatasetTests_checkInv_FixValue_NumOp_ExternalDataset: execute the invariant test using the whole
         dataset for the function checkInv_FixValue_NumOp execute_checkInv_Interval_FixValue_ExternalDatasetTests:
         execute the invariant test with external dataset for the function checkInv_Interval_FixValue
-        execute_SmallBatchTests_execute_checkInv_Interval_FixValue_ExternalDataset: execute the invariant test using a small
+        execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset: execute the invariant test using a small
         batch of the dataset for the function checkInv_Interval_FixValue
-        execute_WholeDatasetTests_execute_checkInv_Interval_FixValue_ExternalDataset: execute the invariant test using the
+        execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset: execute the invariant test using the
         whole dataset for the function checkInv_Interval_FixValue
         execute_checkInv_Interval_DerivedValue_ExternalDatasetTests: execute the invariant test with external dataset
         for the function checkInv_Interval_DerivedValue
-        execute_SmallBatchTests_execute_checkInv_Interval_DerivedValue_ExternalDataset: execute the invariant test using a
+        execute_SmallBatchTests_checkInv_Interval_DerivedValue_ExternalDataset: execute the invariant test using a
         small batch of the dataset for the function checkInv_Interval_DerivedValue
-        execute_WholeDatasetTests_execute_checkInv_Interval_DerivedValue_ExternalDataset: execute the invariant test using
+        execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset: execute the invariant test using
         the whole dataset for the function checkInv_Interval_DerivedValue
         execute_checkInv_Interval_NumOp_ExternalDatasetTests: execute the invariant test with external dataset for
-        the function checkInv_Interval_NumOp execute_SmallBatchTests_execute_checkInv_Interval_NumOp_ExternalDataset: execute
+        the function checkInv_Interval_NumOp execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset: execute
         the invariant test using a small batch of the dataset for the function checkInv_Interval_NumOp
-        execute_WholeDatasetTests_execute_checkInv_Interval_NumOp_ExternalDataset: execute the invariant test using the whole
+        execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset: execute the invariant test using the whole
         dataset for the function checkInv_Interval_NumOp execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests:
         execute the invariant test with external dataset for the function checkInv_SpecialValue_FixValue
-        execute_SmallBatchTests_execute_checkInv_SpecialValue_FixValue_ExternalDataset: execute the invariant test using a
+        execute_SmallBatchTests_checkInv_SpecialValue_FixValue_ExternalDataset: execute the invariant test using a
         small batch of the dataset for the function checkInv_SpecialValue_FixValue
-        execute_WholeDatasetTests_execute_checkInv_SpecialValue_FixValue_ExternalDataset: execute the invariant test using
+        execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset: execute the invariant test using
         the whole dataset for the function checkInv_SpecialValue_FixValue
         execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests: execute the invariant test with external
         dataset for the function checkInv_SpecialValue_DerivedValue
-        execute_SmallBatchTests_execute_checkInv_SpecialValue_DerivedValue_ExternalDataset: execute the invariant test using
+        execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue_ExternalDataset: execute the invariant test using
         a small batch of the dataset for the function checkInv_SpecialValue_DerivedValue
-        execute_WholeDatasetTests_execute_checkInv_SpecialValue_DerivedValue_ExternalDataset: execute the invariant test
+        execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset: execute the invariant test
         using the whole dataset for the function checkInv_SpecialValue_DerivedValue
         execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests: execute the invariant test with external dataset
         for the function checkInv_SpecialValue_NumOp
-        execute_SmallBatchTests_execute_checkInv_SpecialValue_NumOp_ExternalDataset: execute the invariant test using a small
+        execute_SmallBatchTests_checkInv_SpecialValue_NumOp_ExternalDataset: execute the invariant test using a small
         batch of the dataset for the function checkInv_SpecialValue_NumOp
-        execute_WholeDatasetTests_execute_checkInv_SpecialValue_NumOp_ExternalDataset: execute the invariant test using the
+        execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset: execute the invariant test using the
         whole dataset for the function checkInv_SpecialValue_NumOp
     """
 
@@ -132,16 +132,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_FixValue_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_FixValue_FixValue_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_FixValue_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_FixValue_FixValue_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_FixValue_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_FixValue_FixValue_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_FixValue
         """
@@ -348,7 +348,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_execute_checkInv_FixValue_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_FixValue_FixValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_FixValue_FixValue
         """
@@ -569,16 +569,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_FixValue_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_FixValue_DerivedValue_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_FixValue_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_FixValue_DerivedValue_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_FixValue_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_FixValue_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_DerivedValue
         """
@@ -874,7 +874,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert result_invariant is False, "Test Case 15 Failed: Expected False, but got True"
         print_and_log("Test Case 15 Passed: Expected False, and got False")
 
-    def execute_WholeDatasetTests_execute_checkInv_FixValue_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_FixValue_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_FixValue_DerivedValue
         """
@@ -1189,16 +1189,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_FixValue_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_FixValue_NumOp_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_FixValue_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_FixValue_NumOp_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_FixValue_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_FixValue_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_NumOp
         """
@@ -1588,7 +1588,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                           belongOp_in=Belong(1), belongOp_out=Belong(1))
         print_and_log("Test Case 20 Passed: the function raised the expected exception")
 
-    def execute_WholeDatasetTests_execute_checkInv_FixValue_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_FixValue_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_FixValue_NumOp
         """
@@ -1993,16 +1993,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             print_and_log("")
 
             print_and_log("Dataset tests using small batch of the dataset:")
-            self.execute_SmallBatchTests_execute_checkInv_Interval_FixValue_ExternalDataset()
+            self.execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset()
             print_and_log("")
             print_and_log("Dataset tests using the whole dataset:")
-            self.execute_WholeDatasetTests_execute_checkInv_Interval_FixValue_ExternalDataset()
+            self.execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset()
 
             print_and_log("")
             print_and_log("-----------------------------------------------------------")
             print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_Interval_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_FixValue
         """
@@ -2180,7 +2180,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
         print_and_log("Test Case 11 Passed: Expected False, and got False")
 
-    def execute_WholeDatasetTests_execute_checkInv_Interval_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_FixValue
         """
@@ -2376,16 +2376,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_Interval_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_Interval_DerivedValue_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_Interval_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_Interval_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_Interval_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_DerivedValue
         """
@@ -2394,103 +2394,206 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'liveness'
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), field=field)
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                         rightMargin=0.4, closureType=Closure(0),
+                                                                         derivedTypeOutput=DerivedType(0), field=field)
 
-        most_frequent_value = expected_df[field].mode().iloc[0]
-        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if 0.2 < x < 0.4 else x)
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            derivedTypeOutput=DerivedType(0), field=field)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i - 1] if np.issubdtype(
-                                                                          type(value),
-                                                                          np.number) and 0.2 < value < 0.4 and i > 0
-                                                                      else value for i, value in enumerate(row_or_col)],
-                                                                     index=row_or_col.index))
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                         rightMargin=0.4, closureType=Closure(0),
+                                                                         derivedTypeOutput=DerivedType(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            derivedTypeOutput=DerivedType(1), axis_param=0)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         expected_df = self.small_batch_dataset.copy()
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=1)
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i - 1] if np.issubdtype(
-                                                                          type(value),
-                                                                          np.number) and 0.2 < value < 0.4 and i > 0
-                                                                      else value for i, value in enumerate(row_or_col)],
-                                                                     index=row_or_col.index), axis=1)
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                         rightMargin=0.4, closureType=Closure(0),
+                                                                         derivedTypeOutput=DerivedType(1), axis_param=1)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            derivedTypeOutput=DerivedType(1), axis_param=1)
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                             rightMargin=0.4, closureType=Closure(0),
+                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
 
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i + 1] if np.issubdtype(
-                                                                          type(value), np.number) and 0.2 < value < 0.4
-                                                                                                and i < len(
-                                                                          row_or_col) - 1 else value for i, value in
-                                                                      enumerate(row_or_col)], index=row_or_col.index))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), axis_param=None)
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                             rightMargin=0.4, closureType=Closure(0),
+                                                                             derivedTypeOutput=DerivedType(0), axis_param=None)
 
-        most_frequent_value = expected_df.stack().value_counts().idxmax()
-        expected_df = expected_df.apply(
-            lambda col: col.apply(lambda x: most_frequent_value if np.issubdtype(type(x), np.number)
-                                                                   and 0.2 < x < 0.4 else x))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            derivedTypeOutput=DerivedType(0), axis_param=None)
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                             rightMargin=0.4, closureType=Closure(0),
+                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
 
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i + 1] if np.issubdtype(
-                                                                          type(value), np.number) and 0.2 < value < 0.4
-                                                                                                and i < len(
-                                                                          row_or_col) - 1 else value for i, value in
-                                                                      enumerate(row_or_col)], index=row_or_col.index))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     leftMargin=0.2, rightMargin=0.4,
-                                                                     closureType=Closure(0),
-                                                                     derivedTypeOutput=DerivedType(2), axis_param=None)
+            result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                 leftMargin=0.2, rightMargin=0.4,
+                                                                                 closureType=Closure(0),
+                                                                                 derivedTypeOutput=DerivedType(2), axis_param=None)
+            invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result,
+                                                                                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                derivedTypeOutput=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
-    def execute_WholeDatasetTests_execute_checkInv_Interval_DerivedValue_ExternalDataset(self):
+
+        # Caso 8
+        expected_df = self.small_batch_dataset.copy()
+        field = 'liveness'
+
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                         rightMargin=0.4, closureType=Closure(0),
+                                                                         derivedTypeOutput=DerivedType(0), field=field)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                            derivedTypeOutput=DerivedType(0), field=field)
+        assert invariant_result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, and got False")
+
+        # Caso 9
+        expected_df = self.small_batch_dataset.copy()
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                         rightMargin=0.4, closureType=Closure(0),
+                                                                         derivedTypeOutput=DerivedType(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                            derivedTypeOutput=DerivedType(1), axis_param=0)
+        assert invariant_result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, and got False")
+
+        # Caso 10
+        expected_df = self.small_batch_dataset.copy()
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                         rightMargin=0.4, closureType=Closure(0),
+                                                                         derivedTypeOutput=DerivedType(1), axis_param=1)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                            derivedTypeOutput=DerivedType(1), axis_param=1)
+        assert invariant_result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, and got False")
+
+        # Caso 11
+        expected_df = self.small_batch_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                             rightMargin=0.4, closureType=Closure(0),
+                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12
+        expected_df = self.small_batch_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                             rightMargin=0.4, closureType=Closure(0),
+                                                                             derivedTypeOutput=DerivedType(0), axis_param=None)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                            derivedTypeOutput=DerivedType(0), axis_param=None)
+        assert invariant_result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        expected_df = self.small_batch_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
+                                                                             rightMargin=0.4, closureType=Closure(0),
+                                                                             derivedTypeOutput=DerivedType(2), axis_param=0)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                            leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                            derivedTypeOutput=DerivedType(2), axis_param=0)
+        assert invariant_result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                 leftMargin=0.2, rightMargin=0.4,
+                                                                                 closureType=Closure(0),
+                                                                                 derivedTypeOutput=DerivedType(2), axis_param=None)
+            invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result,
+                                                                                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                                                                              belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                                derivedTypeOutput=DerivedType(2), axis_param=None)
+        print_and_log("Test Case 14 Passed: expected ValueError, got ValueError")
+
+    def execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_DerivedValue
         """
@@ -2499,104 +2602,241 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'liveness'
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), field=field)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), field=field)
 
-        most_frequent_value = expected_df[field].mode().iloc[0]
-        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if 0.2 < x < 0.4 else x)
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i - 1] if np.issubdtype(
-                                                                          type(value),
-                                                                          np.number) and 0.2 < value < 0.4 and i > 0
-                                                                      else value for i, value in enumerate(row_or_col)],
-                                                                     index=row_or_col.index))
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=0)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         expected_df = self.rest_of_dataset.copy()
-
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=1)
-
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i - 1] if np.issubdtype(
-                                                                          type(value),
-                                                                          np.number) and 0.2 < value < 0.4 and i > 0
-                                                                      else value for i, value in enumerate(row_or_col)],
-                                                                     index=row_or_col.index), axis=1)
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=1)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=1)
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
 
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i + 1] if np.issubdtype(
-                                                                          type(value), np.number) and 0.2 < value < 0.4
-                                                                                                and i < len(
-                                                                          row_or_col) - 1 else value for i, value in
-                                                                      enumerate(row_or_col)], index=row_or_col.index))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), axis_param=None)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), axis_param=None)
 
-        most_frequent_value = expected_df.stack().value_counts().idxmax()
-        expected_df = expected_df.apply(
-            lambda col: col.apply(lambda x: most_frequent_value if np.issubdtype(type(x), np.number)
-                                                                   and 0.2 < x < 0.4 else x))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          derivedTypeOutput=DerivedType(0),
+                                                                          axis_param=None)
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
 
-        expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
-                                                                      row_or_col.iloc[i + 1] if np.issubdtype(
-                                                                          type(value), np.number) and 0.2 < value < 0.4
-                                                                                                and i < len(
-                                                                          row_or_col) - 1 else value for i, value in
-                                                                      enumerate(row_or_col)], index=row_or_col.index))
-
-        pd.testing.assert_frame_equal(result, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                     leftMargin=0.2, rightMargin=0.4,
-                                                                     closureType=Closure(0),
-                                                                     derivedTypeOutput=DerivedType(2), axis_param=None)
+            result = self.data_transformations.transform_Interval_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                leftMargin=0.2, rightMargin=0.4,
+                closureType=Closure(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
+            invariant_result = self.invariants.checkInv_Interval_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
+
+        # Caso 8
+        expected_df = self.rest_of_dataset.copy()
+        field = 'liveness'
+
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), field=field)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          derivedTypeOutput=DerivedType(0), field=field)
+        assert invariant_result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, and got False")
+
+        # Caso 9
+        expected_df = self.rest_of_dataset.copy()
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=0)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=0)
+        assert invariant_result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, and got False")
+
+        # Caso 10
+        expected_df = self.rest_of_dataset.copy()
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(1), axis_param=1)
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          derivedTypeOutput=DerivedType(1),
+                                                                          axis_param=1)
+        assert invariant_result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, and got False")
+
+        # Caso 11
+        expected_df = self.rest_of_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(0),
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
+        assert invariant_result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, and got False")
+
+        # Caso 12
+        expected_df = self.rest_of_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(0), axis_param=None)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(1), belongOp_out=Belong(1),
+                                                                          derivedTypeOutput=DerivedType(0),
+                                                                          axis_param=None)
+        assert invariant_result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, and got False")
+
+        # Caso 13
+        expected_df = self.rest_of_dataset.copy()
+
+        result = self.data_transformations.transform_Interval_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
+            rightMargin=0.4, closureType=Closure(0),
+            derivedTypeOutput=DerivedType(2), axis_param=0)
+
+        invariant_result = self.invariants.checkInv_Interval_DerivedValue(dataDictionary_in=expected_df,
+                                                                          dataDictionary_out=result,
+                                                                          leftMargin=0.2, rightMargin=0.4,
+                                                                          closureType=Closure(0),
+                                                                          belongOp_in=Belong(0), belongOp_out=Belong(1),
+                                                                          derivedTypeOutput=DerivedType(2),
+                                                                          axis_param=0)
+        assert invariant_result is False, "Test Case 13 Failed: Expected False, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_Interval_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                leftMargin=0.2, rightMargin=0.4,
+                closureType=Closure(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
+            invariant_result = self.invariants.checkInv_Interval_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                leftMargin=0.2, rightMargin=0.4, closureType=Closure(0),
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                derivedTypeOutput=DerivedType(2), axis_param=None)
+        print_and_log("Test Case 14 Passed: expected ValueError, got ValueError")
 
     def execute_checkInv_Interval_NumOp_ExternalDatasetTests(self):
         """
@@ -2606,16 +2846,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_Interval_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_Interval_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_Interval_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_NumOp
         """
@@ -2805,7 +3045,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
 
-    def execute_WholeDatasetTests_execute_checkInv_Interval_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_NumOp
         """
@@ -3079,16 +3319,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_SpecialValue_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_SpecialValue_FixValue_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_SpecialValue_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_SpecialValue_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_SpecialValue_FixValue_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_FixValue
         """
@@ -3245,7 +3485,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
 
-    def execute_WholeDatasetTests_execute_checkInv_SpecialValue_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_FixValue
         """
@@ -3403,16 +3643,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_SpecialValue_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_SpecialValue_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_DerivedValue
         """
@@ -3671,7 +3911,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
 
-    def execute_WholeDatasetTests_execute_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_DerivedValue
         """
@@ -3944,16 +4184,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_checkInv_SpecialValue_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_SpecialValue_NumOp_ExternalDataset()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_checkInv_SpecialValue_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_checkInv_SpecialValue_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_NumOp
         """
@@ -4419,7 +4659,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
 
-    def execute_WholeDatasetTests_execute_checkInv_SpecialValue_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_NumOp
         """

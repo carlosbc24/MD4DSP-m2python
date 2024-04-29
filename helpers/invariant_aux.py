@@ -708,7 +708,9 @@ def checkIntervalMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index]:
+                        if dataDictionary_out.loc[row_index, column_index] != dataDictionary_in.loc[row_index, column_index] and (
+                                    not pd.isnull(dataDictionary_in.loc[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_index])):
                             return False
         elif axis_param == 0:  # Applies the lambda function at the column level
             for col in dataDictionary_in.columns:
@@ -721,7 +723,9 @@ def checkIntervalMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col]:
+                        if dataDictionary_out.loc[idx, col] != dataDictionary_in.loc[idx, col] and (
+                                    not pd.isnull(dataDictionary_in.at[idx, col]) and pd.isnull(
+                                dataDictionary_out.at[idx, col])):
                             return False
         else:  # Applies at the dataframe level
             # Calculate the most frequent value
@@ -735,7 +739,9 @@ def checkIntervalMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]:
+                        if dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name] and (
+                                    not pd.isnull(dataDictionary_in.at[idx, col_name]) and pd.isnull(
+                                dataDictionary_out.at[idx, col_name])):
                             return False
 
     elif field is not None:
@@ -752,7 +758,9 @@ def checkIntervalMostFrequentBelong(dataDictionary_in: pd.DataFrame, dataDiction
                         elif belongOp_out == Belong.NOTBELONG:
                             return True
                 else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and (
+                                    not pd.isnull(dataDictionary_in.at[idx, field]) and pd.isnull(
+                                dataDictionary_out.at[idx, field])):
                         return False
 
     if belongOp_out == Belong.BELONG:
@@ -935,14 +943,19 @@ def checkIntervalPreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                         else:
                             if column_index - 1 in dataDictionary_in.columns:
                                 if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
-                                    row_index, column_index - 1]:
+                                    row_index, column_index - 1] and (
+                                    not pd.isnull(dataDictionary_in.at[
+                                    row_index, column_index - 1]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                                     if belongOp_out == Belong.BELONG:
                                         return False
                                     elif belongOp_out == Belong.NOTBELONG:
                                         return True
                     else:
-                        if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
-                            row_index, column_index]:
+                        if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
+                            row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                             return False
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(dataDictionary_in.columns):
@@ -958,15 +971,18 @@ def checkIntervalPreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
                                 row_index - 1, column_name] and (
-                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                dataDictionary_out.loc[row_index - 1, column_name])):
+                                    not pd.isnull(dataDictionary_in.loc[
+                                row_index - 1, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_name])):
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                     else:
                         if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                            row_index, column_name]:
+                            row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                             return False
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
@@ -985,13 +1001,17 @@ def checkIntervalPreviousBelong(dataDictionary_in: pd.DataFrame, dataDictionary_
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field] and (
+                                    not pd.isnull(dataDictionary_in.loc[idx - 1, field]) and pd.isnull(
+                                dataDictionary_out.loc[idx, field])):
                             if belongOp_out == Belong.BELONG:
                                 return False
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                 else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and (
+                                    not pd.isnull(dataDictionary_in.at[idx, field]) and pd.isnull(
+                                dataDictionary_out.at[idx, field])):
                         return False
 
     if belongOp_out == Belong.BELONG:
@@ -1171,14 +1191,19 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                     return True
                         else:
                             if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.iloc[
-                                row_index, column_index + 1]:
+                                row_index, column_index + 1] and (
+                                    not pd.isnull(dataDictionary_in.iloc[
+                                row_index, column_index + 1]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                     else:
                         if dataDictionary_out.at[row_index, column_name] != dataDictionary_in.at[
-                            row_index, column_name]:
+                            row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                             return False
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(dataDictionary_in.columns):
@@ -1193,14 +1218,19 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                     return True
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                row_index + 1, column_name]:
+                                row_index + 1, column_name] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index + 1, column_name]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
+                                print("DATA IN: ", dataDictionary_in.loc[row_index+1, column_name], "DATA OUT: ", dataDictionary_out.loc[row_index, column_name])
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
                                     return True
                     else:
                         if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                            row_index, column_name]:
+                            row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_name])):
                             return False
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the NEXT operation")
@@ -1219,13 +1249,17 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
+                        if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field] and (
+                                    not pd.isnull(dataDictionary_in.loc[idx + 1, field]) and pd.isnull(
+                                dataDictionary_out.loc[idx, field])):
                             if belongOp_out == Belong.BELONG:
                                 return False
                             elif belongOp_out == Belong.NOTBELONG:
                                 return True
                 else:
-                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                    if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and (
+                                    not pd.isnull(dataDictionary_in.at[idx, field]) and pd.isnull(
+                                dataDictionary_out.at[idx, field])):
                         return False
 
     if belongOp_out == Belong.BELONG:
