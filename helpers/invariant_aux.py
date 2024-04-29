@@ -1221,7 +1221,6 @@ def checkIntervalNextBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
                                 row_index + 1, column_name] and (
                                     not pd.isnull(dataDictionary_in.at[row_index + 1, column_name]) and pd.isnull(
                                 dataDictionary_out.at[row_index, column_name])):
-                                print("DATA IN: ", dataDictionary_in.loc[row_index+1, column_name], "DATA OUT: ", dataDictionary_out.loc[row_index, column_name])
                                 if belongOp_out == Belong.BELONG:
                                     return False
                                 elif belongOp_out == Belong.NOTBELONG:
@@ -4943,7 +4942,9 @@ def checkDerivedTypePreviousBelongBelong(dataDictionary_in: pd.DataFrame, dataDi
                         if value in missing_values or pd.isnull(value):
                             if row_index == 0:
                                 if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                    row_index, column_name]:
+                                    row_index, column_name] and (
+                                        not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                    dataDictionary_out.loc[row_index, column_name])):
                                     return False
                             else:
                                 if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
@@ -4953,7 +4954,9 @@ def checkDerivedTypePreviousBelongBelong(dataDictionary_in: pd.DataFrame, dataDi
                                     return False
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                row_index, column_name]:
+                                row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                dataDictionary_out.loc[row_index, column_name])):
                                 return False
 
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
@@ -4965,9 +4968,11 @@ def checkDerivedTypePreviousBelongBelong(dataDictionary_in: pd.DataFrame, dataDi
                                     row_index, column_name]:
                                     return False
                             else:
-                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                    row_index - 1, column_name]:
-                                    return False
+                                # Check that is posible to access to the previous row
+                                if row_index - 1 in dataDictionary_in.index:
+                                    if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                        row_index - 1, column_name]:
+                                        return False
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
                                 row_index, column_name] and not (pd.isnull(
@@ -5058,7 +5063,7 @@ def checkDerivedTypePreviousBelongBelong(dataDictionary_in: pd.DataFrame, dataDi
                                 if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
                                     return False
                             else:
-                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field] and not pd.isnull(dataDictionary_in.loc[idx - 1, field]):
+                                if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx - 1, field]:
                                     return False
                         else:
                             if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
@@ -5109,14 +5114,14 @@ def checkDerivedTypePreviousBelongNotBelong(dataDictionary_in: pd.DataFrame, dat
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
                 for column_index, column_name in enumerate(dataDictionary_in.columns):
                     for row_index, value in dataDictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
+                        if value in missing_values:
                             if row_index == 0:
                                 if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
                                     row_index, column_name]:
                                     return True
                             else:
-                                if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                    row_index - 1, column_name]:
+                                if (dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
+                                    row_index - 1, column_name]):
                                     return True
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
@@ -5389,7 +5394,6 @@ def checkSpecialTypePrevious(dataDictionary_in: pd.DataFrame, dataDictionary_out
         :return: True if the derived type previous value is applied correctly
     """
     result = True
-
     if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
         result = checkDerivedTypePreviousBelongBelong(dataDictionary_in=dataDictionary_in,
                                                       dataDictionary_out=dataDictionary_out,
@@ -5437,18 +5441,22 @@ def checkDerivedTypeNextBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
             if specialTypeInput == SpecialType.MISSING:
                 for column_index, column_name in enumerate(dataDictionary_in.columns):
                     for row_index, value in dataDictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
+                        if (value in missing_values or pd.isnull(value)) and row_index < len(dataDictionary_in) - 1:
                             if row_index == len(dataDictionary_in) - 1:
                                 if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                    row_index, column_name]:
+                                    row_index, column_name] and (
+                                        not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(
+                                    dataDictionary_out.loc[row_index, column_name])):
                                     return False
                             else:
                                 if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                    row_index + 1, column_name]:
+                                    row_index + 1, column_name] and (
+                                        not pd.isnull(dataDictionary_out.loc[row_index, column_name]) and pd.isnull(dataDictionary_in.loc[row_index + 1, column_name])):
                                     return False
                         else:
                             if dataDictionary_out.loc[row_index, column_name] != dataDictionary_in.loc[
-                                row_index, column_name]:
+                                row_index, column_name] and (
+                                    not pd.isnull(dataDictionary_in.loc[row_index, column_name]) and pd.isnull(dataDictionary_out.loc[row_index, column_name])):
                                 return False
 
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
@@ -5487,7 +5495,9 @@ def checkDerivedTypeNextBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
                                     return False
                         else:
                             if dataDictionary_out.at[row_index, column_index] != dataDictionary_in.at[
-                                row_index, column_index]:
+                                row_index, column_index] and (
+                                    not pd.isnull(dataDictionary_in.at[row_index, column_index]) and pd.isnull(
+                                dataDictionary_out.at[row_index, column_index])):
                                 return False
 
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
@@ -5532,7 +5542,8 @@ def checkDerivedTypeNextBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
                                 if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
                                     return False
                         else:
-                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
+                                    pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(dataDictionary_out.loc[idx, field])):
                                 return False
 
                 else:
@@ -5545,7 +5556,8 @@ def checkDerivedTypeNextBelongBelong(dataDictionary_in: pd.DataFrame, dataDictio
                                 if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx + 1, field]:
                                     return False
                         else:
-                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]:
+                            if dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field] and not (
+                                    pd.isnull(dataDictionary_in.loc[idx, field]) and pd.isnull(dataDictionary_out.loc[idx, field])):
                                 return False
 
             elif specialTypeInput == SpecialType.INVALID:
@@ -5980,7 +5992,8 @@ def checkDerivedTypeColRowOutliers(derivedTypeOutput: DerivedType, dataDictionar
                     for col in dataDictionary_in.columns:
                         for idx, value in dataDictionary_in[col].items():
                             if outliers_dataframe_mask.at[idx, col] == 1 and idx != len(dataDictionary_in) - 1:
-                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx + 1, col]:
+                                if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx + 1, col] and not (pd.isnull(
+                                    dataDictionary_out.at[idx, col]) and pd.isnull(dataDictionary_in.at[idx + 1, col])):
                                     return False
                             else:
                                 if dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col] and not (

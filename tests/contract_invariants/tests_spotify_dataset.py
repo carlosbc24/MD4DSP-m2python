@@ -4088,17 +4088,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        field=field, missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput)
-        expected_df[field] = expected_df[field].replace(np.NaN, 1)
-        # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
-        most_frequent_list = expected_df[field].value_counts().index.tolist()
-        most_frequent_value = most_frequent_list[0]
-        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if x in missing_values else x)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                specialTypeInput=specialTypeInput,
+                                                                                field=field, missing_values=missing_values,
+                                                                                derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              missing_values=missing_values,
+                                                                                derivedTypeOutput=derivedTypeOutput,
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                field=field)
+        assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, and got True")
 
         # Caso 2
         # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
@@ -4112,13 +4114,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
         most_frequent_value = most_frequent_list[0]
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        missing_values=missing_values, field=field,
-                                                                        derivedTypeOutput=derivedTypeOutput)
-        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if x in missing_values else x)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+                                                                                    specialTypeInput=specialTypeInput,
+                                                                                    missing_values=missing_values, field=field,
+                                                                                    derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              missing_values=missing_values,
+                                                                                derivedTypeOutput=derivedTypeOutput,
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                field=field)
+        assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, and got True")
 
         # Caso 3
         # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
@@ -4128,20 +4136,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         missing_values=missing_values,
                                                                         derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for col in numeric_columns:
-            # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
-            most_frequent_list = expected_df[col].value_counts().index.tolist()
-            most_frequent_value = most_frequent_list[0]
-            expected_df[col] = expected_df[col].apply(lambda x: most_frequent_value if x in missing_values else x)
-            # Convertir el tipo de dato de la columna al tipo que presente result en la columna
-            expected_df[col] = expected_df[col].astype(result_df[col].dtype)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              missing_values=missing_values,
+                                                                                derivedTypeOutput=derivedTypeOutput,
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                axis_param=0)
+        assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, and got True")
 
         # Caso 4
         # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
@@ -4151,19 +4158,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         derivedTypeOutput=derivedTypeOutput,
                                                                         missing_values=missing_values, axis_param=None)
-        # Obtener el valor más frecuente de entre todas las columnas numéricas del dataframe
-        most_frequent_list = expected_df.stack().value_counts().index.tolist()
-        most_frequent_value = most_frequent_list[0]
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: most_frequent_value if x in missing_values else x))
-        for col in expected_df.columns:
-            # Asignar el tipo de cada columna del dataframe result_df a la columna correspondiente en expected_df
-            expected_df[col] = expected_df[col].astype(result_df[col].dtype)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              specialTypeInput=specialTypeInput,
+                                                                                missing_values=missing_values,
+                                                                              derivedTypeOutput=derivedTypeOutput,
+                                                                                dataDictionary_out=result_df,
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                axis_param=None)
+        assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, and got True")
 
         # Caso 5
         # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1 (Previous) en todas
@@ -4173,19 +4180,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(1)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         derivedTypeOutput=derivedTypeOutput,
                                                                         axis_param=0, missing_values=missing_values)
-        for col in expected_df.columns:
-
-            # Iterar sobre la columna en orden inverso, comenzando por el penúltimo índice
-            for i in range(len(expected_df[col]) - 2, -1, -1):
-                if expected_df[col].iat[i] in missing_values and i > 0:
-                    expected_df[col].iat[i] = expected_df[col].iat[i - 1]
-
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              derivedTypeOutput=derivedTypeOutput,
+                                                                                missing_values=missing_values,
+                                                                              axis_param=0, belongOp_in=Belong(0),
+                                                                                belongOp_out=Belong(0))
+        assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, and got True")
 
         # Caso 6
         # Ejecutar la invariante: cambiar los valores faltantes 1, 3, 0.13 y 0.187, así como los valores nulos de python por el valor derivado 2 (Next) en todas
@@ -4195,19 +4202,19 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(2)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         missing_values=missing_values,
                                                                         derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        # Asegúrate de que NaN esté incluido en la lista de valores faltantes para la comprobación, si aún no está incluido.
-        missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
-
-        for col in expected_df.columns:
-            for i in range(len(expected_df[col]) - 1):  # Detenerse en el penúltimo elemento
-                if expected_df[col].iat[i] in missing_values or pd.isnull(expected_df[col].iat[i]) and i < len(expected_df[col]) - 1:
-                    expected_df[col].iat[i] = expected_df[col].iat[i + 1]
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              missing_values=missing_values,
+                                                                                derivedTypeOutput=derivedTypeOutput,
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                axis_param=0)
+        assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, and got True")
 
         # Caso 7 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1
         # (Previous) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
@@ -4219,10 +4226,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                          specialTypeInput=specialTypeInput,
                                                                          derivedTypeOutput=derivedTypeOutput,
                                                                          missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                                  dataDictionary_out=result,
+                                                                                    specialTypeInput=specialTypeInput,
+                                                                                  missing_values=missing_values,
+                                                                                    derivedTypeOutput=derivedTypeOutput,
+                                                                                  belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                    axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
         # Caso 8 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
@@ -4235,10 +4249,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                          specialTypeInput=specialTypeInput,
                                                                          derivedTypeOutput=derivedTypeOutput,
                                                                          missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                                  dataDictionary_out=result,
+                                                                                    specialTypeInput=specialTypeInput,
+                                                                                  missing_values=missing_values,
+                                                                                  belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                    derivedTypeOutput=derivedTypeOutput,
+                                                                                  axis_param=None)
         print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
 
         # Caso 9
@@ -4249,10 +4270,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derivedTypeOutput = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                          specialTypeInput=specialTypeInput,
                                                                          derivedTypeOutput=derivedTypeOutput,
                                                                          field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                                  dataDictionary_out=result,
+                                                                                    specialTypeInput=specialTypeInput,
+                                                                                  derivedTypeOutput=derivedTypeOutput,
+                                                                                    belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                  field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
         # Caso 10
@@ -4261,26 +4288,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         derivedTypeOutput=derivedTypeOutput,
                                                                         field=field, axis_param=0)
-        # Obtener el valor más frecuentemente repetido en la columna 'danceability'
-        most_frequent_value = expected_df[field].mode()[0]
-        # Obtener los outliers de la columna 'danceability' y sustituirlos por el valor más frecuente en expected_df
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        if np.issubdtype(expected_df[field].dtype, np.number):
-            expected_df[field] = expected_df[field].where(
-            ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=most_frequent_value)
-            pd.testing.assert_frame_equal(result_df, expected_df)
-            print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
-        else:
-            # Print and log a warning message indicating the column is not numeric
-            print_and_log(
-                "Warning: The column 'danceability' is not numeric. The function returned the original dataframe")
-
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                derivedTypeOutput=derivedTypeOutput,
+                                                                              field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 10 Failed: Expected True, but got False"
+        print_and_log("Test Case 10 Passed: Expected True, and got True")
 
         # Caso 11
         # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 1
@@ -4290,24 +4309,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(1)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         field=field, derivedTypeOutput=derivedTypeOutput,
                                                                         axis_param=0)
-        # En primer lugar, obtenemos los valores atípicos de la columna 'danceability'
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        if np.issubdtype(expected_df[field].dtype, np.number):
-            # Sustituir los valores atípicos por el valor anterior en expected_df. Si el primer valor es un valor atípico, no se puede sustituir por el valor anterior.
-            for i in range(1, len(expected_df[field])):
-                expected_df[field].iat[i] = expected_df[field].iat[i - 1] if i>0 and ((expected_df[field].iat[i] < Q1 - 1.5 * IQR) or (expected_df[field].iat[i] > Q3 + 1.5 * IQR)) else expected_df[field].iat[i]
-            pd.testing.assert_frame_equal(result_df, expected_df)
-            print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
-        else:
-            # Print and log a warning message indicating the column is not numeric
-            print_and_log(
-                "Warning: The column 'danceability' is not numeric. The function returned the original dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              field=field, derivedTypeOutput=derivedTypeOutput,
+                                                                                belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                axis_param=0)
+        assert invariant_result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, and got True")
 
         # Caso 12
         # Ejecutar la invariante: cambiar los valores outliers del dataframe completo por el valor derivado 2 (Next)
@@ -4317,287 +4330,853 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         specialTypeInput = SpecialType(2)
         derivedTypeOutput = DerivedType(2)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
                                                                         specialTypeInput=specialTypeInput,
                                                                         derivedTypeOutput=derivedTypeOutput, axis_param=0)
-        # Se obtienen los outliers de todas las columnas que sean numéricas y se sustituyen los valores outliers por el valor siguiente en expected_df
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for col in numeric_columns: # Sustituir los valores outliers por el valor siguiente
-            # Obtiene los outliers de cada columna
-            Q1 = expected_df[col].quantile(0.25)
-            Q3 = expected_df[col].quantile(0.75)
-            IQR = Q3 - Q1
-            for i in range(len(expected_df[col]) - 1):  # Detenerse en el penúltimo elemento
-                if i < len(expected_df[col]) - 1 and expected_df[col].iat[i] < Q1 - 1.5 * IQR or expected_df[col].iat[i] > Q3 + 1.5 * IQR:
-                    expected_df[col].iat[i] = expected_df[col].iat[i + 1]
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary_in=self.small_batch_dataset.copy(),
+                                                                              dataDictionary_out=result_df,
+                                                                                specialTypeInput=specialTypeInput,
+                                                                              belongOp_in=Belong(0), belongOp_out=Belong(0),
+                                                                                derivedTypeOutput=derivedTypeOutput,
+                                                                              axis_param=0)
+        assert invariant_result is True, "Test Case 12 Failed: Expected True, but got False"
+        print_and_log("Test Case 12 Passed: Expected True, and got True")
+
+        # Caso 13
+        # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 0.146, 0.13, 0.187]
+        field = 'acousticness'
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 13 Failed: Expected True, but got True"
+        print_and_log("Test Case 13 Passed: Expected False, and got False")
+
+        # Caso 14
+        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
+        # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.146, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        field = 'acousticness'
+        # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
+        most_frequent_list = expected_df[field].value_counts().index.tolist()
+        most_frequent_value = most_frequent_list[0]
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values, field=field,
+            derivedTypeOutput=derivedTypeOutput)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            field=field)
+        assert invariant_result is False, "Test Case 14 Failed: Expected True, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, and got False")
+
+        # Caso 15
+        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
+        # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [0.146, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, and got False")
+
+        # Caso 16
+        # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
+        # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values, axis_param=None)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            dataDictionary_out=result_df,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            axis_param=None)
+        assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, and got False")
+
+        # Caso 17
+        # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1 (Previous) en todas
+        # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0, missing_values=missing_values)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values,
+            axis_param=0, belongOp_in=Belong(0),
+            belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, and got False")
+
+        # Caso 18
+        # Ejecutar la invariante: cambiar los valores faltantes 1, 3, 0.13 y 0.187, así como los valores nulos de python por el valor derivado 2 (Next) en todas
+        # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(0)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 18 Failed: Expected False, but got True"
+        print_and_log("Test Case 18 Passed: Expected False, and got False")
+
+        # Caso 19 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1
+        # (Previous) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
+        # el esperado. Expected ValueError
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(1)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                axis_param=None)
+        print_and_log("Test Case 19 Passed: expected ValueError, got ValueError")
+
+        # Caso 20 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
+        # (Next) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
+        # el esperado. Expected ValueError
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(1)
+        missing_values = [1, 3, 0.13, 0.187]
+        derivedTypeOutput = DerivedType(2)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                derivedTypeOutput=derivedTypeOutput,
+                axis_param=None)
+        print_and_log("Test Case 20 Passed: expected ValueError, got ValueError")
+
+        # Caso 21
+        # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        field = 'p'
+        derivedTypeOutput = DerivedType(0)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.small_batch_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.small_batch_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(1), belongOp_out=Belong(1),
+                field=field)
+        print_and_log("Test Case 21 Passed: expected ValueError, got ValueError")
+
+        # Caso 22
+        # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 0 (Most Frequent) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        field = 'danceability'
+        derivedTypeOutput = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
+        assert invariant_result is False, "Test Case 22 Failed: Expected False, but got True"
+        print_and_log("Test Case 22 Passed: Expected False, and got False")
+
+        # Caso 23
+        # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 1
+        # (Previous) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        field = 'danceability'
+        derivedTypeOutput = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            field=field, derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 23 Failed: Expected False, but got True"
+        print_and_log("Test Case 23 Passed: Expected False, and got False")
+
+        # Caso 24
+        # Ejecutar la invariante: cambiar los valores outliers del dataframe completo por el valor derivado 2 (Next)
+        # en todas las columnas del batch pequeño del dataset de prueba.
+        # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        specialTypeInput = SpecialType(2)
+        derivedTypeOutput = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.small_batch_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.small_batch_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
+        assert invariant_result is False, "Test Case 24 Failed: Expected False, but got True"
+        print_and_log("Test Case 24 Passed: Expected False, and got False")
 
 
     def execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_DerivedValue
         """
-        # Caso 1
-        # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
-        # en el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
-        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
-        missing_values = [1, 0.146, 0.13, 0.187]
-        field = 'acousticness'
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        field=field, missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput)
-        expected_df[field] = expected_df[field].replace(np.NaN, 1)
-        # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
-        most_frequent_list = expected_df[field].value_counts().index.tolist()
-        most_frequent_value = most_frequent_list[0]
-        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if x in missing_values else x)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
+        # # Caso 1
+        # # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
+        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(0)
+        # missing_values = [1, 0.146, 0.13, 0.187]
+        # field = 'acousticness'
+        # derivedTypeOutput = DerivedType(0)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     field=field, missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     field=field)
+        # assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
+        # print_and_log("Test Case 1 Passed: Expected True, and got True")
+        #
+        # # Caso 2
+        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
+        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [0.146, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(0)
+        # field = 'acousticness'
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values, field=field,
+        #     derivedTypeOutput=derivedTypeOutput)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     field=field)
+        # assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
+        # print_and_log("Test Case 2 Passed: Expected True, and got True")
+        #
+        # # Caso 3
+        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
+        # # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [0.146, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(0)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     axis_param=0)
+        # assert invariant_result is True, "Test Case 3 Failed: Expected True, but got False"
+        # print_and_log("Test Case 3 Passed: Expected True, and got True")
+        #
+        # # Caso 4
+        # # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
+        # # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [1, 3, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(0)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     missing_values=missing_values, axis_param=None)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     dataDictionary_out=result_df,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     axis_param=None)
+        # assert invariant_result is True, "Test Case 4 Failed: Expected True, but got False"
+        # print_and_log("Test Case 4 Passed: Expected True, and got True")
+        #
+        # # Caso 5
+        # # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1 (Previous) en todas
+        # # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [1, 3, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(1)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     axis_param=0, missing_values=missing_values)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     missing_values=missing_values,
+        #     axis_param=0, belongOp_in=Belong(0),
+        #     belongOp_out=Belong(0))
+        # assert invariant_result is True, "Test Case 5 Failed: Expected True, but got False"
+        # print_and_log("Test Case 5 Passed: Expected True, and got True")
+        #
+        # # Caso 6
+        # # Ejecutar la invariante: cambiar los valores faltantes 1, 3, 0.13 y 0.187, así como los valores nulos de python por el valor derivado 2 (Next) en todas
+        # # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(0)
+        # missing_values = [1, 3, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(2)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     axis_param=0)
+        # assert invariant_result is True, "Test Case 6 Failed: Expected True, but got False"
+        # print_and_log("Test Case 6 Passed: Expected True, and got True")
+        #
+        # # Caso 7 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1
+        # # (Previous) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
+        # # el esperado. Expected ValueError
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [1, 3, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(1)
+        # expected_exception = ValueError
+        # with self.assertRaises(expected_exception) as context:
+        #     result = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #         dataDictionary=self.rest_of_dataset.copy(),
+        #         specialTypeInput=specialTypeInput,
+        #         derivedTypeOutput=derivedTypeOutput,
+        #         missing_values=missing_values, axis_param=None)
+        #     invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #         dataDictionary_in=self.rest_of_dataset.copy(),
+        #         dataDictionary_out=result,
+        #         specialTypeInput=specialTypeInput,
+        #         missing_values=missing_values,
+        #         derivedTypeOutput=derivedTypeOutput,
+        #         belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #         axis_param=None)
+        # print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
+        #
+        # # Caso 8 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
+        # # (Next) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
+        # # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
+        # # el esperado. Expected ValueError
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [1, 3, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(2)
+        # expected_exception = ValueError
+        # with self.assertRaises(expected_exception) as context:
+        #     result = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #         dataDictionary=self.rest_of_dataset.copy(),
+        #         specialTypeInput=specialTypeInput,
+        #         derivedTypeOutput=derivedTypeOutput,
+        #         missing_values=missing_values, axis_param=None)
+        #     invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #         dataDictionary_in=self.rest_of_dataset.copy(),
+        #         dataDictionary_out=result,
+        #         specialTypeInput=specialTypeInput,
+        #         missing_values=missing_values,
+        #         belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #         derivedTypeOutput=derivedTypeOutput,
+        #         axis_param=None)
+        # print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
+        #
+        # # Caso 9
+        # # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
+        # specialTypeInput = SpecialType(2)
+        # field = 'p'
+        # derivedTypeOutput = DerivedType(0)
+        # expected_exception = ValueError
+        # with self.assertRaises(expected_exception) as context:
+        #     result = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #         dataDictionary=self.rest_of_dataset.copy(),
+        #         specialTypeInput=specialTypeInput,
+        #         derivedTypeOutput=derivedTypeOutput,
+        #         field=field)
+        #     invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #         dataDictionary_in=self.rest_of_dataset.copy(),
+        #         dataDictionary_out=result,
+        #         specialTypeInput=specialTypeInput,
+        #         derivedTypeOutput=derivedTypeOutput,
+        #         belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #         field=field)
+        # print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+        #
+        # # Caso 10
+        # # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 0 (Most Frequent) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(2)
+        # field = 'danceability'
+        # derivedTypeOutput = DerivedType(0)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     field=field, axis_param=0)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     field=field, axis_param=0)
+        # assert invariant_result is True, "Test Case 10 Failed: Expected True, but got False"
+        # print_and_log("Test Case 10 Passed: Expected True, and got True")
+        #
+        # # Caso 11
+        # # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 1
+        # # (Previous) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(2)
+        # field = 'danceability'
+        # derivedTypeOutput = DerivedType(1)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     field=field, derivedTypeOutput=derivedTypeOutput,
+        #     axis_param=0)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     field=field, axis_param=0)
+        # assert invariant_result is True, "Test Case 11 Failed: Expected True, but got False"
+        # print_and_log("Test Case 11 Passed: Expected True, and got True")
+        #
+        # # Caso 12
+        # # Ejecutar la invariante: cambiar los valores outliers del dataframe completo por el valor derivado 2 (Next)
+        # # en todas las columnas del batch pequeño del dataset de prueba.
+        # # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # # y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(2)
+        # derivedTypeOutput = DerivedType(2)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(0),
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     axis_param=0)
+        # assert invariant_result is True, "Test Case 12 Failed: Expected True, but got False"
+        # print_and_log("Test Case 12 Passed: Expected True, and got True")
+        #
+        # # Caso 13
+        # # Ejecutar la invariante: cambiar la lista de valores missing 1, 3 y 4 por el valor valor derivado 0 (most frequent value) en la columna 'acousticness'
+        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(0)
+        # missing_values = [1, 0.146, 0.13, 0.187]
+        # field = 'acousticness'
+        # derivedTypeOutput = DerivedType(0)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     field=field, missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
+        #     field=field)
+        # assert invariant_result is False, "Test Case 13 Failed: Expected True, but got True"
+        # print_and_log("Test Case 13 Passed: Expected False, and got False")
+        #
+        # # Caso 14
+        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
+        # # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [0.146, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(0)
+        # field = 'acousticness'
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values, field=field,
+        #     derivedTypeOutput=derivedTypeOutput)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
+        #     field=field)
+        # assert invariant_result is False, "Test Case 14 Failed: Expected True, but got True"
+        # print_and_log("Test Case 14 Passed: Expected False, and got False")
+        #
+        # # Caso 15
+        # # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
+        # # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
+        # # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [0.146, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(0)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     dataDictionary_out=result_df,
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
+        #     axis_param=0)
+        # assert invariant_result is False, "Test Case 15 Failed: Expected False, but got True"
+        # print_and_log("Test Case 15 Passed: Expected False, and got False")
+        #
+        # # Caso 16
+        # # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
+        # # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
+        # # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
+        # specialTypeInput = SpecialType(1)
+        # missing_values = [1, 3, 0.13, 0.187]
+        # derivedTypeOutput = DerivedType(0)
+        # result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        #     dataDictionary=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     missing_values=missing_values, axis_param=None)
+        # invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+        #     dataDictionary_in=self.rest_of_dataset.copy(),
+        #     specialTypeInput=specialTypeInput,
+        #     missing_values=missing_values,
+        #     derivedTypeOutput=derivedTypeOutput,
+        #     dataDictionary_out=result_df,
+        #     belongOp_in=Belong(0), belongOp_out=Belong(1),
+        #     axis_param=None)
+        # assert invariant_result is False, "Test Case 16 Failed: Expected False, but got True"
+        # print_and_log("Test Case 16 Passed: Expected False, and got False")
 
-        # Caso 2
-        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) de la columna 'acousticness'
-        # en el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
-        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
-        missing_values = [0.146, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
-        field = 'acousticness'
-        # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
-        most_frequent_list = expected_df[field].value_counts().index.tolist()
-        most_frequent_value = most_frequent_list[0]
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        missing_values=missing_values, field=field,
-                                                                        derivedTypeOutput=derivedTypeOutput)
-        expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if x in missing_values else x)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
-
-        # Caso 3
-        # Ejecutar la invariante: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent) en
-        # el dataframe completo del batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
-        # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
-        missing_values = [0.146, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        axis_param=0)
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for col in numeric_columns:
-            # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
-            most_frequent_list = expected_df[col].value_counts().index.tolist()
-            most_frequent_value = most_frequent_list[0]
-            expected_df[col] = expected_df[col].apply(lambda x: most_frequent_value if x in missing_values else x)
-            # Convertir el tipo de dato de la columna al tipo que presente result en la columna
-            expected_df[col] = expected_df[col].astype(result_df[col].dtype)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
-
-        # Caso 4
-        # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 0 (Most Frequent) en todas
-        # las columnas numéricas del batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del
-        # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
-        missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        missing_values=missing_values, axis_param=None)
-        # Obtener el valor más frecuente de entre todas las columnas numéricas del dataframe
-        most_frequent_list = expected_df.stack().value_counts().index.tolist()
-        most_frequent_value = most_frequent_list[0]
-        expected_df = expected_df.apply(
-            lambda col: col.apply(lambda x: most_frequent_value if x in missing_values else x))
-        for col in expected_df.columns:
-            # Asignar el tipo de cada columna del dataframe result_df a la columna correspondiente en expected_df
-            expected_df[col] = expected_df[col].astype(result_df[col].dtype)
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
-
-        # Caso 5
+        # Caso 17
         # Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1 (Previous) en todas
         # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(1)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        axis_param=0, missing_values=missing_values)
-        for col in expected_df.columns:
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0, missing_values=missing_values)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            missing_values=missing_values,
+            axis_param=0, belongOp_in=Belong(0),
+            belongOp_out=Belong(1))
+        assert invariant_result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, and got False")
 
-            # Iterar sobre la columna en orden inverso, comenzando por el penúltimo índice
-            for i in range(len(expected_df[col]) - 2, -1, -1):
-                if expected_df[col].iat[i] in missing_values and i>0:
-                    expected_df[col].iat[i] = expected_df[col].iat[i - 1]
-
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
-
-        # Caso 6
+        # Caso 18
         # Ejecutar la invariante: cambiar los valores faltantes 1, 3, 0.13 y 0.187, así como los valores nulos de python por el valor derivado 2 (Next) en todas
         # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(2)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        axis_param=0)
-        # Asegúrate de que NaN esté incluido en la lista de valores faltantes para la comprobación, si aún no está incluido.
-        missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            missing_values=missing_values,
+            derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(1), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 18 Failed: Expected False, but got True"
+        print_and_log("Test Case 18 Passed: Expected False, and got False")
 
-        for col in expected_df.columns:
-            for i in range(len(expected_df[col]) - 1):  # Detenerse en el penúltimo elemento
-                if expected_df[col].iat[i] in missing_values or pd.isnull(expected_df[col].iat[i]) and i < len(expected_df[col]) - 1:
-                    expected_df[col].iat[i] = expected_df[col].iat[i + 1]
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
-
-        # Caso 7 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1
+        # Caso 19 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 1
         # (Previous) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
         # el esperado. Expected ValueError
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
-                                                                         missing_values=missing_values, axis_param=None)
-        print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(1), belongOp_out=Belong(0),
+                axis_param=None)
+        print_and_log("Test Case 19 Passed: expected ValueError, got ValueError")
 
-        # Caso 8 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
+        # Caso 20 - Ejecutar la invariante: cambiar los valores invalidos 1, 3, 0.13 y 0.187 por el valor derivado 2
         # (Next) en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
         # el esperado. Expected ValueError
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derivedTypeOutput = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
-                                                                         missing_values=missing_values, axis_param=None)
-        print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                missing_values=missing_values, axis_param=None)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                missing_values=missing_values,
+                belongOp_in=Belong(0), belongOp_out=Belong(1),
+                derivedTypeOutput=derivedTypeOutput,
+                axis_param=None)
+        print_and_log("Test Case 20 Passed: expected ValueError, got ValueError")
 
-        # Caso 9
+        # Caso 21
         # Ejecutar la invariante: cambiar los valores outliers de una columna que no existe. Expected ValueError
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         field = 'p'
         derivedTypeOutput = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
-                                                                         field=field)
-        print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+                dataDictionary=self.rest_of_dataset.copy(),
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                field=field)
+            invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+                dataDictionary_in=self.rest_of_dataset.copy(),
+                dataDictionary_out=result,
+                specialTypeInput=specialTypeInput,
+                derivedTypeOutput=derivedTypeOutput,
+                belongOp_in=Belong(1), belongOp_out=Belong(1),
+                field=field)
+        print_and_log("Test Case 21 Passed: expected ValueError, got ValueError")
 
-        # Caso 10
+        # Caso 22
         # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 0 (Most Frequent) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(0)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        field=field, axis_param=0)
-        # Obtener el valor más frecuentemente repetido en la columna 'danceability'
-        most_frequent_value = expected_df[field].mode()[0]
-        # Obtener los outliers de la columna 'danceability' y sustituirlos por el valor más frecuente en expected_df
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        if np.issubdtype(expected_df[field].dtype, np.number):
-            expected_df[field] = expected_df[field].where(
-                ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)),
-                other=most_frequent_value)
-            pd.testing.assert_frame_equal(result_df, expected_df)
-            print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
-        else:
-            # Print and log a warning message indicating the column is not numeric
-            print_and_log(
-                "Warning: The column 'danceability' is not numeric. The function returned the original dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            derivedTypeOutput=derivedTypeOutput,
+            field=field, axis_param=0)
+        assert invariant_result is False, "Test Case 22 Failed: Expected False, but got True"
+        print_and_log("Test Case 22 Passed: Expected False, and got False")
 
-        # Caso 11
+        # Caso 23
         # Ejecutar la invariante: cambiar los valores outliers de una columna especifica por el valor derivado 1
         # (Previous) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         field = 'danceability'
         derivedTypeOutput = DerivedType(1)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        field=field, derivedTypeOutput=derivedTypeOutput,
-                                                                        axis_param=0)
-        # En primer lugar, obtenemos los valores atípicos de la columna 'danceability'
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        if np.issubdtype(expected_df[field].dtype, np.number):
-            # Sustituir los valores atípicos por el valor anterior en expected_df. Si el primer valor es un valor atípico, no se puede sustituir por el valor anterior.
-            for i in range(1, len(expected_df[field])):
-                expected_df[field].iat[i] = expected_df[field].iat[i - 1] if i > 0 and (
-                            (expected_df[field].iat[i] < Q1 - 1.5 * IQR) or (
-                                expected_df[field].iat[i] > Q3 + 1.5 * IQR)) else expected_df[field].iat[i]
-            pd.testing.assert_frame_equal(result_df, expected_df)
-            print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
-        else:
-            # Print and log a warning message indicating the column is not numeric
-            print_and_log(
-                "Warning: The column 'danceability' is not numeric. The function returned the original dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            field=field, derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            field=field, derivedTypeOutput=derivedTypeOutput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            axis_param=0)
+        assert invariant_result is False, "Test Case 23 Failed: Expected False, but got True"
+        print_and_log("Test Case 23 Passed: Expected False, and got False")
 
-        # Caso 12
+        # Caso 24
         # Ejecutar la invariante: cambiar los valores outliers del dataframe completo por el valor derivado 2 (Next)
         # en todas las columnas del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.rest_of_dataset.copy()
         specialTypeInput = SpecialType(2)
         derivedTypeOutput = DerivedType(2)
-        result_df = self.invariants.checkInv_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
-                                                                        axis_param=0)
-        # Se obtienen los outliers de todas las columnas que sean numéricas y se sustituyen los valores outliers por el valor siguiente en expected_df
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for col in numeric_columns:  # Sustituir los valores outliers por el valor siguiente
-            # Obtiene los outliers de cada columna
-            Q1 = expected_df[col].quantile(0.25)
-            Q3 = expected_df[col].quantile(0.75)
-            IQR = Q3 - Q1
-            for i in range(len(expected_df[col]) - 1):  # Detenerse en el penúltimo elemento
-                if i < len(expected_df[col]) - 1 and expected_df[col].iat[i] < Q1 - 1.5 * IQR or \
-                        expected_df[col].iat[i] > Q3 + 1.5 * IQR:
-                    expected_df[col].iat[i] = expected_df[col].iat[i + 1]
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+            dataDictionary=self.rest_of_dataset.copy(),
+            specialTypeInput=specialTypeInput,
+            derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_DerivedValue(
+            dataDictionary_in=self.rest_of_dataset.copy(),
+            dataDictionary_out=result_df,
+            specialTypeInput=specialTypeInput,
+            belongOp_in=Belong(0), belongOp_out=Belong(1),
+            derivedTypeOutput=derivedTypeOutput,
+            axis_param=0)
+        assert invariant_result is False, "Test Case 24 Failed: Expected False, but got True"
+        print_and_log("Test Case 24 Passed: Expected False, and got False")
 
     def execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests(self):
         """

@@ -87,4 +87,4 @@ if __name__ == "__main__":
     # DEBUG TESTS
     # Execute all pre-post simple tests
     contracts_invariant_test = InvariantsExternalDatasetTests()
-    contracts_invariant_test.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests()
+    contracts_invariant_test.execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset()

@@ -823,7 +823,6 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-
         dataDictionary_outliers_mask = None
         result = True
 
@@ -832,7 +831,6 @@ class Invariants:
 
             if axis_param is None:
                 missing_values = dataDictionary_in.where(dataDictionary_outliers_mask == 1).stack().tolist()
-
         if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                 result = checkSpecialTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
@@ -865,31 +863,6 @@ class Invariants:
                                                         dataDictionary_out,
                                                         dataDictionary_outliers_mask, belongOp_in, belongOp_out,
                                                         axis_param, field)
-        elif field is not None:
-            if field not in dataDictionary_in.columns:
-                raise ValueError("The field does not exist in the dataframe")
-            elif field in dataDictionary_in.columns:
-                if np.issubdtype(dataDictionary_in[field].dtype, np.number):
-                    if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
-                        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                            result = checkSpecialTypeMostFrequent(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                                  belongOp_in, belongOp_out, missing_values, axis_param,
-                                                                  field)
-                        elif derivedTypeOutput == DerivedType.PREVIOUS:
-                            result = checkSpecialTypePrevious(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                              belongOp_in, belongOp_out, missing_values, axis_param,
-                                                              field)
-                        elif derivedTypeOutput == DerivedType.NEXT:
-                            result = checkSpecialTypeNext(dataDictionary_in, dataDictionary_out, specialTypeInput,
-                                                          belongOp_in, belongOp_out, missing_values, axis_param,
-                                                          field)
-                    elif specialTypeInput == SpecialType.OUTLIER:
-                        result = checkDerivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_in,
-                                                                dataDictionary_out, dataDictionary_outliers_mask,
-                                                                belongOp_in, belongOp_out, axis_param,
-                                                                field)
-                else:
-                    raise ValueError("The field is not numeric")
 
         return True if result else False
 

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from functions.data_transformations import Invariants
+from functions.data_transformations import DataTransformations
 from helpers.auxiliar import find_closest_value
 from helpers.enumerations import Closure, DataType, SpecialType
 from helpers.enumerations import DerivedType, Operation
@@ -76,7 +76,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         """
         Constructor of the class
         """
-        self.data_transformations = Invariants()
+        self.data_transformations = DataTransformations()
 
         # Get the current directory
         directorio_actual = os.path.dirname(os.path.abspath(__file__))

@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # Importing functions and classes from packages
-from functions.data_transformations import Invariants
+from functions.data_transformations import DataTransformations
 from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation
 from helpers.logger import print_and_log
 
@@ -35,7 +35,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         """
         Constructor of the class
         """
-        self.data_transformations = Invariants()
+        self.data_transformations = DataTransformations()
 
     def execute_All_SimpleTests(self):
         """
