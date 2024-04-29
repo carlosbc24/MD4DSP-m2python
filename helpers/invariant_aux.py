@@ -2461,26 +2461,24 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
     dataDictionary_in_copy = dataDictionary_in.copy()
     if field is None:
         if axis_param == 0:
-            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
-                # Apply the function to each element in the numeric data
-                for idx in dataDictionary_in.index:
-                    # Check if the element satisfies the interval condition
-                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
-                        # If it does, replace it with np.nan
-                        dataDictionary_in.at[idx, col_name] = np.nan
-                # Interpolate the NaN
-                dataDictionary_in_copy[col_name] = dataDictionary_in[col_name].interpolate(method='linear', limit_direction='both')
-
+            for col in dataDictionary_in.columns:
+                if np.issubdtype(dataDictionary_in[col].dtype, np.number):
+                    dataDictionary_in_copy[col] = dataDictionary_in_copy[col].apply(
+                        lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
+                    dataDictionary_in_copy[col] = dataDictionary_in_copy[col].interpolate(method='linear',
+                                                                                              limit_direction='both')
             # Iterate over each column
             for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                 # For each index in the column
                 for idx in dataDictionary_in.index:
                     # Verify if the value is NaN in the original dataframe
                     if pd.isnull(dataDictionary_in.at[idx, col]):
-                        # Replace the value with the corresponding one from dataDictionary_in
+                        # Replace the value with the corresponding one from dataDictionary_copy_copy
                         dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
 
+            # Iterate over each column
             for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                # Iterate over each index in the column
                 for idx in dataDictionary_in.index:
                     if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
                         if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
@@ -2491,41 +2489,41 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
                     else:
                         if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not (
                                 pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(
-                                dataDictionary_out.at[idx, col_name])):
+                            dataDictionary_in.at[idx, col_name])):
                             return False
         elif axis_param == 1:
-            for idx, row in dataDictionary_in.iterrows():
-                numeric_data = dataDictionary_in.iloc[idx][dataDictionary_in.iloc[idx].apply(lambda x: np.isreal(x))]
-                # Apply the function to each element in the numeric data
-                for jdx in range(len(numeric_data)):
-                    # Check if the element satisfies the interval condition
-                    if check_interval_condition(numeric_data.iloc[idx, jdx], leftMargin, rightMargin, closureType):
-                        # If it does, replace it with np.nan
-                        numeric_data.iloc[idx, jdx] = np.nan
-                # Interpolate the NaN
-                dataDictionary_in_copy.loc[idx] = numeric_data.interpolate(method='linear', limit_direction='both')
-
+            dataDictionary_in_copy = dataDictionary_in_copy.T
+            dataDictionary_in = dataDictionary_in.T
+            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                if np.issubdtype(dataDictionary_in[col].dtype, np.number):
+                    dataDictionary_in_copy[col] = dataDictionary_in_copy[col].apply(
+                        lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
+                    dataDictionary_in_copy[col] = dataDictionary_in_copy[col].interpolate(method='linear',
+                                                                                              limit_direction='both')
             # Iterate over each column
-            for col in dataDictionary_in.columns:
+            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                 # For each index in the column
                 for idx in dataDictionary_in.index:
                     # Verify if the value is NaN in the original dataframe
                     if pd.isnull(dataDictionary_in.at[idx, col]):
-                        # Replace the value with the corresponding one from dataDictionary_in
+                        # Replace the value with the corresponding one from dataDictionary_copy_copy
                         dataDictionary_in_copy.at[idx, col] = dataDictionary_in.at[idx, col]
+            dataDictionary_in_copy = dataDictionary_in_copy.T
+            dataDictionary_in = dataDictionary_in.T
 
-            for idx in dataDictionary_in.index:
-                for col_name in dataDictionary_in.columns:
-                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
-                        if dataDictionary_out.at[idx, col_name] != dataDictionary_in_copy.at[idx, col_name]:
+            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                for idx in dataDictionary_in.index:
+                    if check_interval_condition(dataDictionary_in.at[idx, col], leftMargin, rightMargin,
+                                                closureType):
+                        if dataDictionary_out.at[idx, col] != dataDictionary_in_copy.at[idx, col]:
                             if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                 return False
                             elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                 return True
                     else:
-                        if (dataDictionary_out.at[idx, col_name] != dataDictionary_in.at[idx, col_name]) and not (
-                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(
-                                dataDictionary_out.at[idx, col_name])):
+                        if (dataDictionary_out.at[idx, col] != dataDictionary_in.at[idx, col]) and not (
+                                pd.isnull(dataDictionary_out.at[idx, col]) or pd.isnull(
+                            dataDictionary_in.at[idx, col])):
                             return False
 
     elif field is not None:
@@ -2534,14 +2532,16 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
         if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
             raise ValueError("The field is not numeric")
 
-        for idx in dataDictionary_in[field].index:
-            # Check if the element satisfies the interval condition
-            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
-                # If it does, replace it with np.nan
-                dataDictionary_in_copy.at[idx, field] = np.nan
-        # Interpolate the NaN
-        dataDictionary_in_copy[field] = dataDictionary_in_copy[field].interpolate(method='linear', limit_direction='both')
-
+        dataDictionary_in_copy[field] = dataDictionary_in_copy[field].apply(
+            lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
+        dataDictionary_in_copy[field] = dataDictionary_in_copy[field].interpolate(method='linear',
+                                                                                      limit_direction='both')
+        # For each index in the column
+        for idx in dataDictionary_in.index:
+            # Verify if the value is NaN in the original dataframe
+            if pd.isnull(dataDictionary_in.at[idx, field]):
+                # Replace the value with the corresponding one from dataDictionary_copy_copy
+                dataDictionary_in_copy.at[idx, field] = dataDictionary_in.at[idx, field]
 
         # For each index in the column
         for idx in dataDictionary_in.index:
@@ -2735,7 +2735,7 @@ def checkIntervalMeanBelong(dataDictionary_in: pd.DataFrame, dataDictionary_out:
             # Calculate the mean of these numeric columns
             mean_value = only_numbers_df.mean().mean()
             # Check the dataDictionary_out positions with missing values have been replaced with the mean
-            for col_name in dataDictionary_in.columns:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                 for idx, value in dataDictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
                         if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
@@ -3020,7 +3020,7 @@ def checkIntervalMedianBelong(dataDictionary_in: pd.DataFrame, dataDictionary_ou
             # Calculate the median of these numeric columns
             median_value = only_numbers_df.median().median()
             # Check the dataDictionary_out positions with missing values have been replaced with the median
-            for col_name in dataDictionary_in.columns:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                 for idx, value in dataDictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
                         if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
@@ -3317,7 +3317,7 @@ def checkIntervalClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
             # Check if the closest values have been replaced in the dataDictionary_out
             for idx, row in dataDictionary_in.iterrows():
                 for col_name in dataDictionary_in.columns:
-                    if (np.issubdtype(row[col_name], np.number) and check_interval_condition(row[col_name], leftMargin, rightMargin, closureType)
+                    if (np.isreal(row[col_name]) and check_interval_condition(row[col_name], leftMargin, rightMargin, closureType)
                                     and not pd.isnull(row[col_name])):
                         if dataDictionary_out.at[idx, col_name] != closest_values[row[col_name]]:
                             if belongOp_out == Belong.BELONG:
