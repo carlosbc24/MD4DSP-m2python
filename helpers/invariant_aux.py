@@ -2461,19 +2461,18 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
     dataDictionary_in_copy = dataDictionary_in.copy()
     if field is None:
         if axis_param == 0:
-            for col_name in dataDictionary_in.columns:
-                numeric_data = dataDictionary_in[col_name][dataDictionary_in[col_name].apply(lambda x: np.isreal(x))]
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                 # Apply the function to each element in the numeric data
-                for idx in range(len(numeric_data)):
+                for idx in dataDictionary_in.index:
                     # Check if the element satisfies the interval condition
-                    if check_interval_condition(numeric_data.iloc[idx], leftMargin, rightMargin, closureType):
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
                         # If it does, replace it with np.nan
-                        numeric_data.iloc[idx] = np.nan
+                        dataDictionary_in.at[idx, col_name] = np.nan
                 # Interpolate the NaN
-                dataDictionary_in_copy[col_name] = numeric_data.interpolate(method='linear', limit_direction='both')
+                dataDictionary_in_copy[col_name] = dataDictionary_in[col_name].interpolate(method='linear', limit_direction='both')
 
             # Iterate over each column
-            for col in dataDictionary_in.columns:
+            for col in dataDictionary_in.select_dtypes(include=[np.number]).columns:
                 # For each index in the column
                 for idx in dataDictionary_in.index:
                     # Verify if the value is NaN in the original dataframe
@@ -2500,9 +2499,9 @@ def checkIntervalInterpolationBelong(dataDictionary_in: pd.DataFrame, dataDictio
                 # Apply the function to each element in the numeric data
                 for jdx in range(len(numeric_data)):
                     # Check if the element satisfies the interval condition
-                    if check_interval_condition(numeric_data.iloc[jdx], leftMargin, rightMargin, closureType):
+                    if check_interval_condition(numeric_data.iloc[idx, jdx], leftMargin, rightMargin, closureType):
                         # If it does, replace it with np.nan
-                        numeric_data.iloc[jdx] = np.nan
+                        numeric_data.iloc[idx, jdx] = np.nan
                 # Interpolate the NaN
                 dataDictionary_in_copy.loc[idx] = numeric_data.interpolate(method='linear', limit_direction='both')
 
