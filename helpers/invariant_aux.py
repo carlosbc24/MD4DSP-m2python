@@ -3270,7 +3270,128 @@ def checkIntervalClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
     Returns:
         :return: True if the closest is applied correctly on the interval
     """
-    #TODO: Implement this function
+    if field is None:
+        if axis_param is None:
+            # Select only columns with numeric data, including all numeric types (int, float, etc.)
+            only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
+            # Flatten the dataframe into a list of values
+            flattened_values = only_numbers_df.values.flatten().tolist()
+            # Create a dictionary to store the closest value for each value in the interval
+            closest_values = {}
+            # Iterate over the values in the interval
+            for value in flattened_values:
+                # Check if the value is within the interval
+                if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                    # Check if the value is already in the dictionary
+                    if value not in closest_values:
+                        # Find the closest value to the current value in the interval
+                        closest_values[value] = find_closest_value(flattened_values, value)
+
+            # Check if the closest values have been replaced in the dataDictionary_out
+            for idx, col_name in dataDictionary_in.items():
+                if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                    if dataDictionary_out.at[idx, col_name] != closest_values[col_name]:
+                        if belongOp_out == Belong.BELONG:
+                            return False
+                        elif belongOp_out == Belong.NOTBELONG:
+                            return True
+                else:
+                    if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not (
+                            pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
+                        return False
+        elif axis_param == 0:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                # Flatten the column into a list of values
+                flattened_values = dataDictionary_in[col_name].values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each value in the interval
+                closest_values = {}
+
+                # Iterate over the values in the interval
+                for value in flattened_values:
+                    # Check if the value is within the interval
+                    if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                        # Check if the value is already in the dictionary
+                        if value not in closest_values:
+                            # Find the closest value to the current value in the interval
+                            closest_values[value] = find_closest_value(flattened_values, value)
+
+                # Check if the closest values have been replaced in the dataDictionary_out
+                for idx, value in dataDictionary_in[col_name].items():
+                    if check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType):
+                        if dataDictionary_out.at[idx, col_name] != closest_values[value]:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not (
+                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
+                            return False
+        elif axis_param == 1:
+            for idx, row in dataDictionary_in.iterrows():
+                # Flatten the row into a list of values
+                flattened_values = row.values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each value in the interval
+                closest_values = {}
+
+                # Iterate over the values in the interval
+                for value in flattened_values:
+                    # Check if the value is within the interval
+                    if np.isreal(value) and check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                        # Check if the value is already in the dictionary
+                        if value not in closest_values:
+                            # Find the closest value to the current value in the interval
+                            closest_values[value] = find_closest_value(flattened_values, value)
+
+                # Check if the closest values have been replaced in the dataDictionary_out
+                for col_name, value in row.items():
+                    if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                        if dataDictionary_out.at[idx, col_name] != closest_values[value]:
+                            if belongOp_out == Belong.BELONG:
+                                return False
+                            elif belongOp_out == Belong.NOTBELONG:
+                                return True
+                    else:
+                        if (dataDictionary_out.loc[idx, col_name] != dataDictionary_in.loc[idx, col_name]) and not (
+                                pd.isnull(dataDictionary_out.at[idx, col_name]) or pd.isnull(dataDictionary_out.at[idx, col_name])):
+                            return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        # Flatten the column into a list of values
+        flattened_values = dataDictionary_in[field].values.flatten().tolist()
+
+        # Create a dictionary to store the closest value for each value in the interval
+        closest_values = {}
+
+        # Iterate over the values in the interval
+        for value in flattened_values:
+            # Check if the value is within the interval
+            if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                # Check if the value is already in the dictionary
+                if value not in closest_values:
+                    # Find the closest value to the current value in the interval
+                    closest_values[value] = find_closest_value(flattened_values, value)
+
+        # Check if the closest values have been replaced in the dataDictionary_out
+        for idx, value in dataDictionary_in[field].items():
+            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
+                if dataDictionary_out.at[idx, field] != closest_values[value]:
+                    if belongOp_out == Belong.BELONG:
+                        return False
+                    elif belongOp_out == Belong.NOTBELONG:
+                        return True
+            else:
+                if (dataDictionary_out.loc[idx, field] != dataDictionary_in.loc[idx, field]) and not (
+                        pd.isnull(dataDictionary_out.at[idx, field]) or pd.isnull(dataDictionary_out.at[idx, field])):
+                    return False
+
     if belongOp_out == Belong.BELONG:
         return True
     elif belongOp_out == Belong.NOTBELONG:
@@ -3301,7 +3422,100 @@ def checkIntervalClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDic
     Returns:
         :return: True if the closest is applied correctly on the interval
     """
-    #TODO: Implement this function
+    if field is None:
+        if axis_param is None:
+            # Select only columns with numeric data, including all numeric types (int, float, etc.)
+            only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
+            # Flatten the dataframe into a list of values
+            flattened_values = only_numbers_df.values.flatten().tolist()
+            # Create a dictionary to store the closest value for each value in the interval
+            closest_values = {}
+            # Iterate over the values in the interval
+            for value in flattened_values:
+                # Check if the value is within the interval
+                if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                    # Check if the value is already in the dictionary
+                    if value not in closest_values:
+                        # Find the closest value to the current value in the interval
+                        closest_values[value] = find_closest_value(flattened_values, value)
+
+            # Check if there exist a value that belongs to the interval
+            for idx, col_name in dataDictionary_in.items():
+                if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                    return False
+        elif axis_param == 0:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                # Flatten the column into a list of values
+                flattened_values = dataDictionary_in[col_name].values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each value in the interval
+                closest_values = {}
+
+                # Iterate over the values in the interval
+                for value in flattened_values:
+                    # Check if the value is within the interval
+                    if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                        # Check if the value is already in the dictionary
+                        if value not in closest_values:
+                            # Find the closest value to the current value in the interval
+                            closest_values[value] = find_closest_value(flattened_values, value)
+
+                # Check if there exist a value that belongs to the interval
+                for idx, value in dataDictionary_in[col_name].items():
+                    if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(
+                            dataDictionary_in.at[idx, col_name], leftMargin, rightMargin,
+                            closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                        return False
+        elif axis_param == 1:
+            for idx, row in dataDictionary_in.iterrows():
+                # Flatten the row into a list of values
+                flattened_values = row.values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each value in the interval
+                closest_values = {}
+
+                # Iterate over the values in the interval
+                for value in flattened_values:
+                    # Check if the value is within the interval
+                    if np.isreal(value) and check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                        # Check if the value is already in the dictionary
+                        if value not in closest_values:
+                            # Find the closest value to the current value in the interval
+                            closest_values[value] = find_closest_value(flattened_values, value)
+
+                # Check if there exist a value that belongs to the interval
+                for col_name, value in row.items():
+                    if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(
+                            dataDictionary_in.at[idx, col_name], leftMargin, rightMargin,
+                            closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                        return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        # Flatten the column into a list of values
+        flattened_values = dataDictionary_in[field].values.flatten().tolist()
+
+        # Create a dictionary to store the closest value for each value in the interval
+        closest_values = {}
+
+        # Iterate over the values in the interval
+        for value in flattened_values:
+            # Check if the value is within the interval
+            if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                # Check if the value is already in the dictionary
+                if value not in closest_values:
+                    # Find the closest value to the current value in the interval
+                    closest_values[value] = find_closest_value(flattened_values, value)
+
+        # Check if there exist a value that belongs to the interval
+        for idx, value in dataDictionary_in[field].items():
+            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
+                return False
+
     return True
 
 
@@ -3327,7 +3541,100 @@ def checkIntervalClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, data
     Returns:
         :return: True if the closest is applied correctly on the interval
     """
-    #TODO: Implement this function
+    if field is None:
+        if axis_param is None:
+            # Select only columns with numeric data, including all numeric types (int, float, etc.)
+            only_numbers_df = dataDictionary_in.select_dtypes(include=[np.number])
+            # Flatten the dataframe into a list of values
+            flattened_values = only_numbers_df.values.flatten().tolist()
+            # Create a dictionary to store the closest value for each value in the interval
+            closest_values = {}
+            # Iterate over the values in the interval
+            for value in flattened_values:
+                # Check if the value is within the interval
+                if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                    # Check if the value is already in the dictionary
+                    if value not in closest_values:
+                        # Find the closest value to the current value in the interval
+                        closest_values[value] = find_closest_value(flattened_values, value)
+
+            # Check if there exist a value that belongs to the interval
+            for idx, col_name in dataDictionary_in.items():
+                if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(dataDictionary_in.at[idx, col_name], leftMargin, rightMargin, closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                    return False
+        elif axis_param == 0:
+            for col_name in dataDictionary_in.select_dtypes(include=[np.number]).columns:
+                # Flatten the column into a list of values
+                flattened_values = dataDictionary_in[col_name].values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each value in the interval
+                closest_values = {}
+
+                # Iterate over the values in the interval
+                for value in flattened_values:
+                    # Check if the value is within the interval
+                    if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                        # Check if the value is already in the dictionary
+                        if value not in closest_values:
+                            # Find the closest value to the current value in the interval
+                            closest_values[value] = find_closest_value(flattened_values, value)
+
+                # Check if there exist a value that belongs to the interval
+                for idx, value in dataDictionary_in[col_name].items():
+                    if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(
+                            dataDictionary_in.at[idx, col_name], leftMargin, rightMargin,
+                            closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                        return False
+        elif axis_param == 1:
+            for idx, row in dataDictionary_in.iterrows():
+                # Flatten the row into a list of values
+                flattened_values = row.values.flatten().tolist()
+
+                # Create a dictionary to store the closest value for each value in the interval
+                closest_values = {}
+
+                # Iterate over the values in the interval
+                for value in flattened_values:
+                    # Check if the value is within the interval
+                    if np.isreal(value) and check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                        # Check if the value is already in the dictionary
+                        if value not in closest_values:
+                            # Find the closest value to the current value in the interval
+                            closest_values[value] = find_closest_value(flattened_values, value)
+
+                # Check if there exist a value that belongs to the interval
+                for col_name, value in row.items():
+                    if np.isreal(dataDictionary_in.at[idx, col_name]) and check_interval_condition(
+                            dataDictionary_in.at[idx, col_name], leftMargin, rightMargin,
+                            closureType) and not pd.isnull(dataDictionary_in.at[idx, col_name]):
+                        return False
+
+    elif field is not None:
+        if field not in dataDictionary_in.columns:
+            raise ValueError("Field not found in the dataDictionary_in")
+        if not np.issubdtype(dataDictionary_in[field].dtype, np.number):
+            raise ValueError("Field is not numeric")
+
+        # Flatten the column into a list of values
+        flattened_values = dataDictionary_in[field].values.flatten().tolist()
+
+        # Create a dictionary to store the closest value for each value in the interval
+        closest_values = {}
+
+        # Iterate over the values in the interval
+        for value in flattened_values:
+            # Check if the value is within the interval
+            if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(value):
+                # Check if the value is already in the dictionary
+                if value not in closest_values:
+                    # Find the closest value to the current value in the interval
+                    closest_values[value] = find_closest_value(flattened_values, value)
+
+        # Check if there exist a value that belongs to the interval
+        for idx, value in dataDictionary_in[field].items():
+            if check_interval_condition(dataDictionary_in.at[idx, field], leftMargin, rightMargin, closureType):
+                return False
+
     return True
 
 
@@ -5113,7 +5420,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
                         else:
-                            if (dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]) and not(pd.isnull(dataDictionary_in.loc[i, col_name]) or pd.isnull(dataDictionary_out.loc[i, col_name])):
+                            if (dataDictionary_out.at[row_idx, col_name] != dataDictionary_in.at[row_idx, col_name]) and not(pd.isnull(dataDictionary_in.loc[row_idx, col_name]) or pd.isnull(dataDictionary_out.loc[row_idx, col_name])):
                                 return False
 
     elif field is not None:
