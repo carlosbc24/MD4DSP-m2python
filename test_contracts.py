@@ -84,8 +84,8 @@ if __name__ == "__main__":
     # execute_invariants_simple_tests()
     # execute_invariants_external_dataset_tests()
 
-    contracts_invariant_test = InvariantsSimpleTest()
-    contracts_invariant_test.execute_checkInv_Interval_NumOp()
+    invariantsTestWithDatasets = InvariantsExternalDatasetTests()
+    invariantsTestWithDatasets.execute_checkInv_Interval_NumOp_ExternalDatasetTests()
 
     # DEBUG TESTS
     # Execute all pre-post simple tests
