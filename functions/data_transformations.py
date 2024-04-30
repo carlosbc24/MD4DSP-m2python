@@ -538,76 +538,72 @@ class DataTransformations:
                     dataDictionary_copy = dataDictionary_copy.T
 
             elif numOpOutput == Operation.CLOSEST:
-                only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
                 if axis_param is None:
-                    indice_row=[]
-                    indice_col=[]
-                    values=[]
-                    for col in only_numbers_df.columns:
-                        for index, row in only_numbers_df.iterrows():
-                            if check_interval_condition(row[col], leftMargin, rightMargin, closureType):
-                                indice_row.append(index)
-                                indice_col.append(col)
-                                values.append(row[col])
-
-                    if values.__len__()>0 and values is not None:
-                        processed=[values[0]]
-                        closest_processed=[]
-                        closest_value=find_closest_value(only_numbers_df.stack(), values[0])
-                        closest_processed.append(closest_value)
-                        for i in range(len(values)):
-                            if values[i] not in processed:
-                                closest_value=find_closest_value(only_numbers_df.stack(), values[i])
-                                closest_processed.append(closest_value)
-                                processed.append(values[i])
-
-                        # Iterate over each index and column
-                        for i in range(len(dataDictionary_copy.index)):
-                            for j in range(len(dataDictionary_copy.columns)):
-                                # Get the current value
-                                current_value = dataDictionary_copy.iat[i, j]
-                                # Verify if the value it's in the list of values to replace
-                                if current_value in processed:
-                                    # Get the index of the value in the list
-                                    replace_index = processed.index(current_value)
-                                    # Get the nearest value to replace
-                                    closest_value = closest_processed[replace_index]
-                                    # Replace the value in the dataframe
-                                    dataDictionary_copy.iat[i, j] = closest_value
-                else:
-                    if axis_param == 1:
-                        dataDictionary_copy = dataDictionary_copy.T
-                    # Replace the values within the interval with the closest numeric value along the columns
+                    # Select only columns with numeric data, including all numeric types (int, float, etc.)
                     only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
-                    for col in only_numbers_df.columns:
-                        indice_row = []
-                        indice_col = []
-                        values = []
-                        processed = []
-                        closest_processed = []
+                    # Flatten the dataframe into a list of values
+                    flattened_values = only_numbers_df.values.flatten().tolist()
+                    # Create a dictionary to store the closest value for each value in the interval
+                    closest_values = {}
+                    # Iterate over the values in the interval
+                    for value in flattened_values:
+                        # Check if the value is within the interval
+                        if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(
+                                value):
+                            # Check if the value is already in the dictionary
+                            if value not in closest_values:
+                                # Find the closest value to the current value in the interval
+                                closest_values[value] = find_closest_value(flattened_values, value)
 
-                        for index, value in only_numbers_df[col].items():
-                            if check_interval_condition(value, leftMargin, rightMargin, closureType):
-                                indice_row.append(index)
-                                indice_col.append(col)
-                                values.append(value)
+                    # Check if the closest values have been replaced in the dataDictionary_out
+                    for idx, row in dataDictionary_copy.iterrows():
+                        for col_name in dataDictionary_copy.columns:
+                            if (np.isreal(row[col_name]) and check_interval_condition(row[col_name], leftMargin,
+                                        rightMargin, closureType) and not pd.isnull(row[col_name])):
+                                dataDictionary_copy.at[idx, col_name] = closest_values[row[col_name]]
+                elif axis_param == 0:
+                    for col_name in dataDictionary_copy.select_dtypes(include=[np.number]).columns:
+                        # Flatten the column into a list of values
+                        flattened_values = dataDictionary_copy[col_name].values.flatten().tolist()
+                        # Create a dictionary to store the closest value for each value in the interval
+                        closest_values = {}
+                        # Iterate over the values in the interval
+                        for value in flattened_values:
+                            # Check if the value is within the interval
+                            if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(
+                                    value):
+                                # Check if the value is already in the dictionary
+                                if value not in closest_values:
+                                    # Find the closest value to the current value in the interval
+                                    closest_values[value] = find_closest_value(flattened_values, value)
 
-                        if len(values) > 0 and values is not None:
-                            processed.append(values[0])
-                            closest_processed.append(find_closest_value(only_numbers_df[col], values[0]))
+                        # Check if the closest values have been replaced in the dataDictionary_out
+                        for idx, value in dataDictionary_copy[col_name].items():
+                            if check_interval_condition(dataDictionary_copy.at[idx, col_name], leftMargin, rightMargin,
+                                                        closureType):
+                                dataDictionary_copy.at[idx, col_name] = closest_values[value]
+                elif axis_param == 1:
+                    for idx, row in dataDictionary_copy.iterrows():
+                        # Flatten the row into a list of values
+                        flattened_values = row.values.flatten().tolist()
+                        # Create a dictionary to store the closest value for each value in the interval
+                        closest_values = {}
+                        # Iterate over the values in the interval
+                        for value in flattened_values:
+                            # Check if the value is within the interval
+                            if np.issubdtype(value, np.number) and check_interval_condition(value, leftMargin,
+                                                    rightMargin, closureType) and not pd.isnull(value):
+                                # Check if the value is already in the dictionary
+                                if value not in closest_values:
+                                    # Find the closest value to the current value in the interval
+                                    closest_values[value] = find_closest_value(flattened_values, value)
 
-                            for i in range(1, len(values)):
-                                if values[i] not in processed:
-                                    closest_value = find_closest_value(only_numbers_df[col], values[i])
-                                    processed.append(values[i])
-                                    closest_processed.append(closest_value)
-
-                            for i, index in enumerate(indice_row):
-                                dataDictionary_copy.at[index, col] = closest_processed[processed.index(values[i])]
-                    if axis_param == 1:
-                        dataDictionary_copy = dataDictionary_copy.T
-            else:
-                raise ValueError("No valid operator")
+                        # Check if the closest values have been replaced in the dataDictionary_out
+                        for col_name, value in row.items():
+                            if np.isreal(dataDictionary_copy.at[idx, col_name]) and check_interval_condition(
+                                    dataDictionary_copy.at[idx, col_name], leftMargin, rightMargin,
+                                    closureType) and not pd.isnull(dataDictionary_copy.at[idx, col_name]):
+                                dataDictionary_copy.at[idx, col_name] = closest_values[value]
 
         elif field is not None:
             if field not in dataDictionary.columns:
@@ -635,25 +631,24 @@ class DataTransformations:
                         dataDictionary_copy[field] = dataDictionary_copy[field].apply(
                             lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
                     elif numOpOutput == Operation.CLOSEST:
-                        indice_row = []
-                        values = []
-                        processed = []
-                        closest_processed = []
+                        # Flatten the column into a list of values
+                        flattened_values = dataDictionary_copy[field].values.flatten().tolist()
+                        # Create a dictionary to store the closest value for each value in the interval
+                        closest_values = {}
+                        # Iterate over the values in the interval
+                        for value in flattened_values:
+                            # Check if the value is within the interval
+                            if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(
+                                    value):
+                                # Check if the value is already in the dictionary
+                                if value not in closest_values:
+                                    # Find the closest value to the current value in the interval
+                                    closest_values[value] = find_closest_value(flattened_values, value)
 
-                        for index, value in dataDictionary_copy[field].items():
-                            if check_interval_condition(value, leftMargin, rightMargin, closureType):
-                                indice_row.append(index)
-                                values.append(value)
-                        if len(values) > 0 and values is not None:
-                            processed.append(values[0])
-                            closest_processed.append(find_closest_value(dataDictionary_copy[field], values[0]))
-                            for i in range(1, len(values)):
-                                if values[i] not in processed:
-                                    closest_value = find_closest_value(dataDictionary_copy[field], values[i])
-                                    processed.append(values[i])
-                                    closest_processed.append(closest_value)
-                            for i, index in enumerate(indice_row):
-                                dataDictionary_copy.at[index, field] = closest_processed[processed.index(values[i])]
+                        # Check if the closest values have been replaced in the dataDictionary_out
+                        for idx, value in dataDictionary_copy[field].items():
+                            if check_interval_condition(dataDictionary_copy.at[idx, field], leftMargin, rightMargin, closureType):
+                                dataDictionary_copy.at[idx, field] = closest_values[value]
                 else:
                     raise ValueError("The field is not numeric")
 
