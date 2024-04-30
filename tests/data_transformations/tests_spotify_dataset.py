@@ -2951,19 +2951,18 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
         # Caso 5
-        # Probamos a aplicar la operación closest sobre un dataframe correcto. Se calcula el closest sobre el dataframe entero en relación a los valores faltantes y valores nulos.
         expected_df = self.small_batch_dataset.copy()
         specialTypeInput = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                 axis_param=None)
-        # Sustituir los valores faltantes y valores nulos por el valor más cercano en el dataframe
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values or pd.isnull(x) else x))
-        pd.testing.assert_frame_equal(result_df, expected_df)
-        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                     specialTypeInput=specialTypeInput,
+                                                                     numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                     axis_param=None)
+        print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
         # Caso 6
         # Ejecutar la transformación de datos: aplicar la interpolación lineal a los valores invalidos 1, 3, 0.13 y 0.187 en todas las
