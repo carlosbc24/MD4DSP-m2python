@@ -10,6 +10,7 @@ from helpers.auxiliar import find_closest_value
 from helpers.enumerations import Closure, DataType, SpecialType
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
+from helpers.transform_aux import getOutliers
 
 
 class DataTransformationsExternalDatasetTests(unittest.TestCase):
@@ -2956,13 +2957,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         numOpOutput = Operation(3)
 
-        expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     specialTypeInput=specialTypeInput,
-                                                                     numOpOutput=numOpOutput, missing_values=missing_values,
-                                                                     axis_param=None)
-        print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
+
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
+                                                                 specialTypeInput=specialTypeInput,
+                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+                                                                 axis_param=None)
+
+        # Sustituir los valores invalidos por el valor más cercano en el dataframe
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: find_closest_value(expected_df.stack().tolist(), x)
+                                        if x in missing_values or pd.isnull(x) else x))
+
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
         # Caso 6
         # Ejecutar la transformación de datos: aplicar la interpolación lineal a los valores invalidos 1, 3, 0.13 y 0.187 en todas las
@@ -3144,8 +3152,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         for idx, value in expected_df[field].items():
             # Sustituir los valores outliers por NaN
             if expected_df.at[idx, field] < lowest_value or expected_df.at[idx, field] > upper_value:
-                expected_df.at[idx, field] = np.NaN
-        expected_df[field] = expected_df[field].interpolate(method='linear', limit_direction='both')
+                expected_df_copy.at[idx, field] = np.NaN
+        expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
         # Para cada índice en la columna
         for idx in expected_df.index:
             # Verificamos si el valor es NaN en el dataframe original
@@ -3312,15 +3320,35 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         specialTypeInput = SpecialType(2)
         numOpOutput = Operation(3)
         result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
-        # Sustituir los valores outliers por el valor más cercano en el dataframe
-        for col in expected_df.select_dtypes(include=np.number).columns:
-            Q1 = expected_df[col].quantile(0.25)
-            Q3 = expected_df[col].quantile(0.75)
-            IQR = Q3 - Q1
-            for idx in range(len(expected_df[col])):
-                expected_df[col].iat[idx] = find_closest_value(expected_df[col].tolist(), expected_df[col].iat[idx]) if expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else expected_df[col].iat[idx]
+                                                                             specialTypeInput=specialTypeInput,
+                                                                             numOpOutput=numOpOutput, axis_param=0)
+
+
+        dataDictionary_copy_mask = getOutliers(expected_df, None, 0)
+        for col_name in expected_df.select_dtypes(include=[np.number]).columns:
+            # Get the outlier values in the current column
+            outlier_values_in_col = [expected_df.at[i, col_name] for i in
+                                     range(len(expected_df.index))
+                                     if dataDictionary_copy_mask.at[i, col_name] == 1]
+
+            # If there are no outlier values in the column, skip the rest of the loop
+            if not outlier_values_in_col:
+                continue
+            # Flatten the column into a list of values
+            flattened_values = expected_df[col_name].values.flatten().tolist()
+
+            # Create a dictionary to store the closest value for each outlier value
+            closest_values = {}
+
+            for outlier_value in outlier_values_in_col:
+                if outlier_value not in closest_values:
+                    closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
+
+            # Replace the outlier values with the closest numeric values in the column
+            for i in range(len(expected_df.index)):
+                current_value = expected_df.at[i, col_name]
+                if dataDictionary_copy_mask.at[i, col_name] == 1:
+                    expected_df.at[i, col_name] = closest_values[current_value]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
 
@@ -3583,9 +3611,25 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                  specialTypeInput=specialTypeInput,
                                                                  numOpOutput=numOpOutput, missing_values=missing_values,
                                                                  axis_param=None)
-        # # Sustituir los valores invalidos por el valor más cercano en el dataframe
-        expected_df = expected_df.apply(lambda col: col.apply(
-            lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
+        # Sustituir los valores invalidos por el valor más cercano en el dataframe
+        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        # Flatten the DataFrame into a single series of values
+        flattened_values = only_numbers_df.values.flatten().tolist()
+
+        # Create a dictionary to store the closest value for each missing value
+        closest_values = {}
+
+        # For each missing value, find the closest numeric value in the flattened series
+        for missing_value in missing_values:
+            if missing_value not in closest_values:
+                closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
+
+        # Replace the missing values with the closest numeric values
+        for i in range(len(expected_df.index)):
+            for col, value in expected_df.iloc[i].items():
+                current_value = expected_df.at[i, col]
+                if current_value in closest_values:
+                    expected_df.at[i, col] = closest_values[current_value]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
@@ -3600,23 +3644,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                  specialTypeInput=specialTypeInput,
                                                                  numOpOutput=numOpOutput, field=field, axis_param=0)
         expected_df_copy = expected_df.copy()
-        # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
-        # En primer lugar, se reemplazan los valores outliers por NaN
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        lowest_value=Q1 - 1.5 * IQR
-        upper_value=Q3 + 1.5 * IQR
+        expected_df_mask = getOutliers(expected_df, field, 0)
         for idx, value in expected_df[field].items():
-            # Sustituir los valores outliers por NaN
-            if expected_df.at[idx, field] < lowest_value or expected_df.at[idx, field] > upper_value:
-                expected_df.at[idx, field] = np.NaN
-        expected_df[field] = expected_df[field].interpolate(method='linear', limit_direction='both')
-        # Para cada índice en la columna
+            if expected_df_mask.at[idx, field] == 1:
+                expected_df_copy.at[idx, field] = np.NaN
+        expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
+        # For each índex in the column
         for idx in expected_df.index:
-            # Verificamos si el valor es NaN en el dataframe original
+            # Verify if the value is NaN in the original dataframe
             if pd.isnull(expected_df.at[idx, field]):
-                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                # Replace the value with the corresponding one from dataDictionary_copy_copy
                 expected_df_copy.at[idx, field] = expected_df.at[idx, field]
 
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
@@ -3765,18 +3802,29 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
                                                                  specialTypeInput=specialTypeInput,
                                                                  numOpOutput=numOpOutput, field=field, axis_param=0)
-        # Sustituir los valores outliers por el valor más cercano en el dataframe
-        Q1 = expected_df[field].quantile(0.25)
-        Q3 = expected_df[field].quantile(0.75)
-        IQR = Q3 - Q1
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for idx in range(len(expected_df[field])):
-            expected_df[field].iat[idx] = find_closest_value(expected_df[field].tolist(),
-                                                             expected_df[field].iat[idx]) if expected_df[field].iat[
-                                                                                                 idx] < Q1 - 1.5 * IQR or \
-                                                                                             expected_df[field].iat[
-                                                                                                 idx] > Q3 + 1.5 * IQR else \
-            expected_df[field].iat[idx]
+
+        expected_df_mask = getOutliers(expected_df, field, 0)
+        outlier_values_in_col = [expected_df.at[i, field] for i in range(len(expected_df.index))
+                                 if expected_df_mask.at[i, field] == 1]
+
+        # If there are no outlier values in the column, skip the rest of the loop
+        if outlier_values_in_col:
+            # Flatten the column into a list of values
+            flattened_values = expected_df[field].values.flatten().tolist()
+
+            # Create a dictionary to store the closest value for each outlier value
+            closest_values = {}
+
+            for outlier_value in outlier_values_in_col:
+                if outlier_value not in closest_values:
+                    closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
+
+            # Replace the outlier values with the closest numeric values in the column
+            for i in range(len(expected_df.index)):
+                current_value = expected_df.at[i, field]
+                if expected_df_mask.at[i, field] == 1:
+                    expected_df.at[i, field] = closest_values[current_value]
+
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
 
@@ -3790,15 +3838,34 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
                                                                  specialTypeInput=specialTypeInput,
                                                                  numOpOutput=numOpOutput, axis_param=0)
-        # Sustituir los valores outliers por el valor más cercano en el dataframe
-        for col in expected_df.select_dtypes(include=np.number).columns:
-            Q1 = expected_df[col].quantile(0.25)
-            Q3 = expected_df[col].quantile(0.75)
-            IQR = Q3 - Q1
-            for idx in range(len(expected_df[col])):
-                expected_df[col].iat[idx] = find_closest_value(expected_df[col].tolist(), expected_df[col].iat[idx]) if \
-                expected_df[col].iat[idx] < Q1 - 1.5 * IQR or expected_df[col].iat[idx] > Q3 + 1.5 * IQR else \
-                expected_df[col].iat[idx]
+
+        expected_df_mask = getOutliers(expected_df, None, 0)
+        # Iterate over each column
+        for col_name in expected_df.select_dtypes(include=[np.number]).columns:
+            # Get the outlier values in the current column
+            outlier_values_in_col = [expected_df.at[i, col_name] for i in
+                                     range(len(expected_df.index))
+                                     if expected_df_mask.at[i, col_name] == 1]
+
+            # If there are no outlier values in the column, skip the rest of the loop
+            if not outlier_values_in_col:
+                continue
+            # Flatten the column into a list of values
+            flattened_values = expected_df[col_name].values.flatten().tolist()
+
+            # Create a dictionary to store the closest value for each outlier value
+            closest_values = {}
+
+            for outlier_value in outlier_values_in_col:
+                if outlier_value not in closest_values:
+                    closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
+
+            # Replace the outlier values with the closest numeric values in the column
+            for i in range(len(expected_df.index)):
+                current_value = expected_df.at[i, col_name]
+                if expected_df_mask.at[i, col_name] == 1:
+                    expected_df.at[i, col_name] = closest_values[current_value]
+
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
 

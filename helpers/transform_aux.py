@@ -416,8 +416,8 @@ def specialTypeInterpolation(dataDictionary_copy: pd.DataFrame, specialTypeInput
             dataDictionary_copy[field]=dataDictionary_copy[field].interpolate(method='linear', limit_direction='both')
 
         if specialTypeInput == SpecialType.INVALID:
-            dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
-            dataDictionary_copy[field] = dataDictionary_copy[field].interpolate(method='linear', limit_direction='both')
+            dataDictionary_copy_copy[field] = dataDictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
+            dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
 
             # For each índex in the column
             for idx in dataDictionary_copy.index:
@@ -714,12 +714,12 @@ def specialTypeClosest(dataDictionary_copy: pd.DataFrame, specialTypeInput: Spec
 
                 # Replace the missing values with the closest numeric values
                 for i in range(len(dataDictionary_copy.index)):
-                    for j in range(len(dataDictionary_copy.columns)):
-                        current_value = dataDictionary_copy.iloc[i, j]
+                    for col, value in dataDictionary_copy.iloc[i].items():
+                        current_value = dataDictionary_copy.at[i, col]
                         if current_value in closest_values:
-                            dataDictionary_copy.at[i, j] = closest_values[current_value]
+                            dataDictionary_copy.at[i, col] = closest_values[current_value]
                         else:
-                            if pd.isnull(dataDictionary_copy.iloc[i, j]) and specialTypeInput == SpecialType.MISSING:
+                            if pd.isnull(dataDictionary_copy.at[i, col]) and specialTypeInput == SpecialType.MISSING:
                                 raise ValueError(
                                     "Error: it's not possible to apply the closest operation to the null values")
 
