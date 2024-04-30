@@ -150,13 +150,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 67
-        fixValueOutput = 1
+        fix_value_input = 67
+        fix_value_output = 1
         field = 'track_popularity'
         result_df = self.data_transformations.transform_FixValue_FixValue(self.small_batch_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput, field=field)
-        expected_df['track_popularity'] = expected_df['track_popularity'].replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output, field=field)
+        expected_df['track_popularity'] = expected_df['track_popularity'].replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
@@ -168,12 +168,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # y verificar si el resultado obtenido coincide con el esperado. En este caso se prueba sobre el dataframe entero
         # independientemente de la columna
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'All the Time - Don Diablo Remix'
-        fixValueOutput = 'todos los tiempo - Don Diablo Remix'
+        fix_value_input = 'All the Time - Don Diablo Remix'
+        fix_value_output = 'todos los tiempo - Don Diablo Remix'
         result_df = self.data_transformations.transform_FixValue_FixValue(self.small_batch_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df = expected_df.replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -184,13 +184,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = '2019-07-05'
-        fixValueOutput = True
+        fix_value_input = '2019-07-05'
+        fix_value_output = True
         result_df = self.data_transformations.transform_FixValue_FixValue(self.small_batch_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fixValueInput,
-                                                                                                  fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fix_value_input,
+                                                                                                  fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
@@ -200,12 +200,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'Maroon 5'
-        fixValueOutput = 3.0
+        fix_value_input = 'Maroon 5'
+        fix_value_output = 3.0
         result_df = self.data_transformations.transform_FixValue_FixValue(self.small_batch_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df = expected_df.replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
@@ -215,12 +215,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 2.33e-5
-        fixValueOutput = "Near 0"
+        fix_value_input = 2.33e-5
+        fix_value_output = "Near 0"
         result_df = self.data_transformations.transform_FixValue_FixValue(self.small_batch_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df = expected_df.replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -236,13 +236,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 67
-        fixValueOutput = 1
+        fix_value_input = 67
+        fix_value_output = 1
         field = 'track_popularity'
         result_df = self.data_transformations.transform_FixValue_FixValue(self.rest_of_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput, field=field)
-        expected_df['track_popularity'] = expected_df['track_popularity'].replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output, field=field)
+        expected_df['track_popularity'] = expected_df['track_popularity'].replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
@@ -254,12 +254,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # y verificar si el resultado obtenido coincide con el esperado. En este caso se prueba sobre el dataframe entero
         # independientemente de la columna
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 'All the Time - Don Diablo Remix'
-        fixValueOutput = 'todos los tiempo - Don Diablo Remix'
+        fix_value_input = 'All the Time - Don Diablo Remix'
+        fix_value_output = 'todos los tiempo - Don Diablo Remix'
         result_df = self.data_transformations.transform_FixValue_FixValue(self.rest_of_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df = expected_df.replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -270,13 +270,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # copia del batch grande del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = '2019-07-05'
-        fixValueOutput = True
+        fix_value_input = '2019-07-05'
+        fix_value_output = True
         result_df = self.data_transformations.transform_FixValue_FixValue(self.rest_of_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fixValueInput,
-                                                                                                  fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fix_value_input,
+                                                                                                  fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
@@ -286,12 +286,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 'Maroon 5'
-        fixValueOutput = 3.0
+        fix_value_input = 'Maroon 5'
+        fix_value_output = 3.0
         result_df = self.data_transformations.transform_FixValue_FixValue(self.rest_of_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df = expected_df.replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
@@ -301,12 +301,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 2.33e-5
-        fixValueOutput = "Near 0"
+        fix_value_input = 2.33e-5
+        fix_value_output = "Near 0"
         result_df = self.data_transformations.transform_FixValue_FixValue(self.rest_of_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df = expected_df.replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -317,12 +317,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba cambiar los
         # valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.833
-        fixValueOutput = 1
+        fix_value_input = 0.833
+        fix_value_output = 1
         result_df = self.data_transformations.transform_FixValue_FixValue(self.rest_of_dataset.copy(),
-                                                                fixValueInput=fixValueInput,
-                                                                fixValueOutput=fixValueOutput)
-        expected_df = expected_df.replace(fixValueInput, fixValueOutput)
+                                                                fix_value_input=fix_value_input,
+                                                                fix_value_output=fix_value_output)
+        expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
@@ -356,13 +356,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado
         # Definir el resultado esperado
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0
+        fix_value_input = 0
         field = 'mode'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(0), field=field)
         most_frequent_mode_value = expected_df['mode'].mode()[0]
-        expected_df['mode'] = expected_df['mode'].replace(fixValueInput, most_frequent_mode_value)
+        expected_df['mode'] = expected_df['mode'].replace(fix_value_input, most_frequent_mode_value)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
@@ -373,14 +373,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
         # verificar si el resultado obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'Katy Perry'
+        fix_value_input = 'Katy Perry'
         field = 'track_artist'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(1), field=field)
-        # Sustituir el valor fijo definido por la variable 'fixValueInput' del dataframe expected por el valor previo a nivel de columna, es deicr, el valor en la misma columna pero en la fila anterior
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(1), field=field)
+        # Sustituir el valor fijo definido por la variable 'fix_value_input' del dataframe expected por el valor previo a nivel de columna, es deicr, el valor en la misma columna pero en la fila anterior
         # Identificar índices donde 'Katy Perry' es el valor en la columna 'track_artist'.
-        katy_perry_indices = expected_df.loc[expected_df[field] == fixValueInput].index
+        katy_perry_indices = expected_df.loc[expected_df[field] == fix_value_input].index
 
         # Iterar sobre los índices y reemplazar cada 'Katy Perry' por el valor previo en la columna.
         for idx in katy_perry_indices[::-1]:
@@ -397,12 +397,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
         # manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = '2019-12-13'
+        fix_value_input = '2019-12-13'
         field = 'track_album_release_date'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), field=field)
-        date_indices = expected_df.loc[expected_df[field] == fixValueInput].index
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(2), field=field)
+        date_indices = expected_df.loc[expected_df[field] == fix_value_input].index
         for idx in date_indices:
             if idx < len(expected_df) - 1:
                 expected_df.at[idx, field] = expected_df.at[idx + 1, field]
@@ -416,12 +416,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
         # esperado
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'playlist_genre'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), axis_param=1)
-        pop_indices = expected_df.loc[expected_df[field] == fixValueInput].index
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(2), axis_param=1)
+        pop_indices = expected_df.loc[expected_df[field] == fix_value_input].index
         # Gets next column name to 'field' in the dataframe
         next_column = expected_df.columns[expected_df.columns.get_loc(field) + 1]
         for idx in pop_indices:
@@ -437,13 +437,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # On a copy of the small batch of the test dataset, change the values manually and verify if the result matches
         # the expected
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0.11
+        fix_value_input = 0.11
         field = 'liveness'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(0), field=field)
         most_frequent_liveness_value = expected_df[field].mode()[0]
-        expected_df[field] = expected_df[field].replace(fixValueInput, most_frequent_liveness_value)
+        expected_df[field] = expected_df[field].replace(fix_value_input, most_frequent_liveness_value)
         # Verify if the result matches the expected
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -453,17 +453,17 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # from the small batch dataset. On a copy of the small batch of the test dataset, change the values manually and
         # verify if the result matches the expected
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'Ed Sheeran'
+        fix_value_input = 'Ed Sheeran'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0))
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(0))
         # Get most frequent value of the all columns from small batch dataset
 
         # Convertir el DataFrame a una Serie para contar los valores en todas las columnas
         all_values = expected_df.melt(value_name="values")['values']
         # Obtener el valor más frecuente
         most_frequent_value = all_values.value_counts().idxmax()
-        expected_df = expected_df.replace(fixValueInput, most_frequent_value)
+        expected_df = expected_df.replace(fix_value_input, most_frequent_value)
         # Verify if the result matches the expected
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
@@ -472,40 +472,40 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Transformación de datos: exception after trying to gte previous value from all the dataset without specifying the column or
         # row level
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'playlist_genre'
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1))
+                                                            fix_value_input=fix_value_input,
+                                                            derived_type_output=DerivedType(1))
         print_and_log("Test Case 7 Passed: the function raised the expected exception")
 
         # Caso 8: exception after trying to get the next value from all the dataset without specifying the
         # column or row level
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'playlist_genre'
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(2))
+                                                            fix_value_input=fix_value_input,
+                                                            derived_type_output=DerivedType(2))
         print_and_log("Test Case 8 Passed: the function raised the expected exception")
 
         # Caso 9: exception after trying to get the previous value using a column level. The field doens't exist in the
         # dataset.
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'autor_artista'
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_DerivedValue(self.small_batch_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1), field=field)
+                                                            fix_value_input=fix_value_input,
+                                                            derived_type_output=DerivedType(1), field=field)
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
     def execute_WholeDatasetTests_execute_transform_FixValue_DerivedValue_ExternalDataset(self):
@@ -519,13 +519,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado
         # Definir el resultado esperado
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0
+        fix_value_input = 0
         field = 'mode'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(0), field=field)
         most_frequent_mode_value = expected_df['mode'].mode()[0]
-        expected_df['mode'] = expected_df['mode'].replace(fixValueInput, most_frequent_mode_value)
+        expected_df['mode'] = expected_df['mode'].replace(fix_value_input, most_frequent_mode_value)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
@@ -539,16 +539,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         subdataframe_2200 = self.data_dictionary.iloc[2227:2240]
 
         expected_df = subdataframe_2200.copy()
-        fixValueInput = 'Katy Perry'
+        fix_value_input = 'Katy Perry'
         field = 'track_artist'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(subdataframe_2200,
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(1), field=field)
-        # Sustituir el valor fijo definido por la variable 'fixValueInput' del dataframe expected por el valor previo
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(1), field=field)
+        # Sustituir el valor fijo definido por la variable 'fix_value_input' del dataframe expected por el valor previo
         # a nivel de columna, es deicr, el valor en la misma columna pero en la fila anterior Identificar índices
         # donde 'Katy Perry' es el valor en la columna 'track_artist'.
         # Identificar índices donde 'Katy Perry' es el valor en la columna 'field'.
-        katy_perry_indices = expected_df.loc[expected_df[field] == fixValueInput].index
+        katy_perry_indices = expected_df.loc[expected_df[field] == fix_value_input].index
 
         # Iterar sobre los indices desde el ultimo hasta el primero, iterarlos inversamente
         for idx in katy_perry_indices[::-1]:
@@ -565,12 +565,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del resto del dataset cambiar los valores
         # manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = '2019-12-13'
+        fix_value_input = '2019-12-13'
         field = 'track_album_release_date'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), field=field)
-        date_indices = expected_df.loc[expected_df[field] == fixValueInput].index
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(2), field=field)
+        date_indices = expected_df.loc[expected_df[field] == fix_value_input].index
         for idx in date_indices:
             if idx < len(expected_df) - 1:
                 expected_df.at[idx, field] = expected_df.at[idx + 1, field]
@@ -583,12 +583,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # a nivel de fila sobre el resto del dataset. Sobre un dataframe de copia del resto del dataset cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
         # esperado
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'playlist_genre'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(2), axis_param=1)
-        pop_indices = expected_df.loc[expected_df[field] == fixValueInput].index
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(2), axis_param=1)
+        pop_indices = expected_df.loc[expected_df[field] == fix_value_input].index
         # Gets next column name to 'field' in the dataframe
         next_column = expected_df.columns[expected_df.columns.get_loc(field) + 1]
         for idx in pop_indices:
@@ -604,13 +604,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # On a copy of the rest of the dataset, change the values manually and verify if the result matches
         # the expected
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.11
+        fix_value_input = 0.11
         field = 'liveness'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0), field=field)
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(0), field=field)
         most_frequent_liveness_value = expected_df[field].mode()[0]
-        expected_df[field] = expected_df[field].replace(fixValueInput, most_frequent_liveness_value)
+        expected_df[field] = expected_df[field].replace(fix_value_input, most_frequent_liveness_value)
         # Verify if the result matches the expected
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -620,17 +620,17 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # from the rest of the dataset. On a copy of the rest of the dataset, change the values manually and
         # verify if the result matches the expected
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 'Ed Sheeran'
+        fix_value_input = 'Ed Sheeran'
         result_df = self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                                    fixValueInput=fixValueInput,
-                                                                    derivedTypeOutput=DerivedType(0))
+                                                                    fix_value_input=fix_value_input,
+                                                                    derived_type_output=DerivedType(0))
         # Get most frequent value of the all columns from the rest of the dataset
 
         # Convertir el DataFrame a una Serie para contar los valores en todas las columnas
         all_values = expected_df.melt(value_name="values")['values']
         # Obtener el valor más frecuente
         most_frequent_value = all_values.value_counts().idxmax()
-        expected_df = expected_df.replace(fixValueInput, most_frequent_value)
+        expected_df = expected_df.replace(fix_value_input, most_frequent_value)
         # Verify if the result matches the expected
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
@@ -639,40 +639,40 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Transformación de datos: exception after trying to gte previous value from all the dataset without specifying the column or
         # row level
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'playlist_genre'
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1))
+                                                            fix_value_input=fix_value_input,
+                                                            derived_type_output=DerivedType(1))
         print_and_log("Test Case 7 Passed: the function raised the expected exception")
 
         # Caso 8: exception after trying to get the next value from all the dataset without specifying the
         # column or row level
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'playlist_genre'
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(2))
+                                                            fix_value_input=fix_value_input,
+                                                            derived_type_output=DerivedType(2))
         print_and_log("Test Case 8 Passed: the function raised the expected exception")
 
         # Caso 9: exception after trying to get the previous value using a column level. The field doens't exist in the
         # dataset.
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 'pop'
+        fix_value_input = 'pop'
         field = 'autor_artista'
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_DerivedValue(self.rest_of_dataset.copy(),
-                                                            fixValueInput=fixValueInput,
-                                                            derivedTypeOutput=DerivedType(1), field=field)
+                                                            fix_value_input=fix_value_input,
+                                                            derived_type_output=DerivedType(1), field=field)
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
     def execute_transform_FixValue_NumOp_ExternalDatasetTests(self):
@@ -703,21 +703,21 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # obtenido coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0
+        fix_value_input = 0
         field = 'instrumentalness'
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), field=field)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(0), field=field)
         expected_df_copy = expected_df.copy()
         # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df_copy[field] = expected_df_copy[field].replace(fixValueInput, np.nan)
+        expected_df_copy[field] = expected_df_copy[field].replace(fix_value_input, np.nan)
         # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
         expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
         # Para cada índice en la columna
         for idx in expected_df.index:
             # Verificamos si el valor es NaN en el dataframe original
             if pd.isnull(expected_df.at[idx, field]):
-                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                 expected_df_copy.at[idx, field] = expected_df.at[idx, field]
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
@@ -730,13 +730,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0.725
+        fix_value_input = 0.725
         field = 'valence'
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), field=field)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(1), field=field)
         # Sustituir el valor 0.725 por el valor de la media en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].mean())
+        expected_df[field] = expected_df[field].replace(fix_value_input, expected_df[field].mean())
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -748,13 +748,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 8
+        fix_value_input = 8
         field = 'key'
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), field=field)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(2), field=field)
         # Sustituir el valor 8 por el valor de la mediana en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].median())
+        expected_df[field] = expected_df[field].replace(fix_value_input, expected_df[field].median())
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
@@ -766,28 +766,28 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # resultado obtenido coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 99.972
+        fix_value_input = 99.972
         field = 'tempo'
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), field=field)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(3), field=field)
         # Seleccionar solo las columnas numéricas del dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Inicializar variables para almacenar el valor más cercano y la diferencia mínima
         closest_value = None
         min_diff = np.inf
-        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fixValueInput
+        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fix_value_input
         for col in numeric_columns:
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
+            # Calcular la diferencia absoluta con fix_value_input y excluir el propio fix_value_input
+            diff = expected_df[col].apply(lambda x: abs(x - fix_value_input) if x != fix_value_input else np.inf)
+            # Encontrar el índice del valor mínimo que no sea el propio fix_value_input
             idx_min = diff.idxmin()
             # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
             if diff[idx_min] < min_diff:
                 closest_value = expected_df.at[idx_min, col]
                 min_diff = diff[idx_min]
         # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, closest_value)
+        expected_df[field] = expected_df[field].replace(fix_value_input, closest_value)
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -800,16 +800,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0
+        fix_value_input = 0
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), axis_param=0)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(1), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Calcula la media de todas las columnas numéricas
         mean_values = expected_df[numeric_columns].mean()
         # Sustituir todos los valores 0 por el valor de la media de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, mean_values)
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fix_value_input, mean_values)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -821,16 +821,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), axis_param=0)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(2), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Calcula la mediana de todas las columnas numéricas
         median_values = expected_df[numeric_columns].median()
         # Sustituir todos los valores 0.65 por el valor de la mediana de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, median_values)
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fix_value_input, median_values)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
@@ -842,23 +842,23 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), axis_param=0)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(3), axis_param=0)
         # Seleccionar solo las columnas numéricas del sub-DataFrame expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
 
-        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
+        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fix_value_input
         for col in numeric_columns:
             # Inicializar variables para almacenar el valor más cercano y la diferencia mínima para cada columna
             closest_value = None
             min_diff = np.inf
 
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
+            # Calcular la diferencia absoluta con fix_value_input y excluir el propio fix_value_input
+            diff = expected_df[col].apply(lambda x: abs(x - fix_value_input) if x != fix_value_input else np.inf)
 
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
+            # Encontrar el índice del valor mínimo que no sea el propio fix_value_input
             idx_min = diff.idxmin()
 
             # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
@@ -866,8 +866,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 closest_value = expected_df.at[idx_min, col]
                 min_diff = diff[idx_min]
 
-            # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
-            expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
+            # Sustituir el valor fix_value_input por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
+            expected_df[col] = expected_df[col].replace(fix_value_input, closest_value)
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -880,14 +880,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), axis_param=0)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(0), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Susituir los valores 0.65 por los NaN en las columnas numéricas de expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, np.nan)
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fix_value_input, np.nan)
         # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
         expected_df[numeric_columns] = expected_df[numeric_columns].interpolate(method='linear', limit_direction='both')
         # Verificar si el resultado obtenido coincide con el esperado
@@ -897,26 +897,26 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 9
         # Comprobar la excepción: se pasa axis_param a None cuando field=None y se lanza una excepción ValueError
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0))
+                                                     fix_value_input=fix_value_input,
+                                                     num_op_output=Operation(0))
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
         # Caso 10
         # Comprobar la excepción: se pasa una columna que no existe
         expected_df = self.small_batch_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         field = 'p'
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_NumOp(self.small_batch_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0), field=field)
+                                                     fix_value_input=fix_value_input,
+                                                     num_op_output=Operation(0), field=field)
         print_and_log("Test Case 10 Passed: the function raised the expected exception")
 
     def execute_WholeDatasetTests_execute_transform_FixValue_NumOp_ExternalDataset(self):
@@ -930,20 +930,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # obtenido coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset[32820:].copy()
-        fixValueInput = 0
+        fix_value_input = 0
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset[32820:], fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), field=field)
+        result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset[32820:], fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(0), field=field)
         expected_df_copy = expected_df.copy()
         # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df_copy[field] = expected_df_copy[field].replace(fixValueInput, np.nan)
+        expected_df_copy[field] = expected_df_copy[field].replace(fix_value_input, np.nan)
         # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
         expected_df_copy[field] = expected_df_copy[field].interpolate(method='linear', limit_direction='both')
 
         for idx in expected_df.index:
             # Verificamos si el valor es NaN en el dataframe original
             if pd.isnull(expected_df.at[idx, field]):
-                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                 expected_df_copy.at[idx, field] = expected_df.at[idx, field]
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -957,13 +957,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.725
+        fix_value_input = 0.725
         field = 'valence'
         result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), field=field)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(1), field=field)
         # Sustituir el valor 0.725 por el valor de la media en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].mean())
+        expected_df[field] = expected_df[field].replace(fix_value_input, expected_df[field].mean())
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -975,13 +975,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 8
+        fix_value_input = 8
         field = 'key'
         result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), field=field)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(2), field=field)
         # Sustituir el valor 8 por el valor de la mediana en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, expected_df[field].median())
+        expected_df[field] = expected_df[field].replace(fix_value_input, expected_df[field].median())
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
@@ -993,28 +993,28 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # resultado obtenido coincide con el esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 99.972
+        fix_value_input = 99.972
         field = 'tempo'
         result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), field=field)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(3), field=field)
         # Seleccionar solo las columnas numéricas del dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Inicializar variables para almacenar el valor más cercano y la diferencia mínima
         closest_value = None
         min_diff = np.inf
-        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fixValueInput
+        # Iterar sobre cada columna numérica para encontrar el valor más cercano a fix_value_input
         for col in numeric_columns:
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
+            # Calcular la diferencia absoluta con fix_value_input y excluir el propio fix_value_input
+            diff = expected_df[col].apply(lambda x: abs(x - fix_value_input) if x != fix_value_input else np.inf)
+            # Encontrar el índice del valor mínimo que no sea el propio fix_value_input
             idx_min = diff.idxmin()
             # Comparar si esta diferencia es la más pequeña hasta ahora y actualizar closest_value y min_diff según sea necesario
             if diff[idx_min] < min_diff:
                 closest_value = expected_df.at[idx_min, col]
                 min_diff = diff[idx_min]
         # Sustituir el valor 99.972 por el valor más cercano en la columna field de expected_df
-        expected_df[field] = expected_df[field].replace(fixValueInput, closest_value)
+        expected_df[field] = expected_df[field].replace(fix_value_input, closest_value)
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -1027,16 +1027,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0
+        fix_value_input = 0
         result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(1), axis_param=0)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(1), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Calcula la media de todas las columnas numéricas
         mean_values = expected_df[numeric_columns].mean()
         # Sustituir todos los valores 0 por el valor de la media de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, mean_values)
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fix_value_input, mean_values)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -1048,16 +1048,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(2), axis_param=0)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(2), axis_param=0)
         # Seleccionar solo las columnas numéricas del dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         # Calcula la mediana de todas las columnas numéricas
         median_values = expected_df[numeric_columns].median()
         # Sustituir todos los valores 0.65 por el valor de la mediana de aquellas columnas numéricas en expected_df
-        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fixValueInput, median_values)
+        expected_df[numeric_columns] = expected_df[numeric_columns].replace(fix_value_input, median_values)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
@@ -1069,21 +1069,21 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         result_df = self.data_transformations.transform_FixValue_NumOp(expected_df,
-                                                             fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(3), axis_param=0)
+                                                             fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(3), axis_param=0)
         # Seleccionar solo las columnas numéricas del sub-DataFrame expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fixValueInput
+        # Iterar sobre cada columna numérica para encontrar y reemplazar el valor más cercano a fix_value_input
         for col in numeric_columns:
-            # Calcular la diferencia absoluta con fixValueInput y excluir el propio fixValueInput
-            diff = expected_df[col].apply(lambda x: abs(x - fixValueInput) if x != fixValueInput else np.inf)
-            # Encontrar el índice del valor mínimo que no sea el propio fixValueInput
+            # Calcular la diferencia absoluta con fix_value_input y excluir el propio fix_value_input
+            diff = expected_df[col].apply(lambda x: abs(x - fix_value_input) if x != fix_value_input else np.inf)
+            # Encontrar el índice del valor mínimo que no sea el propio fix_value_input
             idx_min = diff.idxmin()
             closest_value = expected_df.at[idx_min, col]
-            # Sustituir el valor fixValueInput por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
-            expected_df[col] = expected_df[col].replace(fixValueInput, closest_value)
+            # Sustituir el valor fix_value_input por el valor más cercano encontrado en la misma columna del sub-DataFrame expected_df
+            expected_df[col] = expected_df[col].replace(fix_value_input, closest_value)
 
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -1096,12 +1096,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # esperado.
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(), fixValueInput=fixValueInput,
-                                                             numOpOutput=Operation(0), axis_param=0)
+        fix_value_input = 0.65
+        result_df = self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(), fix_value_input=fix_value_input,
+                                                             num_op_output=Operation(0), axis_param=0)
         expected_df_copy = expected_df.copy()
         # Sustituir los valores 0 por los NaN en la columa field de expected_df
-        expected_df_copy = expected_df_copy.replace(fixValueInput, np.nan)
+        expected_df_copy = expected_df_copy.replace(fix_value_input, np.nan)
         # Definir el resultado esperado aplicando interpolacion lineal a nivel de columna
         for col in expected_df_copy:
             if np.issubdtype(expected_df_copy[col].dtype, np.number):
@@ -1112,7 +1112,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 for idx in expected_df.index:
                     # Verificamos si el valor es NaN en el dataframe original
                     if pd.isnull(expected_df.at[idx, col]):
-                        # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                        # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                         expected_df_copy.at[idx, col] = expected_df.at[idx, col]
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
@@ -1121,26 +1121,26 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 9
         # Comprobar la excepción: se pasa axis_param a None cuando field=None y se lanza una excepción ValueError
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0))
+                                                     fix_value_input=fix_value_input,
+                                                     num_op_output=Operation(0))
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
         # Caso 10
         # Comprobar la excepción: se pasa una columna que no existe
         expected_df = self.rest_of_dataset.copy()
-        fixValueInput = 0.65
+        fix_value_input = 0.65
         field = 'p'
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_FixValue_NumOp(self.rest_of_dataset.copy(),
-                                                     fixValueInput=fixValueInput,
-                                                     numOpOutput=Operation(0), field=field)
+                                                     fix_value_input=fix_value_input,
+                                                     num_op_output=Operation(0), field=field)
         print_and_log("Test Case 10 Passed: the function raised the expected exception")
 
     def execute_transform_Interval_FixValue_ExternalDatasetTests(self):
@@ -1169,9 +1169,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'track_popularity'
 
-        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                             rightMargin=69, closureType=Closure(3),
-                                                             dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<=69',
+        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
+                                                             right_margin=69, closure_type=Closure(3),
+                                                             data_type_output=DataType(0), fix_value_output='65<=Pop<=69',
                                                              field=field)
 
         expected_df['track_popularity'] = expected_df['track_popularity'].apply(
@@ -1183,8 +1183,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.5,
-                                                             rightMargin=1, closureType=Closure(0), fixValueOutput=2)
+        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.5,
+                                                             right_margin=1, closure_type=Closure(0), fix_value_output=2)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
                                                                               ((x > 0.5) and (x < 1))) else x))
@@ -1196,18 +1196,18 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                                 rightMargin=69, closureType=Closure(2),
-                                                                 fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
+                                                                 right_margin=69, closure_type=Closure(2),
+                                                                 fix_value_output=101, field=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.06,
-                                                             rightMargin=0.1270, closureType=Closure(1),
-                                                             fixValueOutput=33, field=field)
+        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.06,
+                                                             right_margin=0.1270, closure_type=Closure(1),
+                                                             fix_value_output=33, field=field)
 
         expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
 
@@ -1218,9 +1218,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=65,
-                                                                 rightMargin=69, closureType=Closure(2),
-                                                                 fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
+                                                                 right_margin=69, closure_type=Closure(2),
+                                                                 fix_value_output=101, field=field)
         print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
     def execute_WholeDatasetTests_execute_transform_Interval_FixValue_ExternalDataset(self):
@@ -1232,9 +1232,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'track_popularity'
 
-        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
-                                                             rightMargin=69, closureType=Closure(2),
-                                                             dataTypeOutput=DataType(0), fixValueOutput='65<=Pop<69',
+        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
+                                                             right_margin=69, closure_type=Closure(2),
+                                                             data_type_output=DataType(0), fix_value_output='65<=Pop<69',
                                                              field=field)
 
         expected_df['track_popularity'] = expected_df['track_popularity'].apply(
@@ -1246,8 +1246,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.5,
-                                                             rightMargin=1, closureType=Closure(0), fixValueOutput=2)
+        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.5,
+                                                             right_margin=1, closure_type=Closure(0), fix_value_output=2)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
                                                                               ((x > 0.5) and (x < 1))) else x))
@@ -1259,18 +1259,18 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=65,
-                                                                 rightMargin=69, closureType=Closure(2),
-                                                                 fixValueOutput=101, field=field)
+            result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
+                                                                 right_margin=69, closure_type=Closure(2),
+                                                                 fix_value_output=101, field=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.06,
-                                                             rightMargin=0.1270, closureType=Closure(1),
-                                                             fixValueOutput=33, field=field)
+        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.06,
+                                                             right_margin=0.1270, closure_type=Closure(1),
+                                                             fix_value_output=33, field=field)
 
         expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
 
@@ -1303,9 +1303,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), field=field)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(0), field=field)
 
         most_frequent_value = expected_df[field].mode().iloc[0]
         expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if 0.2 < x < 0.4 else x)
@@ -1315,9 +1315,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(1), axis_param=0)
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i - 1] if np.issubdtype(
                                                                           type(value),
@@ -1329,9 +1329,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 3
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=1)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(1), axis_param=1)
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i - 1] if np.issubdtype(
                                                                           type(value),
@@ -1344,9 +1344,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(2), axis_param=0)
 
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i + 1] if np.issubdtype(
@@ -1361,9 +1361,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), axis_param=None)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(0), axis_param=None)
 
         most_frequent_value = expected_df.stack().value_counts().idxmax()
         expected_df = expected_df.apply(
@@ -1376,9 +1376,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 6
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(2), axis_param=0)
 
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i + 1] if np.issubdtype(
@@ -1393,10 +1393,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     leftMargin=0.2, rightMargin=0.4,
-                                                                     closureType=Closure(0),
-                                                                     derivedTypeOutput=DerivedType(2), axis_param=None)
+            result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                     left_margin=0.2, right_margin=0.4,
+                                                                     closure_type=Closure(0),
+                                                                     derived_type_output=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
     def execute_WholeDatasetTests_execute_transform_Interval_DerivedValue_ExternalDataset(self):
@@ -1408,9 +1408,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), field=field)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(0), field=field)
 
         most_frequent_value = expected_df[field].mode().iloc[0]
         expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if 0.2 < x < 0.4 else x)
@@ -1420,9 +1420,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(1), axis_param=0)
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i - 1] if np.issubdtype(
                                                                           type(value),
@@ -1435,9 +1435,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 3
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(1), axis_param=1)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(1), axis_param=1)
 
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i - 1] if np.issubdtype(
@@ -1452,9 +1452,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(2), axis_param=0)
 
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i + 1] if np.issubdtype(
@@ -1469,9 +1469,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(0), axis_param=None)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(0), axis_param=None)
 
         most_frequent_value = expected_df.stack().value_counts().idxmax()
         expected_df = expected_df.apply(
@@ -1484,9 +1484,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 6
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0.2,
-                                                                 rightMargin=0.4, closureType=Closure(0),
-                                                                 derivedTypeOutput=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
+                                                                 right_margin=0.4, closure_type=Closure(0),
+                                                                 derived_type_output=DerivedType(2), axis_param=0)
 
         expected_df = expected_df.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(value) else
                                                                       row_or_col.iloc[i + 1] if np.issubdtype(
@@ -1501,10 +1501,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                     leftMargin=0.2, rightMargin=0.4,
-                                                                     closureType=Closure(0),
-                                                                     derivedTypeOutput=DerivedType(2), axis_param=None)
+            result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                     left_margin=0.2, right_margin=0.4,
+                                                                     closure_type=Closure(0),
+                                                                     derived_type_output=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
     def execute_transform_Interval_NumOp_ExternalDatasetTests(self):
@@ -1531,8 +1531,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 1
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
+                                                          closure_type=Closure(1), num_op_output=Operation(0), axis_param=0)
         expected_df_copy = expected_df.copy()
 
         for col in expected_df:
@@ -1546,7 +1546,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             for idx in expected_df.index:
                 # Verificamos si el valor es NaN en el dataframe original
                 if pd.isnull(expected_df.at[idx, col]):
-                    # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                    # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                     expected_df_copy.at[idx, col] = expected_df.at[idx, col]
 
         pd.testing.assert_frame_equal(result, expected_df_copy)
@@ -1554,8 +1554,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # # Caso 2
         # expected_df = self.small_batch_dataset.copy()
-        # result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-        #                                                  closureType=Closure(3), numOpOutput=Operation(0), axis_param=1)
+        # result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
+        #                                                  closure_type=Closure(3), num_op_output=Operation(0), axis_param=1)
         #
         # expected_df = expected_df.apply(
         #     lambda row: row.apply(lambda x: np.nan if np.issubdtype(type(x), np.number) and ((x >= 2) & (x <= 4)) else x).interpolate(
@@ -1567,20 +1567,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
+            result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
+                                                              closure_type=Closure(3), num_op_output=Operation(0),
                                                               axis_param=None)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=0, rightMargin=3,
-                                                          closureType=Closure(0), numOpOutput=Operation(1),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
+                                                          closure_type=Closure(0), num_op_output=Operation(1),
                                                           axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         mean_value = only_numbers_df.mean().mean()
-        # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+        # Reemplaza 'fix_value_input' con la media del DataFrame completo usando lambda
         expected_df = expected_df.apply(
             lambda col: col.apply(
                 lambda x: mean_value if (np.issubdtype(type(x), np.number) and ((x > 0) & (x < 3))) else x))
@@ -1590,8 +1590,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=50, right_margin=60,
+                                                          closure_type=Closure(0), num_op_output=Operation(1), axis_param=0)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
                                             and ((x > 50) & (x < 60))) else x))
@@ -1601,8 +1601,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=50, right_margin=60,
+                                                          closure_type=Closure(2), num_op_output=Operation(2), axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         median_value = only_numbers_df.median().median()
@@ -1615,8 +1615,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 9
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23, rightMargin=25,
-                                                          closureType=Closure(0), numOpOutput=Operation(3),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=23, right_margin=25,
+                                                          closure_type=Closure(0), num_op_output=Operation(3),
                                                           axis_param=None)
 
         #Sustituye los valores en el intervalo con el valor más cercano del dataframe completo
@@ -1629,8 +1629,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 10
         expected_df = self.small_batch_dataset.copy()# Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=23, rightMargin=25,
-                                                          closureType=Closure(0), numOpOutput=Operation(3), axis_param=0)
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=23, right_margin=25,
+                                                          closure_type=Closure(0), num_op_output=Operation(3), axis_param=0)
 
         # Reemplazar los valores en missing_values por el valor numérico más cercano a lo largo de las columnas y filas
         expected_df = expected_df.apply(lambda col: col.apply(lambda x:
@@ -1645,16 +1645,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Aplicar la transformación de datos
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
+            result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
+                                                              closure_type=Closure(3), num_op_output=Operation(0),
                                                               axis_param=None, field=field)
         print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
 
         # Caso 12
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(0),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
+                                                          closure_type=Closure(3), num_op_output=Operation(0),
                                                           axis_param=None, field=field)
         expected_df[field] = expected_df[field].apply(lambda x: np.nan if (2 <= x <= 4) else x).interpolate(method='linear',
                                                                                                             limit_direction='both')
@@ -1665,8 +1665,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(1),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
+                                                          closure_type=Closure(3), num_op_output=Operation(1),
                                                           axis_param=None, field=field)
         expected_df[field] = expected_df[field].apply(lambda x: expected_df[field].mean() if (2 <= x <= 4) else x)
         pd.testing.assert_frame_equal(result, expected_df)
@@ -1675,8 +1675,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 14
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(2),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
+                                                          closure_type=Closure(3), num_op_output=Operation(2),
                                                           axis_param=None, field=field)
         median=expected_df[field].median()
         expected_df[field] = expected_df[field].apply(lambda x: median if (2 <= x <= 4) else x)
@@ -1686,8 +1686,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 15
         expected_df = self.small_batch_dataset.copy()
         field = 'key'
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.small_batch_dataset.copy(), leftMargin=2,
-                                                          rightMargin=4, closureType=Closure(2), numOpOutput=Operation(3),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(), left_margin=2,
+                                                          right_margin=4, closure_type=Closure(2), num_op_output=Operation(3),
                                                           axis_param=None, field=field)
 
         indice_row = []
@@ -1721,8 +1721,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 1
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(1), numOpOutput=Operation(0), axis_param=0)
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                          closure_type=Closure(1), num_op_output=Operation(0), axis_param=0)
         expected_df_copy = expected_df.copy()
 
         for col in expected_df:
@@ -1736,7 +1736,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             for idx in expected_df.index:
                 # Verificamos si el valor es NaN en el dataframe original
                 if pd.isnull(expected_df.at[idx, col]):
-                    # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                    # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                     expected_df_copy.at[idx, col] = expected_df.at[idx, col]
 
         pd.testing.assert_frame_equal(result, expected_df_copy)
@@ -1744,8 +1744,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # # Caso 2
         # expected_df = self.rest_of_dataset.copy()
-        # result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-        #                                                  closureType=Closure(3), numOpOutput=Operation(0), axis_param=1)
+        # result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+        #                                                  closure_type=Closure(3), num_op_output=Operation(0), axis_param=1)
         #
         # expected_df = expected_df.apply(
         #     lambda row: row.apply(lambda x: np.nan if np.issubdtype(type(x), np.number) and ((x >= 2) & (x <= 4)) else x).interpolate(
@@ -1757,20 +1757,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
+            result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                              closure_type=Closure(3), num_op_output=Operation(0),
                                                               axis_param=None)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=0, rightMargin=3,
-                                                          closureType=Closure(0), numOpOutput=Operation(1),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                          closure_type=Closure(0), num_op_output=Operation(1),
                                                           axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         mean_value = only_numbers_df.mean().mean()
-        # Reemplaza 'fixValueInput' con la media del DataFrame completo usando lambda
+        # Reemplaza 'fix_value_input' con la media del DataFrame completo usando lambda
         expected_df = expected_df.apply(
             lambda col: col.apply(
                 lambda x: mean_value if (np.issubdtype(type(x), np.number) and ((x > 0) & (x < 3))) else x))
@@ -1780,8 +1780,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(0), numOpOutput=Operation(1), axis_param=0)
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=50, right_margin=60,
+                                                          closure_type=Closure(0), num_op_output=Operation(1), axis_param=0)
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: col.mean() if (np.issubdtype(type(x), np.number)
                                             and ((x > 50) & (x < 60))) else x))
@@ -1791,8 +1791,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=50, rightMargin=60,
-                                                          closureType=Closure(2), numOpOutput=Operation(2), axis_param=None)
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=50, right_margin=60,
+                                                          closure_type=Closure(2), num_op_output=Operation(2), axis_param=None)
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
         # Calcular la media de estas columnas numéricas
         median_value = only_numbers_df.median().median()
@@ -1807,8 +1807,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         # start_time = time.time()
 
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=23, rightMargin=25,
-                                                          closureType=Closure(1), numOpOutput=Operation(3),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=23, right_margin=25,
+                                                          closure_type=Closure(1), num_op_output=Operation(3),
                                                           axis_param=None)
 
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
@@ -1853,8 +1853,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 10
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=23,
-                                                          rightMargin=25, closureType=Closure(0), numOpOutput=Operation(3),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=23,
+                                                          right_margin=25, closure_type=Closure(0), num_op_output=Operation(3),
                                                           axis_param=0)
 
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
@@ -1892,16 +1892,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Aplicar la transformación de datos
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                              closureType=Closure(3), numOpOutput=Operation(0),
+            result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                              closure_type=Closure(3), num_op_output=Operation(0),
                                                               axis_param=None, field=field)
         print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
 
         # Caso 12
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
-                                                          rightMargin=4, closureType=Closure(3), numOpOutput=Operation(0),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2,
+                                                          right_margin=4, closure_type=Closure(3), num_op_output=Operation(0),
                                                           axis_param=None, field=field)
         expected_df_copy = expected_df.copy()
 
@@ -1913,7 +1913,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         for idx in expected_df.index:
             # Verificamos si el valor es NaN en el dataframe original
             if pd.isnull(expected_df.at[idx, field]):
-                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                 expected_df_copy.at[idx, field] = expected_df.at[idx, field]
 
         pd.testing.assert_frame_equal(result, expected_df_copy)
@@ -1923,8 +1923,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(1),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                          closure_type=Closure(3), num_op_output=Operation(1),
                                                           axis_param=None, field=field)
         mean=expected_df[field].mean()
         expected_df[field] = expected_df[field].apply(lambda x: mean if (2 <= x <= 4) else x)
@@ -1934,8 +1934,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 14
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2, rightMargin=4,
-                                                          closureType=Closure(3), numOpOutput=Operation(2),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                          closure_type=Closure(3), num_op_output=Operation(2),
                                                           axis_param=None, field=field)
         median=expected_df[field].median()
         expected_df[field] = expected_df[field].apply(lambda x: median if (2 <= x <= 4) else x)
@@ -1945,8 +1945,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 15
         expected_df = self.rest_of_dataset.copy()
         field = 'key'
-        result = self.data_transformations.transform_Interval_NumOp(dataDictionary=self.rest_of_dataset.copy(), leftMargin=2,
-                                                          rightMargin=4, closureType=Closure(2), numOpOutput=Operation(3),
+        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(), left_margin=2,
+                                                          right_margin=4, closure_type=Closure(2), num_op_output=Operation(3),
                                                           axis_param=None, field=field)
 
         indice_row = []
@@ -1971,14 +1971,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
-
-
-
-
-
-
-
-
 
     def execute_transform_SpecialValue_FixValue_ExternalDatasetTests(self):
         """
@@ -2006,15 +1998,15 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
         # resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [0, -1]
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput, missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input, missing_values=missing_values,
+                                                                    fix_value_output=fix_value_output, field=field)
         # Susituye los valores incluidos en missing_values, 0, None, así como los valores nulos de python de la cadena 'instrumentalness' por el valor de cadena 'SpecialValue' en expected_df
-        expected_df['instrumentalness'] = expected_df['instrumentalness'].apply(lambda x: fixValueOutput if x in missing_values else x)
+        expected_df['instrumentalness'] = expected_df['instrumentalness'].apply(lambda x: fix_value_output if x in missing_values else x)
 
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
@@ -2024,14 +2016,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y
         # verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3]
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput, missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
-        expected_df['key'] = expected_df['key'].apply(lambda x: fixValueOutput if x in missing_values else x)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input, missing_values=missing_values,
+                                                                    fix_value_output=fix_value_output, field=field)
+        expected_df['key'] = expected_df['key'].apply(lambda x: fix_value_output if x in missing_values else x)
 
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -2040,14 +2032,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 6]
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, field=field)
-        expected_df['key'] = expected_df['key'].apply(lambda x: fixValueOutput if x in missing_values else x)
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    missing_values=missing_values, fix_value_output=fix_value_output, field=field)
+        expected_df['key'] = expected_df['key'].apply(lambda x: fix_value_output if x in missing_values else x)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
@@ -2056,18 +2048,18 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'danceability'
-        fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, field=field, axis_param=0)
+        fix_value_output = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    fix_value_output=fix_value_output, field=field, axis_param=0)
         # Obtener los outliers de la columna 'danceability' y sustituirlos por el valor de cadena 'SpecialValue' en expected_df
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
         IQR = Q3 - Q1
         if np.issubdtype(expected_df[field].dtype, np.number):
-            expected_df[field] = expected_df[field].where(~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=fixValueOutput)
+            expected_df[field] = expected_df[field].where(~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=fix_value_output)
             pd.testing.assert_frame_equal(result_df, expected_df)
             print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
         else:
@@ -2079,11 +2071,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        fix_value_output = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    fix_value_output=fix_value_output, axis_param=0)
 
         # Obtener los outliers de todas las columnas que sean numéricas y sustituir los valores outliers por el valor de cadena 'SpecialValue' en expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -2091,7 +2083,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
-            expected_df[col] = expected_df[col].where(~((expected_df[col] < Q1 - 1.5 * IQR) | (expected_df[col] > Q3 + 1.5 * IQR)), other=fixValueOutput)
+            expected_df[col] = expected_df[col].where(~((expected_df[col] < Q1 - 1.5 * IQR) | (expected_df[col] > Q3 + 1.5 * IQR)), other=fix_value_output)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
@@ -2100,13 +2092,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del dataset de prueba por el valor de cadena 'SpecialValue'. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3]
-        fixValueOutput = 101
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+        fix_value_output = 101
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
 
@@ -2115,13 +2107,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba por el valor 200. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [0, -1]
-        fixValueOutput = 200
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+        fix_value_output = 200
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
 
@@ -2130,27 +2122,27 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba por el valor "SpecialValue". Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
-        fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    missing_values=missing_values, fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+        fix_value_output = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
 
         # Caso 9
         # Ejecutar la transformación de datos: cambiar los valores outliers de una columna que no existe. Expected ValueError
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'p'
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                     specialTypeInput=specialTypeInput,
-                                                                     fixValueOutput=fixValueOutput, field=field)
+            result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                     special_type_input=special_type_input,
+                                                                     fix_value_output=fix_value_output, field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
 
@@ -2160,17 +2152,17 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         """
         # Caso 1 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [0, -1]
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
                                                                     missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
+                                                                    fix_value_output=fix_value_output, field=field)
         expected_df['instrumentalness'] = expected_df['instrumentalness'].replace(np.NaN, 0)
         expected_df['instrumentalness'] = expected_df['instrumentalness'].apply(
-            lambda x: fixValueOutput if x in missing_values else x)
+            lambda x: fix_value_output if x in missing_values else x)
         # Cambair el dtype de la columna 'instrumentalness' a object
         expected_df['instrumentalness'] = expected_df['instrumentalness'].astype('object')
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -2178,43 +2170,43 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3]
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
                                                                     missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
+                                                                    fix_value_output=fix_value_output, field=field)
         expected_df['key'] = expected_df['key'].replace(np.NaN, 1)
         expected_df['key'] = expected_df['key'].apply(
-            lambda x: fixValueOutput if x in missing_values else x)
+            lambda x: fix_value_output if x in missing_values else x)
 
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
         # Caso 3 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 6]
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
                                                                     missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, field=field)
-        expected_df['key'] = expected_df['key'].apply(lambda x: fixValueOutput if x in missing_values else x)
+                                                                    fix_value_output=fix_value_output, field=field)
+        expected_df['key'] = expected_df['key'].apply(lambda x: fix_value_output if x in missing_values else x)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
         # Caso 4 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'danceability'
-        fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, field=field,
+        fix_value_output = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    fix_value_output=fix_value_output, field=field,
                                                                     axis_param=0)
         # Obtener los outliers de la columna 'danceability' y sustituirlos por el valor de cadena 'SpecialValue' en expected_df
         Q1 = expected_df[field].quantile(0.25)
@@ -2222,7 +2214,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         IQR = Q3 - Q1
         if np.issubdtype(expected_df[field].dtype, np.number):
             expected_df[field] = expected_df[field].where(
-                ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=fixValueOutput)
+                ~((expected_df[field] < Q1 - 1.5 * IQR) | (expected_df[field] > Q3 + 1.5 * IQR)), other=fix_value_output)
             pd.testing.assert_frame_equal(result_df, expected_df)
             print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
         else:
@@ -2232,11 +2224,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        fix_value_output = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
+                                                                    fix_value_output=fix_value_output, axis_param=0)
 
         # Obtener los outliers de todas las columnas que sean numéricas y sustituir los valores outliers por el valor de cadena 'SpecialValue' en expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -2245,63 +2237,63 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             expected_df[col] = expected_df[col].where(
-                ~((expected_df[col] < Q1 - 1.5 * IQR) | (expected_df[col] > Q3 + 1.5 * IQR)), other=fixValueOutput)
+                ~((expected_df[col] < Q1 - 1.5 * IQR) | (expected_df[col] > Q3 + 1.5 * IQR)), other=fix_value_output)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
         # Caso 6 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3]
-        fixValueOutput = 101
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
+        fix_value_output = 101
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
                                                                     missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+                                                                    fix_value_output=fix_value_output, axis_param=0)
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
 
         # Caso 7 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [0, -1]
-        fixValueOutput = 200
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
+        fix_value_output = 200
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
                                                                     missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
+                                                                    fix_value_output=fix_value_output, axis_param=0)
         expected_df = expected_df.replace(np.NaN, 0)
-        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+        expected_df = expected_df.apply(lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
 
         # Caso 8 - Whole Dataset
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
-        fixValueOutput = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                    specialTypeInput=specialTypeInput,
+        fix_value_output = "SpecialValue"
+        result_df = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                    special_type_input=special_type_input,
                                                                     missing_values=missing_values,
-                                                                    fixValueOutput=fixValueOutput, axis_param=0)
+                                                                    fix_value_output=fix_value_output, axis_param=0)
         expected_df = expected_df.replace(np.NaN, "Katy Perry")
         expected_df = expected_df.apply(
-            lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+            lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
 
         # Caso 9
         # Ejecutar la transformación de datos: cambiar los valores outliers de una columna que no existe. Expected ValueError
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'p'
-        fixValueOutput = "SpecialValue"
+        fix_value_output = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                     specialTypeInput=specialTypeInput,
-                                                                     fixValueOutput=fixValueOutput, field=field)
+            result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                     special_type_input=special_type_input,
+                                                                     fix_value_output=fix_value_output, field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
     def execute_transform_SpecialValue_DerivedValue_ExternalDatasetTests(self):
@@ -2330,14 +2322,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         field=field, missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput)
+                                                                        derived_type_output=derived_type_output)
         expected_df[field] = expected_df[field].replace(np.NaN, 1)
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
@@ -2351,17 +2343,17 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
+        derived_type_output = DerivedType(0)
         field = 'acousticness'
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
         most_frequent_value = most_frequent_list[0]
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         missing_values=missing_values, field=field,
-                                                                        derivedTypeOutput=derivedTypeOutput)
+                                                                        derived_type_output=derived_type_output)
         expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if x in missing_values else x)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -2371,13 +2363,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # el dataframe completo del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput, axis_param=0)
+                                                                        derived_type_output=derived_type_output, axis_param=0)
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for col in numeric_columns:
             # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
@@ -2394,12 +2386,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # las columnas numéricas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output,
                                                                         missing_values=missing_values, axis_param=None)
         # Obtener el valor más frecuente de entre todas las columnas numéricas del dataframe
         most_frequent_list = expected_df.stack().value_counts().index.tolist()
@@ -2416,12 +2408,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output,
                                                                         axis_param=0, missing_values=missing_values)
         for col in expected_df.columns:
 
@@ -2438,13 +2430,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        derived_type_output = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput, axis_param=0)
+                                                                        derived_type_output=derived_type_output, axis_param=0)
         # Asegúrate de que NaN esté incluido en la lista de valores faltantes para la comprobación, si aún no está incluido.
         missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
 
@@ -2460,14 +2452,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
         # el esperado. Expected ValueError
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(1)
+        derived_type_output = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         special_type_input=special_type_input,
+                                                                         derived_type_output=derived_type_output,
                                                                          missing_values=missing_values, axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
@@ -2476,40 +2468,40 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
         # el esperado. Expected ValueError
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(2)
+        derived_type_output = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         special_type_input=special_type_input,
+                                                                         derived_type_output=derived_type_output,
                                                                          missing_values=missing_values, axis_param=None)
         print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
 
         # Caso 9
         # Ejecutar la transformación de datos: cambiar los valores outliers de una columna que no existe. Expected ValueError
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'p'
-        derivedTypeOutput = DerivedType(0)
+        derived_type_output = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         special_type_input=special_type_input,
+                                                                         derived_type_output=derived_type_output,
                                                                          field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
         # Caso 10
         # Ejecutar la transformación de datos: cambiar los valores outliers de una columna especifica por el valor derivado 0 (Most Frequent) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'danceability'
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output,
                                                                         field=field, axis_param=0)
         # Obtener el valor más frecuentemente repetido en la columna 'danceability'
         most_frequent_value = expected_df[field].mode()[0]
@@ -2533,12 +2525,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # (Previous) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'danceability'
-        derivedTypeOutput = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        field=field, derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        field=field, derived_type_output=derived_type_output,
                                                                         axis_param=0)
         # En primer lugar, obtenemos los valores atípicos de la columna 'danceability'
         Q1 = expected_df[field].quantile(0.25)
@@ -2561,11 +2553,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        derivedTypeOutput = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.small_batch_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        derived_type_output = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output, axis_param=0)
         # Se obtienen los outliers de todas las columnas que sean numéricas y se sustituyen los valores outliers por el valor siguiente en expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for col in numeric_columns: # Sustituir los valores outliers por el valor siguiente
@@ -2589,14 +2581,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         field=field, missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput)
+                                                                        derived_type_output=derived_type_output)
         expected_df[field] = expected_df[field].replace(np.NaN, 1)
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
@@ -2610,17 +2602,17 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
+        derived_type_output = DerivedType(0)
         field = 'acousticness'
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
         most_frequent_value = most_frequent_list[0]
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         missing_values=missing_values, field=field,
-                                                                        derivedTypeOutput=derivedTypeOutput)
+                                                                        derived_type_output=derived_type_output)
         expected_df[field] = expected_df[field].apply(lambda x: most_frequent_value if x in missing_values else x)
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
@@ -2630,13 +2622,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # el dataframe completo del batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+                                                                        derived_type_output=derived_type_output,
                                                                         axis_param=0)
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
         for col in numeric_columns:
@@ -2654,12 +2646,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # las columnas numéricas del batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output,
                                                                         missing_values=missing_values, axis_param=None)
         # Obtener el valor más frecuente de entre todas las columnas numéricas del dataframe
         most_frequent_list = expected_df.stack().value_counts().index.tolist()
@@ -2677,12 +2669,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output,
                                                                         axis_param=0, missing_values=missing_values)
         for col in expected_df.columns:
 
@@ -2699,13 +2691,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
+        derived_type_output = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
                                                                         missing_values=missing_values,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+                                                                        derived_type_output=derived_type_output,
                                                                         axis_param=0)
         # Asegúrate de que NaN esté incluido en la lista de valores faltantes para la comprobación, si aún no está incluido.
         missing_values = missing_values + [np.nan] if np.nan not in missing_values else missing_values
@@ -2722,14 +2714,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
         # el esperado. Expected ValueError
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(1)
+        derived_type_output = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         special_type_input=special_type_input,
+                                                                         derived_type_output=derived_type_output,
                                                                          missing_values=missing_values, axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
@@ -2738,40 +2730,40 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con
         # el esperado. Expected ValueError
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        derivedTypeOutput = DerivedType(2)
+        derived_type_output = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         special_type_input=special_type_input,
+                                                                         derived_type_output=derived_type_output,
                                                                          missing_values=missing_values, axis_param=None)
         print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
 
         # Caso 9
         # Ejecutar la transformación de datos: cambiar los valores outliers de una columna que no existe. Expected ValueError
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'p'
-        derivedTypeOutput = DerivedType(0)
+        derived_type_output = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                         specialTypeInput=specialTypeInput,
-                                                                         derivedTypeOutput=derivedTypeOutput,
+            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         special_type_input=special_type_input,
+                                                                         derived_type_output=derived_type_output,
                                                                          field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
         # Caso 10
         # Ejecutar la transformación de datos: cambiar los valores outliers de una columna especifica por el valor derivado 0 (Most Frequent) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'danceability'
-        derivedTypeOutput = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(0)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output,
                                                                         field=field, axis_param=0)
         # Obtener el valor más frecuentemente repetido en la columna 'danceability'
         most_frequent_value = expected_df[field].mode()[0]
@@ -2795,12 +2787,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # (Previous) en el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
+        special_type_input = SpecialType(2)
         field = 'danceability'
-        derivedTypeOutput = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        field=field, derivedTypeOutput=derivedTypeOutput,
+        derived_type_output = DerivedType(1)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        field=field, derived_type_output=derived_type_output,
                                                                         axis_param=0)
         # En primer lugar, obtenemos los valores atípicos de la columna 'danceability'
         Q1 = expected_df[field].quantile(0.25)
@@ -2825,11 +2817,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        derivedTypeOutput = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(dataDictionary=self.rest_of_dataset.copy(),
-                                                                        specialTypeInput=specialTypeInput,
-                                                                        derivedTypeOutput=derivedTypeOutput,
+        special_type_input = SpecialType(2)
+        derived_type_output = DerivedType(2)
+        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        special_type_input=special_type_input,
+                                                                        derived_type_output=derived_type_output,
                                                                         axis_param=0)
         # Se obtienen los outliers de todas las columnas que sean numéricas y se sustituyen los valores outliers por el valor siguiente en expected_df
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -2869,12 +2861,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         #MISSING
         # Caso 1
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Aplica la interpolación lineal a los valores faltantes y valores nulos a través de todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores nulos y los valores faltantes por NaN
@@ -2890,12 +2882,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 2 - Se aplica la media de todas las columnas numéricas del dataframe a los valores faltantes y valores
         # nulos de python
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
@@ -2912,12 +2904,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 3 Se aplica la mediana de todas las columnas numéricas del dataframe a los valores faltantes y valores
         # nulos de python
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -2935,12 +2927,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos) y sobre
         # cada columna del dataframe.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Para cada columna numérica, se sustituyen los valores faltantes y valores nulos por el valor más cercano
         # en el dataframe
@@ -2953,14 +2945,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(3)
+        num_op_output = Operation(3)
 
 
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
 
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
@@ -2978,12 +2970,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df =  self.small_batch_dataset.copy()
         expected_df_copy = expected_df.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary= self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary= self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Aplicar la interpolación lineal a los valores invalidos en todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores invalidos por NaN
@@ -3009,12 +3001,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
@@ -3031,12 +3023,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
         # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3054,12 +3046,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3077,12 +3069,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3099,12 +3091,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3119,12 +3111,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: find_closest_value(expected_df.stack().tolist(), x) if x in missing_values else x))
@@ -3135,12 +3127,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la transformación de datos: aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(0)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
         expected_df_copy = expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # En primer lugar, se reemplazan los valores outliers por NaN
@@ -3158,7 +3150,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         for idx in expected_df.index:
             # Verificamos si el valor es NaN en el dataframe original
             if pd.isnull(expected_df.at[idx, field]):
-                # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                 expected_df_copy.at[idx, field] = expected_df.at[idx, field]
 
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
@@ -3168,11 +3160,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la transformación de datos: aplicar la interpolación lineal a los valores outliers de cada columna del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, axis_param=0)
         expected_df_copy=expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de cada columna del dataframe
         # En primer lugar, se reemplazan los valores outliers por NaN
@@ -3192,7 +3184,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 for idx in expected_df.index:
                     # Verificamos si el valor es NaN en el dataframe original
                     if pd.isnull(expected_df.at[idx, col]):
-                        # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                        # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                         expected_df_copy.at[idx, col] = expected_df.at[idx, col]
 
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
@@ -3203,12 +3195,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(1)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(1)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
         # Obtener la media de la columna 'danceability'
         mean_value = expected_df[field].mean()
         # Obtener los outliers de la columna 'danceability'
@@ -3225,11 +3217,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la media de la columna
             mean_value = expected_df[col].mean()
@@ -3248,12 +3240,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(2)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(2)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
         # Obtener la mediana de la columna 'danceability'
         median_value = expected_df[field].median()
         # Obtener los outliers de la columna 'danceability'
@@ -3270,11 +3262,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la mediana de la columna
             median_value = expected_df[col].median()
@@ -3296,12 +3288,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
         # manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(3)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
         # Sustituir los valores outliers por el valor más cercano en el dataframe
         Q1 = expected_df[field].quantile(0.25)
         Q3 = expected_df[field].quantile(0.75)
@@ -3317,19 +3309,19 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.small_batch_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.small_batch_dataset.copy(),
-                                                                             specialTypeInput=specialTypeInput,
-                                                                             numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
 
 
-        dataDictionary_copy_mask = getOutliers(expected_df, None, 0)
+        data_dictionary_copy_mask = getOutliers(expected_df, None, 0)
         for col_name in expected_df.select_dtypes(include=[np.number]).columns:
             # Get the outlier values in the current column
             outlier_values_in_col = [expected_df.at[i, col_name] for i in
                                      range(len(expected_df.index))
-                                     if dataDictionary_copy_mask.at[i, col_name] == 1]
+                                     if data_dictionary_copy_mask.at[i, col_name] == 1]
 
             # If there are no outlier values in the column, skip the rest of the loop
             if not outlier_values_in_col:
@@ -3347,7 +3339,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             # Replace the outlier values with the closest numeric values in the column
             for i in range(len(expected_df.index)):
                 current_value = expected_df.at[i, col_name]
-                if dataDictionary_copy_mask.at[i, col_name] == 1:
+                if data_dictionary_copy_mask.at[i, col_name] == 1:
                     expected_df.at[i, col_name] = closest_values[current_value]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
@@ -3361,12 +3353,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # MISSING
         # Caso 1
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Aplica la interpolación lineal a los valores faltantes y valores nulos a través de todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores nulos y los valores faltantes por NaN
@@ -3381,12 +3373,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2 - Se aplica la media de todas las columnas numéricas del dataframe a los valores faltantes y valores nulos de python
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
@@ -3402,12 +3394,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 3 Se aplica la mediana de todas las columnas numéricas del dataframe a los valores faltantes y valores
         # nulos de python
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3425,16 +3417,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos) y sobre
         # cada columna del dataframe.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(3)
+        num_op_output = Operation(3)
         # Al ser una operación de missing a closest y existen valores nulos, se devolverá un ValueError ya que
         # no se puede calcular el valor más cercano a un valor nulo
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                  specialTypeInput=specialTypeInput,
-                                                                  numOpOutput=numOpOutput,
+            result = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                  special_type_input=special_type_input,
+                                                                  num_op_output=num_op_output,
                                                                   missing_values=missing_values,
                                                                   axis_param=0)
         print_and_log("Test Case 4 Passed: Expected ValueError, got ValueError")
@@ -3442,16 +3434,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         # Probamos a aplicar la operación closest sobre un dataframe correcto. Se calcula el closest sobre el dataframe entero en relación a los valores faltantes y valores nulos.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(0)
+        special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(3)
+        num_op_output = Operation(3)
         # Al ser una operación de missing a closest y no existen valores nulos, se devolverá un ValueError ya que
         # no se puede calcular el valor más cercano a un valor nulo
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                  specialTypeInput=specialTypeInput,
-                                                                  numOpOutput=numOpOutput,
+            result = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                  special_type_input=special_type_input,
+                                                                  num_op_output=num_op_output,
                                                                   missing_values=missing_values,
                                                                   axis_param=None)
         print_and_log("Test Case 5 Passed: Expected ValueError, got ValueError")
@@ -3462,12 +3454,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
         expected_df_copy = expected_df.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Aplicar la interpolación lineal a los valores invalidos en todas las columnas del dataframe
         # En primer lugar, se reemplazan los valores invalidos por NaN
@@ -3493,12 +3485,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
@@ -3515,12 +3507,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
         # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3538,12 +3530,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3561,12 +3553,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Obtener las columnas numéricas
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3583,12 +3575,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [0.13]
-        numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=0)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
         numeric_columns = expected_df.select_dtypes(include=np.number).columns
@@ -3604,12 +3596,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(1)
+        special_type_input = SpecialType(1)
         missing_values = [0.13]
-        numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, missing_values=missing_values,
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, missing_values=missing_values,
                                                                  axis_param=None)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
         only_numbers_df = expected_df.select_dtypes(include=[np.number])
@@ -3637,12 +3629,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la transformación de datos: aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(0)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
         expected_df_copy = expected_df.copy()
         expected_df_mask = getOutliers(expected_df, field, 0)
         for idx, value in expected_df[field].items():
@@ -3653,7 +3645,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         for idx in expected_df.index:
             # Verify if the value is NaN in the original dataframe
             if pd.isnull(expected_df.at[idx, field]):
-                # Replace the value with the corresponding one from dataDictionary_copy_copy
+                # Replace the value with the corresponding one from data_dictionary_copy_copy
                 expected_df_copy.at[idx, field] = expected_df.at[idx, field]
 
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
@@ -3663,11 +3655,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la transformación de datos: aplicar la interpolación lineal a los valores outliers de cada columna del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, axis_param=0)
         expected_df_copy=expected_df.copy()
         # Aplicar la interpolación lineal a los valores outliers de cada columna del dataframe
         # En primer lugar, se reemplazan los valores outliers por NaN
@@ -3687,7 +3679,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 for idx in expected_df.index:
                     # Verificamos si el valor es NaN en el dataframe original
                     if pd.isnull(expected_df.at[idx, col]):
-                        # Reemplazamos el valor con el correspondiente de dataDictionary_copy_copy
+                        # Reemplazamos el valor con el correspondiente de data_dictionary_copy_copy
                         expected_df_copy.at[idx, col] = expected_df.at[idx, col]
 
         pd.testing.assert_frame_equal(result_df, expected_df_copy)
@@ -3698,12 +3690,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el
         # resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(1)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(1)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
         # Obtener la media de la columna 'danceability'
         mean_value = expected_df[field].mean()
         # Obtener los outliers de la columna 'danceability'
@@ -3723,11 +3715,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(1)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la media de la columna
             mean_value = expected_df[col].mean()
@@ -3747,12 +3739,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(2)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(2)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
         # Obtener la mediana de la columna 'danceability'
         median_value = expected_df[field].median()
         # Obtener los outliers de la columna 'danceability'
@@ -3770,11 +3762,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(2)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, axis_param=0)
         for col in expected_df.select_dtypes(include=np.number).columns:
             # Obtener la mediana de la columna
             median_value = expected_df[col].median()
@@ -3796,12 +3788,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
         # manualmente y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(3)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, field=field, axis_param=0)
 
         expected_df_mask = getOutliers(expected_df, field, 0)
         outlier_values_in_col = [expected_df.at[i, field] for i in range(len(expected_df.index))
@@ -3833,11 +3825,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
         expected_df = self.rest_of_dataset.copy()
-        specialTypeInput = SpecialType(2)
-        numOpOutput = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(dataDictionary=self.rest_of_dataset.copy(),
-                                                                 specialTypeInput=specialTypeInput,
-                                                                 numOpOutput=numOpOutput, axis_param=0)
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 special_type_input=special_type_input,
+                                                                 num_op_output=num_op_output, axis_param=0)
 
         expected_df_mask = getOutliers(expected_df, None, 0)
         # Iterate over each column

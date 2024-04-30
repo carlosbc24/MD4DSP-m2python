@@ -12,40 +12,40 @@ class DataTransformations:
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
-    def transform_FixValue_FixValue(self, dataDictionary: pd.DataFrame, fixValueInput, fixValueOutput,
-                                    dataTypeInput: DataType = None,
-                                    dataTypeOutput: DataType = None, field: str = None) -> pd.DataFrame:
+    def transform_FixValue_FixValue(self, data_dictionary: pd.DataFrame, fix_value_input, fix_value_output,
+                                    data_type_input: DataType = None,
+                                    data_type_output: DataType = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - FixValue relation
         params:
-            dataDictionary: dataframe with the data
-            dataTypeInput: data type of the input value
-            FixValueInput: input value to check
-            dataTypeOutput: data type of the output value
-            FixValueOutput: output value to check
+            data_dictionary: dataframe with the data
+            data_type_input: data type of the input value
+            fix_value_input: input value to check
+            data_type_output: data type of the output value
+            fix_value_output: output value to check
             field: field to execute the data transformation
         Returns:
-            dataDictionary with the FixValueInput and FixValueOutput values changed to the type dataTypeInput and dataTypeOutput respectively
+            data_dictionary with the fix_value_input and fix_value_output values changed to the type data_type_input and data_type_output respectively
         """
-        if dataTypeInput is not None and dataTypeOutput is not None:  # If the data types are specified, the transformation is performed
-            # Auxiliary function that changes the values of FixValueInput and FixValueOutput to the data type in DataTypeInput and DataTypeOutput respectively
-            fixValueInput, fixValueOutput = cast_type_FixValue(dataTypeInput, fixValueInput, dataTypeOutput,
-                                                               fixValueOutput)
+        if data_type_input is not None and data_type_output is not None:  # If the data types are specified, the transformation is performed
+            # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
+            fix_value_input, fix_value_output = cast_type_FixValue(data_type_input, fix_value_input, data_type_output,
+                                                               fix_value_output)
 
         if field is None:
-            dataDictionary = dataDictionary.replace(fixValueInput, fixValueOutput)
+            data_dictionary = data_dictionary.replace(fix_value_input, fix_value_output)
         elif field is not None:
-            if field in dataDictionary.columns:
-                dataDictionary.loc[:, field] = dataDictionary.loc[:, field].replace(fixValueInput, fixValueOutput)
-                # dataDictionary[field] = dataDictionary[field].replace(fixValueInput, fixValueOutput)
-            elif field not in dataDictionary.columns:
+            if field in data_dictionary.columns:
+                data_dictionary.loc[:, field] = data_dictionary.loc[:, field].replace(fix_value_input, fix_value_output)
+                # data_dictionary[field] = data_dictionary[field].replace(fix_value_input, fix_value_output)
+            elif field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-        return dataDictionary
+        return data_dictionary
 
-    def transform_FixValue_DerivedValue(self, dataDictionary: pd.DataFrame, fixValueInput,
-                                        derivedTypeOutput: DerivedType,
-                                        dataTypeInput: DataType = None, axis_param: int = None,
+    def transform_FixValue_DerivedValue(self, data_dictionary: pd.DataFrame, fix_value_input,
+                                        derived_type_output: DerivedType,
+                                        data_type_input: DataType = None, axis_param: int = None,
                                         field: str = None) -> pd.DataFrame:
         # By default, if all values are equally frequent, it is replaced by the first value.
         # Check if it should only be done for rows and columns or also for the entire dataframe.
@@ -53,494 +53,494 @@ class DataTransformations:
         Execute the data transformation of the FixValue - DerivedValue relation
         Sustituye el valor proporcionado por el usuario por el valor derivado en el eje que se especifique por parámetros
         params:
-            dataDictionary: dataframe with the data
-            dataTypeInput: data type of the input value
-            FixValueInput: input value to check
-            derivedTypeOutput: derived type of the output value
+            data_dictionary: dataframe with the data
+            data_type_input: data type of the input value
+            fix_value_input: input value to check
+            derived_type_output: derived type of the output value
             axis_param: axis to execute the data transformation - 0: column, None: dataframe
             field: field to execute the data transformation
 
-            return: dataDictionary with the FixValueInput values replaced by the value derived from the operation derivedTypeOutput
+            return: data_dictionary with the fix_value_input values replaced by the value derived from the operation derived_type_output
         """
-        if dataTypeInput is not None:  # If the data type is specified, the transformation is performed
-            fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
-            # Auxiliary function that changes the value of FixValueInput to the data type in DataTypeInput
-        dataDictionary_copy = dataDictionary.copy()
+        if data_type_input is not None:  # If the data type is specified, the transformation is performed
+            fix_value_input, valorNulo = cast_type_FixValue(data_type_input, fix_value_input, None, None)
+            # Auxiliary function that changes the value of fix_value_input to the data type in data_type_input
+        data_dictionary_copy = data_dictionary.copy()
 
         if field is None:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            if derived_type_output == DerivedType.MOSTFREQUENT:
                 if axis_param == 1:  # Applies the lambda function at the row level
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda fila: fila.apply(
-                        lambda value: dataDictionary_copy.loc[
-                            fila.name].value_counts().idxmax() if value == fixValueInput else value), axis=axis_param)
+                    data_dictionary_copy = data_dictionary_copy.apply(lambda fila: fila.apply(
+                        lambda value: data_dictionary_copy.loc[
+                            fila.name].value_counts().idxmax() if value == fix_value_input else value), axis=axis_param)
                 elif axis_param == 0:  # Applies the lambda function at the column level
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
-                        lambda value: dataDictionary_copy[
-                            columna.name].value_counts().idxmax() if value == fixValueInput else value),
+                    data_dictionary_copy = data_dictionary_copy.apply(lambda columna: columna.apply(
+                        lambda value: data_dictionary_copy[
+                            columna.name].value_counts().idxmax() if value == fix_value_input else value),
                                                                     axis=axis_param)
                 else:  # Applies the lambda function at the dataframe level
                     # In case of a tie of the value with the most appearances in the dataset, the first value is taken
-                    valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
+                    valor_mas_frecuente = data_dictionary_copy.stack().value_counts().idxmax()
                     # Replace the values within the interval with the most frequent value in the entire DataFrame using lambda
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.replace(fixValueInput, valor_mas_frecuente))
+                    data_dictionary_copy = data_dictionary_copy.apply(
+                        lambda col: col.replace(fix_value_input, valor_mas_frecuente))
             # If it is the first value, it is replaced by the previous value in the same column
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
+            elif derived_type_output == DerivedType.PREVIOUS:
                 # Applies the lambda function at the column level or at the row level
-                # Lambda that replaces any value equal to FixValueInput in the dataframe with the value of the previous position in the same column
+                # Lambda that replaces any value equal to fix_value_input in the dataframe with the value of the previous position in the same column
                 if axis_param is not None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda x: x.where((x != fixValueInput) | x.shift(1).isna(),
+                    data_dictionary_copy = data_dictionary_copy.apply(
+                        lambda x: x.where((x != fix_value_input) | x.shift(1).isna(),
                                           other=x.shift(1)), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
             # It assigns the value np.nan if it is the last value
-            elif derivedTypeOutput == DerivedType.NEXT:
+            elif derived_type_output == DerivedType.NEXT:
                 # Applies the lambda function at the column level or at the row level
                 if axis_param is not None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda x: x.where((x != fixValueInput) | x.shift(-1).isna(),
+                    data_dictionary_copy = data_dictionary_copy.apply(
+                        lambda x: x.where((x != fix_value_input) | x.shift(-1).isna(),
                                           other=x.shift(-1)), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the NEXT operation")
         elif field is not None:
-            if field not in dataDictionary.columns:
+            if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
-            elif field in dataDictionary.columns:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value: dataDictionary_copy[
-                        field].value_counts().idxmax() if value == fixValueInput else value)
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].where(
-                        (dataDictionary_copy[field] != fixValueInput) | dataDictionary_copy[field].shift(1).isna(),
-                        other=dataDictionary_copy[field].shift(1))
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].where(
-                        (dataDictionary_copy[field] != fixValueInput) | dataDictionary_copy[field].shift(-1).isna(),
-                        other=dataDictionary_copy[field].shift(-1))
+            elif field in data_dictionary.columns:
+                if derived_type_output == DerivedType.MOSTFREQUENT:
+                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(lambda value: data_dictionary_copy[
+                        field].value_counts().idxmax() if value == fix_value_input else value)
+                elif derived_type_output == DerivedType.PREVIOUS:
+                    data_dictionary_copy[field] = data_dictionary_copy[field].where(
+                        (data_dictionary_copy[field] != fix_value_input) | data_dictionary_copy[field].shift(1).isna(),
+                        other=data_dictionary_copy[field].shift(1))
+                elif derived_type_output == DerivedType.NEXT:
+                    data_dictionary_copy[field] = data_dictionary_copy[field].where(
+                        (data_dictionary_copy[field] != fix_value_input) | data_dictionary_copy[field].shift(-1).isna(),
+                        other=data_dictionary_copy[field].shift(-1))
 
-        return dataDictionary_copy
+        return data_dictionary_copy
 
-    def transform_FixValue_NumOp(self, dataDictionary: pd.DataFrame, fixValueInput, numOpOutput: Operation,
-                                 dataTypeInput: DataType = None, axis_param: int = None,
+    def transform_FixValue_NumOp(self, data_dictionary: pd.DataFrame, fix_value_input, num_op_output: Operation,
+                                 data_type_input: DataType = None, axis_param: int = None,
                                  field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
         params:
-            dataDictionary: dataframe with the data
-            dataTypeInput: data type of the input value
-            FixValueInput: input value to check
-            numOpOutput: operation to execute the data transformation
+            data_dictionary: dataframe with the data
+            data_type_input: data type of the input value
+            fix_value_input: input value to check
+            num_op_output: operation to execute the data transformation
             axis_param: axis to execute the data transformation
             field: field to execute the data transformation
         Returns:
-            dataDictionary with the FixValueInput values replaced by the result of the operation numOpOutput
+            data_dictionary with the fix_value_input values replaced by the result of the operation num_op_output
         """
-        if dataTypeInput is not None:  # If it is specified, the transformation is performed
-            fixValueInput, valorNulo = cast_type_FixValue(dataTypeInput, fixValueInput, None, None)
+        if data_type_input is not None:  # If it is specified, the transformation is performed
+            fix_value_input, valorNulo = cast_type_FixValue(data_type_input, fix_value_input, None, None)
 
-        # Auxiliary function that changes the value of 'FixValueInput' to the data type in 'DataTypeInput'
-        dataDictionary_copy = dataDictionary.copy()
+        # Auxiliary function that changes the value of 'fix_value_input' to the data type in 'data_type_input'
+        data_dictionary_copy = data_dictionary.copy()
         if field is None:
-            if numOpOutput == Operation.INTERPOLATION:
+            if num_op_output == Operation.INTERPOLATION:
                 # Applies linear interpolation to the entire DataFrame
-                dataDictionary_copy_copy = dataDictionary_copy.copy()
+                data_dictionary_copy_copy = data_dictionary_copy.copy()
                 if axis_param == 0:
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy_copy[col].dtype, np.number):
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy_copy[col].dtype, np.number):
                             # Step 1: Replace the values that meet the condition with NaN
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x == fixValueInput else x)
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x == fix_value_input else x)
                             # Step 2: Interpolate the resulting NaN values
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
 
                     # Iterate over each column
-                    for col in dataDictionary_copy.columns:
+                    for col in data_dictionary_copy.columns:
                         # For each index in the column
-                        for idx in dataDictionary_copy.index:
+                        for idx in data_dictionary_copy.index:
                             # Verify if the value is NaN in the original dataframe
-                            if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Replace the value with the corresponding one from dataDictionary_copy_copy
-                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
-                    return dataDictionary_copy_copy
+                            if pd.isnull(data_dictionary_copy.at[idx, col]):
+                                # Replace the value with the corresponding one from data_dictionary_copy_copy
+                                data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy.at[idx, col]
+                    return data_dictionary_copy_copy
                 elif axis_param == 1:
-                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
-                    dataDictionary_copy = dataDictionary_copy.T
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy_copy[col].dtype, np.number):
+                    data_dictionary_copy_copy = data_dictionary_copy_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy_copy[col].dtype, np.number):
                             # Step 1: Replace the values that meet the condition with NaN
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if x == fixValueInput else x)
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x == fix_value_input else x)
                             # Step 2: Interpolate the resulting NaN values
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                     # Iterate over each column
-                    for col in dataDictionary_copy.columns:
+                    for col in data_dictionary_copy.columns:
                         # For each index in the column
-                        for idx in dataDictionary_copy.index:
+                        for idx in data_dictionary_copy.index:
                             # Verify if the value is NaN in the original dataframe
-                            if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Replace the value with the corresponding one from dataDictionary_copy_copy
-                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
-                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
-                    return dataDictionary_copy_copy
+                            if pd.isnull(data_dictionary_copy.at[idx, col]):
+                                # Replace the value with the corresponding one from data_dictionary_copy_copy
+                                data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy.at[idx, col]
+                    data_dictionary_copy_copy = data_dictionary_copy_copy.T
+                    return data_dictionary_copy_copy
                 elif axis_param is None:
                     raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
-            elif numOpOutput == Operation.MEAN:
+            elif num_op_output == Operation.MEAN:
                 if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                    only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                    only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the mean of these numeric columns
                     mean_value = only_numbers_df.mean().mean()
-                    # Replace 'fixValueInput' with the mean of the entire DataFrame using lambda
-                    dataDictionary_copy = dataDictionary_copy.replace(fixValueInput, mean_value)
+                    # Replace 'fix_value_input' with the mean of the entire DataFrame using lambda
+                    data_dictionary_copy = data_dictionary_copy.replace(fix_value_input, mean_value)
                 elif axis_param == 0:
-                    means = dataDictionary_copy.apply(
+                    means = data_dictionary_copy.apply(
                         lambda col: col[col.apply(lambda x: np.issubdtype(type(x), np.number))].mean() if np.issubdtype(
                             col.dtype, np.number) else None)
 
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                                lambda x: x if x != fixValueInput else means[col])
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                            data_dictionary_copy[col] = data_dictionary_copy[col].apply(
+                                lambda x: x if x != fix_value_input else means[col])
                 elif axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
 
-                    means = dataDictionary_copy.apply(
+                    means = data_dictionary_copy.apply(
                         lambda row: row[row.apply(lambda x: np.issubdtype(type(x), np.number))].mean() if np.issubdtype(
                             row.dtype, np.number) else None)
 
-                    for row in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
-                            dataDictionary_copy[row] = dataDictionary_copy[row].apply(
-                                lambda x: x if x != fixValueInput else means[row])
+                    for row in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[row].dtype, np.number):
+                            data_dictionary_copy[row] = data_dictionary_copy[row].apply(
+                                lambda x: x if x != fix_value_input else means[row])
 
-                    dataDictionary_copy = dataDictionary_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
 
-            elif numOpOutput == Operation.MEDIAN:
+            elif num_op_output == Operation.MEDIAN:
                 if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                    only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                    only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the median of these numeric columns
                     median_value = only_numbers_df.median().median()
-                    # Replace 'fixValueInput' with the median of the entire DataFrame using lambda
-                    dataDictionary_copy = dataDictionary_copy.replace(fixValueInput, median_value)
+                    # Replace 'fix_value_input' with the median of the entire DataFrame using lambda
+                    data_dictionary_copy = data_dictionary_copy.replace(fix_value_input, median_value)
                 elif axis_param == 0:
-                    for col in dataDictionary_copy.columns:
-                        if dataDictionary_copy[col].isin([fixValueInput]).any():
-                            median=dataDictionary_copy[col].median()
-                            dataDictionary_copy[col] = dataDictionary_copy[col].replace(fixValueInput, median)
+                    for col in data_dictionary_copy.columns:
+                        if data_dictionary_copy[col].isin([fix_value_input]).any():
+                            median=data_dictionary_copy[col].median()
+                            data_dictionary_copy[col] = data_dictionary_copy[col].replace(fix_value_input, median)
                 elif axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
 
-                    for row in dataDictionary_copy.columns:
-                        if dataDictionary_copy[row].isin([fixValueInput]).any():
-                            median = dataDictionary_copy[row].median()
-                            dataDictionary_copy[row] = dataDictionary_copy[row].replace(fixValueInput, median)
+                    for row in data_dictionary_copy.columns:
+                        if data_dictionary_copy[row].isin([fix_value_input]).any():
+                            median = data_dictionary_copy[row].median()
+                            data_dictionary_copy[row] = data_dictionary_copy[row].replace(fix_value_input, median)
 
-                    dataDictionary_copy = dataDictionary_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
 
-            elif numOpOutput == Operation.CLOSEST:
+            elif num_op_output == Operation.CLOSEST:
                 if axis_param is None:
-                    closest_value=find_closest_value(dataDictionary_copy.stack(), fixValueInput)
-                    dataDictionary_copy=dataDictionary_copy.replace(fixValueInput, closest_value)
+                    closest_value=find_closest_value(data_dictionary_copy.stack(), fix_value_input)
+                    data_dictionary_copy=data_dictionary_copy.replace(fix_value_input, closest_value)
                 elif axis_param == 0:
-                    # Replace 'fixValueInput' with the closest numeric value along the columns
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number) and dataDictionary_copy[col].isin([fixValueInput]).any():
-                            closest_value=find_closest_value(dataDictionary_copy[col], fixValueInput)
-                            dataDictionary_copy[col] = dataDictionary_copy[col].replace(fixValueInput, closest_value)
+                    # Replace 'fix_value_input' with the closest numeric value along the columns
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[col].dtype, np.number) and data_dictionary_copy[col].isin([fix_value_input]).any():
+                            closest_value=find_closest_value(data_dictionary_copy[col], fix_value_input)
+                            data_dictionary_copy[col] = data_dictionary_copy[col].replace(fix_value_input, closest_value)
                 elif axis_param == 1:
-                    # Replace 'fixValueInput' with the closest numeric value along the rows
-                    dataDictionary_copy = dataDictionary_copy.T
-                    for row in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number) and dataDictionary_copy[row].isin([fixValueInput]).any():
-                            closest_value=find_closest_value(dataDictionary_copy[row], fixValueInput)
-                            dataDictionary_copy[row] = dataDictionary_copy[row].replace(fixValueInput, closest_value)
-                    dataDictionary_copy = dataDictionary_copy.T
+                    # Replace 'fix_value_input' with the closest numeric value along the rows
+                    data_dictionary_copy = data_dictionary_copy.T
+                    for row in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[row].dtype, np.number) and data_dictionary_copy[row].isin([fix_value_input]).any():
+                            closest_value=find_closest_value(data_dictionary_copy[row], fix_value_input)
+                            data_dictionary_copy[row] = data_dictionary_copy[row].replace(fix_value_input, closest_value)
+                    data_dictionary_copy = data_dictionary_copy.T
             else:
                 raise ValueError("No valid operator")
         elif field is not None:
-            if field not in dataDictionary.columns:
+            if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in dataDictionary.columns:
-                if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
-                    if numOpOutput == Operation.INTERPOLATION:
-                        dataDictionary_copy_copy = dataDictionary_copy.copy()
-                        dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: x if x != fixValueInput else np.nan)
-                        dataDictionary_copy_copy[field]=dataDictionary_copy_copy[field].interpolate(method='linear',limit_direction='both')
-                        for idx in dataDictionary_copy.index:
+            elif field in data_dictionary.columns:
+                if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
+                    if num_op_output == Operation.INTERPOLATION:
+                        data_dictionary_copy_copy = data_dictionary_copy.copy()
+                        data_dictionary_copy_copy[field] = data_dictionary_copy_copy[field].apply(lambda x: x if x != fix_value_input else np.nan)
+                        data_dictionary_copy_copy[field]=data_dictionary_copy_copy[field].interpolate(method='linear',limit_direction='both')
+                        for idx in data_dictionary_copy.index:
                             # Verify if the value is NaN in the original dataframe
-                            if pd.isnull(dataDictionary_copy.at[idx, field]):
-                                # Replace the value with the corresponding one from dataDictionary_copy_copy
-                                dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
-                        return dataDictionary_copy_copy
-                    elif numOpOutput == Operation.MEAN:
-                        if dataDictionary_copy[field].isin([fixValueInput]).any():
-                            mean=dataDictionary_copy[field].mean()
-                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, mean)
-                    elif numOpOutput == Operation.MEDIAN:
-                        if dataDictionary_copy[field].isin([fixValueInput]).any():
-                            median=dataDictionary_copy[field].median()
-                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, median)
-                    elif numOpOutput == Operation.CLOSEST:
-                        if dataDictionary_copy[field].isin([fixValueInput]).any():
-                            closest_value=find_closest_value(dataDictionary_copy[field], fixValueInput)
-                            dataDictionary_copy[field] = dataDictionary_copy[field].replace(fixValueInput, closest_value)
+                            if pd.isnull(data_dictionary_copy.at[idx, field]):
+                                # Replace the value with the corresponding one from data_dictionary_copy_copy
+                                data_dictionary_copy_copy.at[idx, field] = data_dictionary_copy.at[idx, field]
+                        return data_dictionary_copy_copy
+                    elif num_op_output == Operation.MEAN:
+                        if data_dictionary_copy[field].isin([fix_value_input]).any():
+                            mean=data_dictionary_copy[field].mean()
+                            data_dictionary_copy[field] = data_dictionary_copy[field].replace(fix_value_input, mean)
+                    elif num_op_output == Operation.MEDIAN:
+                        if data_dictionary_copy[field].isin([fix_value_input]).any():
+                            median=data_dictionary_copy[field].median()
+                            data_dictionary_copy[field] = data_dictionary_copy[field].replace(fix_value_input, median)
+                    elif num_op_output == Operation.CLOSEST:
+                        if data_dictionary_copy[field].isin([fix_value_input]).any():
+                            closest_value=find_closest_value(data_dictionary_copy[field], fix_value_input)
+                            data_dictionary_copy[field] = data_dictionary_copy[field].replace(fix_value_input, closest_value)
                 else:
                     raise ValueError("The field is not numeric")
 
-        return dataDictionary_copy
+        return data_dictionary_copy
 
-    def transform_Interval_FixValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
-                                    closureType: Closure, fixValueOutput, dataTypeOutput: DataType = None,
+    def transform_Interval_FixValue(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
+                                    closure_type: Closure, fix_value_output, data_type_output: DataType = None,
                                     field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the Interval - FixValue relation
-        :param dataDictionary: dataframe with the data
-        :param leftMargin: left margin of the interval
-        :param rightMargin: right margin of the interval
-        :param closureType: closure type of the interval
-        :param dataTypeOutput: data type of the output value
-        :param fixValueOutput: output value to check
+        :param data_dictionary: dataframe with the data
+        :param left_margin: left margin of the interval
+        :param right_margin: right margin of the interval
+        :param closure_type: closure type of the interval
+        :param data_type_output: data type of the output value
+        :param fix_value_output: output value to check
         :param field: field to execute the data transformation
-        :return: dataDictionary with the values of the interval changed to the value fixValueOutput
+        :return: data_dictionary with the values of the interval changed to the value fix_value_output
         """
-        if dataTypeOutput is not None:  # If it is specified, the transformation is performed
-            vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+        if data_type_output is not None:  # If it is specified, the transformation is performed
+            vacio, fix_value_output = cast_type_FixValue(None, None, data_type_output, fix_value_output)
 
-        dataDictionary_copy = dataDictionary.copy()
+        data_dictionary_copy = data_dictionary.copy()
 
         if field is None:
             # Apply the lambda function to the entire dataframe
-            if closureType == Closure.openOpen:
-                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if (
-                                np.issubdtype(type(x), np.number) and leftMargin < x < rightMargin) else x))
-            elif closureType == Closure.openClosed:
-                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if
-                                np.issubdtype(type(x), np.number) and (leftMargin < x) and (x <= rightMargin) else x))
-            elif closureType == Closure.closedOpen:
-                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if
-                                np.issubdtype(type(x), np.number) and (leftMargin <= x) and (x < rightMargin) else x))
-            elif closureType == Closure.closedClosed:
-                dataDictionary_copy = dataDictionary.apply(lambda func: func.apply(lambda x: fixValueOutput if
-                                np.issubdtype(type(x), np.number) and (leftMargin <= x) and (x <= rightMargin) else x))
+            if closure_type == Closure.openOpen:
+                data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if (
+                                np.issubdtype(type(x), np.number) and left_margin < x < right_margin) else x))
+            elif closure_type == Closure.openClosed:
+                data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
+                                np.issubdtype(type(x), np.number) and (left_margin < x) and (x <= right_margin) else x))
+            elif closure_type == Closure.closedOpen:
+                data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
+                                np.issubdtype(type(x), np.number) and (left_margin <= x) and (x < right_margin) else x))
+            elif closure_type == Closure.closedClosed:
+                data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
+                                np.issubdtype(type(x), np.number) and (left_margin <= x) and (x <= right_margin) else x))
 
         elif field is not None:
-            if field not in dataDictionary.columns:
+            if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in dataDictionary.columns:
-                if np.issubdtype(dataDictionary[field].dtype, np.number):
-                    if closureType == Closure.openOpen:
-                        dataDictionary_copy[field] = dataDictionary[field].apply(
-                            lambda x: fixValueOutput if (leftMargin < x) and (x < rightMargin) else x)
-                    elif closureType == Closure.openClosed:
-                        dataDictionary_copy[field] = dataDictionary[field].apply(
-                            lambda x: fixValueOutput if (leftMargin < x) and (x <= rightMargin) else x)
-                    elif closureType == Closure.closedOpen:
-                        dataDictionary_copy[field] = dataDictionary[field].apply(
-                            lambda x: fixValueOutput if (leftMargin <= x) and (x < rightMargin) else x)
-                    elif closureType == Closure.closedClosed:
-                        dataDictionary_copy[field] = dataDictionary[field].apply(
-                            lambda x: fixValueOutput if (leftMargin <= x) and (x <= rightMargin) else x)
+            elif field in data_dictionary.columns:
+                if np.issubdtype(data_dictionary[field].dtype, np.number):
+                    if closure_type == Closure.openOpen:
+                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                            lambda x: fix_value_output if (left_margin < x) and (x < right_margin) else x)
+                    elif closure_type == Closure.openClosed:
+                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                            lambda x: fix_value_output if (left_margin < x) and (x <= right_margin) else x)
+                    elif closure_type == Closure.closedOpen:
+                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                            lambda x: fix_value_output if (left_margin <= x) and (x < right_margin) else x)
+                    elif closure_type == Closure.closedClosed:
+                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                            lambda x: fix_value_output if (left_margin <= x) and (x <= right_margin) else x)
                 else:
                     raise ValueError("The field is not numeric")
 
-        return dataDictionary_copy
+        return data_dictionary_copy
 
-    def transform_Interval_DerivedValue(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
-                                        closureType: Closure, derivedTypeOutput: DerivedType,
+    def transform_Interval_DerivedValue(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
+                                        closure_type: Closure, derived_type_output: DerivedType,
                                         axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the Interval - DerivedValue relation
-        :param dataDictionary: dataframe with the data
-        :param leftMargin: left margin of the interval
-        :param rightMargin: right margin of the interval
-        :param closureType: closure type of the interval
-        :param derivedTypeOutput: derived type of the output value
+        :param data_dictionary: dataframe with the data
+        :param left_margin: left margin of the interval
+        :param right_margin: right margin of the interval
+        :param closure_type: closure type of the interval
+        :param derived_type_output: derived type of the output value
         :param axis_param: axis to execute the data transformation
         :param field: field to execute the data transformation
 
-        :return: dataDictionary with the values of the interval changed to the
-            value derived from the operation derivedTypeOutput
+        :return: data_dictionary with the values of the interval changed to the
+            value derived from the operation derived_type_output
         """
-        dataDictionary_copy = dataDictionary.copy()
+        data_dictionary_copy = data_dictionary.copy()
 
         if field is None:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            if derived_type_output == DerivedType.MOSTFREQUENT:
                 if axis_param == 1:  # Applies the lambda function at the row level
-                    dataDictionary_copy = dataDictionary_copy.T
-                    for row in dataDictionary_copy.columns:
-                        most_frequent=dataDictionary_copy[row].value_counts().idxmax()
-                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: most_frequent if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
-                    dataDictionary_copy = dataDictionary_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
+                    for row in data_dictionary_copy.columns:
+                        most_frequent=data_dictionary_copy[row].value_counts().idxmax()
+                        data_dictionary_copy[row] = data_dictionary_copy[row].apply(lambda x: most_frequent if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
+                    data_dictionary_copy = data_dictionary_copy.T
                 elif axis_param == 0:  # Applies the lambda function at the column level
-                    for col in dataDictionary_copy.columns:
-                        most_frequent = dataDictionary_copy[col].value_counts().idxmax()
-                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: most_frequent if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
+                    for col in data_dictionary_copy.columns:
+                        most_frequent = data_dictionary_copy[col].value_counts().idxmax()
+                        data_dictionary_copy[col] = data_dictionary_copy[col].apply(lambda x: most_frequent if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
                 else:  # Applies the lambda function at the dataframe level
                     # In case of a tie of the value with the most appearances in the dataset, the first value is taken
-                    valor_mas_frecuente = dataDictionary_copy.stack().value_counts().idxmax()
+                    valor_mas_frecuente = data_dictionary_copy.stack().value_counts().idxmax()
                     # Replace the values within the interval with the most frequent value in the entire DataFrame using lambda
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda columna: columna.apply(
-                        lambda value: valor_mas_frecuente if check_interval_condition(value, leftMargin, rightMargin, closureType) else value))
+                    data_dictionary_copy = data_dictionary_copy.apply(lambda columna: columna.apply(
+                        lambda value: valor_mas_frecuente if check_interval_condition(value, left_margin, right_margin, closure_type) else value))
             # Doesn't assign anything to np.nan
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
+            elif derived_type_output == DerivedType.PREVIOUS:
                 # Applies the lambda function at the column level or at the row level
                 # Lambda that replaces any value within the interval in the dataframe with the value of the previous position in the same column
                 if axis_param is not None:
                     # Define a lambda function to replace the values within the interval with the value of the previous position in the same column
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                        value) else row_or_col.iloc[i - 1] if check_interval_condition(value, leftMargin, rightMargin, closureType) and i > 0 else value
+                    data_dictionary_copy = data_dictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
+                        value) else row_or_col.iloc[i - 1] if check_interval_condition(value, left_margin, right_margin, closure_type) and i > 0 else value
                                   for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
             # Doesn't assign anything to np.nan
-            elif derivedTypeOutput == DerivedType.NEXT:
+            elif derived_type_output == DerivedType.NEXT:
                 # Applies the lambda function at the column level or at the row level
                 if axis_param is not None:
                     # Define the lambda function to replace the values within the interval with the value of the next position in the same column
-                    dataDictionary_copy = dataDictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
-                        value) else row_or_col.iloc[i + 1] if check_interval_condition(value, leftMargin, rightMargin, closureType) and i < len(row_or_col) - 1 else value
+                    data_dictionary_copy = data_dictionary_copy.apply(lambda row_or_col: pd.Series([np.nan if pd.isnull(
+                        value) else row_or_col.iloc[i + 1] if check_interval_condition(value, left_margin, right_margin, closure_type) and i < len(row_or_col) - 1 else value
                                for i, value in enumerate(row_or_col)], index=row_or_col.index), axis=axis_param)
                 else:
                     raise ValueError("The axis cannot be None when applying the NEXT operation")
 
         elif field is not None:
-            if field not in dataDictionary.columns:
+            if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in dataDictionary.columns:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    most_frequent = dataDictionary_copy[field].value_counts().idxmax()
-                    dataDictionary_copy[field] = dataDictionary_copy[field].apply(lambda value:
-                                                most_frequent if check_interval_condition(value, leftMargin, rightMargin, closureType) else value)
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    dataDictionary_copy[field] = pd.Series(
-                        [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i - 1]
-                        if check_interval_condition(value, leftMargin, rightMargin, closureType) and i > 0 else value for i, value in enumerate(dataDictionary_copy[field])],
-                            index=dataDictionary_copy[field].index)
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    dataDictionary_copy[field] = pd.Series(
-                        [np.nan if pd.isnull(value) else dataDictionary_copy[field].iloc[i + 1]
-                        if check_interval_condition(value, leftMargin, rightMargin, closureType) and i < len(dataDictionary_copy[field]) - 1 else value for i, value in
-                         enumerate(dataDictionary_copy[field])], index=dataDictionary_copy[field].index)
+            elif field in data_dictionary.columns:
+                if derived_type_output == DerivedType.MOSTFREQUENT:
+                    most_frequent = data_dictionary_copy[field].value_counts().idxmax()
+                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(lambda value:
+                                                most_frequent if check_interval_condition(value, left_margin, right_margin, closure_type) else value)
+                elif derived_type_output == DerivedType.PREVIOUS:
+                    data_dictionary_copy[field] = pd.Series(
+                        [np.nan if pd.isnull(value) else data_dictionary_copy[field].iloc[i - 1]
+                        if check_interval_condition(value, left_margin, right_margin, closure_type) and i > 0 else value for i, value in enumerate(data_dictionary_copy[field])],
+                            index=data_dictionary_copy[field].index)
+                elif derived_type_output == DerivedType.NEXT:
+                    data_dictionary_copy[field] = pd.Series(
+                        [np.nan if pd.isnull(value) else data_dictionary_copy[field].iloc[i + 1]
+                        if check_interval_condition(value, left_margin, right_margin, closure_type) and i < len(data_dictionary_copy[field]) - 1 else value for i, value in
+                         enumerate(data_dictionary_copy[field])], index=data_dictionary_copy[field].index)
 
-        return dataDictionary_copy
+        return data_dictionary_copy
 
-    def transform_Interval_NumOp(self, dataDictionary: pd.DataFrame, leftMargin: float, rightMargin: float,
-                                 closureType: Closure, numOpOutput: Operation, axis_param: int = None,
+    def transform_Interval_NumOp(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
+                                 closure_type: Closure, num_op_output: Operation, axis_param: int = None,
                                  field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
-        :param dataDictionary: dataframe with the data
-        :param leftMargin: left margin of the interval
-        :param rightMargin: right margin of the interval
-        :param closureType: closure type of the interval
-        :param numOpOutput: operation to execute the data transformation
+        :param data_dictionary: dataframe with the data
+        :param left_margin: left margin of the interval
+        :param right_margin: right margin of the interval
+        :param closure_type: closure type of the interval
+        :param num_op_output: operation to execute the data transformation
         :param axis_param: axis to execute the data transformation
         :param field: field to execute the data transformation
-        :return: dataDictionary with the values of the interval changed to the result of the operation numOpOutput
+        :return: data_dictionary with the values of the interval changed to the result of the operation num_op_output
         """
-        # Auxiliary function that changes the value of 'FixValueInput' to the data type in 'DataTypeInput'
-        dataDictionary_copy = dataDictionary.copy()
+        # Auxiliary function that changes the value of 'fix_value_input' to the data type in 'data_type_input'
+        data_dictionary_copy = data_dictionary.copy()
 
         if field is None:
-            if numOpOutput == Operation.INTERPOLATION:
+            if num_op_output == Operation.INTERPOLATION:
                 # Applies linear interpolation to the entire DataFrame
-                dataDictionary_copy_copy=dataDictionary_copy.copy()
+                data_dictionary_copy_copy=data_dictionary_copy.copy()
                 if axis_param == 0:
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
-                            dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
+                            data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                     # Iterate over each column
-                    for col in dataDictionary_copy.columns:
+                    for col in data_dictionary_copy.columns:
                         # For each index in the column
-                        for idx in dataDictionary_copy.index:
+                        for idx in data_dictionary_copy.index:
                             # Verify if the value is NaN in the original dataframe
-                            if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Replace the value with the corresponding one from dataDictionary_copy_copy
-                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
-                    return dataDictionary_copy_copy
+                            if pd.isnull(data_dictionary_copy.at[idx, col]):
+                                # Replace the value with the corresponding one from data_dictionary_copy_copy
+                                data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy.at[idx, col]
+                    return data_dictionary_copy_copy
                 elif axis_param == 1:
-                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
-                    dataDictionary_copy = dataDictionary_copy.T
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy_copy[col] = dataDictionary_copy_copy[col].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
-                            dataDictionary_copy_copy[col]=dataDictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                    data_dictionary_copy_copy = data_dictionary_copy_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
+                            data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                     # Iterate over each column
-                    for col in dataDictionary_copy.columns:
+                    for col in data_dictionary_copy.columns:
                         # For each index in the column
-                        for idx in dataDictionary_copy.index:
+                        for idx in data_dictionary_copy.index:
                             # Verify if the value is NaN in the original dataframe
-                            if pd.isnull(dataDictionary_copy.at[idx, col]):
-                                # Replace the value with the corresponding one from dataDictionary_copy_copy
-                                dataDictionary_copy_copy.at[idx, col] = dataDictionary_copy.at[idx, col]
-                    dataDictionary_copy_copy = dataDictionary_copy_copy.T
-                    return dataDictionary_copy_copy
+                            if pd.isnull(data_dictionary_copy.at[idx, col]):
+                                # Replace the value with the corresponding one from data_dictionary_copy_copy
+                                data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy.at[idx, col]
+                    data_dictionary_copy_copy = data_dictionary_copy_copy.T
+                    return data_dictionary_copy_copy
                 elif axis_param is None:
                     raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
-            elif numOpOutput == Operation.MEAN:
+            elif num_op_output == Operation.MEAN:
                 if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                    only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                    only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the mean of these numeric columns
                     mean_value = only_numbers_df.mean().mean()
                     # Replace the values within the interval with the mean of the entire DataFrame using lambda
-                    dataDictionary_copy = dataDictionary_copy.apply(
+                    data_dictionary_copy = data_dictionary_copy.apply(
                         lambda col: col.apply(
-                            lambda x: mean_value if (np.issubdtype(type(x), np.number) and check_interval_condition(x, leftMargin, rightMargin, closureType)) else x))
+                            lambda x: mean_value if (np.issubdtype(type(x), np.number) and check_interval_condition(x, left_margin, right_margin, closure_type)) else x))
                 elif axis_param == 0:
-                    means = dataDictionary_copy.apply(lambda col: col[col.apply(lambda x:
+                    means = data_dictionary_copy.apply(lambda col: col[col.apply(lambda x:
                             np.issubdtype(type(x), np.number))].mean() if np.issubdtype(col.dtype, np.number) else None)
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[col].dtype, np.number):
-                            dataDictionary_copy[col] = dataDictionary_copy[col].apply(lambda x: means[col] if
-                                                        check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                            data_dictionary_copy[col] = data_dictionary_copy[col].apply(lambda x: means[col] if
+                                                        check_interval_condition(x, left_margin, right_margin, closure_type) else x)
                 elif axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.T
-                    means = dataDictionary_copy.apply(lambda row: row[row.apply(lambda x:
+                    data_dictionary_copy = data_dictionary_copy.T
+                    means = data_dictionary_copy.apply(lambda row: row[row.apply(lambda x:
                                 np.issubdtype(type(x), np.number))].mean() if np.issubdtype(row.dtype, np.number) else None)
-                    for row in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[row].dtype, np.number):
-                            dataDictionary_copy[row] = dataDictionary_copy[row].apply(lambda x: means[row] if
-                                                        check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
+                    for row in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[row].dtype, np.number):
+                            data_dictionary_copy[row] = data_dictionary_copy[row].apply(lambda x: means[row] if
+                                                        check_interval_condition(x, left_margin, right_margin, closure_type) else x)
 
-                    dataDictionary_copy = dataDictionary_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
 
-            elif numOpOutput == Operation.MEDIAN:
+            elif num_op_output == Operation.MEDIAN:
                 if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                    only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                    only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
                     # Calculate the median of these numeric columns
                     median_value = only_numbers_df.median().median()
                     # Replace the values within the interval with the median of the entire DataFrame using lambda
-                    dataDictionary_copy = dataDictionary_copy.apply(
+                    data_dictionary_copy = data_dictionary_copy.apply(
                         lambda col: col.apply(
-                            lambda x: median_value if (np.issubdtype(type(x), np.number) and check_interval_condition(x, leftMargin, rightMargin, closureType)) else x))
+                            lambda x: median_value if (np.issubdtype(type(x), np.number) and check_interval_condition(x, left_margin, right_margin, closure_type)) else x))
 
                 elif axis_param == 0:
-                    for col in dataDictionary_copy.select_dtypes(include=[np.number]).columns:
-                        median=dataDictionary_copy[col].median()
-                        dataDictionary_copy[col] = dataDictionary_copy[col].apply(
-                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
+                    for col in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
+                        median=data_dictionary_copy[col].median()
+                        data_dictionary_copy[col] = data_dictionary_copy[col].apply(
+                            lambda x: x if not check_interval_condition(x, left_margin, right_margin, closure_type) else median)
                 elif axis_param == 1:
-                    dataDictionary_copy = dataDictionary_copy.T
-                    for row in dataDictionary_copy.select_dtypes(include=[np.number]).columns:
-                        median=dataDictionary_copy[row].median()
-                        dataDictionary_copy[row] = dataDictionary_copy[row].apply(
-                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
-                    dataDictionary_copy = dataDictionary_copy.T
+                    data_dictionary_copy = data_dictionary_copy.T
+                    for row in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
+                        median=data_dictionary_copy[row].median()
+                        data_dictionary_copy[row] = data_dictionary_copy[row].apply(
+                            lambda x: x if not check_interval_condition(x, left_margin, right_margin, closure_type) else median)
+                    data_dictionary_copy = data_dictionary_copy.T
 
-            elif numOpOutput == Operation.CLOSEST:
+            elif num_op_output == Operation.CLOSEST:
                 if axis_param is None:
                     # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                    only_numbers_df = dataDictionary_copy.select_dtypes(include=[np.number])
+                    only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
                     # Flatten the dataframe into a list of values
                     flattened_values = only_numbers_df.values.flatten().tolist()
                     # Create a dictionary to store the closest value for each value in the interval
@@ -548,42 +548,42 @@ class DataTransformations:
                     # Iterate over the values in the interval
                     for value in flattened_values:
                         # Check if the value is within the interval
-                        if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(
+                        if check_interval_condition(value, left_margin, right_margin, closure_type) and not pd.isnull(
                                 value):
                             # Check if the value is already in the dictionary
                             if value not in closest_values:
                                 # Find the closest value to the current value in the interval
                                 closest_values[value] = find_closest_value(flattened_values, value)
 
-                    # Check if the closest values have been replaced in the dataDictionary_out
-                    for idx, row in dataDictionary_copy.iterrows():
-                        for col_name in dataDictionary_copy.columns:
-                            if (np.isreal(row[col_name]) and check_interval_condition(row[col_name], leftMargin,
-                                        rightMargin, closureType) and not pd.isnull(row[col_name])):
-                                dataDictionary_copy.at[idx, col_name] = closest_values[row[col_name]]
+                    # Check if the closest values have been replaced in the data_dictionary_out
+                    for idx, row in data_dictionary_copy.iterrows():
+                        for col_name in data_dictionary_copy.columns:
+                            if (np.isreal(row[col_name]) and check_interval_condition(row[col_name], left_margin,
+                                        right_margin, closure_type) and not pd.isnull(row[col_name])):
+                                data_dictionary_copy.at[idx, col_name] = closest_values[row[col_name]]
                 elif axis_param == 0:
-                    for col_name in dataDictionary_copy.select_dtypes(include=[np.number]).columns:
+                    for col_name in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
                         # Flatten the column into a list of values
-                        flattened_values = dataDictionary_copy[col_name].values.flatten().tolist()
+                        flattened_values = data_dictionary_copy[col_name].values.flatten().tolist()
                         # Create a dictionary to store the closest value for each value in the interval
                         closest_values = {}
                         # Iterate over the values in the interval
                         for value in flattened_values:
                             # Check if the value is within the interval
-                            if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(
+                            if check_interval_condition(value, left_margin, right_margin, closure_type) and not pd.isnull(
                                     value):
                                 # Check if the value is already in the dictionary
                                 if value not in closest_values:
                                     # Find the closest value to the current value in the interval
                                     closest_values[value] = find_closest_value(flattened_values, value)
 
-                        # Check if the closest values have been replaced in the dataDictionary_out
-                        for idx, value in dataDictionary_copy[col_name].items():
-                            if check_interval_condition(dataDictionary_copy.at[idx, col_name], leftMargin, rightMargin,
-                                                        closureType):
-                                dataDictionary_copy.at[idx, col_name] = closest_values[value]
+                        # Check if the closest values have been replaced in the data_dictionary_out
+                        for idx, value in data_dictionary_copy[col_name].items():
+                            if check_interval_condition(data_dictionary_copy.at[idx, col_name], left_margin, right_margin,
+                                                        closure_type):
+                                data_dictionary_copy.at[idx, col_name] = closest_values[value]
                 elif axis_param == 1:
-                    for idx, row in dataDictionary_copy.iterrows():
+                    for idx, row in data_dictionary_copy.iterrows():
                         # Flatten the row into a list of values
                         flattened_values = row.values.flatten().tolist()
                         # Create a dictionary to store the closest value for each value in the interval
@@ -591,256 +591,256 @@ class DataTransformations:
                         # Iterate over the values in the interval
                         for value in flattened_values:
                             # Check if the value is within the interval
-                            if np.issubdtype(value, np.number) and check_interval_condition(value, leftMargin,
-                                                    rightMargin, closureType) and not pd.isnull(value):
+                            if np.issubdtype(value, np.number) and check_interval_condition(value, left_margin,
+                                                    right_margin, closure_type) and not pd.isnull(value):
                                 # Check if the value is already in the dictionary
                                 if value not in closest_values:
                                     # Find the closest value to the current value in the interval
                                     closest_values[value] = find_closest_value(flattened_values, value)
 
-                        # Check if the closest values have been replaced in the dataDictionary_out
+                        # Check if the closest values have been replaced in the data_dictionary_out
                         for col_name, value in row.items():
-                            if np.isreal(dataDictionary_copy.at[idx, col_name]) and check_interval_condition(
-                                    dataDictionary_copy.at[idx, col_name], leftMargin, rightMargin,
-                                    closureType) and not pd.isnull(dataDictionary_copy.at[idx, col_name]):
-                                dataDictionary_copy.at[idx, col_name] = closest_values[value]
+                            if np.isreal(data_dictionary_copy.at[idx, col_name]) and check_interval_condition(
+                                    data_dictionary_copy.at[idx, col_name], left_margin, right_margin,
+                                    closure_type) and not pd.isnull(data_dictionary_copy.at[idx, col_name]):
+                                data_dictionary_copy.at[idx, col_name] = closest_values[value]
 
         elif field is not None:
-            if field not in dataDictionary.columns:
+            if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in dataDictionary.columns:
-                if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
-                    if numOpOutput == Operation.INTERPOLATION:
-                        dataDictionary_copy_copy = dataDictionary_copy.copy()
-                        dataDictionary_copy_copy[field] = dataDictionary_copy_copy[field].apply(lambda x: np.nan if check_interval_condition(x, leftMargin, rightMargin, closureType) else x)
-                        dataDictionary_copy_copy[field]=dataDictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
+            elif field in data_dictionary.columns:
+                if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
+                    if num_op_output == Operation.INTERPOLATION:
+                        data_dictionary_copy_copy = data_dictionary_copy.copy()
+                        data_dictionary_copy_copy[field] = data_dictionary_copy_copy[field].apply(lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
+                        data_dictionary_copy_copy[field]=data_dictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
                         # For each index in the column
-                        for idx in dataDictionary_copy.index:
+                        for idx in data_dictionary_copy.index:
                             # Verify if the value is NaN in the original dataframe
-                            if pd.isnull(dataDictionary_copy.at[idx, field]):
-                                # Replace the value with the corresponding one from dataDictionary_copy_copy
-                                dataDictionary_copy_copy.at[idx, field] = dataDictionary_copy.at[idx, field]
-                        return dataDictionary_copy_copy
-                    elif numOpOutput == Operation.MEAN:
-                        mean=dataDictionary_copy[field].mean()
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else mean)
-                    elif numOpOutput == Operation.MEDIAN:
-                        median = dataDictionary_copy[field].median()
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: x if not check_interval_condition(x, leftMargin, rightMargin, closureType) else median)
-                    elif numOpOutput == Operation.CLOSEST:
+                            if pd.isnull(data_dictionary_copy.at[idx, field]):
+                                # Replace the value with the corresponding one from data_dictionary_copy_copy
+                                data_dictionary_copy_copy.at[idx, field] = data_dictionary_copy.at[idx, field]
+                        return data_dictionary_copy_copy
+                    elif num_op_output == Operation.MEAN:
+                        mean=data_dictionary_copy[field].mean()
+                        data_dictionary_copy[field] = data_dictionary_copy[field].apply(
+                            lambda x: x if not check_interval_condition(x, left_margin, right_margin, closure_type) else mean)
+                    elif num_op_output == Operation.MEDIAN:
+                        median = data_dictionary_copy[field].median()
+                        data_dictionary_copy[field] = data_dictionary_copy[field].apply(
+                            lambda x: x if not check_interval_condition(x, left_margin, right_margin, closure_type) else median)
+                    elif num_op_output == Operation.CLOSEST:
                         # Flatten the column into a list of values
-                        flattened_values = dataDictionary_copy[field].values.flatten().tolist()
+                        flattened_values = data_dictionary_copy[field].values.flatten().tolist()
                         # Create a dictionary to store the closest value for each value in the interval
                         closest_values = {}
                         # Iterate over the values in the interval
                         for value in flattened_values:
                             # Check if the value is within the interval
-                            if check_interval_condition(value, leftMargin, rightMargin, closureType) and not pd.isnull(
+                            if check_interval_condition(value, left_margin, right_margin, closure_type) and not pd.isnull(
                                     value):
                                 # Check if the value is already in the dictionary
                                 if value not in closest_values:
                                     # Find the closest value to the current value in the interval
                                     closest_values[value] = find_closest_value(flattened_values, value)
 
-                        # Check if the closest values have been replaced in the dataDictionary_out
-                        for idx, value in dataDictionary_copy[field].items():
-                            if check_interval_condition(dataDictionary_copy.at[idx, field], leftMargin, rightMargin, closureType):
-                                dataDictionary_copy.at[idx, field] = closest_values[value]
+                        # Check if the closest values have been replaced in the data_dictionary_out
+                        for idx, value in data_dictionary_copy[field].items():
+                            if check_interval_condition(data_dictionary_copy.at[idx, field], left_margin, right_margin, closure_type):
+                                data_dictionary_copy.at[idx, field] = closest_values[value]
                 else:
                     raise ValueError("The field is not numeric")
 
-        return dataDictionary_copy
+        return data_dictionary_copy
 
-    def transform_SpecialValue_FixValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
-                                        fixValueOutput, dataTypeOutput: DataType = None, missing_values: list = None,
+    def transform_SpecialValue_FixValue(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
+                                        fix_value_output, data_type_output: DataType = None, missing_values: list = None,
                                         axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the SpecialValue - FixValue relation
-        :param dataDictionary: dataframe with the data
-        :param specialTypeInput: special type of the input value
-        :param dataTypeOutput: data type of the output value
-        :param fixValueOutput: output value to check
+        :param data_dictionary: dataframe with the data
+        :param special_type_input: special type of the input value
+        :param data_type_output: data type of the output value
+        :param fix_value_output: output value to check
         :param missing_values: list of missing values
         :param axis_param: axis to execute the data transformation
         :param field: field to execute the data transformation
-        :return: dataDictionary with the values of the special type changed to the value fixValueOutput
+        :return: data_dictionary with the values of the special type changed to the value fix_value_output
         """
-        if dataTypeOutput is not None:  # If it is specified, the casting is performed
-            vacio, fixValueOutput = cast_type_FixValue(None, None, dataTypeOutput, fixValueOutput)
+        if data_type_output is not None:  # If it is specified, the casting is performed
+            vacio, fix_value_output = cast_type_FixValue(None, None, data_type_output, fix_value_output)
 
-        dataDictionary_copy = dataDictionary.copy()
+        data_dictionary_copy = data_dictionary.copy()
 
         if field is None:
-            if specialTypeInput == SpecialType.MISSING:  # Include NaN values and the values in the list missing_values
-                dataDictionary_copy = dataDictionary_copy.replace(np.nan, fixValueOutput)
+            if special_type_input == SpecialType.MISSING:  # Include NaN values and the values in the list missing_values
+                data_dictionary_copy = data_dictionary_copy.replace(np.nan, fix_value_output)
                 if missing_values is not None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+                    data_dictionary_copy = data_dictionary_copy.apply(
+                        lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
 
-            elif specialTypeInput == SpecialType.INVALID:  # Just include the values in the list missing_values
+            elif special_type_input == SpecialType.INVALID:  # Just include the values in the list missing_values
                 if missing_values is not None:
-                    dataDictionary_copy = dataDictionary_copy.apply(
-                        lambda col: col.apply(lambda x: fixValueOutput if x in missing_values else x))
+                    data_dictionary_copy = data_dictionary_copy.apply(
+                        lambda col: col.apply(lambda x: fix_value_output if x in missing_values else x))
 
-            elif specialTypeInput == SpecialType.OUTLIER: # Replace the outliers with the value fixValueOutput
+            elif special_type_input == SpecialType.OUTLIER: # Replace the outliers with the value fix_value_output
                 threshold = 1.5
                 if axis_param is None:
-                    Q1 = dataDictionary_copy.stack().quantile(0.25)
-                    Q3 = dataDictionary_copy.stack().quantile(0.75)
+                    Q1 = data_dictionary_copy.stack().quantile(0.25)
+                    Q3 = data_dictionary_copy.stack().quantile(0.75)
                     IQR = Q3 - Q1
                     # Define the lower and upper bounds
                     lower_bound = Q1 - threshold * IQR
                     upper_bound = Q3 + threshold * IQR
                     # Identify the outliers in the dataframe
-                    numeric_values = dataDictionary_copy.select_dtypes(include=[np.number])
+                    numeric_values = data_dictionary_copy.select_dtypes(include=[np.number])
                     outliers = (numeric_values < lower_bound) | (numeric_values > upper_bound)
-                    # Replace the outliers with the value fixValueOutput
-                    dataDictionary_copy[outliers] = fixValueOutput
+                    # Replace the outliers with the value fix_value_output
+                    data_dictionary_copy[outliers] = fix_value_output
 
-                elif axis_param == 0: # Negate the condition to replace the outliers with the value fixValueOutput
-                    for col in dataDictionary_copy.columns:
-                        if np.issubdtype(dataDictionary_copy[col], np.number):
-                            dataDictionary_copy[col] = dataDictionary_copy[col].where(~((
-                                        dataDictionary_copy[col] < dataDictionary_copy[col].quantile(0.25) - threshold * (
-                                        dataDictionary_copy[col].quantile(0.75) - dataDictionary_copy[col].quantile(0.25))) |
-                                        (dataDictionary_copy[col] > dataDictionary_copy[col].quantile(0.75) + threshold * (
-                                        dataDictionary_copy[col].quantile(0.75) - dataDictionary_copy[col].quantile(0.25)))),
-                                                                                other = fixValueOutput)
+                elif axis_param == 0: # Negate the condition to replace the outliers with the value fix_value_output
+                    for col in data_dictionary_copy.columns:
+                        if np.issubdtype(data_dictionary_copy[col], np.number):
+                            data_dictionary_copy[col] = data_dictionary_copy[col].where(~((
+                                        data_dictionary_copy[col] < data_dictionary_copy[col].quantile(0.25) - threshold * (
+                                        data_dictionary_copy[col].quantile(0.75) - data_dictionary_copy[col].quantile(0.25))) |
+                                        (data_dictionary_copy[col] > data_dictionary_copy[col].quantile(0.75) + threshold * (
+                                        data_dictionary_copy[col].quantile(0.75) - data_dictionary_copy[col].quantile(0.25)))),
+                                                                                other = fix_value_output)
 
-                elif axis_param == 1: # Negate the condition to replace the outliers with the value fixValueOutput
-                    Q1 = dataDictionary_copy.quantile(0.25, axis="rows")
-                    Q3 = dataDictionary_copy.quantile(0.75, axis="rows")
+                elif axis_param == 1: # Negate the condition to replace the outliers with the value fix_value_output
+                    Q1 = data_dictionary_copy.quantile(0.25, axis="rows")
+                    Q3 = data_dictionary_copy.quantile(0.75, axis="rows")
                     IQR = Q3 - Q1
-                    outliers = dataDictionary_copy[
-                        (dataDictionary_copy < Q1 - threshold * IQR) | (dataDictionary_copy > Q3 + threshold * IQR)]
+                    outliers = data_dictionary_copy[
+                        (data_dictionary_copy < Q1 - threshold * IQR) | (data_dictionary_copy > Q3 + threshold * IQR)]
                     for row in outliers.index:
-                        dataDictionary_copy.iloc[row] = dataDictionary_copy.iloc[row].where(
-                            ~((dataDictionary_copy.iloc[row] < Q1.iloc[row] - threshold * IQR.iloc[row]) |
-                              (dataDictionary_copy.iloc[row] > Q3.iloc[row] + threshold * IQR.iloc[row])),
-                                other=fixValueOutput)
+                        data_dictionary_copy.iloc[row] = data_dictionary_copy.iloc[row].where(
+                            ~((data_dictionary_copy.iloc[row] < Q1.iloc[row] - threshold * IQR.iloc[row]) |
+                              (data_dictionary_copy.iloc[row] > Q3.iloc[row] + threshold * IQR.iloc[row])),
+                                other=fix_value_output)
 
         elif field is not None:
-            if field not in dataDictionary.columns:
+            if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in dataDictionary.columns:
-                if specialTypeInput == SpecialType.MISSING:
-                    dataDictionary_copy[field] = dataDictionary_copy[field].replace(np.nan, fixValueOutput)
+            elif field in data_dictionary.columns:
+                if special_type_input == SpecialType.MISSING:
+                    data_dictionary_copy[field] = data_dictionary_copy[field].replace(np.nan, fix_value_output)
                     if missing_values is not None:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: fixValueOutput if x in missing_values else x)
-                elif specialTypeInput == SpecialType.INVALID:
+                        data_dictionary_copy[field] = data_dictionary_copy[field].apply(
+                            lambda x: fix_value_output if x in missing_values else x)
+                elif special_type_input == SpecialType.INVALID:
                     if missing_values is not None:
-                        dataDictionary_copy[field] = dataDictionary_copy[field].apply(
-                            lambda x: fixValueOutput if x in missing_values else x)
-                elif specialTypeInput == SpecialType.OUTLIER:
-                    if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
+                        data_dictionary_copy[field] = data_dictionary_copy[field].apply(
+                            lambda x: fix_value_output if x in missing_values else x)
+                elif special_type_input == SpecialType.OUTLIER:
+                    if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
                         threshold = 1.5
-                        Q1 = dataDictionary_copy[field].quantile(0.25)
-                        Q3 = dataDictionary_copy[field].quantile(0.75)
+                        Q1 = data_dictionary_copy[field].quantile(0.25)
+                        Q3 = data_dictionary_copy[field].quantile(0.75)
                         IQR = Q3 - Q1
-                        dataDictionary_copy[field] = dataDictionary_copy[field].where(
-                            ~((dataDictionary_copy[field] < Q1 - threshold * IQR) |
-                              (dataDictionary_copy[field] > Q3 + threshold * IQR)),
-                            other=fixValueOutput)
+                        data_dictionary_copy[field] = data_dictionary_copy[field].where(
+                            ~((data_dictionary_copy[field] < Q1 - threshold * IQR) |
+                              (data_dictionary_copy[field] > Q3 + threshold * IQR)),
+                            other=fix_value_output)
                     else:
                         raise ValueError("The field is not numeric")
 
-        return dataDictionary_copy
+        return data_dictionary_copy
 
-    def transform_SpecialValue_DerivedValue(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
-                                            derivedTypeOutput: DerivedType, missing_values: list = None,
+    def transform_SpecialValue_DerivedValue(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
+                                            derived_type_output: DerivedType, missing_values: list = None,
                                             axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the SpecialValue - DerivedValue relation
-        :param dataDictionary: dataframe with the data
-        :param specialTypeInput: special type of the input value
-        :param derivedTypeOutput: derived type of the output value
+        :param data_dictionary: dataframe with the data
+        :param special_type_input: special type of the input value
+        :param derived_type_output: derived type of the output value
         :param missing_values: list of missing values
         :param axis_param: axis to execute the data transformation
         :param field: field to execute the data transformation
-        :return: dataDictionary with the values of the special type changed to the value derived from the operation derivedTypeOutput
+        :return: data_dictionary with the values of the special type changed to the value derived from the operation derived_type_output
         """
-        dataDictionary_copy = dataDictionary.copy()
+        data_dictionary_copy = data_dictionary.copy()
 
         if field is None:
-            if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
-                dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
+            if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
+                data_dictionary_copy = apply_derivedType(special_type_input, derived_type_output, data_dictionary_copy,
                                                         missing_values, axis_param, field)
 
-            elif specialTypeInput == SpecialType.OUTLIER:
+            elif special_type_input == SpecialType.OUTLIER:
                 # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
                 # If the outliers are applied at the dataframe level, previous and next cannot be applied.
 
                 if axis_param is None:
-                    dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
-                    missing_values = dataDictionary_copy.where(dataDictionary_copy_copy == 1).stack().tolist()
-                    dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
+                    data_dictionary_copy_copy = getOutliers(data_dictionary_copy, field, axis_param)
+                    missing_values = data_dictionary_copy.where(data_dictionary_copy_copy == 1).stack().tolist()
+                    data_dictionary_copy = apply_derivedType(special_type_input, derived_type_output, data_dictionary_copy,
                                                             missing_values, axis_param, field)
                 elif axis_param == 0 or axis_param == 1:
-                    dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
-                    dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
-                                                                          dataDictionary_copy_copy, axis_param, field)
+                    data_dictionary_copy_copy = getOutliers(data_dictionary_copy, field, axis_param)
+                    data_dictionary_copy = apply_derivedTypeColRowOutliers(derived_type_output, data_dictionary_copy,
+                                                                          data_dictionary_copy_copy, axis_param, field)
 
         elif field is not None:
-            if field not in dataDictionary.columns:
+            if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
-            elif field in dataDictionary.columns:
-                if np.issubdtype(dataDictionary_copy[field].dtype, np.number):
-                    if specialTypeInput == SpecialType.MISSING or specialTypeInput == SpecialType.INVALID:
-                        dataDictionary_copy = apply_derivedType(specialTypeInput, derivedTypeOutput, dataDictionary_copy,
+            elif field in data_dictionary.columns:
+                if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
+                    if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
+                        data_dictionary_copy = apply_derivedType(special_type_input, derived_type_output, data_dictionary_copy,
                                                                 missing_values, axis_param, field)
-                    elif specialTypeInput == SpecialType.OUTLIER:
-                        dataDictionary_copy_copy = getOutliers(dataDictionary_copy, field, axis_param)
-                        dataDictionary_copy = apply_derivedTypeColRowOutliers(derivedTypeOutput, dataDictionary_copy,
-                                                                              dataDictionary_copy_copy, axis_param, field)
+                    elif special_type_input == SpecialType.OUTLIER:
+                        data_dictionary_copy_copy = getOutliers(data_dictionary_copy, field, axis_param)
+                        data_dictionary_copy = apply_derivedTypeColRowOutliers(derived_type_output, data_dictionary_copy,
+                                                                              data_dictionary_copy_copy, axis_param, field)
                 else:
                     raise ValueError("The field is not numeric")
 
-        return dataDictionary_copy
+        return data_dictionary_copy
 
-    def transform_SpecialValue_NumOp(self, dataDictionary: pd.DataFrame, specialTypeInput: SpecialType,
-                                     numOpOutput: Operation,
+    def transform_SpecialValue_NumOp(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
+                                     num_op_output: Operation,
                                      missing_values: list = None, axis_param: int = None,
                                      field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the SpecialValue - NumOp relation
-        :param dataDictionary: dataframe with the data
-        :param specialTypeInput: special type of the input value
-        :param numOpOutput: operation to execute the data transformation
+        :param data_dictionary: dataframe with the data
+        :param special_type_input: special type of the input value
+        :param num_op_output: operation to execute the data transformation
         :param axis_param: axis to execute the data transformation
         :param field: field to execute the data transformation
-        :return: dataDictionary with the values of the special type changed to the result of the operation numOpOutput
+        :return: data_dictionary with the values of the special type changed to the result of the operation num_op_output
         """
-        dataDictionary_copy = dataDictionary.copy()
-        dataDictionary_copy_mask = None
+        data_dictionary_copy = data_dictionary.copy()
+        data_dictionary_copy_mask = None
 
-        if specialTypeInput == SpecialType.OUTLIER:
-            dataDictionary_copy_mask = getOutliers(dataDictionary_copy, field, axis_param)
+        if special_type_input == SpecialType.OUTLIER:
+            data_dictionary_copy_mask = getOutliers(data_dictionary_copy, field, axis_param)
 
-        if numOpOutput == Operation.INTERPOLATION:
-            dataDictionary_copy = specialTypeInterpolation(dataDictionary_copy=dataDictionary_copy,
-                                                           specialTypeInput=specialTypeInput,
-                                                           dataDictionary_copy_mask=dataDictionary_copy_mask,
+        if num_op_output == Operation.INTERPOLATION:
+            data_dictionary_copy = specialTypeInterpolation(data_dictionary_copy=data_dictionary_copy,
+                                                           special_type_input=special_type_input,
+                                                           data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                            missing_values=missing_values, axis_param=axis_param,
                                                            field=field)
-        elif numOpOutput == Operation.MEAN:
-            dataDictionary_copy = specialTypeMean(dataDictionary_copy=dataDictionary_copy,
-                                                  specialTypeInput=specialTypeInput,
-                                                  dataDictionary_copy_mask=dataDictionary_copy_mask,
+        elif num_op_output == Operation.MEAN:
+            data_dictionary_copy = specialTypeMean(data_dictionary_copy=data_dictionary_copy,
+                                                  special_type_input=special_type_input,
+                                                  data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                   missing_values=missing_values, axis_param=axis_param, field=field)
-        elif numOpOutput == Operation.MEDIAN:
-            dataDictionary_copy = specialTypeMedian(dataDictionary_copy=dataDictionary_copy,
-                                                    specialTypeInput=specialTypeInput,
-                                                    dataDictionary_copy_mask=dataDictionary_copy_mask,
+        elif num_op_output == Operation.MEDIAN:
+            data_dictionary_copy = specialTypeMedian(data_dictionary_copy=data_dictionary_copy,
+                                                    special_type_input=special_type_input,
+                                                    data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                     missing_values=missing_values, axis_param=axis_param, field=field)
-        elif numOpOutput == Operation.CLOSEST:
-            dataDictionary_copy = specialTypeClosest(dataDictionary_copy=dataDictionary_copy,
-                                                     specialTypeInput=specialTypeInput,
-                                                     dataDictionary_copy_mask=dataDictionary_copy_mask,
+        elif num_op_output == Operation.CLOSEST:
+            data_dictionary_copy = specialTypeClosest(data_dictionary_copy=data_dictionary_copy,
+                                                     special_type_input=special_type_input,
+                                                     data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                      missing_values=missing_values, axis_param=axis_param, field=field)
 
-        return dataDictionary_copy
+        return data_dictionary_copy

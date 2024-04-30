@@ -43,7 +43,5 @@ if __name__ == "__main__":
     set_logger("test")
 
     # Calculate execution time for each test block (data_transformations)
-    # execute_data_transformations_simple_tests()
-    # execute_data_transformations_external_dataset_tests()
-    dataTransformationsTestWithDatasets = DataTransformationsExternalDatasetTests()
-    dataTransformationsTestWithDatasets.execute_transform_SpecialValue_NumOp_ExternalDatasetTests()
+    execute_data_transformations_simple_tests()
+    execute_data_transformations_external_dataset_tests()
