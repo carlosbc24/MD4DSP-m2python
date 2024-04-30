@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType
-from helpers.transform_aux import getOutliers, specialTypeMean, specialTypeMedian, specialTypeClosest, \
-    specialTypeInterpolation, apply_derivedTypeColRowOutliers, apply_derivedType
+from helpers.transform_aux import get_outliers, special_type_mean, special_type_median, special_type_closest, \
+    special_type_interpolation, apply_derived_type_col_row_outliers, apply_derived_type
 
 
 class DataTransformations:
@@ -12,9 +12,9 @@ class DataTransformations:
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
-    def transform_FixValue_FixValue(self, data_dictionary: pd.DataFrame, fix_value_input, fix_value_output,
-                                    data_type_input: DataType = None,
-                                    data_type_output: DataType = None, field: str = None) -> pd.DataFrame:
+    def transform_fix_value_fix_value(self, data_dictionary: pd.DataFrame, fix_value_input, fix_value_output,
+                                      data_type_input: DataType = None,
+                                      data_type_output: DataType = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - FixValue relation
         params:
@@ -43,10 +43,10 @@ class DataTransformations:
 
         return data_dictionary
 
-    def transform_FixValue_DerivedValue(self, data_dictionary: pd.DataFrame, fix_value_input,
-                                        derived_type_output: DerivedType,
-                                        data_type_input: DataType = None, axis_param: int = None,
-                                        field: str = None) -> pd.DataFrame:
+    def transform_fix_value_derived_value(self, data_dictionary: pd.DataFrame, fix_value_input,
+                                          derived_type_output: DerivedType,
+                                          data_type_input: DataType = None, axis_param: int = None,
+                                          field: str = None) -> pd.DataFrame:
         # By default, if all values are equally frequent, it is replaced by the first value.
         # Check if it should only be done for rows and columns or also for the entire dataframe.
         """
@@ -121,9 +121,9 @@ class DataTransformations:
 
         return data_dictionary_copy
 
-    def transform_FixValue_NumOp(self, data_dictionary: pd.DataFrame, fix_value_input, num_op_output: Operation,
-                                 data_type_input: DataType = None, axis_param: int = None,
-                                 field: str = None) -> pd.DataFrame:
+    def transform_fix_value_num_op(self, data_dictionary: pd.DataFrame, fix_value_input, num_op_output: Operation,
+                                   data_type_input: DataType = None, axis_param: int = None,
+                                   field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
@@ -292,9 +292,9 @@ class DataTransformations:
 
         return data_dictionary_copy
 
-    def transform_Interval_FixValue(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
-                                    closure_type: Closure, fix_value_output, data_type_output: DataType = None,
-                                    field: str = None) -> pd.DataFrame:
+    def transform_interval_fix_value(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
+                                     closure_type: Closure, fix_value_output, data_type_output: DataType = None,
+                                     field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the Interval - FixValue relation
         :param data_dictionary: dataframe with the data
@@ -349,9 +349,9 @@ class DataTransformations:
 
         return data_dictionary_copy
 
-    def transform_Interval_DerivedValue(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
-                                        closure_type: Closure, derived_type_output: DerivedType,
-                                        axis_param: int = None, field: str = None) -> pd.DataFrame:
+    def transform_interval_derived_value(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
+                                         closure_type: Closure, derived_type_output: DerivedType,
+                                         axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the Interval - DerivedValue relation
         :param data_dictionary: dataframe with the data
@@ -429,9 +429,9 @@ class DataTransformations:
 
         return data_dictionary_copy
 
-    def transform_Interval_NumOp(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
-                                 closure_type: Closure, num_op_output: Operation, axis_param: int = None,
-                                 field: str = None) -> pd.DataFrame:
+    def transform_interval_num_op(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
+                                  closure_type: Closure, num_op_output: Operation, axis_param: int = None,
+                                  field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
@@ -654,9 +654,9 @@ class DataTransformations:
 
         return data_dictionary_copy
 
-    def transform_SpecialValue_FixValue(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
-                                        fix_value_output, data_type_output: DataType = None, missing_values: list = None,
-                                        axis_param: int = None, field: str = None) -> pd.DataFrame:
+    def transform_special_value_fix_value(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
+                                          fix_value_output, data_type_output: DataType = None, missing_values: list = None,
+                                          axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the SpecialValue - FixValue relation
         :param data_dictionary: dataframe with the data
@@ -751,9 +751,9 @@ class DataTransformations:
 
         return data_dictionary_copy
 
-    def transform_SpecialValue_DerivedValue(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
-                                            derived_type_output: DerivedType, missing_values: list = None,
-                                            axis_param: int = None, field: str = None) -> pd.DataFrame:
+    def transform_special_value_derived_value(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
+                                              derived_type_output: DerivedType, missing_values: list = None,
+                                              axis_param: int = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the SpecialValue - DerivedValue relation
         :param data_dictionary: dataframe with the data
@@ -768,22 +768,22 @@ class DataTransformations:
 
         if field is None:
             if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
-                data_dictionary_copy = apply_derivedType(special_type_input, derived_type_output, data_dictionary_copy,
-                                                        missing_values, axis_param, field)
+                data_dictionary_copy = apply_derived_type(special_type_input, derived_type_output, data_dictionary_copy,
+                                                          missing_values, axis_param, field)
 
             elif special_type_input == SpecialType.OUTLIER:
                 # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
                 # If the outliers are applied at the dataframe level, previous and next cannot be applied.
 
                 if axis_param is None:
-                    data_dictionary_copy_copy = getOutliers(data_dictionary_copy, field, axis_param)
+                    data_dictionary_copy_copy = get_outliers(data_dictionary_copy, field, axis_param)
                     missing_values = data_dictionary_copy.where(data_dictionary_copy_copy == 1).stack().tolist()
-                    data_dictionary_copy = apply_derivedType(special_type_input, derived_type_output, data_dictionary_copy,
-                                                            missing_values, axis_param, field)
+                    data_dictionary_copy = apply_derived_type(special_type_input, derived_type_output, data_dictionary_copy,
+                                                              missing_values, axis_param, field)
                 elif axis_param == 0 or axis_param == 1:
-                    data_dictionary_copy_copy = getOutliers(data_dictionary_copy, field, axis_param)
-                    data_dictionary_copy = apply_derivedTypeColRowOutliers(derived_type_output, data_dictionary_copy,
-                                                                          data_dictionary_copy_copy, axis_param, field)
+                    data_dictionary_copy_copy = get_outliers(data_dictionary_copy, field, axis_param)
+                    data_dictionary_copy = apply_derived_type_col_row_outliers(derived_type_output, data_dictionary_copy,
+                                                                               data_dictionary_copy_copy, axis_param, field)
 
         elif field is not None:
             if field not in data_dictionary.columns:
@@ -791,21 +791,21 @@ class DataTransformations:
             elif field in data_dictionary.columns:
                 if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
                     if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
-                        data_dictionary_copy = apply_derivedType(special_type_input, derived_type_output, data_dictionary_copy,
-                                                                missing_values, axis_param, field)
+                        data_dictionary_copy = apply_derived_type(special_type_input, derived_type_output, data_dictionary_copy,
+                                                                  missing_values, axis_param, field)
                     elif special_type_input == SpecialType.OUTLIER:
-                        data_dictionary_copy_copy = getOutliers(data_dictionary_copy, field, axis_param)
-                        data_dictionary_copy = apply_derivedTypeColRowOutliers(derived_type_output, data_dictionary_copy,
-                                                                              data_dictionary_copy_copy, axis_param, field)
+                        data_dictionary_copy_copy = get_outliers(data_dictionary_copy, field, axis_param)
+                        data_dictionary_copy = apply_derived_type_col_row_outliers(derived_type_output, data_dictionary_copy,
+                                                                                   data_dictionary_copy_copy, axis_param, field)
                 else:
                     raise ValueError("The field is not numeric")
 
         return data_dictionary_copy
 
-    def transform_SpecialValue_NumOp(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
-                                     num_op_output: Operation,
-                                     missing_values: list = None, axis_param: int = None,
-                                     field: str = None) -> pd.DataFrame:
+    def transform_special_value_num_op(self, data_dictionary: pd.DataFrame, special_type_input: SpecialType,
+                                       num_op_output: Operation,
+                                       missing_values: list = None, axis_param: int = None,
+                                       field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the SpecialValue - NumOp relation
         :param data_dictionary: dataframe with the data
@@ -819,28 +819,28 @@ class DataTransformations:
         data_dictionary_copy_mask = None
 
         if special_type_input == SpecialType.OUTLIER:
-            data_dictionary_copy_mask = getOutliers(data_dictionary_copy, field, axis_param)
+            data_dictionary_copy_mask = get_outliers(data_dictionary_copy, field, axis_param)
 
         if num_op_output == Operation.INTERPOLATION:
-            data_dictionary_copy = specialTypeInterpolation(data_dictionary_copy=data_dictionary_copy,
-                                                           special_type_input=special_type_input,
-                                                           data_dictionary_copy_mask=data_dictionary_copy_mask,
-                                                           missing_values=missing_values, axis_param=axis_param,
-                                                           field=field)
+            data_dictionary_copy = special_type_interpolation(data_dictionary_copy=data_dictionary_copy,
+                                                              special_type_input=special_type_input,
+                                                              data_dictionary_copy_mask=data_dictionary_copy_mask,
+                                                              missing_values=missing_values, axis_param=axis_param,
+                                                              field=field)
         elif num_op_output == Operation.MEAN:
-            data_dictionary_copy = specialTypeMean(data_dictionary_copy=data_dictionary_copy,
-                                                  special_type_input=special_type_input,
-                                                  data_dictionary_copy_mask=data_dictionary_copy_mask,
-                                                  missing_values=missing_values, axis_param=axis_param, field=field)
-        elif num_op_output == Operation.MEDIAN:
-            data_dictionary_copy = specialTypeMedian(data_dictionary_copy=data_dictionary_copy,
-                                                    special_type_input=special_type_input,
-                                                    data_dictionary_copy_mask=data_dictionary_copy_mask,
-                                                    missing_values=missing_values, axis_param=axis_param, field=field)
-        elif num_op_output == Operation.CLOSEST:
-            data_dictionary_copy = specialTypeClosest(data_dictionary_copy=data_dictionary_copy,
+            data_dictionary_copy = special_type_mean(data_dictionary_copy=data_dictionary_copy,
                                                      special_type_input=special_type_input,
                                                      data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                      missing_values=missing_values, axis_param=axis_param, field=field)
+        elif num_op_output == Operation.MEDIAN:
+            data_dictionary_copy = special_type_median(data_dictionary_copy=data_dictionary_copy,
+                                                       special_type_input=special_type_input,
+                                                       data_dictionary_copy_mask=data_dictionary_copy_mask,
+                                                       missing_values=missing_values, axis_param=axis_param, field=field)
+        elif num_op_output == Operation.CLOSEST:
+            data_dictionary_copy = special_type_closest(data_dictionary_copy=data_dictionary_copy,
+                                                        special_type_input=special_type_input,
+                                                        data_dictionary_copy_mask=data_dictionary_copy_mask,
+                                                        missing_values=missing_values, axis_param=axis_param, field=field)
 
         return data_dictionary_copy

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from helpers.auxiliar import compare_numbers, count_abs_frequency
 from helpers.enumerations import Belong, Operator, Closure
-from helpers.transform_aux import getOutliers
+from helpers.transform_aux import get_outliers
 
 
 class ContractsPrePost:
@@ -470,7 +470,7 @@ class ContractsPrePost:
         outlier = 1  # 1 is the value that is going to be used to check if there are outliers in the dataframe
 
         if field is None:
-            data_dictionary_copy = getOutliers(data_dictionary=data_dictionary_copy, field=None, axis_param=None)
+            data_dictionary_copy = get_outliers(data_dictionary=data_dictionary_copy, field=None, axis_param=None)
             if belongOp == Belong.BELONG:
                 if quant_op is None:  # Check if there are any invalid values in data_dictionary
                     if outlier in data_dictionary_copy.values:
@@ -510,7 +510,7 @@ class ContractsPrePost:
                 if field not in data_dictionary.columns:
                     raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 12
 
-                data_dictionary_copy = getOutliers(data_dictionary=data_dictionary_copy, field=field, axis_param=None)
+                data_dictionary_copy = get_outliers(data_dictionary=data_dictionary_copy, field=field, axis_param=None)
                 if belongOp == Belong.BELONG:
                     if quant_op is None:  # Check that there are invalid values in the column specified by field
                         if outlier in data_dictionary_copy[field].values:

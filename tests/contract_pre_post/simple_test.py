@@ -66,7 +66,8 @@ class PrePostSimpleTest(unittest.TestCase):
         print_and_log("--------------------------------------------------")
         print_and_log("")
 
-        for simple_test_method in tqdm(simple_test_methods, desc="Running Pre-Post Contracts Simple Tests", unit="test"):
+        for simple_test_method in tqdm(simple_test_methods, desc="Running Pre-Post Contracts Simple Tests",
+                                       unit="test"):
             simple_test_method()
 
         print_and_log("")
@@ -757,9 +758,9 @@ class PrePostSimpleTest(unittest.TestCase):
         value = None
         # data_dictionary utilizado en casi todos los ejemplos de pruebas
         data_dictionary = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                   pd.Timestamp('20180310'), None, None, None]})
+                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                    pd.Timestamp('20180310'), None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
         quant_op = 2  # lessEqual
@@ -773,9 +774,9 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 14 of checkFixValueRange
         value = None
         data_dictionary1 = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                    None, None, None, None]})
+                                                     pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                     pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                     None, None, None, None]})
         belongOp = 0  # Belong
         field = 'c1'
         quant_op = 2  # lessEqual
@@ -816,9 +817,9 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 1 of checkFixValueRange
         value = pd.Timestamp('20110814')
         data_dictionary2 = pd.DataFrame(data={'c1': [pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                    pd.Timestamp('20110814'), pd.Timestamp('20180310'),
-                                                    pd.Timestamp('20180310'), pd.Timestamp('20180310'),
-                                                    pd.Timestamp('20180310'), None, None, None]})
+                                                     pd.Timestamp('20110814'), pd.Timestamp('20180310'),
+                                                     pd.Timestamp('20180310'), pd.Timestamp('20180310'),
+                                                     pd.Timestamp('20180310'), None, None, None]})
         belongOp = 0  # Belong
         field = None  # None
         quant_op = None  # None
@@ -1052,7 +1053,8 @@ class PrePostSimpleTest(unittest.TestCase):
         belongOp = 0  # Belong
         field = 'c1'
         result = self.pre_post.checkIntervalRangeFloat(left_margin=leftMargin, right_margin=rightMargin,
-                                                       data_dictionary=data_dictionary, closureType=Closure(closureType),
+                                                       data_dictionary=data_dictionary,
+                                                       closureType=Closure(closureType),
                                                        belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
@@ -1067,7 +1069,8 @@ class PrePostSimpleTest(unittest.TestCase):
         belongOp = 0  # Belong
         field = 'c1'
         result = self.pre_post.checkIntervalRangeFloat(left_margin=leftMargin, right_margin=rightMargin,
-                                                       data_dictionary=data_dictionary, closureType=Closure(closureType),
+                                                       data_dictionary=data_dictionary,
+                                                       closureType=Closure(closureType),
                                                        belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
@@ -1087,19 +1090,20 @@ class PrePostSimpleTest(unittest.TestCase):
         left0 = 20
         right0 = 15
         data_dictionary = pd.DataFrame(data={'c1': [0, 2.9, 5, 25.3, 4, 67.5, 0, 0.5, None, None],
-                                            'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
+                                             'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
         closure = 0  # OpenOpen
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.pre_post.checkIntervalRangeFloat(left_margin=left0, right_margin=right0,
-                                                           data_dictionary=data_dictionary, closureType=Closure(closure),
+                                                           data_dictionary=data_dictionary,
+                                                           closureType=Closure(closure),
                                                            belongOp=Belong(belongOp))
         print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
 
         # Example 1.1 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0, 2.9, 5, 25.3, 4, 67.5, 0, 0.5, None, None],
-                                            'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
+                                             'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1110,7 +1114,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 2.1 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.1, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1121,7 +1125,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 3 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1132,7 +1136,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 4 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1143,7 +1147,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 5 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1154,7 +1158,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 6 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1165,7 +1169,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 7 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1176,7 +1180,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 8 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 0.001, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1190,7 +1194,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 9 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0, 2.9, 5, 25.3, 4, 67.5, 0, 0.5, None, None],
-                                            'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
+                                             'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1201,7 +1205,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 10 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.1, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1212,7 +1216,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 11 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1223,7 +1227,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 12 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1234,7 +1238,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 13 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1245,7 +1249,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 14 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1256,7 +1260,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 15 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1267,7 +1271,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 16 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 0.001, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1283,7 +1287,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 17 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0, 2.9, 5, 25.3, 4, 67.5, 0, 0.5, None, None],
-                                            'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
+                                             'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1294,7 +1298,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 18 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.1, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1305,7 +1309,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 19 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1316,7 +1320,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 20 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1327,7 +1331,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 21 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1338,7 +1342,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 22 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1349,7 +1353,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 23 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1360,7 +1364,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 24 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 0.001, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1374,7 +1378,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 25 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [1, 2.9, 5, 25.3, 4, 67.5, 3, 0.5, None, None],
-                                            'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
+                                             'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1385,7 +1389,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 26 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.1, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1396,7 +1400,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 27 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1407,7 +1411,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 28 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1418,7 +1422,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 29 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1429,7 +1433,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 30 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1440,7 +1444,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 31 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1451,7 +1455,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Example 32 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
         data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 0.001, 67.5, 42, 0.5, None, None],
-                                            'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
+                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
                                                        data_dictionary=data_dictionary, closureType=Closure(closure),
@@ -1655,7 +1659,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 16
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [None, None, 'Blue', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN]})
         field = 'colour'
         quant_op = None
         result = self.pre_post.checkMissingRange(data_dictionary=data_dictionary, field=field,
@@ -1666,7 +1670,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 17
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, -1, 'Blue', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN]})
         field = 'colour'
         quant_op = None
         missing_values = [-1]
@@ -1679,7 +1683,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 18
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, -1, 'Blue', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN]})
         field = 'colour'
         quant_op = None
         missing_values = [-2]
@@ -1692,7 +1696,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 19
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, -1, 'Blue', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN]})
         field = 'colour'
         quant_op = None
         missing_values = None
@@ -1705,7 +1709,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 21
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-3, -2, 'Blue', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN]})
         field = 'colour'
         missing_values = [-1]
         quant_op = 2  # lessEqual
@@ -1719,7 +1723,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 24
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [None, -1, 'Blue', 'Green', -1, -1],
-                                            'names': ['John', 'Mary', None, np.NaN, -1, -1]})
+                                             'names': ['John', 'Mary', None, np.NaN, -1, -1]})
         field = 'colour'
         missing_values = [-1]
         quant_op = 2  # lessEqual
@@ -1733,7 +1737,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 26
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [-2, 'Blue', 'Green', -3, -4],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         field = 'colour'
         missing_values = [-1, np.NaN]
         result = self.pre_post.checkMissingRange(data_dictionary=data_dictionary, field=field,
@@ -1744,7 +1748,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 27
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [np.NaN, 'Blue', 'Green', -3, -4],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         field = 'colour'
         missing_values = [np.NaN]
         result = self.pre_post.checkMissingRange(data_dictionary=data_dictionary, field=field,
@@ -1755,7 +1759,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 28
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [-1, 'Blue', 'Green', -3, -4],
-                                            'names': ['John', 'Mary', None, np.NaN, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN, np.NaN]})
         field = 'colour'
         result = self.pre_post.checkMissingRange(data_dictionary=data_dictionary, field=field,
                                                  belongOp=Belong(belong))
@@ -1765,7 +1769,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 29
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [np.NaN, 'Blue', 'Green', -3, -4],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         field = 'colour'
         result = self.pre_post.checkMissingRange(data_dictionary=data_dictionary, field=field,
                                                  belongOp=Belong(belong))
@@ -1814,7 +1818,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 15
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [None, None, 'Blue', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN]})
         field = 'colours'  # Error due to the inexistent field
         quant_op = 2  # lessEqual
         quant_rel = 0.5
@@ -1828,7 +1832,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 22
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-3, -2, 'Blue', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN]})
+                                             'names': ['John', 'Mary', None, np.NaN]})
         field = 'colour'
         missing_values = [-1]
         quant_op = 2  # lessEqual
@@ -1845,7 +1849,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 25
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [None, -1, 'Blue', 'Green', -1, -1],
-                                            'names': ['John', 'Mary', None, np.NaN, -1, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, -1, None]})
         field = 'colour'
         missing_values = [-1]
         quant_op = 2  # lessEqual
@@ -1859,7 +1863,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 30
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [np.NaN, 'Blue', 'Green', -3, -4, -1],
-                                            'names': ['John', 'Mary', 'Peter', 'Laura', None, np.NaN]})
+                                             'names': ['John', 'Mary', 'Peter', 'Laura', None, np.NaN]})
         field = 'colour'
         missing_values = [-1]
         quant_abs = 2
@@ -2059,7 +2063,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 16
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         quant_op = None
         field = 'colour'
         invalid_values = [-1, 0]
@@ -2072,7 +2076,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 17
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [2, 3, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         quant_op = None
@@ -2085,7 +2089,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 18
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         field = 'colour'
         invalid_values = None
         quant_op = None
@@ -2098,7 +2102,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 20
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         quant_op = 1  # Greater
@@ -2112,7 +2116,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 21
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = None
         field = 'colour'
         quant_op = 1  # Greater
@@ -2126,7 +2130,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 23
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         quant_op = 0  # GreaterEqual
@@ -2140,7 +2144,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 24
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         invalid_values = None
         field = 'colour'
         quant_op = 0  # GreaterEqual
@@ -2154,7 +2158,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 27
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [3, 2, 'Blue', 'Green', 'Green', None],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         result = self.pre_post.checkInvalidValues(data_dictionary=data_dictionary, field=field,
@@ -2165,7 +2169,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 28
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green', None],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         result = self.pre_post.checkInvalidValues(data_dictionary=data_dictionary, field=field,
@@ -2176,7 +2180,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 29
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green', None],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         invalid_values = None
         field = 'colour'
         result = self.pre_post.checkInvalidValues(data_dictionary=data_dictionary, field=field,
@@ -2233,7 +2237,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 15
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green'],
-                                            'names': ['John', 'Mary', None, np.NaN, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None]})
         field = 'colours'
         invalid_values = [-1, 0]
         quant_op = 2
@@ -2248,7 +2252,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 25
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green', None],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         quant_op = 0  # GreaterEqual
@@ -2265,7 +2269,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 26
         belong = 0
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green', None],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         quant_op = 0
@@ -2279,7 +2283,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 30
         belong = 1
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 'Blue', 'Green', 'Green', None],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         invalid_values = [-1, 0]
         field = 'colour'
         quant_op = 1
@@ -2306,7 +2310,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Caso 1
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         field = None
         belongOp = 0
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field)
@@ -2315,7 +2319,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Caso 2
         data_dictionary = pd.DataFrame(data={'colour': [-0.25, 0, 1.25, 0.25, 0.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         belongOp = 0
         field = None
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field)
@@ -2324,7 +2328,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Caso 3
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         field = None
         quant_rel = 0.01
         quant_op = 1  # greater
@@ -2336,7 +2340,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Caso 4
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         quant_rel = 0.01
         quant_op = 2  # less
         belongOp = 0
@@ -2348,7 +2352,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Caso 5
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         quant_abs = 1
         # Equal
         quant_op = 4
@@ -2361,7 +2365,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Caso 6
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         belongOp = 0
         field = None
         quant_abs = 1
@@ -2373,7 +2377,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Exception quant_abs and quant_op are not None at the same time (Case 7)
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         belongOp = 0
         field = None
         quant_abs = 1
@@ -2381,26 +2385,28 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.01
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
+            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp),
+                                                 field=field,
                                                  quant_abs=quant_abs, quant_rel=quant_rel, quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # Exception quant_op is not None and quant_abs/quant_rel are both None (Case 8)
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         field = None
         quant_op = 1
         expected_exception = ValueError
         belongOp = 0
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
+            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp),
+                                                 field=field,
                                                  quant_op=Operator(quant_op))
         print_and_log("Test Case 8 Passed: Expected ValueError, got ValueError")
 
         # Caso 9
         belongOp = 1
         data_dictionary = pd.DataFrame(data={'colour': [-0.3, 0, 1.25, 0.25, 1.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=None)
         assert result is True, "Test Case 9 Failed: Expected True, but got False"
         print_and_log("Test Case 9 Passed: Expected True, got True")
@@ -2408,7 +2414,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Caso 10
         belongOp = 1
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=None)
         assert result is False, "Test Case 10 Failed: Expected False, but got True"
         print_and_log("Test Case 10 Passed: Expected False, got False")
@@ -2417,7 +2423,7 @@ class PrePostSimpleTest(unittest.TestCase):
         belongOp = 1
         quant_abs = 1
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         quant_op = 1  # greater
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
@@ -2428,17 +2434,18 @@ class PrePostSimpleTest(unittest.TestCase):
         # Case 12
         field = 'price'
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         belongOp = 0
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field)
+            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp),
+                                                 field=field)
         print_and_log("Test Case 12 Passed: Expected ValueError, got ValueError")
 
         # Case 13
         field = 'colour'
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         belongOp = 0
         quant_op = None
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
@@ -2449,7 +2456,7 @@ class PrePostSimpleTest(unittest.TestCase):
         # Case 14
         field = 'colour'
         data_dictionary = pd.DataFrame(data={'colour': [1, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         belongOp = 0
         quant_op = None
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
@@ -2463,7 +2470,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.01
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
                                              quant_op=Operator(quant_op), quant_rel=quant_rel)
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
@@ -2475,7 +2482,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 2  # less
         quant_rel = 0.01
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
                                              quant_op=Operator(quant_op), quant_rel=quant_rel)
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
@@ -2487,7 +2494,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 4  # equal
         quant_abs = 1
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
                                              quant_op=Operator(quant_op), quant_abs=quant_abs)
         assert result is True, "Test Case 17 Failed: Expected True, but got False"
@@ -2499,7 +2506,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_abs = 1
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
                                              quant_op=Operator(quant_op), quant_abs=quant_abs)
         assert result is False, "Test Case 18 Failed: Expected False, but got True"
@@ -2512,10 +2519,11 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_abs = 1
         quant_rel = 0.01
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
+            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp),
+                                                 field=field,
                                                  quant_op=Operator(quant_op), quant_abs=quant_abs, quant_rel=quant_rel)
         print_and_log("Test Case 19 Passed: Expected ValueError, got ValueError")
 
@@ -2524,10 +2532,11 @@ class PrePostSimpleTest(unittest.TestCase):
         belongOp = 0
         quant_op = 1  # greater
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
+            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp),
+                                                 field=field,
                                                  quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
 
@@ -2535,7 +2544,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'colour'
         belongOp = 1
         data_dictionary = pd.DataFrame(data={'colour': [-1, 0, 1.25, 0.25, 1.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field)
         assert result is True, "Test Case 21 Failed: Expected True, but got False"
         print_and_log("Test Case 21 Passed: Expected True, got True")
@@ -2544,7 +2553,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'colour'
         belongOp = 1
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
-                                            'names': ['John', 'Mary', None, np.NaN, None, None]})
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
         result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field)
         assert result is False, "Test Case 22 Failed: Expected False, but got True"
         print_and_log("Test Case 22 Passed: Expected False, got False")
@@ -2556,6 +2565,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp), field=field,
+            result = self.pre_post.checkOutliers(data_dictionary=data_dictionary, belongOp=Belong(belongOp),
+                                                 field=field,
                                                  quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
         print_and_log("Test Case 23 Passed: Expected ValueError, got ValueError")

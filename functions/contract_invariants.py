@@ -11,7 +11,7 @@ from helpers.invariant_aux import check_special_type_most_frequent, check_specia
     check_fix_value_most_frequent, check_fix_value_previous, check_fix_value_next, check_fix_value_interpolation, check_fix_value_mean, \
     check_fix_value_median, check_fix_value_closest, check_interval_interpolation, check_interval_mean, check_interval_median, \
     check_interval_closest
-from helpers.transform_aux import getOutliers
+from helpers.transform_aux import get_outliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 
 
@@ -844,7 +844,7 @@ class Invariants:
         result = True
 
         if special_type_input == SpecialType.OUTLIER:
-            data_dictionary_outliers_mask = getOutliers(data_dictionary_in, field, axis_param)
+            data_dictionary_outliers_mask = get_outliers(data_dictionary_in, field, axis_param)
 
             if axis_param is None:
                 missing_values = data_dictionary_in.where(data_dictionary_outliers_mask == 1).stack().tolist()
@@ -909,7 +909,7 @@ class Invariants:
         result = True
 
         if special_type_input == SpecialType.OUTLIER:
-            data_dictionary_outliers_mask = getOutliers(data_dictionary_in, field, axis_param)
+            data_dictionary_outliers_mask = get_outliers(data_dictionary_in, field, axis_param)
 
         if num_op_output == Operation.INTERPOLATION:
             result = check_special_type_interpolation(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,

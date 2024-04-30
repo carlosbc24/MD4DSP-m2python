@@ -803,7 +803,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         value = pd.Timestamp('20150721')
         belongOp = 0  # Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                  field=field,
                                                   belongOp=Belong(belongOp))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
@@ -812,7 +813,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         value = pd.Timestamp('20250721')
         belongOp = 0  # Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                  field=field,
                                                   belongOp=Belong(belongOp))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
@@ -823,7 +825,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_album_release_date'
         quant_op = 1  # greater
         quant_abs = 2
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                  field=field,
                                                   quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                   belongOp=Belong(belongOp))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
@@ -835,7 +838,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_album_release_date'
         quant_op = 1  # greater
         quant_abs = 3000
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                  field=field,
                                                   quant_abs=quant_abs, quant_op=Operator(quant_op),
                                                   belongOp=Belong(belongOp))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
@@ -845,7 +849,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         value = pd.Timestamp('20250721')
         belongOp = 1  # Not Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                  field=field,
                                                   belongOp=Belong(belongOp))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
@@ -854,7 +859,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         value = pd.Timestamp('20180721')
         belongOp = 1  # Not Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary, field=field,
+        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                  field=field,
                                                   belongOp=Belong(belongOp))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")

@@ -264,10 +264,10 @@ class DataProcessing:
 		
 		missing_values_INV_condition_avg_income=[]
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_mean_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_mean_in_copy,
-																			   specialTypeInput=SpecialType(0),
-																			   numOpOutput=Operation(1),
-																			   missing_values=missing_values_INV_condition_avg_income, axis_param=0, field='avg_income')
+		data_model_impute_mean_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_mean_in_copy,
+                                                                                 specialTypeInput=SpecialType(0),
+                                                                                 numOpOutput=Operation(1),
+                                                                                 missing_values=missing_values_INV_condition_avg_income, axis_param=0, field='avg_income')
 		print('INVARIANT call')
 
 		data_model_impute_mean_out=data_model_impute_mean_in_copy.copy()
@@ -280,10 +280,10 @@ class DataProcessing:
 		
 		missing_values_INV_condition_distance=[]
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_mean_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_mean_in_copy,
-																			   specialTypeInput=SpecialType(0),
-																			   numOpOutput=Operation(1),
-																			   missing_values=missing_values_INV_condition_distance, axis_param=0, field='distance')
+		data_model_impute_mean_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_mean_in_copy,
+                                                                                 specialTypeInput=SpecialType(0),
+                                                                                 numOpOutput=Operation(1),
+                                                                                 missing_values=missing_values_INV_condition_distance, axis_param=0, field='distance')
 		print('INVARIANT call')
 
 		data_model_impute_mean_out=data_model_impute_mean_in_copy.copy()
@@ -329,10 +329,10 @@ class DataProcessing:
 		
 		missing_values_INV_condition_distance=[]
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_linear_interpolation_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_linear_interpolation_in_copy,
-																							   specialTypeInput=SpecialType(0),
-																							   numOpOutput=Operation(0),
-																							   missing_values=missing_values_INV_condition_distance, axis_param=0, field='satscore')
+		data_model_impute_linear_interpolation_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_linear_interpolation_in_copy,
+                                                                                                 specialTypeInput=SpecialType(0),
+                                                                                                 numOpOutput=Operation(0),
+                                                                                                 missing_values=missing_values_INV_condition_distance, axis_param=0, field='satscore')
 		print('INVARIANT call')
 		
 		data_model_impute_linear_interpolation_out=data_model_impute_linear_interpolation_in_copy.copy()
@@ -567,10 +567,10 @@ class DataProcessing:
 		
 		
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_outlier_closest_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_outlier_closest_in_copy,
-																						  specialTypeInput=SpecialType(2),
-																						  numOpOutput=Operation(3),
-																						  missing_values=None, axis_param=0, field='avg_income')
+		data_model_impute_outlier_closest_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_outlier_closest_in_copy,
+                                                                                            specialTypeInput=SpecialType(2),
+                                                                                            numOpOutput=Operation(3),
+                                                                                            missing_values=None, axis_param=0, field='avg_income')
 		print('INVARIANT call')
 		
 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_copy.copy()
@@ -582,10 +582,10 @@ class DataProcessing:
 		
 		
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_outlier_closest_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_outlier_closest_in_copy,
-																						  specialTypeInput=SpecialType(2),
-																						  numOpOutput=Operation(3),
-																						  missing_values=None, axis_param=0, field='distance')
+		data_model_impute_outlier_closest_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_outlier_closest_in_copy,
+                                                                                            specialTypeInput=SpecialType(2),
+                                                                                            numOpOutput=Operation(3),
+                                                                                            missing_values=None, axis_param=0, field='distance')
 		print('INVARIANT call')
 		
 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_copy.copy()
@@ -597,10 +597,10 @@ class DataProcessing:
 		
 		
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_outlier_closest_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_outlier_closest_in_copy,
-																						  specialTypeInput=SpecialType(2),
-																						  numOpOutput=Operation(3),
-																						  missing_values=None, axis_param=0, field='premiere')
+		data_model_impute_outlier_closest_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_outlier_closest_in_copy,
+                                                                                            specialTypeInput=SpecialType(2),
+                                                                                            numOpOutput=Operation(3),
+                                                                                            missing_values=None, axis_param=0, field='premiere')
 		print('INVARIANT call')
 		
 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_copy.copy()
@@ -612,10 +612,10 @@ class DataProcessing:
 		
 		
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_outlier_closest_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_outlier_closest_in_copy,
-																						  specialTypeInput=SpecialType(2),
-																						  numOpOutput=Operation(3),
-																						  missing_values=None, axis_param=0, field='sex')
+		data_model_impute_outlier_closest_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_outlier_closest_in_copy,
+                                                                                            specialTypeInput=SpecialType(2),
+                                                                                            numOpOutput=Operation(3),
+                                                                                            missing_values=None, axis_param=0, field='sex')
 		print('INVARIANT call')
 		
 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_copy.copy()
@@ -627,10 +627,10 @@ class DataProcessing:
 		
 		
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_outlier_closest_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_outlier_closest_in_copy,
-																						  specialTypeInput=SpecialType(2),
-																						  numOpOutput=Operation(3),
-																						  missing_values=None, axis_param=0, field='Enroll')
+		data_model_impute_outlier_closest_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_outlier_closest_in_copy,
+                                                                                            specialTypeInput=SpecialType(2),
+                                                                                            numOpOutput=Operation(3),
+                                                                                            missing_values=None, axis_param=0, field='Enroll')
 		print('INVARIANT call')
 		
 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_copy.copy()
@@ -642,10 +642,10 @@ class DataProcessing:
 		
 		
 		#FALTA MIRAR LO DEL BELONG OP DE LAS INVARIANTES
-		data_model_impute_outlier_closest_in_copy=invariants.transform_SpecialValue_NumOp(dataDictionary=data_model_impute_outlier_closest_in_copy,
-																						  specialTypeInput=SpecialType(2),
-																						  numOpOutput=Operation(3),
-																						  missing_values=None, axis_param=0, field='Instate')
+		data_model_impute_outlier_closest_in_copy=invariants.transform_special_value_num_op(dataDictionary=data_model_impute_outlier_closest_in_copy,
+                                                                                            specialTypeInput=SpecialType(2),
+                                                                                            numOpOutput=Operation(3),
+                                                                                            missing_values=None, axis_param=0, field='Instate')
 		print('INVARIANT call')
 		
 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_copy.copy()

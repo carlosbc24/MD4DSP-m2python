@@ -152,7 +152,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = 67
         fix_value_output = 1
         field = 'track_popularity'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(), field=field,
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -177,7 +177,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'All the Time - Don Diablo Remix'
         fix_value_output = 'todos los tiempo - Don Diablo Remix'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -197,7 +197,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = '2019-07-05'
         fix_value_output = True
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -216,7 +216,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'Maroon 5'
         fix_value_output = 3.0
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -235,7 +235,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 2.33e-5
         fix_value_output = "Near 0"
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -256,7 +256,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = 67
         fix_value_output = 1
         field = 'track_popularity'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(), field=field,
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -281,7 +281,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'All the Time - Don Diablo Remix'
         fix_value_output = 'todos los tiempo - Don Diablo Remix'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -301,7 +301,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = '2019-07-05'
         fix_value_output = True
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -320,7 +320,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'Maroon 5'
         fix_value_output = 3.0
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -339,7 +339,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 2.33e-5
         fix_value_output = "Near 0"
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -365,7 +365,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = 67
         fix_value_output = 1
         field = 'track_popularity'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(), field=field,
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -390,7 +390,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'All the Time - Don Diablo Remix'
         fix_value_output = 'todos los tiempo - Don Diablo Remix'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -410,7 +410,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = '2019-07-05'
         fix_value_output = True
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -429,7 +429,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'Maroon 5'
         fix_value_output = 3.0
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -448,7 +448,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 2.33e-5
         fix_value_output = "Near 0"
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -469,7 +469,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = 67
         fix_value_output = 1
         field = 'track_popularity'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(), field=field,
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -493,7 +493,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'All the Time - Don Diablo Remix'
         fix_value_output = 'todos los tiempo - Don Diablo Remix'
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -513,7 +513,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = '2019-07-05'
         fix_value_output = True
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -532,7 +532,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'Maroon 5'
         fix_value_output = 3.0
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -551,7 +551,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 2.33e-5
         fix_value_output = "Near 0"
-        result_df = self.data_transformations.transform_FixValue_FixValue(
+        result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
@@ -594,7 +594,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0
         field = 'mode'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -614,7 +614,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'Katy Perry'
         field = 'track_artist'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(1), field=field)
@@ -634,7 +634,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), field=field)
@@ -654,7 +654,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'pop'
         field = 'playlist_genre'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), axis_param=1)
@@ -675,7 +675,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.11
         field = 'liveness'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -693,7 +693,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # verify if the result matches the expected
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'Ed Sheeran'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0))
@@ -713,7 +713,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            result_df = self.data_transformations.transform_fix_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 fix_value_input=fix_value_input,
                 derived_type_output=DerivedType(1))
@@ -732,7 +732,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+            resuld_df = self.data_transformations.transform_fix_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 fix_value_input=fix_value_input,
                 derived_type_output=DerivedType(2))
@@ -753,7 +753,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+            resuld_df = self.data_transformations.transform_fix_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 fix_value_input=fix_value_input,
                 derived_type_output=DerivedType(1), field=field)
@@ -776,7 +776,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0
         field = 'mode'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -796,7 +796,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'Katy Perry'
         field = 'track_artist'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(1), field=field)
@@ -816,7 +816,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), field=field)
@@ -836,7 +836,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'pop'
         field = 'playlist_genre'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), axis_param=1)
@@ -857,7 +857,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.11
         field = 'liveness'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -875,7 +875,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # verify if the result matches the expected
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 'Ed Sheeran'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0))
@@ -900,7 +900,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0
         field = 'mode'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -920,7 +920,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'Katy Perry'
         field = 'track_artist'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(1), field=field)
@@ -940,7 +940,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), field=field)
@@ -959,7 +959,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # esperado
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'pop'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), axis_param=0)
@@ -980,7 +980,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.11
         field = 'liveness'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -998,7 +998,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # verify if the result matches the expected
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'Ed Sheeran'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0))
@@ -1019,7 +1019,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_DerivedValue(
+            result_df = self.data_transformations.transform_fix_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 fix_value_input=fix_value_input,
                 derived_type_output=DerivedType(1))
@@ -1039,7 +1039,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+            resuld_df = self.data_transformations.transform_fix_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 fix_value_input=fix_value_input,
                 derived_type_output=DerivedType(2))
@@ -1060,7 +1060,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verify if the result matches the expected
         with self.assertRaises(expected_exception):
-            resuld_df = self.data_transformations.transform_FixValue_DerivedValue(
+            resuld_df = self.data_transformations.transform_fix_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 fix_value_input=fix_value_input,
                 derived_type_output=DerivedType(1), field=field)
@@ -1084,7 +1084,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0
         field = 'mode'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -1104,7 +1104,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'Katy Perry'
         field = 'track_artist'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(1), field=field)
@@ -1124,7 +1124,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = '2019-12-13'
         field = 'track_album_release_date'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), field=field)
@@ -1143,7 +1143,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # esperado
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'pop'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(2), axis_param=1)
@@ -1164,7 +1164,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.11
         field = 'liveness'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0), field=field)
@@ -1182,7 +1182,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # verify if the result matches the expected
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 'Ed Sheeran'
-        result_df = self.data_transformations.transform_FixValue_DerivedValue(
+        result_df = self.data_transformations.transform_fix_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             derived_type_output=DerivedType(0))
@@ -1224,9 +1224,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1244,9 +1244,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.725
         field = 'valence'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1264,9 +1264,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 8
         field = 'key'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1284,9 +1284,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 99.972
         field = 'tempo'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(3), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(3), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1303,9 +1303,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1322,9 +1322,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1341,9 +1341,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(3), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(3), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1360,9 +1360,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1378,7 +1378,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.small_batch_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0))
@@ -1397,7 +1397,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.small_batch_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0), field=field)
@@ -1418,9 +1418,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1438,9 +1438,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.725
         field = 'valence'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1458,9 +1458,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 8
         field = 'key'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1478,9 +1478,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 99.972
         field = 'tempo'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(3), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(3), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1497,9 +1497,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1516,9 +1516,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1535,9 +1535,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(3), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(3), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1554,9 +1554,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1572,7 +1572,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.small_batch_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0))
@@ -1592,7 +1592,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.small_batch_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0), field=field)
@@ -1616,9 +1616,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1636,9 +1636,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.725
         field = 'valence'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1656,9 +1656,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 8
         field = 'key'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1678,9 +1678,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'tempo'
         vaue_error_exception = ValueError
         with self.assertRaises(vaue_error_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                           fix_value_input=fix_value_input,
-                                                                           num_op_output=Operation(3), field=field)
+            result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                             fix_value_input=fix_value_input,
+                                                                             num_op_output=Operation(3), field=field)
             invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                        data_dictionary_out=result_df,
                                                                        fix_value_input=fix_value_input,
@@ -1696,9 +1696,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1715,9 +1715,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1736,9 +1736,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = 0.65
         value_error_exception = ValueError
         with self.assertRaises(value_error_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                           fix_value_input=fix_value_input,
-                                                                           num_op_output=Operation(3), axis_param=0)
+            result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                             fix_value_input=fix_value_input,
+                                                                             num_op_output=Operation(3), axis_param=0)
             invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                        data_dictionary_out=result_df,
                                                                        fix_value_input=fix_value_input,
@@ -1754,9 +1754,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1772,7 +1772,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.rest_of_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0))
@@ -1791,7 +1791,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.rest_of_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0), field=field)
@@ -1812,9 +1812,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1832,9 +1832,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.725
         field = 'valence'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1852,9 +1852,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 8
         field = 'key'
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), field=field)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), field=field)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1874,9 +1874,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'tempo'
         value_error_exception = ValueError
         with self.assertRaises(value_error_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                           fix_value_input=fix_value_input,
-                                                                           num_op_output=Operation(3), field=field)
+            result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                             fix_value_input=fix_value_input,
+                                                                             num_op_output=Operation(3), field=field)
             invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                        data_dictionary_out=result_df,
                                                                        fix_value_input=fix_value_input,
@@ -1892,9 +1892,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(1), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(1), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1911,9 +1911,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(2), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(2), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1931,9 +1931,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.65
         value_error_exception = ValueError
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(3), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(3), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1950,9 +1950,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0.65
-        result_df = self.data_transformations.transform_FixValue_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       fix_value_input=fix_value_input,
-                                                                       num_op_output=Operation(0), axis_param=0)
+        result_df = self.data_transformations.transform_fix_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                         fix_value_input=fix_value_input,
+                                                                         num_op_output=Operation(0), axis_param=0)
         invariant_result = self.invariants.checkInv_FixValue_NumOp(data_dictionary_in=expected_df,
                                                                    data_dictionary_out=result_df,
                                                                    fix_value_input=fix_value_input,
@@ -1968,7 +1968,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.rest_of_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0))
@@ -1988,7 +1988,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_exception = ValueError
         # Verificar si el resultado obtenido coincide con el esperado
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_FixValue_NumOp(
+            result_df = self.data_transformations.transform_fix_value_num_op(
                 data_dictionary=self.rest_of_dataset.copy(),
                 fix_value_input=fix_value_input,
                 num_op_output=Operation(0), field=field)
@@ -2025,12 +2025,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'track_popularity'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       left_margin=65,
-                                                                       right_margin=69, closure_type=Closure(3),
-                                                                       data_type_output=DataType(0),
-                                                                       fix_value_output='65<=Pop<=69',
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        left_margin=65,
+                                                                        right_margin=69, closure_type=Closure(3),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='65<=Pop<=69',
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=65, right_margin=69,
@@ -2043,9 +2043,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       left_margin=0.5, right_margin=1,
-                                                                       closure_type=Closure(0), fix_value_output=2)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        left_margin=0.5, right_margin=1,
+                                                                        closure_type=Closure(0), fix_value_output=2)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.5, right_margin=1,
@@ -2059,7 +2059,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2075,10 +2075,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       left_margin=0.06, right_margin=0.1270,
-                                                                       closure_type=Closure(1), fix_value_output=33,
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        left_margin=0.06, right_margin=0.1270,
+                                                                        closure_type=Closure(1), fix_value_output=33,
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.06, right_margin=0.1270,
@@ -2092,7 +2092,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2108,12 +2108,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'track_popularity'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       left_margin=65,
-                                                                       right_margin=69, closure_type=Closure(3),
-                                                                       data_type_output=DataType(0),
-                                                                       fix_value_output='65<=Pop<=69',
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        left_margin=65,
+                                                                        right_margin=69, closure_type=Closure(3),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='65<=Pop<=69',
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=65, right_margin=69,
@@ -2126,9 +2126,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 7
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       left_margin=0.5, right_margin=1,
-                                                                       closure_type=Closure(0), fix_value_output=2)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        left_margin=0.5, right_margin=1,
+                                                                        closure_type=Closure(0), fix_value_output=2)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.5, right_margin=1,
@@ -2142,7 +2142,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2158,10 +2158,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       left_margin=0.06, right_margin=0.1270,
-                                                                       closure_type=Closure(1), fix_value_output=33,
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        left_margin=0.06, right_margin=0.1270,
+                                                                        closure_type=Closure(1), fix_value_output=33,
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.06, right_margin=0.1270,
@@ -2175,7 +2175,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2191,10 +2191,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       left_margin=0.06, right_margin=0.1270,
-                                                                       closure_type=Closure(1), fix_value_output=33,
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                        left_margin=0.06, right_margin=0.1270,
+                                                                        closure_type=Closure(1), fix_value_output=33,
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.06, right_margin=0.1270,
@@ -2213,12 +2213,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'track_popularity'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       left_margin=65,
-                                                                       right_margin=69, closure_type=Closure(3),
-                                                                       data_type_output=DataType(0),
-                                                                       fix_value_output='65<=Pop<=69',
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=65,
+                                                                        right_margin=69, closure_type=Closure(3),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='65<=Pop<=69',
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=65, right_margin=69,
@@ -2231,9 +2231,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       left_margin=0.5, right_margin=1,
-                                                                       closure_type=Closure(0), fix_value_output=2)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0.5, right_margin=1,
+                                                                        closure_type=Closure(0), fix_value_output=2)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.5, right_margin=1,
@@ -2247,7 +2247,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2263,10 +2263,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       left_margin=0.06, right_margin=0.1270,
-                                                                       closure_type=Closure(1), fix_value_output=33,
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0.06, right_margin=0.1270,
+                                                                        closure_type=Closure(1), fix_value_output=33,
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.06, right_margin=0.1270,
@@ -2280,7 +2280,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2296,12 +2296,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'track_popularity'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       left_margin=65,
-                                                                       right_margin=69, closure_type=Closure(3),
-                                                                       data_type_output=DataType(0),
-                                                                       fix_value_output='65<=Pop<=69',
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=65,
+                                                                        right_margin=69, closure_type=Closure(3),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='65<=Pop<=69',
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=65, right_margin=69,
@@ -2314,9 +2314,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 7
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       left_margin=0.5, right_margin=1,
-                                                                       closure_type=Closure(0), fix_value_output=2)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0.5, right_margin=1,
+                                                                        closure_type=Closure(0), fix_value_output=2)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.5, right_margin=1,
@@ -2330,7 +2330,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2346,10 +2346,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       left_margin=0.06, right_margin=0.1270,
-                                                                       closure_type=Closure(1), fix_value_output=33,
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0.06, right_margin=0.1270,
+                                                                        closure_type=Closure(1), fix_value_output=33,
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.06, right_margin=0.1270,
@@ -2363,7 +2363,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'p'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_FixValue(
+            result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
                 fix_value_output=101, field=field)
@@ -2379,10 +2379,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'speechiness'
 
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=self.rest_of_dataset.copy(),
-                                                                       left_margin=0.06, right_margin=0.1270,
-                                                                       closure_type=Closure(1), fix_value_output=33,
-                                                                       field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0.06, right_margin=0.1270,
+                                                                        closure_type=Closure(1), fix_value_output=33,
+                                                                        field=field)
         invariant_result = self.invariants.checkInv_Interval_FixValue(data_dictionary_in=expected_df,
                                                                       data_dictionary_out=result,
                                                                       left_margin=0.06, right_margin=0.1270,
@@ -2418,7 +2418,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), field=field)
@@ -2434,7 +2434,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=0)
@@ -2450,7 +2450,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 3
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=1)
@@ -2467,7 +2467,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 4
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2485,7 +2485,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), axis_param=None)
@@ -2503,7 +2503,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 6
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2521,7 +2521,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(
+            result = self.data_transformations.transform_interval_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 left_margin=0.2, right_margin=0.4,
                 closure_type=Closure(0),
@@ -2538,7 +2538,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), field=field)
@@ -2554,7 +2554,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 9
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=0)
@@ -2570,7 +2570,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 10
         expected_df = self.small_batch_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=1)
@@ -2587,7 +2587,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 11
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2605,7 +2605,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 12
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), axis_param=None)
@@ -2623,7 +2623,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 13
         expected_df = self.small_batch_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.small_batch_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2641,7 +2641,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 14
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(
+            result = self.data_transformations.transform_interval_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 left_margin=0.2, right_margin=0.4,
                 closure_type=Closure(0),
@@ -2663,7 +2663,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), field=field)
@@ -2679,7 +2679,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=0)
@@ -2695,7 +2695,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 3
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=1)
@@ -2712,7 +2712,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 4
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2730,7 +2730,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), axis_param=None)
@@ -2748,7 +2748,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 6
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2766,7 +2766,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 7
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(
+            result = self.data_transformations.transform_interval_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 left_margin=0.2, right_margin=0.4,
                 closure_type=Closure(0),
@@ -2783,7 +2783,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         field = 'liveness'
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), field=field)
@@ -2799,7 +2799,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 9
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=0)
@@ -2815,7 +2815,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 10
         expected_df = self.rest_of_dataset.copy()
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(1), axis_param=1)
@@ -2832,7 +2832,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 11
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2850,7 +2850,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 12
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(0), axis_param=None)
@@ -2868,7 +2868,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 13
         expected_df = self.rest_of_dataset.copy()
 
-        result = self.data_transformations.transform_Interval_DerivedValue(
+        result = self.data_transformations.transform_interval_derived_value(
             data_dictionary=self.rest_of_dataset.copy(), left_margin=0.2,
             right_margin=0.4, closure_type=Closure(0),
             derived_type_output=DerivedType(2), axis_param=0)
@@ -2886,7 +2886,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 14
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(
+            result = self.data_transformations.transform_interval_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 left_margin=0.2, right_margin=0.4,
                 closure_type=Closure(0),
@@ -2923,9 +2923,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # ------------------------------------------BELONG-BELONG----------------------------------------------
         # Caso 1
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=2, right_margin=4, closure_type=Closure(1),
-                                                                      num_op_output=Operation(0), axis_param=0, field=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(1),
+                                                                       num_op_output=Operation(0), axis_param=0, field=None)
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2,
                                                          right_margin=4, closure_type=Closure(1), num_op_output=Operation(0),
@@ -2937,10 +2937,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2
         # Crear un DataFrame de prueba
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=3, right_margin=4,
-                                                                      closure_type=Closure(3), num_op_output=Operation(0),
-                                                                      axis_param=1)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=3, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(0),
+                                                                       axis_param=1)
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=3, right_margin=4,
                                                          closure_type=Closure(3), num_op_output=Operation(0), axis_param=1,
@@ -2951,9 +2951,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 Passed: Expected True, got True")
 
         # Caso 3
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=3, closure_type=Closure(0),
-                                                                        num_op_output=Operation(1), axis_param=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=3, closure_type=Closure(0),
+                                                                       num_op_output=Operation(1), axis_param=None)
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
                                                          closure_type=Closure(0), num_op_output=Operation(1),
@@ -2964,9 +2964,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Caso 4
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=3, closure_type=Closure(0),
-                                                                        num_op_output=Operation(1), axis_param=0)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=3, closure_type=Closure(0),
+                                                                       num_op_output=Operation(1), axis_param=0)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
                                                          closure_type=Closure(0), num_op_output=Operation(1), axis_param=0,
@@ -2990,9 +2990,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=3, closure_type=Closure(2),
-                                                                        num_op_output=Operation(2), axis_param=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=3, closure_type=Closure(2),
+                                                                       num_op_output=Operation(2), axis_param=None)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
                                                          closure_type=Closure(2), num_op_output=Operation(2),
@@ -3016,9 +3016,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # print_and_log("Test Case 7 Passed: Expected True, got True")
 
         # Caso 8
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=4, closure_type=Closure(0),
-                                                                        num_op_output=Operation(3), axis_param=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=4, closure_type=Closure(0),
+                                                                       num_op_output=Operation(3), axis_param=None)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=4,
                                                          closure_type=Closure(0), num_op_output=Operation(3),
@@ -3030,9 +3030,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # Caso 9
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=4, closure_type=Closure(0),
-                                                                        num_op_output=Operation(3), axis_param=0)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=4, closure_type=Closure(0),
+                                                                       num_op_output=Operation(3), axis_param=0)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=4,
                                                          closure_type=Closure(0), num_op_output=Operation(3), axis_param=0,
@@ -3047,9 +3047,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'T'
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=2, right_margin=4, closure_type=Closure(3),
-                                                                        num_op_output=Operation(0), axis_param=None, field=field)
+            expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                           left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                           num_op_output=Operation(0), axis_param=None, field=field)
         print_and_log("Test Case 10.1 Passed: expected ValueError, got ValueError")
 
 
@@ -3065,11 +3065,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 11
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=2, right_margin=4,
-                                                                      closure_type=Closure(3),
-                                                                      num_op_output=Operation(0), axis_param=None,
-                                                                      field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3),
+                                                                       num_op_output=Operation(0), axis_param=None,
+                                                                       field=field)
 
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
@@ -3084,11 +3084,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 12
         field = 'track_popularity'
         # Definir el resultado esperado
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=2, right_margin=4,
-                                                                        closure_type=Closure(3),
-                                                                        num_op_output=Operation(1), axis_param=None,
-                                                                        field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3),
+                                                                       num_op_output=Operation(1), axis_param=None,
+                                                                       field=field)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(3), num_op_output=Operation(1),
@@ -3101,10 +3101,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 13
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=2, right_margin=4,
-                                                                      closure_type=Closure(3), num_op_output=Operation(2),
-                                                                      axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(2),
+                                                                       axis_param=None, field=field)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(3), num_op_output=Operation(2),
@@ -3117,10 +3117,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 14
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=2, right_margin=4,
-                                                                      closure_type=Closure(3), num_op_output=Operation(3),
-                                                                      axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(3),
+                                                                       axis_param=None, field=field)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(3), num_op_output=Operation(3),
@@ -3134,9 +3134,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # ------------------------------------------BELONG-NOTBELONG----------------------------------------------
         # Caso 15
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=2, right_margin=4, closure_type=Closure(1),
-                                                                        num_op_output=Operation(0), axis_param=0)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(1),
+                                                                       num_op_output=Operation(0), axis_param=0)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(1), num_op_output=Operation(0), axis_param=0,
@@ -3147,10 +3147,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 15 Passed: Expected False, got False")
 
         # Caso 16
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=3, right_margin=4,
-                                                                      closure_type=Closure(3), num_op_output=Operation(0),
-                                                                      axis_param=1, field=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=3, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(0),
+                                                                       axis_param=1, field=None)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=3, right_margin=4,
                                                          closure_type=Closure(3), num_op_output=Operation(0), axis_param=1,
@@ -3161,9 +3161,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
         # Caso 17
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=1, right_margin=3, closure_type=Closure(0),
-                                                                      num_op_output=Operation(1), axis_param=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=1, right_margin=3, closure_type=Closure(0),
+                                                                       num_op_output=Operation(1), axis_param=None)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
                                                          closure_type=Closure(0), num_op_output=Operation(1),
@@ -3174,9 +3174,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 17 Passed: Expected True, got True")
 
         # Caso 18
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=2, right_margin=3, closure_type=Closure(2),
-                                                                      num_op_output=Operation(1), axis_param=0)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=3, closure_type=Closure(2),
+                                                                       num_op_output=Operation(1), axis_param=0)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
                                                          closure_type=Closure(0), num_op_output=Operation(1), axis_param=0,
@@ -3200,9 +3200,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # print_and_log("Test Case 19 Passed: Expected False, got False")
 
         # Caso 20
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=3, closure_type=Closure(2),
-                                                                        num_op_output=Operation(2), axis_param=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=3, closure_type=Closure(2),
+                                                                       num_op_output=Operation(2), axis_param=None)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
                                                          closure_type=Closure(2), num_op_output=Operation(2),
@@ -3213,9 +3213,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
         # Caso 21
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=50, closure_type=Closure(2),
-                                                                        num_op_output=Operation(2), axis_param=1)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=50, closure_type=Closure(2),
+                                                                       num_op_output=Operation(2), axis_param=1)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
                                                          closure_type=Closure(2), num_op_output=Operation(2), axis_param=1,
@@ -3226,9 +3226,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 21 Passed: Expected True, got True")
 
         # Caso 22
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=4, closure_type=Closure(0),
-                                                                        num_op_output=Operation(3), axis_param=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=4, closure_type=Closure(0),
+                                                                       num_op_output=Operation(3), axis_param=None)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=4,
                                                          closure_type=Closure(0), num_op_output=Operation(3),
@@ -3240,9 +3240,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 22 Passed: Expected False, got False")
 
         # Caso 23
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=0, right_margin=4, closure_type=Closure(0),
-                                                                        num_op_output=Operation(3), axis_param=0)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=0, right_margin=4, closure_type=Closure(0),
+                                                                       num_op_output=Operation(3), axis_param=0)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=4,
                                                          closure_type=Closure(0), num_op_output=Operation(3), axis_param=0,
@@ -3256,10 +3256,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 24
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                          left_margin=2, right_margin=4,
-                                                                          closure_type=Closure(3), num_op_output=Operation(0),
-                                                                          axis_param=None, field=None)
+            expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                           left_margin=2, right_margin=4,
+                                                                           closure_type=Closure(3), num_op_output=Operation(0),
+                                                                           axis_param=None, field=None)
         print_and_log("Test Case 24.1 Passed: expected ValueError, got ValueError")
         # Aplicar la invariante
         expected_exception = ValueError
@@ -3274,10 +3274,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 25
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=2, right_margin=4,
-                                                                        closure_type=Closure(3), num_op_output=Operation(0),
-                                                                        axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(0),
+                                                                       axis_param=None, field=field)
 
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
@@ -3291,10 +3291,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 26
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=2, right_margin=4,
-                                                                        closure_type=Closure(3), num_op_output=Operation(1),
-                                                                        axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(1),
+                                                                       axis_param=None, field=field)
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(3), num_op_output=Operation(1),
@@ -3306,9 +3306,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 27
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=2, right_margin=4, closure_type=Closure(3),
-                                                                      num_op_output=Operation(2), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                       num_op_output=Operation(2), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
@@ -3322,9 +3322,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 28
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=2, right_margin=4, closure_type=Closure(3),
-                                                                        num_op_output=Operation(3), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                       num_op_output=Operation(3), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
@@ -3341,9 +3341,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 29
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                      left_margin=2, right_margin=4, closure_type=Closure(3),
-                                                                      num_op_output=Operation(3), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                       num_op_output=Operation(3), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2, right_margin=4,
@@ -3358,9 +3358,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 30
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                        left_margin=7, right_margin=10, closure_type=Closure(3),
-                                                                        num_op_output=Operation(3), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       left_margin=7, right_margin=10, closure_type=Closure(3),
+                                                                       num_op_output=Operation(3), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=7, right_margin=10,
@@ -3683,9 +3683,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # print_and_log("Test Case 21 Passed: Expected True, got True")
 
         # Caso 22
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                        left_margin=2, right_margin=4, closure_type=Closure(0),
-                                                                        num_op_output=Operation(3), axis_param=None)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(0),
+                                                                       num_op_output=Operation(3), axis_param=None)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(0), num_op_output=Operation(3),
@@ -3697,9 +3697,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 22 Passed: Expected False, got False")
 
         # Caso 23
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                        left_margin=2, right_margin=4, closure_type=Closure(0),
-                                                                        num_op_output=Operation(3), axis_param=0)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(0),
+                                                                       num_op_output=Operation(3), axis_param=0)
 
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(0), num_op_output=Operation(3), axis_param=0,
@@ -3713,10 +3713,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 24
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                          left_margin=2, right_margin=4,
-                                                                          closure_type=Closure(3), num_op_output=Operation(0),
-                                                                          axis_param=None, field=None)
+            expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                           left_margin=2, right_margin=4,
+                                                                           closure_type=Closure(3), num_op_output=Operation(0),
+                                                                           axis_param=None, field=None)
         print_and_log("Test Case 24.1 Passed: expected ValueError, got ValueError")
         # Aplicar la invariante
         expected_exception = ValueError
@@ -3731,10 +3731,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 25
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                        left_margin=2, right_margin=4,
-                                                                        closure_type=Closure(3), num_op_output=Operation(0),
-                                                                        axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(0),
+                                                                       axis_param=None, field=field)
 
         # Aplicar la transformación de datos
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
@@ -3748,10 +3748,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 26
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                        left_margin=2, right_margin=4,
-                                                                        closure_type=Closure(3), num_op_output=Operation(1),
-                                                                        axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=2, right_margin=4,
+                                                                       closure_type=Closure(3), num_op_output=Operation(1),
+                                                                       axis_param=None, field=field)
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
                                                          closure_type=Closure(3), num_op_output=Operation(1),
@@ -3763,9 +3763,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 27
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                      left_margin=2, right_margin=4, closure_type=Closure(3),
-                                                                      num_op_output=Operation(2), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                       num_op_output=Operation(2), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
@@ -3779,9 +3779,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 28
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                        left_margin=2, right_margin=4, closure_type=Closure(3),
-                                                                        num_op_output=Operation(3), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                       num_op_output=Operation(3), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
@@ -3798,9 +3798,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 29
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                      left_margin=2, right_margin=4, closure_type=Closure(3),
-                                                                      num_op_output=Operation(3), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                       num_op_output=Operation(3), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
@@ -3815,9 +3815,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 30
         field = 'track_popularity'
-        expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-                                                                        left_margin=7, right_margin=10, closure_type=Closure(3),
-                                                                        num_op_output=Operation(3), axis_param=None, field=field)
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       left_margin=7, right_margin=10, closure_type=Closure(3),
+                                                                       num_op_output=Operation(3), axis_param=None, field=field)
 
         # Aplicar la invariante
         result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=7, right_margin=10,
@@ -3861,7 +3861,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0, -1]
         fix_value_output = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -3883,7 +3883,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -3904,7 +3904,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 6]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, field=field)
@@ -3925,7 +3925,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, field=field, axis_param=0)
@@ -3945,7 +3945,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, axis_param=0)
@@ -3966,7 +3966,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3]
         fix_value_output = 101
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -3988,7 +3988,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [0, -1]
         fix_value_output = 200
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4009,7 +4009,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4029,7 +4029,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(
+            result = self.data_transformations.transform_special_value_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 fix_value_output=fix_value_output, field=field)
@@ -4049,7 +4049,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0, -1]
         fix_value_output = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -4071,7 +4071,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -4092,7 +4092,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 6]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, field=field)
@@ -4113,7 +4113,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, field=field, axis_param=0)
@@ -4133,7 +4133,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, axis_param=0)
@@ -4154,7 +4154,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3]
         fix_value_output = 101
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -4176,7 +4176,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [0, -1]
         fix_value_output = 200
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4197,7 +4197,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4218,7 +4218,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(
+            result = self.data_transformations.transform_special_value_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 fix_value_output=fix_value_output, field=field)
@@ -4242,7 +4242,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0, -1]
         fix_value_output = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -4263,7 +4263,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -4283,7 +4283,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 6]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, field=field)
@@ -4303,7 +4303,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, field=field, axis_param=0)
@@ -4322,7 +4322,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, axis_param=0)
@@ -4342,7 +4342,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3]
         fix_value_output = 101
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -4363,7 +4363,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [0, -1]
         fix_value_output = 200
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4383,7 +4383,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4402,7 +4402,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(
+            result = self.data_transformations.transform_special_value_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 fix_value_output=fix_value_output, field=field)
@@ -4421,7 +4421,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0, -1]
         fix_value_output = "SpecialValue"
         field = 'instrumentalness'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -4442,7 +4442,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input, missing_values=missing_values,
             fix_value_output=fix_value_output, field=field)
@@ -4462,7 +4462,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 6]
         fix_value_output = "SpecialValue"
         field = 'key'
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, field=field)
@@ -4482,7 +4482,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, field=field, axis_param=0)
@@ -4501,7 +4501,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             fix_value_output=fix_value_output, axis_param=0)
@@ -4521,7 +4521,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3]
         fix_value_output = 101
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -4542,7 +4542,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [0, -1]
         fix_value_output = 200
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4562,7 +4562,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = ["Maroon 5", "Katy Perry"]
         fix_value_output = "SpecialValue"
-        result_df = self.data_transformations.transform_SpecialValue_FixValue(
+        result_df = self.data_transformations.transform_special_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, fix_value_output=fix_value_output, axis_param=0)
@@ -4582,7 +4582,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = "SpecialValue"
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(
+            result = self.data_transformations.transform_special_value_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 fix_value_output=fix_value_output, field=field)
@@ -4624,7 +4624,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             field=field, missing_values=missing_values,
@@ -4652,7 +4652,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
         most_frequent_value = most_frequent_list[0]
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, field=field,
@@ -4676,7 +4676,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -4700,7 +4700,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -4724,7 +4724,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -4748,7 +4748,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -4774,7 +4774,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -4799,7 +4799,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -4822,7 +4822,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -4842,7 +4842,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -4865,7 +4865,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             field=field, derived_type_output=derived_type_output,
@@ -4888,7 +4888,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output, axis_param=0)
@@ -4911,7 +4911,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             field=field, missing_values=missing_values,
@@ -4939,7 +4939,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Obtener el valor más frecuente hasta ahora sin ordenarlos de menor a mayor. Quiero que sea el primer más frecuente que encuentre
         most_frequent_list = expected_df[field].value_counts().index.tolist()
         most_frequent_value = most_frequent_list[0]
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, field=field,
@@ -4963,7 +4963,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -4987,7 +4987,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5011,7 +5011,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5035,7 +5035,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -5061,7 +5061,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5086,7 +5086,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5109,7 +5109,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5129,7 +5129,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5152,7 +5152,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             field=field, derived_type_output=derived_type_output,
@@ -5175,7 +5175,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output, axis_param=0)
@@ -5201,7 +5201,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             field=field, missing_values=missing_values,
@@ -5225,7 +5225,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0.146, 0.13, 0.187]
         derived_type_output = DerivedType(0)
         field = 'acousticness'
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, field=field,
@@ -5248,7 +5248,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -5271,7 +5271,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5294,7 +5294,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5317,7 +5317,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -5342,7 +5342,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5366,7 +5366,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5388,7 +5388,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5407,7 +5407,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5429,7 +5429,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             field=field, derived_type_output=derived_type_output,
@@ -5451,7 +5451,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output, axis_param=0)
@@ -5473,7 +5473,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 0.146, 0.13, 0.187]
         field = 'acousticness'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             field=field, missing_values=missing_values,
@@ -5497,7 +5497,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [0.146, 0.13, 0.187]
         derived_type_output = DerivedType(0)
         field = 'acousticness'
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values, field=field,
@@ -5520,7 +5520,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [0.146, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -5543,7 +5543,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5566,7 +5566,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5589,7 +5589,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             missing_values=missing_values,
@@ -5614,7 +5614,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(1)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5638,7 +5638,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5660,7 +5660,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         derived_type_output = DerivedType(0)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(
+            result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
                 derived_type_output=derived_type_output,
@@ -5679,7 +5679,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(0)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output,
@@ -5701,7 +5701,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         field = 'danceability'
         derived_type_output = DerivedType(1)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             field=field, derived_type_output=derived_type_output,
@@ -5723,7 +5723,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         derived_type_output = DerivedType(2)
-        result_df = self.data_transformations.transform_SpecialValue_DerivedValue(
+        result_df = self.data_transformations.transform_special_value_derived_value(
             data_dictionary=self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             derived_type_output=derived_type_output, axis_param=0)
@@ -5764,10 +5764,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                        data_dictionary_out=result_df,
                                                                           special_type_input=special_type_input,
@@ -5785,10 +5785,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=None)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                        data_dictionary_out=result_df,
                                                                        special_type_input=special_type_input,
@@ -5806,10 +5806,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5828,10 +5828,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                           data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5849,10 +5849,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=None)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                           data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5873,10 +5873,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=expected_df_copy,
                                                                           data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5897,10 +5897,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=None)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5920,10 +5920,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                           data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5944,10 +5944,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5968,10 +5968,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=None)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -5992,10 +5992,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6016,10 +6016,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, missing_values=missing_values,
-                                                                            axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=None)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6038,9 +6038,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, field=field, axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6057,9 +6057,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                special_type_input=special_type_input,
-                                                                num_op_output=num_op_output, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6078,9 +6078,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, field=field, axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6098,9 +6098,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                special_type_input=special_type_input,
-                                                                num_op_output=num_op_output, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6119,9 +6119,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, field=field, axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6139,9 +6139,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6160,9 +6160,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            special_type_input=special_type_input,
-                                                                            num_op_output=num_op_output, field=field, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, field=field, axis_param=0)
         invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                             data_dictionary_out=result_df,
                                                                             special_type_input=special_type_input,
@@ -6172,33 +6172,31 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert invariant_result is True, "Test Case 19 Failed: Expected True, but got False"
         print_and_log("Test Case 19 Passed: Expected True, and got True")
 
-
-        # TODO: Cambair en transformaciones calculo del closest a la forma eficiente para que funcionen igual la invariante y la transformacion
-        # # Caso 20
-        # # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
-        # # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
-        # # y verificar si el resultado obtenido coincide con el esperado.
-        # expected_df = self.small_batch_dataset.copy()
-        # special_type_input = SpecialType(2)
-        # num_op_output = Operation(3)
-        # result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-        #                                                         special_type_input=special_type_input,
-        #                                                         num_op_output=num_op_output, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
-        #                                                                     data_dictionary_out=result_df,
-        #                                                                     special_type_input=special_type_input,
-        #                                                                     num_op_output=num_op_output,
-        #                                                                     belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                                     axis_param=0)
-        # assert invariant_result is True, "Test Case 20 Failed: Expected True, but got False"
-        # print_and_log("Test Case 20 Passed: Expected True, and got True")
+        # Caso 20
+        # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
+        # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                                            data_dictionary_out=result_df,
+                                                                            special_type_input=special_type_input,
+                                                                            num_op_output=num_op_output,
+                                                                            belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                                            axis_param=0)
+        assert invariant_result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, and got True")
 
         # Caso 21
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6220,7 +6218,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6242,7 +6240,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6265,7 +6263,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6287,7 +6285,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6312,7 +6310,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6336,7 +6334,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6360,7 +6358,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6385,7 +6383,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6410,7 +6408,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6435,7 +6433,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6460,7 +6458,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6483,7 +6481,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -6503,7 +6501,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -6525,7 +6523,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -6546,7 +6544,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -6568,7 +6566,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -6589,7 +6587,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -6611,7 +6609,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary=self.small_batch_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -6625,25 +6623,24 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert invariant_result is False, "Test Case 39 Failed: Expected False, but got True"
         print_and_log("Test Case 39 Passed: Expected False, and got False")
 
-        # TODO: Cambair en transformaciones calculo del closest a la forma eficiente para que funcionen igual la invariante y la transformacion
-        # # Caso 40
-        # # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
-        # # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
-        # # y verificar si el resultado obtenido coincide con el esperado.
-        # expected_df = self.small_batch_dataset.copy()
-        # special_type_input = SpecialType(2)
-        # num_op_output = Operation(3)
-        # result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=self.small_batch_dataset.copy(),
-        #                                                         special_type_input=special_type_input,
-        #                                                         num_op_output=num_op_output, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
-        #                                                                     data_dictionary_out=result_df,
-        #                                                                     special_type_input=special_type_input,
-        #                                                                     num_op_output=num_op_output,
-        #                                                                     belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                                     axis_param=0)
-        # assert invariant_result is False, "Test Case 40 Failed: Expected False, but got True"
-        # print_and_log("Test Case 40 Passed: Expected False, and got False")
+        # Caso 40
+        # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
+        # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        expected_df = self.small_batch_dataset.copy()
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                                            data_dictionary_out=result_df,
+                                                                            special_type_input=special_type_input,
+                                                                            num_op_output=num_op_output,
+                                                                            belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                                            axis_param=0)
+        assert invariant_result is False, "Test Case 40 Failed: Expected False, but got True"
+        print_and_log("Test Case 40 Passed: Expected False, and got False")
 
 
     def execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
@@ -6655,7 +6652,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6676,7 +6673,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6697,7 +6694,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6719,7 +6716,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6740,7 +6737,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6765,7 +6762,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6788,7 +6785,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6811,7 +6808,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6835,7 +6832,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6859,7 +6856,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6883,7 +6880,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6907,7 +6904,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -6929,7 +6926,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -6948,7 +6945,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -6969,7 +6966,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -6989,7 +6986,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -7010,7 +7007,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -7030,7 +7027,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -7044,52 +7041,50 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert invariant_result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, and got True")
 
-        # # TODO: Cambair en transformaciones calculo del closest a la forma eficiente para que funcionen igual la invariante y la transformacion
-        # # Caso 19
-        # # Ejecutar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
-        # # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
-        # # manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # special_type_input = SpecialType(2)
-        # num_op_output = Operation(3)
-        # field = 'danceability'
-        # result_df = self.data_transformations.transform_SpecialValue_NumOp(
-        #     data_dictionary= self.rest_of_dataset.copy(),
-        #     special_type_input=special_type_input,
-        #     num_op_output=num_op_output, field=field, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_NumOp(
-        #     data_dictionary_in= self.rest_of_dataset.copy(),
-        #     data_dictionary_out=result_df,
-        #     special_type_input=special_type_input,
-        #     num_op_output=num_op_output,
-        #     belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #     field=field, axis_param=0)
-        # assert invariant_result is True, "Test Case 19 Failed: Expected True, but got False"
-        # print_and_log("Test Case 19 Passed: Expected True, and got True")
+        # Caso 19
+        # Ejecutar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
+        # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
+        # manualmente y verificar si el resultado obtenido coincide con el esperado.
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        field = 'danceability'
+        result_df = self.data_transformations.transform_special_value_num_op(
+            data_dictionary= self.rest_of_dataset.copy(),
+            special_type_input=special_type_input,
+            num_op_output=num_op_output, field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_NumOp(
+            data_dictionary_in= self.rest_of_dataset.copy(),
+            data_dictionary_out=result_df,
+            special_type_input=special_type_input,
+            num_op_output=num_op_output,
+            belong_op_in=Belong(0), belong_op_out=Belong(0),
+            field=field, axis_param=0)
+        assert invariant_result is True, "Test Case 19 Failed: Expected True, but got False"
+        print_and_log("Test Case 19 Passed: Expected True, and got True")
 
-        # TODO: Cambair en transformaciones calculo del closest a la forma eficiente para que funcionen igual la invariante y la transformacion
-        # # Caso 20
-        # # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
-        # # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
-        # # y verificar si el resultado obtenido coincide con el esperado.
-        # special_type_input = SpecialType(2)
-        # num_op_output = Operation(3)
-        # result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary= self.rest_of_dataset.copy(),
-        #                                                         special_type_input=special_type_input,
-        #                                                         num_op_output=num_op_output, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in= self.rest_of_dataset.copy(),
-        #                                                                     data_dictionary_out=result_df,
-        #                                                                     special_type_input=special_type_input,
-        #                                                                     num_op_output=num_op_output,
-        #                                                                     belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                                     axis_param=0)
-        # assert invariant_result is True, "Test Case 20 Failed: Expected True, but got False"
-        # print_and_log("Test Case 20 Passed: Expected True, and got True")
+        # Caso 20
+        # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
+        # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary= self.rest_of_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in= self.rest_of_dataset.copy(),
+                                                                            data_dictionary_out=result_df,
+                                                                            special_type_input=special_type_input,
+                                                                            num_op_output=num_op_output,
+                                                                            belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                                            axis_param=0)
+        assert invariant_result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, and got True")
 
         # Caso 21
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7110,7 +7105,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7131,7 +7126,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7153,7 +7148,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7174,7 +7169,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7198,7 +7193,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7221,7 +7216,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7244,7 +7239,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7268,7 +7263,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7292,7 +7287,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7316,7 +7311,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7340,7 +7335,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, missing_values=missing_values,
@@ -7362,7 +7357,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -7381,7 +7376,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -7402,7 +7397,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -7422,7 +7417,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -7443,7 +7438,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
         field = 'danceability'
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, field=field, axis_param=0)
@@ -7463,7 +7458,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(
+        result_df = self.data_transformations.transform_special_value_num_op(
             data_dictionary= self.rest_of_dataset.copy(),
             special_type_input=special_type_input,
             num_op_output=num_op_output, axis_param=0)
@@ -7477,43 +7472,42 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert invariant_result is False, "Test Case 38 Failed: Expected False, but got True"
         print_and_log("Test Case 38 Passed: Expected False, and got False")
 
-        # # Caso 39
-        # # Ejecutar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
-        # # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
-        # # manualmente y verificar si el resultado obtenido coincide con el esperado.
-        # special_type_input = SpecialType(2)
-        # num_op_output = Operation(3)
-        # field = 'danceability'
-        # result_df = self.data_transformations.transform_SpecialValue_NumOp(
-        #     data_dictionary= self.rest_of_dataset.copy(),
-        #     special_type_input=special_type_input,
-        #     num_op_output=num_op_output, field=field, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_NumOp(
-        #     data_dictionary_in= self.rest_of_dataset.copy(),
-        #     data_dictionary_out=result_df,
-        #     special_type_input=special_type_input,
-        #     num_op_output=num_op_output,
-        #     belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #     field=field, axis_param=0)
-        # assert invariant_result is False, "Test Case 39 Failed: Expected False, but got True"
-        # print_and_log("Test Case 39 Passed: Expected False, and got False")
+        # Caso 39
+        # Ejecutar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
+        # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
+        # manualmente y verificar si el resultado obtenido coincide con el esperado.
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        field = 'danceability'
+        result_df = self.data_transformations.transform_special_value_num_op(
+            data_dictionary= self.rest_of_dataset.copy(),
+            special_type_input=special_type_input,
+            num_op_output=num_op_output, field=field, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_NumOp(
+            data_dictionary_in= self.rest_of_dataset.copy(),
+            data_dictionary_out=result_df,
+            special_type_input=special_type_input,
+            num_op_output=num_op_output,
+            belong_op_in=Belong(0), belong_op_out=Belong(1),
+            field=field, axis_param=0)
+        assert invariant_result is False, "Test Case 39 Failed: Expected False, but got True"
+        print_and_log("Test Case 39 Passed: Expected False, and got False")
 
-        # TODO: Cambair en transformaciones calculo del closest a la forma eficiente para que funcionen igual la invariante y la transformacion
-        # # Caso 40
-        # # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
-        # # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
-        # # y verificar si el resultado obtenido coincide con el esperado.
-        # special_type_input = SpecialType(2)
-        # num_op_output = Operation(3)
-        # result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary= self.rest_of_dataset.copy(),
-        #                                                         special_type_input=special_type_input,
-        #                                                         num_op_output=num_op_output, axis_param=0)
-        # invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in= self.rest_of_dataset.copy(),
-        #                                                                     data_dictionary_out=result_df,
-        #                                                                     special_type_input=special_type_input,
-        #                                                                     num_op_output=num_op_output,
-        #                                                                     belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                                     axis_param=0)
-        # assert invariant_result is False, "Test Case 40 Failed: Expected False, but got True"
-        # print_and_log("Test Case 40 Passed: Expected False, and got False")
+        # Caso 40
+        # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
+        # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        special_type_input = SpecialType(2)
+        num_op_output = Operation(3)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary= self.rest_of_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
+        invariant_result = self.invariants.checkInv_SpecialValue_NumOp(data_dictionary_in= self.rest_of_dataset.copy(),
+                                                                            data_dictionary_out=result_df,
+                                                                            special_type_input=special_type_input,
+                                                                            num_op_output=num_op_output,
+                                                                            belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                                            axis_param=0)
+        assert invariant_result is False, "Test Case 40 Failed: Expected False, but got True"
+        print_and_log("Test Case 40 Passed: Expected False, and got False")
 

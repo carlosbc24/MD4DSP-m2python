@@ -13,8 +13,8 @@ def execute_data_transformations_simple_tests():
     start = time.time()
 
     # Execute all data_transformations simple tests
-    data_transformation_test = DataTransformationsSimpleTest()
-    data_transformation_test.execute_All_SimpleTests()
+    data_transformation_simple_tests = DataTransformationsSimpleTest()
+    data_transformation_simple_tests.execute_All_SimpleTests()
 
     end = time.time()
     total_time = end - start
@@ -29,8 +29,8 @@ def execute_data_transformations_external_dataset_tests():
     start = time.time()
 
     # Execute all data_transformations external dataset tests
-    dataTransformationsTestWithDatasets = DataTransformationsExternalDatasetTests()
-    dataTransformationsTestWithDatasets.executeAll_ExternalDatasetTests()
+    data_transformations_tests_with_external_dataset = DataTransformationsExternalDatasetTests()
+    data_transformations_tests_with_external_dataset.executeAll_ExternalDatasetTests()
 
     end = time.time()
     total_time = end - start

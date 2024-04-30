@@ -1,24 +1,26 @@
 # Importing enumerations from packages
 from typing import Union
-from helpers.enumerations import Operator, DataType, Closure
 
 # Importing libraries
 import numpy as np
 import pandas as pd
+
+from helpers.enumerations import Operator, DataType, Closure
 
 
 def format_duration(seconds: float) -> str:
     """
     Format duration from seconds to hours, minutes, seconds and milliseconds
 
-    :param seconds (float): Duration in seconds
-    :return: formated_duration (str): Duration in hours, minutes, seconds and milliseconds
+    :param seconds: (float) Duration in seconds
+    :return: formated_duration: (str) Duration in hours, minutes, seconds and milliseconds
     """
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
     seconds = seconds % 60
     miliseconds = seconds - int(seconds)
-    formated_duration = f"{hours} hours, {minutes} minutes, {int(seconds)} seconds and {int(miliseconds * 1000)} milliseconds"
+    formated_duration = (f"{hours} hours, {minutes} minutes, {int(seconds)}"
+                         f"seconds and {int(miliseconds * 1000)} milliseconds")
     return formated_duration
 
 
@@ -46,97 +48,99 @@ def compare_numbers(rel_abs_number: Union[int, float], quant_rel_abs: Union[int,
         raise ValueError("No valid operator")
 
 
-def check_interval_condition(x: Union[int, float], leftMargin: float, rightMargin: float, closureType: Closure) -> bool:
+def check_interval_condition(x: Union[int, float], left_margin: float,
+                             right_margin: float, closure_type: Closure) -> bool:
     """
-    Check if the value x meets the condition of the interval [leftMargin, rightMargin] with closureType
+    Check if the value x meets the condition of the interval [left_margin, right_margin] with closureType
 
     params:
         :param x: (Union[int, float]) value to check
-        :param leftMargin: (float) left margin of the interval
-        :param rightMargin: (float) right margin of the interval
-        :param closureType: (Closure) closure of the interval
+        :param left_margin: (float) left margin of the interval
+        :param right_margin: (float) right margin of the interval
+        :param closure_type: (Closure) closure of the interval
 
     Returns:
         :return: True if the value x meets the condition of the interval
     """
-    if closureType == Closure.openOpen:
-        return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x < rightMargin)) else False
-    elif closureType == Closure.openClosed:
-        return True if np.issubdtype(type(x), np.number) and ((x > leftMargin) & (x <= rightMargin)) else False
-    elif closureType == Closure.closedOpen:
-        return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x < rightMargin)) else False
-    elif closureType == Closure.closedClosed:
-        return True if np.issubdtype(type(x), np.number) and ((x >= leftMargin) & (x <= rightMargin)) else False
+    if closure_type == Closure.openOpen:
+        return True if np.issubdtype(type(x), np.number) and ((x > left_margin) & (x < right_margin)) else False
+    elif closure_type == Closure.openClosed:
+        return True if np.issubdtype(type(x), np.number) and ((x > left_margin) & (x <= right_margin)) else False
+    elif closure_type == Closure.closedOpen:
+        return True if np.issubdtype(type(x), np.number) and ((x >= left_margin) & (x < right_margin)) else False
+    elif closure_type == Closure.closedClosed:
+        return True if np.issubdtype(type(x), np.number) and ((x >= left_margin) & (x <= right_margin)) else False
 
 
-def count_abs_frequency(value, dataDictionary: pd.DataFrame, field: str = None) -> int:
+def count_abs_frequency(value, data_dictionary: pd.DataFrame, field: str = None) -> int:
     """
     Count the absolute frequency of a value in all the columns of a dataframe
     If field is not None, the count is done only in the column field
 
     :param value: value to count
-    :param dataDictionary: (pd.DataFrame) dataframe with the data
+    :param data_dictionary: (pd.DataFrame) dataframe with the data
     :param field: (str) field to count the value
 
     :return: count: (int) absolute frequency of the value
     """
     if field is not None:
-        return dataDictionary[field].value_counts(dropna=False).get(value, 0)
+        return data_dictionary[field].value_counts(dropna=False).get(value, 0)
     else:
         count = 0
-        for column in dataDictionary:
-            count += dataDictionary[column].value_counts(dropna=False).get(value, 0)
+        for column in data_dictionary:
+            count += data_dictionary[column].value_counts(dropna=False).get(value, 0)
         return count
 
 
-def cast_type_FixValue(dataTypeInput: DataType = None, fixValueInput=None, dataTypeOutput: DataType = None,
-                       fixValueOutput=None):
+def cast_type_FixValue(data_type_input: DataType = None, fix_value_input=None, data_type_output: DataType = None,
+                       fix_value_output=None):
     """
-    Cast the value FixValueInput to the type dataTypeOutput and the value FixValueOutput to the type dataTypeOutput
+    Cast the value fix_value_input to the type data_type_output
+    and the value fix_value_output to the type data_type_output
 
-    :param dataTypeInput: data type of the input value
-    :param fixValueInput: input value to cast
-    :param dataTypeOutput: data type of the output value
-    :param fixValueOutput: output value to cast
+    :param data_type_input: data type of the input value
+    :param fix_value_input: input value to cast
+    :param data_type_output: data type of the output value
+    :param fix_value_output: output value to cast
 
-    :return: FixValueInput and FixValueOutput casted to the types dataTypeInput and dataTypeOutput respectively
+    :return: fix_value_input and fix_value_output casted to the types data_type_input and data_type_output respectively
     """
-    if dataTypeInput is not None and fixValueInput is not None:
-        if dataTypeInput == DataType.STRING:
-            fixValueInput = str(fixValueInput)
-        elif dataTypeInput == DataType.TIME:
-            fixValueInput = pd.to_datetime(fixValueInput)
-        elif dataTypeInput == DataType.INTEGER:
-            fixValueInput = int(fixValueInput)
-        elif dataTypeInput == DataType.DATETIME:
-            fixValueInput = pd.to_datetime(fixValueInput)
-        elif dataTypeInput == DataType.BOOLEAN:
-            fixValueInput = bool(fixValueInput)
-        elif dataTypeInput == DataType.DOUBLE or dataTypeInput == DataType.FLOAT:
-            fixValueInput = float(fixValueInput)
+    if data_type_input is not None and fix_value_input is not None:
+        if data_type_input == DataType.STRING:
+            fix_value_input = str(fix_value_input)
+        elif data_type_input == DataType.TIME:
+            fix_value_input = pd.to_datetime(fix_value_input)
+        elif data_type_input == DataType.INTEGER:
+            fix_value_input = int(fix_value_input)
+        elif data_type_input == DataType.DATETIME:
+            fix_value_input = pd.to_datetime(fix_value_input)
+        elif data_type_input == DataType.BOOLEAN:
+            fix_value_input = bool(fix_value_input)
+        elif data_type_input == DataType.DOUBLE or data_type_input == DataType.FLOAT:
+            fix_value_input = float(fix_value_input)
 
-    if dataTypeOutput is not None and fixValueOutput is not None:
-        if dataTypeOutput == DataType.STRING:
-            fixValueOutput = str(fixValueOutput)
-        elif dataTypeOutput == DataType.TIME:
-            fixValueOutput = pd.to_datetime(fixValueOutput)
-        elif dataTypeOutput == DataType.INTEGER:
-            fixValueOutput = int(fixValueOutput)
-        elif dataTypeOutput == DataType.DATETIME:
-            fixValueOutput = pd.to_datetime(fixValueOutput)
-        elif dataTypeOutput == DataType.BOOLEAN:
-            fixValueOutput = bool(fixValueOutput)
-        elif dataTypeOutput == DataType.DOUBLE or dataTypeOutput == DataType.FLOAT:
-            fixValueOutput = float(fixValueOutput)
+    if data_type_output is not None and fix_value_output is not None:
+        if data_type_output == DataType.STRING:
+            fix_value_output = str(fix_value_output)
+        elif data_type_output == DataType.TIME:
+            fix_value_output = pd.to_datetime(fix_value_output)
+        elif data_type_output == DataType.INTEGER:
+            fix_value_output = int(fix_value_output)
+        elif data_type_output == DataType.DATETIME:
+            fix_value_output = pd.to_datetime(fix_value_output)
+        elif data_type_output == DataType.BOOLEAN:
+            fix_value_output = bool(fix_value_output)
+        elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
+            fix_value_output = float(fix_value_output)
 
-    return fixValueInput, fixValueOutput
+    return fix_value_input, fix_value_output
 
 
 def find_closest_value(numeric_values: list, value: Union[int, float]) -> Union[int, float]:
     """
     Find the closest value to a given value in a list of numeric values
     :param numeric_values: list of numeric values
-    :param value (Union[int, float]): value to find the closest value
+    :param value: (Union[int, float]) value to find the closest value
 
     :return: closest_value (Union[int, float]): closest value to the given value
 
@@ -152,5 +156,3 @@ def find_closest_value(numeric_values: list, value: Union[int, float]) -> Union[
                 min_distance = distance
 
     return closest_value
-
-

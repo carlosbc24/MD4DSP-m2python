@@ -16,8 +16,8 @@ def execute_prepost_simple_tests():
     start = time.time()
 
     # Execute all pre-post simple tests
-    contract_test = PrePostSimpleTest()
-    contract_test.executeAll_SimpleTests()
+    prepost_simple_tests = PrePostSimpleTest()
+    prepost_simple_tests.executeAll_SimpleTests()
 
     end = time.time()
     total_time = end - start
@@ -32,8 +32,8 @@ def execute_prepost_external_dataset_tests():
     start = time.time()
 
     # Execute all pre-post external dataset tests
-    ContractTestWithDatasets = ContractExternalDatasetTests()
-    ContractTestWithDatasets.executeAll_ExternalDatasetTests()
+    prepost_tests_with_external_dataset = ContractExternalDatasetTests()
+    prepost_tests_with_external_dataset.executeAll_ExternalDatasetTests()
 
     end = time.time()
     total_time = end - start
@@ -48,8 +48,8 @@ def execute_invariants_simple_tests():
     start = time.time()
 
     # Execute all invariants simple tests
-    contracts_invariant_test = InvariantsSimpleTest()
-    contracts_invariant_test.execute_All_SimpleTests()
+    invariant_simple_tests = InvariantsSimpleTest()
+    invariant_simple_tests.execute_All_SimpleTests()
 
     end = time.time()
     total_time = end - start
@@ -64,8 +64,8 @@ def execute_invariants_external_dataset_tests():
     start = time.time()
 
     # Execute all invariants external dataset tests
-    invariantsTestWithDatasets = InvariantsExternalDatasetTests()
-    invariantsTestWithDatasets.executeAll_ExternalDatasetTests()
+    invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
+    invariant_tests_with_external_dataset.executeAll_ExternalDatasetTests()
 
     end = time.time()
     total_time = end - start

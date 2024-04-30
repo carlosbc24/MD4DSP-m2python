@@ -21,14 +21,19 @@ class DataTransformationsSimpleTest(unittest.TestCase):
     Methods:
     execute_All_SimpleTests: method to execute all simple tests of the functions of the class
     execute_transform_FixValue_FixValue: method to execute the simple tests of the function transform_FixValue_FixValue
-    execute_transform_FixValue_DerivedValue: method to execute the simple tests of the function transform_FixValue_DerivedValue
+    execute_transform_FixValue_DerivedValue: method to execute the simple
+    tests of the function transform_FixValue_DerivedValue
     execute_transform_FixValue_NumOp: method to execute the simple tests of the function transform_FixValue_NumOp
     execute_transform_Interval_FixValue: method to execute the simple tests of the function transform_Interval_FixValue
-    execute_transform_Interval_DerivedValue: method to execute the simple tests of the function transform_Interval_DerivedValue
+    execute_transform_Interval_DerivedValue: method to execute the simple
+    tests of the function transform_Interval_DerivedValue
     execute_transform_Interval_NumOp: method to execute the simple tests of the function transform_Interval_NumOp
-    execute_transform_SpecialValue_FixValue: method to execute the simple tests of the function transform_SpecialValue_FixValue
-    execute_transform_SpecialValue_DerivedValue: method to execute the simple tests of the function transform_SpecialValue_DerivedValue
-    execute_transform_SpecialValue_NumOp: method to execute the simple tests of the function transform_SpecialValue_NumOp
+    execute_transform_SpecialValue_FixValue: method to execute the simple
+    tests of the function transform_SpecialValue_FixValue
+    execute_transform_SpecialValue_DerivedValue: method to execute the simple
+    tests of the function transform_SpecialValue_DerivedValue
+    execute_transform_SpecialValue_NumOp: method to execute the simple
+    tests of the function transform_SpecialValue_NumOp
     """
 
     def __init__(self):
@@ -59,7 +64,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("------------------------------------------------------------")
         print_and_log("")
 
-        for simple_test_method in tqdm(simple_test_methods, desc="Running Data Transformation Simple Tests", unit="test"):
+        for simple_test_method in tqdm(simple_test_methods, desc="Running Data Transformation Simple Tests",
+                                       unit="test"):
             simple_test_method()
 
         print_and_log("")
@@ -83,9 +89,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir el valor fijo y la condición para el cambio
         fix_value_output = 999
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_FixValue_FixValue(df, data_type_input=DataType(2), fix_value_input=2,
-                                                                data_type_output=DataType(6),
-                                                                fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input=DataType(2),
+                                                                            fix_value_input=2,
+                                                                            data_type_output=DataType(6),
+                                                                            fix_value_output=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [0, 1, fix_value_output, 3, 4], 'B': [5, 4, 3, fix_value_output, 1]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -100,19 +107,21 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir el valor fijo y la condición para el cambio
         fix_value_output = pd.to_datetime('2021-01-01')
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_FixValue_FixValue(df, data_type_input=DataType(0), fix_value_input='Clara',
-                                                                data_type_output=DataType(3),
-                                                                fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input=DataType(0),
+                                                                            fix_value_input='Clara',
+                                                                            data_type_output=DataType(3),
+                                                                            fix_value_output=fix_value_output)
         # Definir el resultado esperado
-        expected_df = pd.DataFrame({'A': [fix_value_output, 'Ana', fix_value_output, fix_value_output, fix_value_output],
-                                    'B': [fix_value_output, fix_value_output, 'Ana', 'Ana', 'Ana']})
+        expected_df = pd.DataFrame(
+            {'A': [fix_value_output, 'Ana', fix_value_output, fix_value_output, fix_value_output],
+             'B': [fix_value_output, fix_value_output, 'Ana', 'Ana', 'Ana']})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
         # Caso 3
-        # Ejecutar la transformación de datos: cambiar el valor fijo de tipo TIME 2021-01-01 por el valor fijo de tipo boolean True
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo de
+        # tipo TIME 2021-01-01 por el valor fijo de tipo boolean True
         df = pd.DataFrame({'A': [pd.to_datetime('2021-01-01'), pd.to_datetime('2021-09-01'),
                                  pd.to_datetime('2021-01-01'), pd.to_datetime('2021-01-01'),
                                  pd.to_datetime('2021-01-01')],
@@ -122,10 +131,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir el valor fijo y la condición para el cambio
         fix_value_output = True
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_FixValue_FixValue(df, data_type_input=DataType(1),
-                                                                fix_value_input=pd.to_datetime('2021-01-01'),
-                                                                data_type_output=DataType(4),
-                                                                fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input=DataType(1),
+                                                                            fix_value_input=pd.to_datetime(
+                                                                                '2021-01-01'),
+                                                                            data_type_output=DataType(4),
+                                                                            fix_value_output=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [True, pd.to_datetime('2021-09-01'), True, True, True],
                                     'B': [True, True, True, True, pd.to_datetime('2021-08-01')]})
@@ -140,9 +150,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir el valor fijo y la condición para el cambio
         fix_value_output = 3.0
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_FixValue_FixValue(df, data_type_input=DataType(0), fix_value_input='Clara',
-                                                                data_type_output=DataType(6),
-                                                                fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input=DataType(0),
+                                                                            fix_value_input='Clara',
+                                                                            data_type_output=DataType(6),
+                                                                            fix_value_output=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [3.0, 'Ana', 3.0, 3.0, np.NaN], 'B': [3.0, 3.0, 'Ana', '8', None]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -150,13 +161,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
         # Caso 5
-        # Ejecutar la transformación de datos: cambiar el valor fijo de tipo FLOAT 3.0 por el valor fijo de tipo STRING 'Clara'
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor
+        # fijo de tipo FLOAT 3.0 por el valor fijo de tipo STRING 'Clara'
         df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 2.0, 2.0, 2.0]})
         # Definir el valor fijo y la condición para el cambio
         fix_value_output = 'Clara'
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_FixValue_FixValue(df, fix_value_input=3.0, fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, fix_value_input=3.0,
+                                                                            fix_value_output=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 2.0, 2.0, 2.0]})
@@ -191,9 +203,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 5, 5], 'B': [1, 2, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                                 fix_value_input=0,
-                                                                 derived_type_output=DerivedType(0), axis_param=None)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(2),
+                                                                             fix_value_input=0,
+                                                                             derived_type_output=DerivedType(0),
+                                                                             axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 3, 5, 5], 'B': [1, 2, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -201,13 +215,15 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # Caso 2
-        # Ejecutar la transformación de datos: cambiar el valor fijo 5 por el valor derivado 2 (Previous) a nivel de columna
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 5
+        # por el valor derivado 2 (Previous) a nivel de columna
         datadic = pd.DataFrame({'A': [0, 2, 3, 5, 5], 'B': [1, 8, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                                 fix_value_input=5,
-                                                                 derived_type_output=DerivedType(1), axis_param=0)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(2),
+                                                                             fix_value_input=5,
+                                                                             derived_type_output=DerivedType(1),
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2, 3, 3, 5], 'B': [1, 8, 4, 4, 4], 'C': [1, 2, 3, 4, 3]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -219,9 +235,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                                 fix_value_input=0,
-                                                                 derived_type_output=DerivedType(2), axis_param=1)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(2),
+                                                                             fix_value_input=0,
+                                                                             derived_type_output=DerivedType(2),
+                                                                             axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [2, 3, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -233,9 +251,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 3, 5], 'B': [1, 8, 4, 4, 5], 'C': [1, 2, 3, 4, 3]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                                 fix_value_input=5,
-                                                                 derived_type_output=DerivedType(0), axis_param=0)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(2),
+                                                                             fix_value_input=5,
+                                                                             derived_type_output=DerivedType(0),
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2, 3, 3, 3], 'B': [1, 8, 4, 4, 4], 'C': [1, 2, 3, 4, 3]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -247,9 +267,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 3, 5], 'B': [1, 8, 4, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 5, 6, 7, 8]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                                 fix_value_input=5,
-                                                                 derived_type_output=DerivedType(0), axis_param=1)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(2),
+                                                                             fix_value_input=5,
+                                                                             derived_type_output=DerivedType(0),
+                                                                             axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 3, 8], 'B': [1, 8, 4, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 2, 6, 7, 8]})
@@ -262,9 +284,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 3, 5], 'B': [1, 8, 5, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 5, 6, 5, 8]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                                 fix_value_input=5,
-                                                                 derived_type_output=DerivedType(1), axis_param=1)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(2),
+                                                                             fix_value_input=5,
+                                                                             derived_type_output=DerivedType(1),
+                                                                             axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 3, 5], 'B': [1, 8, 3, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 2, 6, 4, 8]})
@@ -278,9 +302,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': ["0", 2, 3, 3, 5], 'B': [1, 8, 5, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 5, 6, 5, 8]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                                 fix_value_input=5,
-                                                                 derived_type_output=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(2),
+                                                                             fix_value_input=5,
+                                                                             derived_type_output=DerivedType(2),
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': ["0", 2, 3, 3, 5], 'B': [1, 8, 4, 4, 3], 'C': [1, 2, 3, 4, 8], 'D': [4, 6, 6, 8, 8]})
@@ -295,9 +321,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, "Ainhoa", "Ainhoa", 5], 'B': [1, 8, "Ainhoa", 4, 3], 'C': [1, 2, 3, 4, "Ainhoa"],
              'D': [4, 5, 6, 5, 8]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(0),
-                                                                 fix_value_input="Ainhoa",
-                                                                 derived_type_output=DerivedType(2), axis_param=0)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(0),
+                                                                             fix_value_input="Ainhoa",
+                                                                             derived_type_output=DerivedType(2),
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, "Ainhoa", 5, 5], 'B': [1, 8, 4, 4, 3], 'C': [1, 2, 3, 4, "Ainhoa"], 'D': [4, 5, 6, 5, 8]})
@@ -319,9 +347,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                 'C': [1, pd.to_datetime('2021-01-01'), 3, 4, "Ainhoa"],
                                 'D': [pd.to_datetime('2021-01-01'), 5, "Ana", 5, 8]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_DerivedValue(data_dictionary=datadic.copy(), data_type_input=DataType(0),
-                                                                 fix_value_input="Ana",
-                                                                 derived_type_output=DerivedType(0), axis_param=0)
+        result = self.data_transformations.transform_fix_value_derived_value(data_dictionary=datadic.copy(),
+                                                                             data_type_input=DataType(0),
+                                                                             fix_value_input="Ana",
+                                                                             derived_type_output=DerivedType(0),
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, pd.to_datetime('2021-01-01'), "Ainhoa", pd.to_datetime('2021-01-01'),
                                        pd.to_datetime('2021-01-01')],
@@ -356,12 +386,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Caso 1
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 0 (Interpolación) a nivel de columna
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 0 (Interpolación) a nivel de columna
         datadic = pd.DataFrame({'A': [1, 0, 0, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(0), axis_param=0)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(0),
+                                                                      axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 3, 6, 5.5, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
@@ -374,12 +406,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # Case 2
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 0 (Interpolación) a nivel de fila
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 0 (Interpolación) a nivel de fila
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 0, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(0), axis_param=1)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(0),
+                                                                      axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [2, 2, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
@@ -392,12 +426,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
         # Caso 3
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 1 (Mean) a nivel de columna
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 1 (Mean) a nivel de columna
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 0, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(1), axis_param=0)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(1),
+                                                                      axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [(0 + 2 + 3 + 4 + 5) / 5, 2, 3, 4, 5], 'B': [2, 3, 6, (2 + 3 + 6 + 5 + 0) / 5, 5],
                                  'C': [1, (1 + 0 + 3 + 4 + 5) / 5, 3, 4, 5]})
@@ -411,12 +447,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
         # Caso 4
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 1 (Mean) a nivel de fila
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 1 (Mean) a nivel de fila
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 0, 6, 0, 5], 'C': [1, 2, 3, 4, 0]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(1), axis_param=1)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(1),
+                                                                      axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [(2 + 1) / 3, 2, 3, 4, 5], 'B': [2, (2 + 2) / 3, 6, (4 + 4) / 3, 5], 'C': [1, 2, 3, 4, (5 + 5) / 3]})
@@ -430,12 +468,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
         # Caso 5
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 2 (Median) a nivel de columna
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 2 (Median) a nivel de columna
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 0, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(2), axis_param=0)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(2),
+                                                                      axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [3, 2, 3, 4, 5], 'B': [2, 3, 6, 3, 5], 'C': [1, 3, 3, 4, 5]})
 
@@ -444,12 +484,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
         # Caso 6
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 2 (Median) a nivel de fila
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 2 (Median) a nivel de fila
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 0, 6, 0, 5], 'C': [1, 2, 3, 4, 0]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(2), axis_param=1)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(2),
+                                                                      axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 2, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
 
@@ -458,12 +500,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
 
         # Caso 7
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 3 (Closest) a nivel de columna
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 3 (Closest) a nivel de columna
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 3, 6, 0, 5], 'C': [1, 0, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(3), axis_param=0)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(3),
+                                                                      axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 3, 4, 5], 'B': [3, 3, 6, 3, 5], 'C': [1, 1, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -471,12 +515,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
 
         # Caso 8
-        # Ejecutar la transformación de datos: cambiar el valor fijo 0 por el valor de operación 3 (Closest) a nivel de fila
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor fijo 0
+        # por el valor de operación 3 (Closest) a nivel de fila
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_FixValue_NumOp(data_dictionary=datadic.copy(), data_type_input=DataType(2),
-                                                          fix_value_input=0, num_op_output=Operation(3), axis_param=1)
+        result = self.data_transformations.transform_fix_value_num_op(data_dictionary=datadic.copy(),
+                                                                      data_type_input=DataType(2),
+                                                                      fix_value_input=0, num_op_output=Operation(3),
+                                                                      axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [2, 3, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -499,9 +545,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(0), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso')
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(0),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso')
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 5],
                                  'B': ['Suspenso', 'Suspenso', 6, 0, 5],
@@ -514,9 +562,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(1), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso')
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(1),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso')
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'],
                                  'B': ['Suspenso', 'Suspenso', 6, 0, 'Suspenso'],
@@ -530,9 +580,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(2), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso')
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(2),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso')
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 5],
                                  'B': ['Suspenso', 'Suspenso', 6, 'Suspenso', 5],
@@ -545,9 +597,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(3), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso')
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(3),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso')
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'],
                                  'B': ['Suspenso', 'Suspenso', 6, 'Suspenso', 'Suspenso'],
@@ -561,9 +615,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         field = 'A'
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(0), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso', field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(0),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso', field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 5], 'B': [2, 3, 6, 0, 5],
                                  'C': [1, 2, 3, 4, 5]})
@@ -577,9 +633,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         field = 'A'
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(1), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso', field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(1),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso', field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'], 'B': [2, 3, 6, 0, 5],
                                  'C': [1, 2, 3, 4, 5]})
@@ -593,9 +651,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         field = 'A'
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(2), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso', field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(2),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso', field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 5], 'B': [2, 3, 6, 0, 5],
                                  'C': [1, 2, 3, 4, 5]})
@@ -609,9 +669,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         field = 'A'
-        result = self.data_transformations.transform_Interval_FixValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                             closure_type=Closure(3), data_type_output=DataType(0),
-                                                             fix_value_output='Suspenso', field=field)
+        result = self.data_transformations.transform_interval_fix_value(data_dictionary=datadic.copy(), left_margin=0,
+                                                                        right_margin=5,
+                                                                        closure_type=Closure(3),
+                                                                        data_type_output=DataType(0),
+                                                                        fix_value_output='Suspenso', field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'], 'B': [2, 3, 6, 0, 5],
@@ -636,10 +698,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Caso 1
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(0),
-                                                                 derived_type_output=DerivedType(0),
-                                                                 axis_param=1)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(0),
+                                                                            derived_type_output=DerivedType(0),
+                                                                            axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [0, 2, 6, 0, 5], 'C': [0, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -649,10 +712,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Caso 2
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(3),
-                                                                 derived_type_output=DerivedType(0),
-                                                                 axis_param=0)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(3),
+                                                                            derived_type_output=DerivedType(0),
+                                                                            axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 0, 0, 0, 0], 'B': [2, 2, 6, 2, 2], 'C': [1, 1, 1, 1, 1]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -662,10 +726,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Caso 3
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(2),
-                                                                 derived_type_output=DerivedType(0),
-                                                                 axis_param=None)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(2),
+                                                                            derived_type_output=DerivedType(0),
+                                                                            axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [2, 2, 2, 2, 5], 'B': [2, 2, 6, 2, 5], 'C': [2, 2, 2, 2, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -676,9 +741,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(1),
-                                                                 derived_type_output=DerivedType(1), axis_param=0)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(1),
+                                                                            derived_type_output=DerivedType(1),
+                                                                            axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 0, 2, 3, 4], 'B': [2, 2, 6, 0, 0], 'C': [1, 1, 2, 3, 4]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -690,19 +757,23 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                     closure_type=Closure(1),
-                                                                     derived_type_output=DerivedType(1), axis_param=None)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                       left_margin=0, right_margin=5,
+                                                                       closure_type=Closure(1),
+                                                                       derived_type_output=DerivedType(1),
+                                                                       axis_param=None)
         print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
         # Caso 6
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(0),
-                                                                 derived_type_output=DerivedType(2), axis_param=1)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(0),
+                                                                            derived_type_output=DerivedType(2),
+                                                                            axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 3, 6, 0, 5], 'B': [1, 2, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -714,10 +785,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                     closure_type=Closure(1),
-                                                                     derived_type_output=DerivedType(2), axis_param=None)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                       left_margin=0, right_margin=5,
+                                                                       closure_type=Closure(1),
+                                                                       derived_type_output=DerivedType(2),
+                                                                       axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
         # Caso 8
@@ -726,11 +799,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         field = 'T'
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                     closure_type=Closure(1),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     axis_param=None, field=field)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                       left_margin=0, right_margin=5,
+                                                                       closure_type=Closure(1),
+                                                                       derived_type_output=DerivedType(2),
+                                                                       axis_param=None, field=field)
         print_and_log("Test Case 8 Passed: expected ValueError, got ValueError")
 
         # Caso 9
@@ -738,10 +812,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(0),
-                                                                 derived_type_output=DerivedType(0),
-                                                                 axis_param=1, field=field)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(0),
+                                                                            derived_type_output=DerivedType(0),
+                                                                            axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 0, 0, 0, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -753,10 +828,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(0),
-                                                                 derived_type_output=DerivedType(1),
-                                                                 axis_param=0, field=field)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(0),
+                                                                            derived_type_output=DerivedType(1),
+                                                                            axis_param=0, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 0, 2, 3, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -768,10 +844,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_DerivedValue(data_dictionary=datadic.copy(), left_margin=0, right_margin=5,
-                                                                 closure_type=Closure(0),
-                                                                 derived_type_output=DerivedType(2),
-                                                                 axis_param=1, field=field)
+        result = self.data_transformations.transform_interval_derived_value(data_dictionary=datadic.copy(),
+                                                                            left_margin=0, right_margin=5,
+                                                                            closure_type=Closure(0),
+                                                                            derived_type_output=DerivedType(2),
+                                                                            axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 3, 4, 5, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -791,12 +868,15 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
 
         # Caso 1
-        # Ejecutar la transformación de datos: cambiar el rango de valores (2, 4] por el valor de operación 0 (Interpolación) a nivel de columna
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el rango de valores (2, 4]
+        # por el valor de operación 0 (Interpolación) a nivel de columna
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 8], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                          closure_type=Closure(1), num_op_output=Operation(0), axis_param=0)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(1),
+                                                                     num_op_output=Operation(0),
+                                                                     axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2, 4, 6, 8], 'B': [2, 4, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
@@ -812,8 +892,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                          closure_type=Closure(3), num_op_output=Operation(0), axis_param=1)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(3),
+                                                                     num_op_output=Operation(0),
+                                                                     axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, np.NaN, 6, 0, 5], 'B': [0.5, np.NaN, 6, 0, 5], 'C': [1, np.NaN, 6, 0, 5]})
         expected = expected.astype({
@@ -830,19 +913,23 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                              closure_type=Closure(3), num_op_output=Operation(0),
-                                                              axis_param=None)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                right_margin=4,
+                                                                closure_type=Closure(3),
+                                                                num_op_output=Operation(0),
+                                                                axis_param=None)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=0, right_margin=3,
-                                                          closure_type=Closure(0), num_op_output=Operation(1),
-                                                          axis_param=None)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=0,
+                                                                     right_margin=3,
+                                                                     closure_type=Closure(0),
+                                                                     num_op_output=Operation(1),
+                                                                     axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 3, 3, 4, 5], 'B': [3, 3, 6, 0, 5], 'C': [3, 3, 3, 4, 5]})
         expected = expected.astype({
@@ -858,8 +945,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=0, right_margin=3,
-                                                          closure_type=Closure(0), num_op_output=Operation(1), axis_param=0)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=0,
+                                                                     right_margin=3,
+                                                                     closure_type=Closure(0),
+                                                                     num_op_output=Operation(1),
+                                                                     axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2.8, 3, 4, 5], 'B': [3.2, 3, 6, 0, 5], 'C': [3, 3, 3, 4, 5]})
         expected = expected.astype({
@@ -875,8 +965,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=0, right_margin=3,
-                                                          closure_type=Closure(0), num_op_output=Operation(1), axis_param=1)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=0,
+                                                                     right_margin=3,
+                                                                     closure_type=Closure(0),
+                                                                     num_op_output=Operation(1),
+                                                                     axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 7 / 3, 3, 4, 5], 'B': [1, 3, 6, 0, 5], 'C': [1, 7 / 3, 3, 4, 5]})
         expected = expected.astype({
@@ -892,9 +985,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=0, right_margin=3,
-                                                          closure_type=Closure(2), num_op_output=Operation(2),
-                                                          axis_param=None)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=0,
+                                                                     right_margin=3,
+                                                                     closure_type=Closure(2),
+                                                                     num_op_output=Operation(2),
+                                                                     axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [3, 3, 3, 4, 5], 'B': [3, 3, 6, 3, 5], 'C': [3, 3, 3, 4, 5]})
         expected = expected.astype({
@@ -910,8 +1005,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=0, right_margin=3,
-                                                          closure_type=Closure(2), num_op_output=Operation(2), axis_param=1)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=0,
+                                                                     right_margin=3,
+                                                                     closure_type=Closure(2),
+                                                                     num_op_output=Operation(2),
+                                                                     axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [1, 3, 6, 4, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
@@ -927,9 +1025,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=0, right_margin=4,
-                                                          closure_type=Closure(0), num_op_output=Operation(3),
-                                                          axis_param=None)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=0,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(0),
+                                                                     num_op_output=Operation(3),
+                                                                     axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 1, 2, 4, 5], 'B': [1, 2, 6, 0, 5], 'C': [0, 1, 2, 4, 5]})
 
@@ -941,8 +1041,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=0, right_margin=4,
-                                                          closure_type=Closure(0), num_op_output=Operation(3), axis_param=0)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=0,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(0),
+                                                                     num_op_output=Operation(3),
+                                                                     axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 3, 2, 4, 5], 'B': [3, 2, 6, 0, 5], 'C': [2, 1, 2, 4, 5]})
 
@@ -956,10 +1059,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         field = 'T'
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                              closure_type=Closure(3), num_op_output=Operation(0),
-                                                              axis_param=None, field=field)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                right_margin=4,
+                                                                closure_type=Closure(3),
+                                                                num_op_output=Operation(0),
+                                                                axis_param=None, field=field)
         print_and_log("Test Case 11 Passed: expected ValueError, got ValueError")
 
         # Caso 12
@@ -967,9 +1072,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                          closure_type=Closure(3), num_op_output=Operation(0),
-                                                          axis_param=None, field=field)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(3),
+                                                                     num_op_output=Operation(0),
+                                                                     axis_param=None, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 1.25, 2.5, 3.75, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
@@ -984,9 +1091,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                          closure_type=Closure(3), num_op_output=Operation(1),
-                                                          axis_param=None, field=field)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(3),
+                                                                     num_op_output=Operation(1),
+                                                                     axis_param=None, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 2.8, 2.8, 2.8, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
@@ -1001,9 +1110,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                          closure_type=Closure(3), num_op_output=Operation(2),
-                                                          axis_param=None, field=field)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(3),
+                                                                     num_op_output=Operation(2),
+                                                                     axis_param=None, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 3, 3, 3, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         expected = expected.astype({
@@ -1018,9 +1129,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame({'A': [0, 2, 3, 4, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_Interval_NumOp(data_dictionary=datadic.copy(), left_margin=2, right_margin=4,
-                                                          closure_type=Closure(3), num_op_output=Operation(3),
-                                                          axis_param=None, field=field)
+        result = self.data_transformations.transform_interval_num_op(data_dictionary=datadic.copy(), left_margin=2,
+                                                                     right_margin=4,
+                                                                     closure_type=Closure(3),
+                                                                     num_op_output=Operation(3),
+                                                                     axis_param=None, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 3, 2, 3, 5], 'B': [2, 3, 6, 0, 5], 'C': [1, 2, 3, 4, 5]})
 
@@ -1047,9 +1160,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(0),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 missing_values=missing_values, axis_param=0)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(0),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, 999, 10], 'C': [999, 10, 999, 4, 999], 'D': [2, 999, 4, 6, 10],
@@ -1065,16 +1181,19 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 1 Passed: the function returned the expected dataframe")
 
         # Caso 2
-        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers)
+        # a nivel de fila por el valor fijo 999
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(1),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 missing_values=missing_values, axis_param=0)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(1),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 999, 4, 999], 'B': [2, 999, 4, np.NaN, 10], 'C': [999, 10, 999, 4, 999],
@@ -1091,15 +1210,17 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
         # Caso 3
-        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers)
+        # a nivel de fila por el valor fijo 999
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 axis_param=None)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 999], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 999],
@@ -1109,15 +1230,17 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
         # Caso 4
-        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers)
+        # a nivel de fila por el valor fijo 999
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 axis_param=0)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
@@ -1127,15 +1250,17 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
         # Caso 5
-        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers)
+        # a nivel de fila por el valor fijo 999
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 axis_param=1)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 999], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 999],
@@ -1145,18 +1270,21 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
 
         # Caso 6
-        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers)
+        # a nivel de fila por el valor fijo 999
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         field = 'B'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(0),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 missing_values=missing_values, axis_param=0,
-                                                                 field=field)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(0),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0,
+                                                                             field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, 999, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
@@ -1172,18 +1300,21 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
 
         # Caso 7
-        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers)
+        # a nivel de fila por el valor fijo 999
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         missing_values = [1, 3]
         field = 'B'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(1),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 missing_values=missing_values, axis_param=0,
-                                                                 field=field)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(1),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0,
+                                                                             field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 999, 4, np.NaN, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, None, 4, 6, 10],
@@ -1199,16 +1330,18 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
 
         # Caso 8
-        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers)
+        # a nivel de fila por el valor fijo 999
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 10, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
              'E': [1, 10, 3, 4, 1]})
         field = 'C'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 data_type_output=DataType(2), fix_value_output=999,
-                                                                 axis_param=None, field=field)
+        result = self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             data_type_output=DataType(2),
+                                                                             fix_value_output=999,
+                                                                             axis_param=None, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 10], 'C': [1, 999, 3, 4, 1], 'D': [2, 3, 4, 6, 10],
@@ -1226,11 +1359,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         field = 'T'
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_FixValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     data_type_output=DataType(2), fix_value_output=999,
-                                                                     axis_param=None, field=field)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_special_value_fix_value(data_dictionary=datadic.copy(),
+                                                                        special_type_input=SpecialType(2),
+                                                                        data_type_output=DataType(2),
+                                                                        fix_value_output=999,
+                                                                        axis_param=None, field=field)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
         print_and_log("")
@@ -1252,11 +1386,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=0)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 0, 0, 0, 0], 'B': [2, 12, 12, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -1275,11 +1409,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 3, 3, 4, 2], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 4, 2], 'D': [0, 8, 8, 4, 2]})
@@ -1301,11 +1435,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=None)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 3, 3, 3, 3], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [3, 8, 8, 3, 2]})
@@ -1321,18 +1455,18 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
 
         # Caso 4
-        # Ejecutar la transformación de datos: cambiar el valor especial 1 (Invalid) a nivel de columna por el valor derivado 0 (Most Frequent)
-        # Crear un DataFrame de prueba
+        # Ejecutar la transformación de datos: cambiar el valor especial 1 (Invalid)
+        # a nivel de columna por el valor derivado 0 (Most Frequent)
         datadic = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=0)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 0, 0, 0], 'B': [2, 12, 12, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 8, 8, 1, 2]})
@@ -1347,11 +1481,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 2], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 4, 2], 'D': [0, 8, 8, 4, 2]})
@@ -1372,11 +1506,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=None)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 3, 3], 'B': [2, 3, 3, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [3, 8, 8, 3, 2]})
@@ -1398,11 +1532,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(1),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=0)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(1),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 0, np.NaN, 3, 4], 'B': [2, 2, 3, 12, 12], 'C': [10, 0, 0, 3, 2], 'D': [1, 8, 8, 8, 2]})
@@ -1421,11 +1555,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(1),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(1),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, np.NaN, 3, 12, 12], 'C': [10, 0, 4, 12, 2], 'D': [10, 8, 8, 3, 2]})
@@ -1447,12 +1581,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                         special_type_input=SpecialType(1),
-                                                                         derived_type_output=DerivedType(1),
-                                                                         missing_values=missing_values,
-                                                                         axis_param=None)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                            special_type_input=SpecialType(1),
+                                                                            derived_type_output=DerivedType(1),
+                                                                            missing_values=missing_values,
+                                                                            axis_param=None)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
         # Caso 10
@@ -1462,11 +1596,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=0)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(2),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 3, 4, 1, 1], 'B': [2, 4, 12, 12, 12], 'C': [10, 0, 3, 2, 2], 'D': [8, 8, 8, 2, 2]})
@@ -1485,11 +1619,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(2),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 4, 12, 12], 'B': [2, 0, 3, 12, 12], 'C': [10, 0, 8, 1, 2], 'D': [1, 8, 8, 1, 2]})
@@ -1512,12 +1646,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                         special_type_input=SpecialType(1),
-                                                                         derived_type_output=DerivedType(2),
-                                                                         missing_values=missing_values,
-                                                                         axis_param=None)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                            special_type_input=SpecialType(1),
+                                                                            derived_type_output=DerivedType(2),
+                                                                            missing_values=missing_values,
+                                                                            axis_param=None)
         print_and_log("Test Case 12 Passed: expected ValueError, got ValueError")
 
         # Caso 13
@@ -1527,11 +1661,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=None)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=None)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 3, 3], 'C': [3, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1553,12 +1687,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                         special_type_input=SpecialType(2),
-                                                                         derived_type_output=DerivedType(1),
-                                                                         missing_values=missing_values,
-                                                                         axis_param=None)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                            special_type_input=SpecialType(2),
+                                                                            derived_type_output=DerivedType(1),
+                                                                            missing_values=missing_values,
+                                                                            axis_param=None)
         print_and_log("Test Case 14 Passed: expected ValueError, got ValueError")
 
         # Caso 15
@@ -1568,11 +1702,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=0)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [3, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1591,11 +1725,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 4, 2], 'C': [0, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1614,11 +1748,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(1),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=0)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(1),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 10, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1637,11 +1771,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(1),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(1),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 4, 1], 'C': [2, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1660,11 +1794,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=0)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(2),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=0)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [0, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1683,11 +1817,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Definir la lista de valores invalidos
         missing_values = [1, 3, 4]
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(2),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 3, 2], 'C': [1, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1708,12 +1842,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         field = 'T'
         # Aplicar la transformación de datos
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                         special_type_input=SpecialType(1),
-                                                                         derived_type_output=DerivedType(2),
-                                                                         missing_values=missing_values,
-                                                                         axis_param=None, field=field)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                            special_type_input=SpecialType(1),
+                                                                            derived_type_output=DerivedType(2),
+                                                                            missing_values=missing_values,
+                                                                            axis_param=None, field=field)
         print_and_log("Test Case 21 Passed: expected ValueError, got ValueError")
 
         # Caso 22
@@ -1724,11 +1858,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 0, 0, 0, 0], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1748,11 +1882,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 0, 0, 0], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1772,11 +1906,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = None
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(1),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(1),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 0, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1796,11 +1930,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(1),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(1),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, np.NaN, 3, 4], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1820,11 +1954,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = None
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(0),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(0),
+                                                                                 derived_type_output=DerivedType(2),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, 3, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1844,11 +1978,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'A'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(1),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(1),
+                                                                                 derived_type_output=DerivedType(2),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 4, 1, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 0, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1868,11 +2002,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'C'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(0),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(0),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [3, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1892,11 +2026,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'C'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(1),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(1),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [10, 10, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1916,11 +2050,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         field = 'C'
         # Aplicar la transformación de datos
-        result = self.data_transformations.transform_SpecialValue_DerivedValue(data_dictionary=datadic.copy(),
-                                                                     special_type_input=SpecialType(2),
-                                                                     derived_type_output=DerivedType(2),
-                                                                     missing_values=missing_values,
-                                                                     axis_param=1, field=field)
+        result = self.data_transformations.transform_special_value_derived_value(data_dictionary=datadic.copy(),
+                                                                                 special_type_input=SpecialType(2),
+                                                                                 derived_type_output=DerivedType(2),
+                                                                                 missing_values=missing_values,
+                                                                                 axis_param=1, field=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': [0, None, 3, 4, 1], 'B': [2, 3, 4, 12, 12], 'C': [0, 3, 3, 3, 2], 'D': [1, 3, 2, 1, 2]})
@@ -1971,9 +2105,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4 / 3, 2 + 8 / 3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0],
              'D': [8.2, 8.2, 6, 4, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(0),
-                                                                 num_op_output=Operation(0), missing_values=missing_values,
-                                                                 axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(0),
+                                                                             num_op_output=Operation(0),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -1984,9 +2120,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0],
              'D': [1, 8.2, 6, 1, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(0),
-                                                                 num_op_output=Operation(1), missing_values=missing_values,
-                                                                 axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(0),
+                                                                             num_op_output=Operation(1),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=None)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -1996,9 +2134,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 3.5, 1], 'B': [2, 3, 3.5, 6, 1], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(0),
-                                                                 num_op_output=Operation(2), missing_values=missing_values,
-                                                                 axis_param=1)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(0),
+                                                                             num_op_output=Operation(2),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -2008,12 +2148,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, None, 3, 3, 0], 'D': [1, 8.2, np.NaN, 1, 2]})
         missing_values = [1, 3, 4]
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(),
-                                                                  special_type_input=SpecialType(0),
-                                                                  num_op_output=Operation(3),
-                                                                  missing_values=missing_values,
-                                                                  axis_param=0)
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                     special_type_input=SpecialType(0),
+                                                                     num_op_output=Operation(3),
+                                                                     missing_values=missing_values,
+                                                                     axis_param=0)
         print_and_log("Test Case 4 Passed: Expected ValueError, got ValueError")
 
         # Caso 5
@@ -2023,9 +2163,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [3, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(0),
-                                                                 num_op_output=Operation(3), missing_values=missing_values,
-                                                                 axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(0),
+                                                                             num_op_output=Operation(3),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -2037,9 +2179,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 2.0, 2], 'B': [2, 2 + 4 / 3, 2 + 8 / 3, 6, 12], 'C': [10, 7.5, 5, 2.5, 0],
              'D': [8.2, 8.2, 6, 4, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(1),
-                                                                 num_op_output=Operation(0), missing_values=missing_values,
-                                                                 axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(1),
+                                                                             num_op_output=Operation(0),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0)
         result_df = result_df.astype({
             'A': 'float64'  # Convertir A a float64
         })
@@ -2053,9 +2197,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3.61, 3.61, 1], 'B': [2, 3.61, 3.61, 6, 12], 'C': [10, 1, 3.61, 3.61, 0],
              'D': [1, 8.2, 6, 1, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(1),
-                                                                 num_op_output=Operation(1), missing_values=missing_values,
-                                                                 axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(1),
+                                                                             num_op_output=Operation(1),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=None)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
 
@@ -2065,9 +2211,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 3.5, 1.5], 'B': [2, 3, 3.5, 6, 12], 'C': [10, 2.5, 3, 3, 0], 'D': [1.5, 8.2, 6, 3.5, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(1),
-                                                                 num_op_output=Operation(2), missing_values=missing_values,
-                                                                 axis_param=1)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(1),
+                                                                             num_op_output=Operation(2),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 8 Passed: got the dataframe expected")
 
@@ -2078,9 +2226,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         missing_values = [1, 3, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 0], 'B': [2, 2, 3, 6, 12], 'C': [10, 3, 4, np.NaN, 0], 'D': [2, 8.2, 2, 2, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(1),
-                                                                 num_op_output=Operation(3), missing_values=missing_values,
-                                                                 axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(1),
+                                                                             num_op_output=Operation(3),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 9 Passed: got the dataframe expected")
 
@@ -2092,9 +2242,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 2, 3, 1], 'B': [2, 2, 3, 6, 12], 'C': [10, 6, 6, 6, 0], 'D': [1, 8.2, 2, 1, 2]})
 
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(1),
-                                                                 num_op_output=Operation(3), missing_values=missing_values,
-                                                                 axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(1),
+                                                                             num_op_output=Operation(3),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 10 Passed: got the dataframe expected")
 
@@ -2109,8 +2261,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             'B': 'float64',  # Convertir B a float64
             'C': 'float64'  # Convertir C a float64
         })
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 num_op_output=Operation(0), axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             num_op_output=Operation(0), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 11 Passed: got the dataframe expected")
 
@@ -2124,9 +2277,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 3.61], 'C': [3.61, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
 
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 num_op_output=Operation(1), missing_values=None,
-                                                                 axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             num_op_output=Operation(1),
+                                                                             missing_values=None,
+                                                                             axis_param=None)
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 12 Passed: got the dataframe expected")
@@ -2140,9 +2295,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         })
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 1.5], 'C': [1.5, 1, 3, 3, 0], 'D': [1, 2.5, 6, 1, 2]})
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 num_op_output=Operation(2), missing_values=None,
-                                                                 axis_param=1)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             num_op_output=Operation(2),
+                                                                             missing_values=None,
+                                                                             axis_param=1)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 13 Passed: got the dataframe expected")
 
@@ -2156,9 +2313,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             'D': 'float64'  # Convertir D a float64
         })
 
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 num_op_output=Operation(3), missing_values=None,
-                                                                 axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             num_op_output=Operation(3),
+                                                                             missing_values=None,
+                                                                             axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 14 Passed: got the dataframe expected")
 
@@ -2171,8 +2330,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = expected_df.astype({
             'D': 'float64'  # Convertir D a float64
         })
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 num_op_output=Operation(3), axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             num_op_output=Operation(3), axis_param=0)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 15 Passed: got the dataframe expected")
 
@@ -2187,8 +2347,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         })
         field = 'D'
         missing_values = [8.2]
-        result_df = self.data_transformations.transform_SpecialValue_NumOp(data_dictionary=datadic.copy(), special_type_input=SpecialType(2),
-                                                                 num_op_output=Operation(1), missing_values=missing_values,
-                                                                 axis_param=0, field=field)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
+                                                                             special_type_input=SpecialType(2),
+                                                                             num_op_output=Operation(1),
+                                                                             missing_values=missing_values,
+                                                                             axis_param=0, field=field)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 16 Passed: got the dataframe expected")

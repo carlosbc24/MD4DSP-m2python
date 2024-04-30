@@ -1,21 +1,25 @@
 # Importing enumerations from packages
-from helpers.auxiliar import find_closest_value
-from helpers.enumerations import DerivedType, SpecialType
-
 # Importing libraries
 import numpy as np
 import pandas as pd
 
-def getOutliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: int = None) -> pd.DataFrame:
+from helpers.auxiliar import find_closest_value
+from helpers.enumerations import DerivedType, SpecialType
+
+
+def get_outliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: int = None) -> pd.DataFrame:
     """
-    Get the outliers of a dataframe. The Outliers are calculated using the IQR method, so the outliers are the values that are
-    below Q1 - 1.5 * IQR or above Q3 + 1.5 * IQR
+    Get the outliers of a dataframe. The Outliers are calculated using the iqr method,
+    so the outliers are the values that are below q1 - 1.5 * iqr or above q3 + 1.5 * iqr
     :param data_dictionary: dataframe with the data
     :param field: field to get the outliers. If field is None, the outliers are calculated for the whole dataframe.
-    :param axis_param: axis to get the outliers. If axis_param is None, the outliers are calculated for the whole dataframe.
-    If axis_param is 0, the outliers are calculated for each column. If axis_param is 1, the outliers are calculated for each row.
+    :param axis_param: axis to get the outliers. If axis_param is None, the outliers
+    are calculated for the whole dataframe.
+    If axis_param is 0, the outliers are calculated for each column. If axis_param is 1,
+    the outliers are calculated for each row.
 
-    :return: dataframe with the outliers. The value 1 indicates that the value is an outlier and the value 0 indicates that the value is not an outlier
+    :return: dataframe with the outliers. The value 1 indicates that the value is an outlier
+    and the value 0 indicates that the value is not an outlier
 
     """
     # Filter the dataframe to get only the numeric values
@@ -28,13 +32,14 @@ def getOutliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: in
     threshold = 1.5
     if field is None:
         if axis_param is None:
-            Q1 = data_dictionary_numeric.stack().quantile(0.25)
-            Q3 = data_dictionary_numeric.stack().quantile(0.75)
-            IQR = Q3 - Q1
+            q1 = data_dictionary_numeric.stack().quantile(0.25)
+            q3 = data_dictionary_numeric.stack().quantile(0.75)
+            iqr = q3 - q1
             # Define the limits to identify outliers
-            lower_bound = Q1 - threshold * IQR
-            upper_bound = Q3 + threshold * IQR
-            # Sets the value 1 in the dataframe data_dictionary_copy for the outliers and the value 0 for the non-outliers
+            lower_bound = q1 - threshold * iqr
+            upper_bound = q3 + threshold * iqr
+            # Sets the value 1 in the dataframe data_dictionary_copy for
+            # the outliers and the value 0 for the non-outliers
             for col in data_dictionary_numeric.columns:
                 for idx, value in data_dictionary[col].items():
                     if value < lower_bound or value > upper_bound:
@@ -43,12 +48,12 @@ def getOutliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: in
 
         elif axis_param == 0:
             for col in data_dictionary_numeric.columns:
-                Q1 = data_dictionary_numeric[col].quantile(0.25)
-                Q3 = data_dictionary_numeric[col].quantile(0.75)
-                IQR = Q3 - Q1
+                q1 = data_dictionary_numeric[col].quantile(0.25)
+                q3 = data_dictionary_numeric[col].quantile(0.75)
+                iqr = q3 - q1
                 # Define the limits to identify outliers
-                lower_bound_col = Q1 - threshold * IQR
-                upper_bound_col = Q3 + threshold * IQR
+                lower_bound_col = q1 - threshold * iqr
+                upper_bound_col = q3 + threshold * iqr
 
                 for idx, value in data_dictionary[col].items():
                     if value < lower_bound_col or value > upper_bound_col:
@@ -57,12 +62,12 @@ def getOutliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: in
 
         elif axis_param == 1:
             for idx, row in data_dictionary_numeric.iterrows():
-                Q1 = row.quantile(0.25)
-                Q3 = row.quantile(0.75)
-                IQR = Q3 - Q1
+                q1 = row.quantile(0.25)
+                q3 = row.quantile(0.75)
+                iqr = q3 - q1
                 # Define the limits to identify outliers
-                lower_bound_row = Q1 - threshold * IQR
-                upper_bound_row = Q3 + threshold * IQR
+                lower_bound_row = q1 - threshold * iqr
+                upper_bound_row = q3 + threshold * iqr
 
                 for col in row.index:
                     value = row[col]
@@ -73,12 +78,12 @@ def getOutliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: in
         if not np.issubdtype(data_dictionary[field].dtype, np.number):
             raise ValueError("The field is not numeric")
 
-        Q1 = data_dictionary[field].quantile(0.25)
-        Q3 = data_dictionary[field].quantile(0.75)
-        IQR = Q3 - Q1
+        q1 = data_dictionary[field].quantile(0.25)
+        q3 = data_dictionary[field].quantile(0.75)
+        iqr = q3 - q1
 
-        lower_bound_col = Q1 - threshold * IQR
-        upper_bound_col = Q3 + threshold * IQR
+        lower_bound_col = q1 - threshold * iqr
+        upper_bound_col = q3 + threshold * iqr
 
         for idx, value in data_dictionary[field].items():
             if value < lower_bound_col or value > upper_bound_col:
@@ -87,22 +92,24 @@ def getOutliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: in
         return data_dictionary_copy
 
 
-def apply_derivedTypeColRowOutliers(derivedTypeOutput: DerivedType, data_dictionary_copy: pd.DataFrame,
-                                    data_dictionary_copy_copy: pd.DataFrame,
-                                    axis_param: int = None, field: str = None) -> pd.DataFrame:
+def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_dictionary_copy: pd.DataFrame,
+                                        data_dictionary_copy_copy: pd.DataFrame,
+                                        axis_param: int = None, field: str = None) -> pd.DataFrame:
     """
     Apply the derived type to the outliers of a dataframe
-    :param derivedTypeOutput: derived type to apply to the outliers
+    :param derived_type_output: derived type to apply to the outliers
     :param data_dictionary_copy: dataframe with the data
     :param data_dictionary_copy_copy: dataframe with the outliers
-    :param axis_param: axis to apply the derived type. If axis_param is None, the derived type is applied to the whole dataframe.
-    If axis_param is 0, the derived type is applied to each column. If axis_param is 1, the derived type is applied to each row.
+    :param axis_param: axis to apply the derived type. If axis_param is None,
+    the derived type is applied to the whole dataframe.
+    If axis_param is 0, the derived type is applied to each column. If axis_param is 1,
+    the derived type is applied to each row.
     :param field: field to apply the derived type.
 
     :return: dataframe with the derived type applied to the outliers
     """
     if field is None:
-        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+        if derived_type_output == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
@@ -115,7 +122,7 @@ def apply_derivedTypeColRowOutliers(derivedTypeOutput: DerivedType, data_diction
                         if data_dictionary_copy_copy.at[idx, col] == 1:
                             data_dictionary_copy.at[idx, col] = data_dictionary_copy.loc[idx].value_counts().idxmax()
 
-        elif derivedTypeOutput == DerivedType.PREVIOUS:
+        elif derived_type_output == DerivedType.PREVIOUS:
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
                     for idx, value in data_dictionary_copy[col].items():
@@ -128,7 +135,7 @@ def apply_derivedTypeColRowOutliers(derivedTypeOutput: DerivedType, data_diction
                             prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
                             data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, prev_col]
 
-        elif derivedTypeOutput == DerivedType.NEXT:
+        elif derived_type_output == DerivedType.NEXT:
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
                     for idx, value in data_dictionary_copy[col].items():
@@ -145,15 +152,15 @@ def apply_derivedTypeColRowOutliers(derivedTypeOutput: DerivedType, data_diction
         if field not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
         elif field in data_dictionary_copy_copy.columns:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            if derived_type_output == DerivedType.MOSTFREQUENT:
                 for idx, value in data_dictionary_copy[field].items():
                     if data_dictionary_copy_copy.at[idx, field] == 1:
                         data_dictionary_copy.at[idx, field] = data_dictionary_copy[field].value_counts().idxmax()
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
+            elif derived_type_output == DerivedType.PREVIOUS:
                 for idx, value in data_dictionary_copy[field].items():
                     if data_dictionary_copy_copy.at[idx, field] == 1 and idx != 0:
                         data_dictionary_copy.at[idx, field] = data_dictionary_copy.at[idx - 1, field]
-            elif derivedTypeOutput == DerivedType.NEXT:
+            elif derived_type_output == DerivedType.NEXT:
                 for idx, value in data_dictionary_copy[field].items():
                     if data_dictionary_copy_copy.at[idx, field] == 1 and idx != len(data_dictionary_copy) - 1:
                         data_dictionary_copy.at[idx, field] = data_dictionary_copy.at[idx + 1, field]
@@ -161,23 +168,26 @@ def apply_derivedTypeColRowOutliers(derivedTypeOutput: DerivedType, data_diction
     return data_dictionary_copy
 
 
-def apply_derivedType(special_type_input: SpecialType, derivedTypeOutput: DerivedType, data_dictionary_copy: pd.DataFrame,
-                      missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+def apply_derived_type(special_type_input: SpecialType, derived_type_output: DerivedType,
+                       data_dictionary_copy: pd.DataFrame, missing_values: list = None, axis_param: int = None,
+                       field: str = None) -> pd.DataFrame:
     """
     Apply the derived type to the missing values of a dataframe
     :param special_type_input: special type to apply to the missing values
-    :param derivedTypeOutput: derived type to apply to the missing values
+    :param derived_type_output: derived type to apply to the missing values
     :param data_dictionary_copy: dataframe with the data
     :param missing_values: list of missing values
-    :param axis_param: axis to apply the derived type. If axis_param is None, the derived type is applied to the whole dataframe.
-    If axis_param is 0, the derived type is applied to each column. If axis_param is 1, the derived type is applied to each row.
+    :param axis_param: axis to apply the derived type. If axis_param is None,
+    the derived type is applied to the whole dataframe.
+    If axis_param is 0, the derived type is applied to each column. If axis_param is 1,
+    the derived type is applied to each row.
     :param field: field to apply the derived type.
 
     :return: dataframe with the derived type applied to the missing values
     """
 
     if field is None:
-        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+        if derived_type_output == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 if special_type_input == SpecialType.MISSING:
                     for col in data_dictionary_copy.columns: # Only missing
@@ -210,7 +220,7 @@ def apply_derivedType(special_type_input: SpecialType, derivedTypeOutput: Derive
                         lambda col: col.apply(
                             lambda x: data_dictionary_copy[col.name].value_counts().idxmax() if pd.isnull(x) else x))
 
-        elif derivedTypeOutput == DerivedType.PREVIOUS:
+        elif derived_type_output == DerivedType.PREVIOUS:
             # Applies the lambda function in a column level or row level to replace the values within missing values by the value of the previous position
             if axis_param == 0 or axis_param == 1:
                 if special_type_input == SpecialType.MISSING:
@@ -226,7 +236,7 @@ def apply_derivedType(special_type_input: SpecialType, derivedTypeOutput: Derive
             elif axis_param is None:
                 raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
 
-        elif derivedTypeOutput == DerivedType.NEXT:
+        elif derived_type_output == DerivedType.NEXT:
             # Define the lambda function to replace the values within missing values by the value of the next position
             if axis_param == 0 or axis_param == 1:
                 if special_type_input == SpecialType.MISSING:
@@ -247,7 +257,7 @@ def apply_derivedType(special_type_input: SpecialType, derivedTypeOutput: Derive
             raise ValueError("The field is not in the dataframe")
 
         elif field in data_dictionary_copy.columns:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            if derived_type_output == DerivedType.MOSTFREQUENT:
                 most_frequent = data_dictionary_copy[field].value_counts().idxmax()
                 if special_type_input == SpecialType.MISSING:
                     data_dictionary_copy[field] = data_dictionary_copy[field].apply(
@@ -255,7 +265,7 @@ def apply_derivedType(special_type_input: SpecialType, derivedTypeOutput: Derive
                 if missing_values is not None: # It works for missing values, invalid values and outliers
                     data_dictionary_copy[field] = data_dictionary_copy[field].apply(
                         lambda x: most_frequent if x in missing_values else x)
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
+            elif derived_type_output == DerivedType.PREVIOUS:
                 if special_type_input == SpecialType.MISSING:
                     if missing_values is not None:
                         data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i - 1]
@@ -273,7 +283,7 @@ def apply_derivedType(special_type_input: SpecialType, derivedTypeOutput: Derive
                             if value in missing_values and i > 0 else value for i, value in
                              enumerate(data_dictionary_copy[field])], index=data_dictionary_copy[field].index)
 
-            elif derivedTypeOutput == DerivedType.NEXT:
+            elif derived_type_output == DerivedType.NEXT:
                 if special_type_input == SpecialType.MISSING:
                     if missing_values is not None:
                         data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i + 1]
@@ -298,9 +308,9 @@ def apply_derivedType(special_type_input: SpecialType, derivedTypeOutput: Derive
     return data_dictionary_copy
 
 
-def specialTypeInterpolation(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
-                             data_dictionary_copy_mask: pd.DataFrame = None,
-                             missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
+                               data_dictionary_copy_mask: pd.DataFrame = None,
+                               missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
     """
     Apply the interpolation to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -443,9 +453,9 @@ def specialTypeInterpolation(data_dictionary_copy: pd.DataFrame, special_type_in
     return data_dictionary_copy
 
 
-def specialTypeMean(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
-                    data_dictionary_copy_mask: pd.DataFrame = None,
-                    missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
+                      data_dictionary_copy_mask: pd.DataFrame = None,
+                      missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
     """
     Apply the mean to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -562,9 +572,9 @@ def specialTypeMean(data_dictionary_copy: pd.DataFrame, special_type_input: Spec
     return data_dictionary_copy
 
 
-def specialTypeMedian(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
-                      data_dictionary_copy_mask: pd.DataFrame = None,
-                      missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
+                        data_dictionary_copy_mask: pd.DataFrame = None,
+                        missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
     """
     Apply the median to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -682,9 +692,9 @@ def specialTypeMedian(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
     return data_dictionary_copy
 
 
-def specialTypeClosest(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
-                       data_dictionary_copy_mask: pd.DataFrame = None,
-                       missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
+                         data_dictionary_copy_mask: pd.DataFrame = None,
+                         missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
     """
     Apply the closest to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
