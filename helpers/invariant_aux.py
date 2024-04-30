@@ -5461,13 +5461,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                         current_value = dataDictionary_in.at[i, col_name]
                         if dataDictionary_outliers_mask.at[i, col_name] == 1:
                             if dataDictionary_out.at[i, col_name] != closest_values[current_value]:
-                                print(dataDictionary_outliers_mask[col_name])
-                                print("OUT DF: ", dataDictionary_out[col_name])
-                                print("IN DF: ", dataDictionary_in[col_name])
-                                print("Column: ", col_name, "index: ", i)
-                                print("DataDictionary_out: ", dataDictionary_out.at[i, col_name], "Closest: ", closest_values[current_value])
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
-                                    print("a")
                                     return False
                                 elif belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG:
                                     return True
