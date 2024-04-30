@@ -1581,6 +1581,9 @@ def checkFixValueInterpolation(dataDictionary_in: pd.DataFrame, dataDictionary_o
     """
     result = True
 
+    if axis_param is None and field is None:
+        raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
+
     if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (
             belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
         result = checkFixValueInterpolationBelong(dataDictionary_in=dataDictionary_in,
@@ -2130,7 +2133,7 @@ def checkFixValueClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionary_o
             # Replace the missing values with the closest numeric values
             for i in range(len(dataDictionary_in.index)):
                 for j in range(len(dataDictionary_in.columns)):
-                    current_value = dataDictionary_in.iiloc[i, j]
+                    current_value = dataDictionary_in.iloc[i, j]
                     if current_value == fixValueInput:
                         if dataDictionary_out.iloc[i, j] != closest_value:
                             if belongOp_out == Belong.BELONG:
@@ -2263,7 +2266,7 @@ def checkFixValueClosestNotBelongBelong(dataDictionary_in: pd.DataFrame, dataDic
             # Replace the missing values with the closest numeric values
             for i in range(len(dataDictionary_in.index)):
                 for j in range(len(dataDictionary_in.columns)):
-                    current_value = dataDictionary_in.iiloc[i, j]
+                    current_value = dataDictionary_in.iloc[i, j]
                     if current_value == fixValueInput:
                         return False
 
@@ -2322,7 +2325,7 @@ def checkFixValueClosestNotBelongNotBelong(dataDictionary_in: pd.DataFrame, data
             # Replace the missing values with the closest numeric values
             for i in range(len(dataDictionary_in.index)):
                 for j in range(len(dataDictionary_in.columns)):
-                    current_value = dataDictionary_in.iiloc[i, j]
+                    current_value = dataDictionary_in.iloc[i, j]
                     if current_value == fixValueInput:
                         return False
 
@@ -2418,6 +2421,9 @@ def checkIntervalInterpolation(dataDictionary_in: pd.DataFrame, dataDictionary_o
         :return: True if the interpolation is applied correctly on the interval
     """
     result = True
+
+    if axis_param is None and field is None:
+        raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
     if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
         result = checkIntervalInterpolationBelong(dataDictionary_in=dataDictionary_in, dataDictionary_out=dataDictionary_out,
@@ -3689,6 +3695,9 @@ def checkSpecialTypeInterpolation(dataDictionary_in: pd.DataFrame, dataDictionar
         :return: True if the special type interpolation is applied correctly
     """
     result = True
+
+    if axis_param is None and field is None:
+        raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
     if (belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG) or (belongOp_in == Belong.BELONG and belongOp_out == Belong.NOTBELONG):
         result = checkSpecialTypeInterpolationBelong(dataDictionary_in=dataDictionary_in,
@@ -5270,7 +5279,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                 # Replace the missing values with the closest numeric values
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
-                        current_value = dataDictionary_in.iiloc[i, j]
+                        current_value = dataDictionary_in.iloc[i, j]
                         if current_value in closest_values:
                             if dataDictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
@@ -5366,7 +5375,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
                         if dataDictionary_outliers_mask.iloc[i, j] == 1:
-                            current_value = dataDictionary_in.iiloc[i, j]
+                            current_value = dataDictionary_in.iloc[i, j]
                             if current_value not in closest_values:
                                 closest_values[current_value] = find_closest_value(flattened_values, current_value)
 
@@ -5374,7 +5383,7 @@ def checkSpecialTypeClosestBelong(dataDictionary_in: pd.DataFrame, dataDictionar
                 for i in range(len(dataDictionary_in.index)):
                     for j in range(len(dataDictionary_in.columns)):
                         if dataDictionary_outliers_mask.iloc[i, j] == 1:
-                            current_value = dataDictionary_in.iiloc[i, j]
+                            current_value = dataDictionary_in.iloc[i, j]
                             if dataDictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belongOp_in == Belong.BELONG and belongOp_out == Belong.BELONG:
                                     return False
