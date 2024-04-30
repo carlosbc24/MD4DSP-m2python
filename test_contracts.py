@@ -79,12 +79,7 @@ if __name__ == "__main__":
 
     # FINAL TESTS
     # Calculate execution time for each test block (pre-post)
-    # execute_prepost_simple_tests()
-    # execute_prepost_external_dataset_tests()
-    # execute_invariants_simple_tests()
-    # execute_invariants_external_dataset_tests()
-
-    # DEBUG TESTS
-    # Execute all pre-post simple tests
-    contracts_invariant_test = InvariantsExternalDatasetTests()
-    contracts_invariant_test.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests()
+    execute_prepost_simple_tests()
+    execute_prepost_external_dataset_tests()
+    execute_invariants_simple_tests()
+    execute_invariants_external_dataset_tests()

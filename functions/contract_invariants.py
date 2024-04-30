@@ -9,7 +9,8 @@ from helpers.invariant_aux import checkSpecialTypeMostFrequent, checkSpecialType
     checkDerivedTypeColRowOutliers, checkSpecialTypeMedian, checkSpecialTypeInterpolation, checkSpecialTypeMean, \
     checkSpecialTypeClosest, checkIntervalMostFrequent, checkIntervalPrevious, checkIntervalNext, \
     checkFixValueMostFrequent, checkFixValuePrevious, checkFixValueNext, checkFixValueInterpolation, checkFixValueMean, \
-    checkFixValueMedian, checkFixValueClosest
+    checkFixValueMedian, checkFixValueClosest, checkIntervalInterpolation, checkIntervalMean, checkIntervalMedian, \
+    checkIntervalClosest
 from helpers.transform_aux import getOutliers
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
 
@@ -358,8 +359,24 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        # TODO: Implement the checkInv_Interval_NumOp invariant
-        return True
+
+        result = True
+
+        if numOpOutput == Operation.INTERPOLATION:
+            result = checkIntervalInterpolation(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
+                                                closureType, belongOp_in, belongOp_out, axis_param, field)
+        elif numOpOutput == Operation.MEAN:
+            result = checkIntervalMean(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
+                                       closureType, belongOp_in, belongOp_out, axis_param, field)
+        elif numOpOutput == Operation.MEDIAN:
+            result = checkIntervalMedian(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
+                                         closureType, belongOp_in, belongOp_out, axis_param, field)
+        elif numOpOutput == Operation.CLOSEST:
+            result = checkIntervalClosest(dataDictionary_in, dataDictionary_out, leftMargin, rightMargin,
+                                          closureType, belongOp_in, belongOp_out, axis_param, field)
+
+        return True if result else False
+
 
     def checkInv_SpecialValue_FixValue(self, dataDictionary_in: pd.DataFrame, dataDictionary_out: pd.DataFrame,
                                        specialTypeInput: SpecialType, fixValueOutput,
