@@ -22,10 +22,10 @@ class Invariants:
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
-    def checkInv_FixValue_FixValue(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                   fix_value_input, fix_value_output, belong_op_in: Belong = Belong.BELONG,
-                                   belong_op_out: Belong = Belong.BELONG, data_type_input: DataType = None,
-                                   data_type_output: DataType = None, field: str = None) -> bool:
+    def check_inv_fix_value_fix_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                      fix_value_input, fix_value_output, belong_op_in: Belong = Belong.BELONG,
+                                      belong_op_out: Belong = Belong.BELONG, data_type_input: DataType = None,
+                                      data_type_output: DataType = None, field: str = None) -> bool:
         """
         Check the invariant of the FixValue - FixValue relation (Mapping) is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -122,10 +122,10 @@ class Invariants:
 
         return True
 
-    def checkInv_FixValue_DerivedValue(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                       fix_value_input, derived_type_output: DerivedType, belong_op_in: Belong = Belong.BELONG,
-                                       belong_op_out: Belong = Belong.BELONG, data_type_input: DataType = None,
-                                       axis_param: int = None, field: str = None) -> bool:
+    def check_inv_fix_value_derived_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                          fix_value_input, derived_type_output: DerivedType, belong_op_in: Belong = Belong.BELONG,
+                                          belong_op_out: Belong = Belong.BELONG, data_type_input: DataType = None,
+                                          axis_param: int = None, field: str = None) -> bool:
         # By default, if all values are equally frequent, it is replaced by the first value.
         # Check if it should only be done for rows and columns or also for the entire dataframe.
         """
@@ -162,10 +162,10 @@ class Invariants:
         return True if result else False
 
 
-    def checkInv_FixValue_NumOp(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                fix_value_input, num_op_output: Operation, belong_op_in: Belong = Belong.BELONG,
-                                belong_op_out: Belong = Belong.BELONG, data_type_input: DataType = None,
-                                axis_param: int = None, field: str = None) -> bool:
+    def check_inv_fix_value_num_op(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                   fix_value_input, num_op_output: Operation, belong_op_in: Belong = Belong.BELONG,
+                                   belong_op_out: Belong = Belong.BELONG, data_type_input: DataType = None,
+                                   axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the FixValue - NumOp relation is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -214,12 +214,10 @@ class Invariants:
 
         return True if result else False
 
-
-
-    def checkInv_Interval_FixValue(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                   left_margin: float, right_margin: float, closure_type: Closure, fix_value_output,
-                                   belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                   data_type_output: DataType = None, field: str = None) -> bool:
+    def check_inv_interval_fix_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                     left_margin: float, right_margin: float, closure_type: Closure, fix_value_output,
+                                     belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                                     data_type_output: DataType = None, field: str = None) -> bool:
         """
         Check the invariant of the Interval - FixValue relation is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -300,11 +298,11 @@ class Invariants:
         else:
             return True
 
-    def checkInv_Interval_DerivedValue(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                       left_margin: float, right_margin: float,
-                                       closure_type: Closure, derived_type_output: DerivedType,
-                                       belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                       axis_param: int = None, field: str = None) -> bool:
+    def check_inv_interval_derived_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                         left_margin: float, right_margin: float,
+                                         closure_type: Closure, derived_type_output: DerivedType,
+                                         belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                                         axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the Interval - DerivedValue relation is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -337,10 +335,10 @@ class Invariants:
 
         return True if result else False
 
-    def checkInv_Interval_NumOp(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                left_margin: float, right_margin: float, closure_type: Closure, num_op_output: Operation,
-                                belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                axis_param: int = None, field: str = None) -> bool:
+    def check_inv_interval_num_op(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                  left_margin: float, right_margin: float, closure_type: Closure, num_op_output: Operation,
+                                  belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                                  axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the FixValue - NumOp relation
         If the value of 'axis_param' is None, the operation mean or median is applied to the entire dataframe
@@ -378,11 +376,11 @@ class Invariants:
         return True if result else False
 
 
-    def checkInv_SpecialValue_FixValue(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                       special_type_input: SpecialType, fix_value_output,
-                                       belong_op_in: Belong = Belong.BELONG,
-                                       belong_op_out: Belong = Belong.BELONG, data_type_output: DataType = None,
-                                       missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+    def check_inv_special_value_fix_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                          special_type_input: SpecialType, fix_value_output,
+                                          belong_op_in: Belong = Belong.BELONG,
+                                          belong_op_out: Belong = Belong.BELONG, data_type_output: DataType = None,
+                                          missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the SpecialValue - FixValue relation is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -820,10 +818,10 @@ class Invariants:
 
         return True
 
-    def checkInv_SpecialValue_DerivedValue(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                           special_type_input: SpecialType, derived_type_output: DerivedType,
-                                           belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                           missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+    def check_inv_special_value_derived_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                              special_type_input: SpecialType, derived_type_output: DerivedType,
+                                              belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                                              missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the SpecialValue - DerivedValue relation
         params:
@@ -883,10 +881,10 @@ class Invariants:
 
         return True if result else False
 
-    def checkInv_SpecialValue_NumOp(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                    special_type_input: SpecialType, num_op_output: Operation,
-                                    belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                    missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+    def check_inv_special_value_num_op(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                       special_type_input: SpecialType, num_op_output: Operation,
+                                       belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                                       missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
         """
         Check the invariant of the SpecialValue - NumOp relation is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
