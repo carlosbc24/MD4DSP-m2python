@@ -92,8 +92,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         # Check that fields 'track_id', 'loudness' and 'playlist_id' belong to the data dictionary. It must return True
         fields = ['track_id', 'loudness', 'playlist_id']
         belong = 0
-        result = self.pre_post.checkFieldRange(fields=fields, data_dictionary=self.data_dictionary,
-                                               belongOp=Belong(belong))
+        result = self.pre_post.check_field_range(fields=fields, data_dictionary=self.data_dictionary,
+                                                 belong_op=Belong(belong))
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
@@ -101,8 +101,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         # Check that fields 'track_id', 'loudness' and 'c3' belong to the data dictionary. It must return False as 'c3' does not belong
         fields = ['track_id', 'loudness', 'c3']
         belong = 0
-        result = self.pre_post.checkFieldRange(fields=fields, data_dictionary=self.data_dictionary,
-                                               belongOp=Belong(belong))
+        result = self.pre_post.check_field_range(fields=fields, data_dictionary=self.data_dictionary,
+                                                 belong_op=Belong(belong))
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
@@ -110,8 +110,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         # Check that fields 'c2', 'track_id' and 'loudness' don't belong to the data dictionary.It must return True as 'c2' doesn't belong
         fields = ['c2', 'track_id', 'loudness']
         belong = 1
-        result = self.pre_post.checkFieldRange(fields=fields, data_dictionary=self.data_dictionary,
-                                               belongOp=Belong(belong))
+        result = self.pre_post.check_field_range(fields=fields, data_dictionary=self.data_dictionary,
+                                                 belong_op=Belong(belong))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
@@ -122,8 +122,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         # Check that fields 'track_id', 'loudness' and 'valence' don't belong to the data dictionary. It must return False as both belong
         fields = ['track_id', 'loudness', 'valence']
         belong = 1
-        result = self.pre_post.checkFieldRange(fields=fields, data_dictionary=self.data_dictionary,
-                                               belongOp=Belong(belong))
+        result = self.pre_post.check_field_range(fields=fields, data_dictionary=self.data_dictionary,
+                                                 belong_op=Belong(belong))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
         print_and_log("")
@@ -143,49 +143,49 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 13 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_artist'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Example 14 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_name'
         quant_op = 1  # greater
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
         value = 'Una cancion'
-        belongOp = 1  # NotBelong
+        belong_op = 1  # NotBelong
         field = 'track_name'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_name'
         quant_op = 2  # lessEqual
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
+            self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
         # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -195,149 +195,149 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 1 of checkFixValueRange
         value = 'Maroon 5'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=quant_op)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Example 2 of checkFixValueRange
         value = 'Maroon 4'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=quant_op)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
         # Example 3 of checkFixValueRange
         value = 'Maroon 5'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Example 4 of checkFixValueRange
         value = 'Maroon 5'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_rel = 0.4
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
         # Example 5 of checkFixValueRange
         value = 'Maroon 5'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_abs = 30
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_abs=quant_abs,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Example 6 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_abs = 50
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_abs=quant_abs,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Example 8 of checkFixValueRange
         value = '3'
-        belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp))
+        belong_op = 1  # Not Belong
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # Example 9 of checkFixValueRange
         value = 'Avicii'
-        belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp))
+        belong_op = 1  # Not Belong
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
         # Example 11 of checkFixValueRange
         value = 'Katy Perry'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_artist'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
         # Example 12 of checkFixValueRange
         value = 'Bad Bunny'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_name'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
         # Example 15 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_artist'
         quant_op = 1  # greater
         quant_abs = 2
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
         # Example 16 of checkFixValueRange
         value = 'Poison'
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_name'
         quant_op = 1  # greater
         quant_abs = 30
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
         value = 'Maroon 4'
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         field = 'track_artist'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 19 of checkFixValueRange
         value = "Maroon 5"
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         field = 'track_artist'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
@@ -349,39 +349,39 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 4.5 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
+            self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
         value = "Katy Perry"
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                      belongOp=Belong(belongOp), field=field,
-                                                      quant_op=Operator(quant_op))
+            result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                         belong_op=Belong(belong_op), field=field,
+                                                         quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # Example 10 of checkFixValueRange
         value = 'Martin Garrix'
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         quant_op = 3  # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+            result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                         belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -400,49 +400,49 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 13 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'key'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Example 14 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'key'
         quant_op = 1  # greater
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
         value = 45.8
-        belongOp = 1  # NotBelong
+        belong_op = 1  # NotBelong
         field = 'key'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'key'
         quant_op = 2  # lessEqual
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
+            self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
         # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -452,149 +452,149 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 1 of checkFixValueRange
         value = 2
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=quant_op)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Example 2 of checkFixValueRange
         value = 400
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=quant_op)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
         # Example 3 of checkFixValueRange
         value = 1
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Example 4 of checkFixValueRange
         value = 1
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_rel = 0.4
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
         # Example 5 of checkFixValueRange
         value = 1
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_abs = 30
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_abs=quant_abs,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Example 6 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_abs = 50
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_abs=quant_abs,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Example 8 of checkFixValueRange
         value = 804.8
-        belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp))
+        belong_op = 1  # Not Belong
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # Example 9 of checkFixValueRange
         value = 3
-        belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                  belongOp=Belong(belongOp))
+        belong_op = 1  # Not Belong
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
         # Example 11 of checkFixValueRange
         value = 4
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'key'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
         # Example 12 of checkFixValueRange
         value = 0.146
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'key'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
         # Example 15 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'key'
         quant_op = 1  # greater
         quant_abs = 2
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
         # Example 16 of checkFixValueRange
         value = 1
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_name'
         quant_op = 1  # greater
         quant_abs = 3000
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
         value = 15
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         field = 'key'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 19 of checkFixValueRange
         value = 8
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         field = 'key'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary, field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
@@ -606,39 +606,39 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 4.5 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
+            self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
         value = 3
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                      belongOp=Belong(belongOp), field=field,
-                                                      quant_op=Operator(quant_op))
+            result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                         belong_op=Belong(belong_op), field=field,
+                                                         quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # Example 10 of checkFixValueRange
         value = 5
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         quant_op = 3  # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRange(value=value, data_dictionary=self.data_dictionary,
-                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+            result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
+                                                         belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -660,49 +660,49 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 13 of checkFixValueRange
         value = pd.Timestamp('20180310')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_album_release_date'
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Example 14 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_album_release_date'
         quant_op = 1  # greater
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 14 Failed: Expected False, but got True"
         print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
         value = pd.Timestamp('20250310')
-        belongOp = 1  # NotBelong
+        belong_op = 1  # NotBelong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 14.5 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_album_release_date'
         quant_op = 2  # lessEqual
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
+            self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 14.5 Passed: Expected ValueError, got ValueError")
 
         # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -712,156 +712,156 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 1 of checkFixValueRange
         value = pd.Timestamp('20180721')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=quant_op)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=quant_op)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Example 2 of checkFixValueRange
         value = pd.Timestamp('20000721')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None  # None
         quant_op = None  # None
         quant_rel = 0.3
         # Ejecutar la función y verificar que devuelve False
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=quant_op)
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=quant_op)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
         # Example 3 of checkFixValueRange
         value = pd.Timestamp('20180310')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.3
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Example 4 of checkFixValueRange
         value = pd.Timestamp('20180721')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_rel = 0.4
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
         # Example 5 of checkFixValueRange
         value = pd.Timestamp('2001-01-01')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 1  # greater
         quant_abs = 30
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_abs=quant_abs,
+                                                     quant_op=Operator(quant_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Example 6 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_abs = 50
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp), field=field, quant_abs=quant_abs,
-                                                  quant_op=Operator(quant_op))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op), field=field, quant_abs=quant_abs,
+                                                     quant_op=Operator(quant_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Example 8 of checkFixValueRange
         value = pd.Timestamp('20251215')
-        belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp))
+        belong_op = 1  # Not Belong
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # Example 9 of checkFixValueRange
         value = pd.Timestamp('20150721')
-        belongOp = 1  # Not Belong
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  belongOp=Belong(belongOp))
+        belong_op = 1  # Not Belong
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
         # Example 11 of checkFixValueRange
         value = pd.Timestamp('20150721')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
         # Example 12 of checkFixValueRange
         value = pd.Timestamp('20250721')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
         # Example 15 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_album_release_date'
         quant_op = 1  # greater
         quant_abs = 2
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  field=field,
-                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     field=field,
+                                                     quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
         # Example 16 of checkFixValueRange
         value = pd.Timestamp('20180721')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = 'track_album_release_date'
         quant_op = 1  # greater
         quant_abs = 3000
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  field=field,
-                                                  quant_abs=quant_abs, quant_op=Operator(quant_op),
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     field=field,
+                                                     quant_abs=quant_abs, quant_op=Operator(quant_op),
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
 
         # Example 18 of checkFixValueRange
         value = pd.Timestamp('20250721')
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Example 19 of checkFixValueRange
         value = pd.Timestamp('20180721')
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         field = 'track_album_release_date'
-        result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                  field=field,
-                                                  belongOp=Belong(belongOp))
+        result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                     field=field,
+                                                     belong_op=Belong(belong_op))
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
@@ -873,39 +873,39 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 4.5 of checkFixValueRange
         value = None
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                             belongOp=Belong(belongOp), field=field, quant_rel=quant_rel,
-                                             quant_abs=quant_abs, quant_op=Operator(quant_op))
+            self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
+                                                quant_abs=quant_abs, quant_op=Operator(quant_op))
 
         print_and_log(f"Test Case 4.5 Passed: Expected ValueError, got ValueError")
 
         # Example 7 of checkFixValueRange
         value = pd.Timestamp('20180721')
-        belongOp = 0  # Belong
+        belong_op = 0  # Belong
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                      belongOp=Belong(belongOp), field=field,
-                                                      quant_op=Operator(quant_op))
+            result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                         belong_op=Belong(belong_op), field=field,
+                                                         quant_op=Operator(quant_op))
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # Example 10 of checkFixValueRange
         value = pd.Timestamp('20180721')
-        belongOp = 1  # Not Belong
+        belong_op = 1  # Not Belong
         quant_op = 3  # less
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkFixValueRange(value=value, data_dictionary=preprocessed_data_dictionary,
-                                                      belongOp=Belong(belongOp), quant_op=Operator(quant_op))
+            result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
+                                                         belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -932,18 +932,18 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # field = None
         field = None
-        # belongOp = 0
-        belongOp = 0
+        # belong_op = 0
+        belong_op = 0
 
         # Example 1 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (0, 1)
         left = 0
         right = 1
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 1 Failed: Expected False, but got True"
         print_and_log("Test Case 1 Passed: Expected False, got False")
 
@@ -952,10 +952,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -47.30
         right = 518000
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
 
@@ -964,10 +964,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -47.30
         right = 517810
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
@@ -976,10 +976,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -47.30
         right = 517809.99
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
@@ -988,10 +988,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 517811
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
@@ -999,12 +999,12 @@ class ContractExternalDatasetTests(unittest.TestCase):
         # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810.0)
         left = -46.448
         right = 517810.0
-        belongOp = 0
+        belong_op = 0
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
@@ -1013,10 +1013,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 517810
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
@@ -1025,25 +1025,25 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.447
         right = 517810.0
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, got False")
 
-        # belongOp = 1
-        belongOp = 1
+        # belong_op = 1
+        belong_op = 1
 
         # Example 9 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.448, 517811)
         left = -46.448
         right = 517811
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 9 Failed: Expected True, but got False"
         print_and_log("Test Case 9 Passed: Expected True, got True")
 
@@ -1052,10 +1052,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.449
         right = 517810.1
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 10 Failed: Expected False, but got True"
         print_and_log("Test Case 10 Passed: Expected False, got False")
 
@@ -1064,10 +1064,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.449
         right = 517810
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 11 Failed: Expected False, but got True"
         print_and_log("Test Case 11 Passed: Expected False, got False")
 
@@ -1076,10 +1076,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 517810
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 12 Failed: Expected True, but got False"
         print_and_log("Test Case 12 Passed: Expected True, got True")
 
@@ -1088,10 +1088,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 517810.01
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 13 Failed: Expected False, but got True"
         print_and_log("Test Case 13 Passed: Expected False, got False")
 
@@ -1100,10 +1100,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 517810
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 14 Failed: Expected True, but got False"
         print_and_log("Test Case 14 Passed: Expected True, got True")
 
@@ -1112,10 +1112,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 517810
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is False, "Test Case 15 Failed: Expected False, but got True"
         print_and_log("Test Case 15 Passed: Expected False, got False")
 
@@ -1124,27 +1124,27 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 517809.9
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp))
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op))
         assert result is True, "Test Case 16 Failed: Expected True, but got False"
         print_and_log("Test Case 16 Passed: Expected True, got True")
 
         # field = 'loudness'
         field = 'loudness'
-        # belongOp = 0
-        belongOp = 0
+        # belong_op = 0
+        belong_op = 0
 
         # Example 17 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.275)
         left = -46.448
         right = 1.275
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 17 Failed: Expected False, but got True"
         print_and_log("Test Case 17 Passed: Expected False, got False")
 
@@ -1153,10 +1153,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.449
         right = 1.276
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 18 Failed: Expected True, but got False"
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
@@ -1165,10 +1165,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.449
         right = 1.275
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 19 Failed: Expected True, but got False"
         print_and_log("Test Case 19 Passed: Expected True, got True")
 
@@ -1177,10 +1177,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.275
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 20 Failed: Expected False, but got True"
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
@@ -1189,10 +1189,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.276
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 21 Failed: Expected True, but got False"
         print_and_log("Test Case 21 Passed: Expected True, got True")
 
@@ -1201,10 +1201,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.275
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 22 Failed: Expected False, but got True"
         print_and_log("Test Case 22 Passed: Expected False, got False")
 
@@ -1213,10 +1213,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.275
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 23 Failed: Expected True, but got False"
         print_and_log("Test Case 23 Passed: Expected True, got True")
 
@@ -1225,25 +1225,25 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.274
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, got False")
 
-        # belongOp = 1
-        belongOp = 1
+        # belong_op = 1
+        belong_op = 1
 
         # Example 25 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.276)
         left = -46.448
         right = 1.276
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 25 Failed: Expected True, but got False"
         print_and_log("Test Case 25 Passed: Expected True, got True")
 
@@ -1252,10 +1252,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.449
         right = 1.276
         closure = 0  # OpenOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 26 Failed: Expected False, but got True"
         print_and_log("Test Case 26 Passed: Expected False, got False")
 
@@ -1264,10 +1264,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.449
         right = 1.275
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 27 Failed: Expected False, but got True"
         print_and_log("Test Case 27 Passed: Expected False, got False")
 
@@ -1276,10 +1276,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.275
         closure = 1  # OpenClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 28 Failed: Expected True, but got False"
         print_and_log("Test Case 28 Passed: Expected True, got True")
 
@@ -1288,10 +1288,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.276
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 29 Failed: Expected False, but got True"
         print_and_log("Test Case 29 Passed: Expected False, got False")
 
@@ -1300,10 +1300,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.275
         closure = 2  # ClosedOpen
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 30 Failed: Expected True, but got False"
         print_and_log("Test Case 30 Passed: Expected True, got True")
 
@@ -1312,10 +1312,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.448
         right = 1.275
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is False, "Test Case 31 Failed: Expected False, but got True"
         print_and_log("Test Case 31 Passed: Expected False, got False")
 
@@ -1324,10 +1324,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         left = -46.447
         right = 1.275
         closure = 3  # ClosedClosed
-        result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                       data_dictionary=self.data_dictionary,
-                                                       closureType=Closure(closure),
-                                                       belongOp=Belong(belongOp), field=field)
+        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                          data_dictionary=self.data_dictionary,
+                                                          closure_type=Closure(closure),
+                                                          belong_op=Belong(belong_op), field=field)
         assert result is True, "Test Case 32 Failed: Expected True, but got False"
         print_and_log("Test Case 32 Passed: Expected True, got True")
 
@@ -1341,10 +1341,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         closure = 0  # OpenOpen
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkIntervalRangeFloat(left_margin=left0, right_margin=right0,
-                                                           data_dictionary=self.data_dictionary,
-                                                           closureType=Closure(closure),
-                                                           belongOp=Belong(belongOp))
+            result = self.pre_post.check_interval_range_float(left_margin=left0, right_margin=right0,
+                                                              data_dictionary=self.data_dictionary,
+                                                              closure_type=Closure(closure),
+                                                              belong_op=Belong(belong_op))
         print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
 
         # Example 33 of checkIntervalRangeFloat
@@ -1352,10 +1352,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         closure = 3  # ClosedClosed
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkIntervalRangeFloat(left_margin=left, right_margin=right,
-                                                           data_dictionary=self.data_dictionary,
-                                                           closureType=Closure(closure),
-                                                           belongOp=Belong(belongOp), field=field)
+            result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
+                                                              data_dictionary=self.data_dictionary,
+                                                              closure_type=Closure(closure),
+                                                              belong_op=Belong(belong_op), field=field)
 
         print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
 
@@ -1395,9 +1395,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel)
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_rel=quant_rel)
         assert result is True, "Test Case 20 Failed: Expected True, but got False"
         print_and_log("Test Case 20 Passed: Expected True, got True")
 
@@ -1407,9 +1407,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         missing_values = [-1]
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel, missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_rel=quant_rel, missing_values=missing_values)
         assert result is True, "Test Case 20 Failed: Expected True, but got False"
         print_and_log("Test Case 20 Passed: Expected True, got True")
 
@@ -1419,9 +1419,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         missing_values = [-1]
         quant_op = 2  # lessEqual
         quant_abs = 50
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_abs=quant_abs, missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_abs=quant_abs, missing_values=missing_values)
         assert result is True, "Test Case 23 Failed: Expected True, but got False"
         print_and_log("Test Case 23 Passed: Expected True, got True")
 
@@ -1431,9 +1431,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         belong = 0
         missing_values = [-1]
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 missing_values=missing_values,
-                                                 belongOp=Belong(belong))
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   missing_values=missing_values,
+                                                   belong_op=Belong(belong))
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
@@ -1443,10 +1443,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         missing_values = ['Nulo', -8]
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 missing_values=missing_values,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel)
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   missing_values=missing_values,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_rel=quant_rel)
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
 
@@ -1454,9 +1454,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 0
         field = None
         missing_values = ['Nul', 'Mandarina']
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 missing_values=missing_values,
-                                                 belongOp=Belong(belong))
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   missing_values=missing_values,
+                                                   belong_op=Belong(belong))
         assert result is False, "Test Case 3 Failed: Expected False, but got True"
         print_and_log("Test Case 3 Passed: Expected False, got False")
 
@@ -1464,9 +1464,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 0
         field = None
         missing_values = None
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 missing_values=missing_values,
-                                                 belongOp=Belong(belong))
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   missing_values=missing_values,
+                                                   belong_op=Belong(belong))
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
         print_and_log("Test Case 4 Passed: Expected False, got False")
 
@@ -1475,9 +1475,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel)
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_rel=quant_rel)
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
@@ -1486,9 +1486,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_rel=quant_rel)
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
@@ -1498,9 +1498,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 0  # greaterEqual
         missing_values = ['Poison']
         quant_abs = 2
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_abs=quant_abs, missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_abs=quant_abs, missing_values=missing_values)
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
 
@@ -1510,9 +1510,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 0  # greaterEqual
         missing_values = ['Mandarina']
         quant_abs = 2
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_abs=quant_abs, missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_abs=quant_abs, missing_values=missing_values)
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
@@ -1520,8 +1520,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         field = None
         missing_values = ['Mandarina']
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), missing_values=missing_values)
         assert result is True, "Test Case 11 Failed: Expected True, but got False"
         print_and_log("Test Case 11 Passed: Expected True, got True")
 
@@ -1529,24 +1529,24 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         field = None
         missing_values = ['Poison']
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), missing_values=missing_values)
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
 
         # Caso 13
         belong = 1
         field = None
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong))
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong))
         assert result is True, "Test Case 13 Failed: Expected True, but got False"
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
         # Caso 13.1
         belong = 1
         field = None
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong))
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong))
         assert result is False, "Test Case 13.1 Failed: Expected False, but got True"
         print_and_log("Test Case 13.1 Passed: Expected False, got False")
 
@@ -1554,8 +1554,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 0
         field = 'track_name'
         quant_op = None
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=quant_op)
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=quant_op)
         assert result is True, "Test Case 16 Failed: Expected True, but got False"
         print_and_log("Test Case 16 Passed: Expected True, got True")
 
@@ -1564,9 +1564,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = None
         missing_values = ['Poison', 'Mandarina']
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=quant_op,
-                                                 missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=quant_op,
+                                                   missing_values=missing_values)
         assert result is True, "Test Case 17 Failed: Expected True, but got False"
         print_and_log("Test Case 17 Passed: Expected True, got True")
 
@@ -1575,9 +1575,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = None
         missing_values = ['Mandarina', 'Mandarino']
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=quant_op,
-                                                 missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=quant_op,
+                                                   missing_values=missing_values)
         assert result is False, "Test Case 18 Failed: Expected False, but got True"
         print_and_log("Test Case 18 Passed: Expected False, got False")
 
@@ -1586,9 +1586,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = None
         missing_values = None
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=quant_op,
-                                                 missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=quant_op,
+                                                   missing_values=missing_values)
         assert result is False, "Test Case 19 Failed: Expected False, but got True"
         print_and_log("Test Case 19 Passed: Expected False, got False")
 
@@ -1598,9 +1598,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         missing_values = ['Martin Garrix', 'Maroon 5']
         quant_op = 1  # greater
         quant_rel = 0.2
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_rel=quant_rel, missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_rel=quant_rel, missing_values=missing_values)
         assert result is False, "Test Case 21 Failed: Expected False, but got True"
         print_and_log("Test Case 21 Passed: Expected False, got False")
 
@@ -1610,9 +1610,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 5]
         quant_op = 2  # lessEqual
         quant_abs = 400
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                 quant_abs=quant_abs, missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                   quant_abs=quant_abs, missing_values=missing_values)
         assert result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, got False")
 
@@ -1620,8 +1620,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         field = 'track_artist'
         missing_values = [-1, np.NaN]
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong), missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong), missing_values=missing_values)
         assert result is True, "Test Case 26 Failed: Expected True, but got False"
         print_and_log("Test Case 26 Passed: Expected True, got True")
 
@@ -1629,24 +1629,24 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         field = 'track_artist'
         missing_values = [np.NaN, 'Maroon 5']
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong), missing_values=missing_values)
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong), missing_values=missing_values)
         assert result is False, "Test Case 27 Failed: Expected False, but got True"
         print_and_log("Test Case 27 Passed: Expected False, got False")
 
         # Caso 28
         belong = 1
         field = 'track_name'
-        result = self.pre_post.checkMissingRange(data_dictionary=preprocessed_data_dictionary, field=field,
-                                                 belongOp=Belong(belong))
+        result = self.pre_post.check_missing_range(data_dictionary=preprocessed_data_dictionary, field=field,
+                                                   belong_op=Belong(belong))
         assert result is True, "Test Case 28 Failed: Expected True, but got False"
         print_and_log("Test Case 28 Passed: Expected True, got True")
 
         # Caso 29
         belong = 1
         field = 'track_artist'
-        result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                 belongOp=Belong(belong))
+        result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                   belong_op=Belong(belong))
         assert result is False, "Test Case 29 Failed: Expected False, but got True"
         print_and_log("Test Case 29 Passed: Expected False, got False")
 
@@ -1661,9 +1661,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 2
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                     quant_rel=quant_rel, quant_abs=quant_abs)
+            result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                       belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                       quant_rel=quant_rel, quant_abs=quant_abs)
         print_and_log("Test Case 7 Passed: Expected ValueError, got ValueError")
 
         # Caso 10
@@ -1672,8 +1672,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                     belongOp=Belong(belong), quant_op=Operator(quant_op))
+            result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                       belong_op=Belong(belong), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Caso 14
@@ -1682,9 +1682,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                     quant_abs=quan_abs,
-                                                     belongOp=Belong(belong), quant_op=Operator(quant_op))
+            result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                       quant_abs=quan_abs,
+                                                       belong_op=Belong(belong), quant_op=Operator(quant_op))
         print_and_log("Test Case 14 Passed: Expected ValueError, got ValueError")
 
         # Caso 15
@@ -1694,9 +1694,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                     quant_rel=quant_rel)
+            result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                       belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                       quant_rel=quant_rel)
         print_and_log("Test Case 15 Passed: Expected ValueError, got ValueError")
 
         # Caso 22
@@ -1708,10 +1708,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 2
         expected_exception = ValueError  # Error due to quant_abs and quant_op are not None at the same time
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                     quant_rel=quant_rel, quant_abs=quant_abs,
-                                                     missing_values=missing_values)
+            result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                       belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                       quant_rel=quant_rel, quant_abs=quant_abs,
+                                                       missing_values=missing_values)
         print_and_log("Test Case 22 Passed: Expected ValueError, got ValueError")
 
         # Caso 25
@@ -1721,9 +1721,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 2  # lessEqual
         expected_exception = ValueError  # Error due to quant_op is not None and quant_abs/quant_rel are both None
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                     belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                     missing_values=missing_values)
+            result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                       belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                       missing_values=missing_values)
         print_and_log("Test Case 25 Passed: Expected ValueError, got ValueError")
 
         # Caso 30
@@ -1732,11 +1732,11 @@ class ContractExternalDatasetTests(unittest.TestCase):
         missing_values = [-1]
         quant_abs = 2
         quant_op = 0  # greaterEqual
-        expected_exception = ValueError  # Error due to quant_abs, quant_op or quant_rel are not None when belongOp is 1
+        expected_exception = ValueError  # Error due to quant_abs, quant_op or quant_rel are not None when belong_op is 1
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkMissingRange(data_dictionary=self.data_dictionary, field=field,
-                                                     belongOp=Belong(belong), missing_values=missing_values,
-                                                     quant_abs=quant_abs, quant_op=Operator(quant_op))
+            result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
+                                                       belong_op=Belong(belong), missing_values=missing_values,
+                                                       quant_abs=quant_abs, quant_op=Operator(quant_op))
         print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
 
         print_and_log("")
@@ -1759,9 +1759,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                  quant_rel=quant_rel, invalid_values=invalid_values)
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, invalid_values=invalid_values)
         assert result is True, "Test Case 19 Failed: Expected True, but got False"
         print_and_log("Test Case 19 Passed: Expected True, got True")
 
@@ -1771,9 +1771,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = 2  # lessEqual
         quant_rel = 0.2
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                  quant_rel=quant_rel, invalid_values=invalid_values)
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, invalid_values=invalid_values)
         assert result is True, "Test Case 19_2 Failed: Expected True, but got False"
         print_and_log("Test Case 19_2 Passed: Expected True, got True")
 
@@ -1783,9 +1783,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_artist'
         quant_op = 1  # greater
         quant_abs = 50
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belong), quant_op=Operator(quant_op),
-                                                  quant_abs=quant_abs, invalid_values=invalid_values)
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    belong_op=Belong(belong), quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, invalid_values=invalid_values)
         assert result is True, "Test Case 22 Failed: Expected True, but got False"
         print_and_log("Test Case 22 Passed: Expected True, got True")
 
@@ -1793,8 +1793,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 0
         invalid_values = [-1, 0]
         field = None
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belong), invalid_values=invalid_values)
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    belong_op=Belong(belong), invalid_values=invalid_values)
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
@@ -1802,8 +1802,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 0
         invalid_values = [-50, 'Limón']
         field = None
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belong), invalid_values=invalid_values)
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    belong_op=Belong(belong), invalid_values=invalid_values)
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
 
@@ -1811,8 +1811,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 0
         field = None
         invalid_values = None
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  belongOp=Belong(belong), invalid_values=invalid_values)
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    belong_op=Belong(belong), invalid_values=invalid_values)
         assert result is False, "Test Case 3 Failed: Expected False, but got True"
         print_and_log("Test Case 3 Passed: Expected False, got False")
 
@@ -1822,9 +1822,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = [-1, 0]
         quant_op = 2  # lessEqual
         quant_rel = 0.5
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_rel=quant_rel, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belong_op=Belong(belong))
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
@@ -1834,9 +1834,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = ['Martin Garrix', 0]
         quant_op = 1  # Greater
         quant_rel = 0.5
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_rel=quant_rel, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belong_op=Belong(belong))
         assert result is False, "Test Case 5 Failed: Expected False, but got True"
         print_and_log("Test Case 5 Passed: Expected False, got False")
 
@@ -1846,9 +1846,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = None
         quant_op = 2
         quant_rel = 0.5
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_rel=quant_rel, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belong_op=Belong(belong))
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
@@ -1858,9 +1858,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = [1, 0]
         quant_op = 1  # greater
         quant_abs = 5000
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_abs=quant_abs, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belong_op=Belong(belong))
         assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
 
@@ -1870,9 +1870,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = [-1, 0]
         quant_op = 4  # Equal
         quant_abs = 50
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_abs=quant_abs, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belong_op=Belong(belong))
         assert result is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, got False")
 
@@ -1882,9 +1882,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = None
         quant_op = 0  # greaterequal
         quant_abs = 500
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_abs=quant_abs, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belong_op=Belong(belong))
         assert result is False, "Test Case 9 Failed: Expected False, but got True"
         print_and_log("Test Case 9 Passed: Expected False, got False")
 
@@ -1892,8 +1892,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         field = None
         invalid_values = [-53, 'Mandarina', 'Electrolito', 33.3333]
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, belong_op=Belong(belong))
         assert result is True, "Test Case 12 Failed: Expected True, but got False"
         print_and_log("Test Case 12 Passed: Expected True, got True")
 
@@ -1901,8 +1901,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         field = None
         invalid_values = [-1, 0]
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, belong_op=Belong(belong))
         assert result is False, "Test Case 13 Failed: Expected False, but got True"
         print_and_log("Test Case 13 Passed: Expected False, got False")
 
@@ -1911,9 +1911,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = None
         field = 'loudness'
         invalid_values = [-5, 'Mandarina']
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=quant_op,
-                                                  belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=quant_op,
+                                                    belong_op=Belong(belong))
         assert result is True, "Test Case 16 Failed: Expected True, but got False"
         print_and_log("Test Case 16 Passed: Expected True, got True")
 
@@ -1922,9 +1922,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = [-50, '0']
         field = 'loudness'
         quant_op = None
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=quant_op,
-                                                  belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=quant_op,
+                                                    belong_op=Belong(belong))
         assert result is False, "Test Case 17 Failed: Expected False, but got True"
         print_and_log("Test Case 17 Passed: Expected False, got False")
 
@@ -1933,9 +1933,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         invalid_values = None
         quant_op = None
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=quant_op,
-                                                  belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=quant_op,
+                                                    belong_op=Belong(belong))
         assert result is False, "Test Case 18 Failed: Expected False, but got True"
         print_and_log("Test Case 18 Passed: Expected False, got False")
 
@@ -1945,9 +1945,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = 1  # Greater
         quant_rel = 0.1
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_rel=quant_rel, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belong_op=Belong(belong))
         assert result is False, "Test Case 20 Failed: Expected False, but got True"
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
@@ -1957,9 +1957,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_artist'
         quant_op = 1  # Greater
         quant_rel = 0.5
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_rel=quant_rel, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_rel=quant_rel, belong_op=Belong(belong))
         assert result is False, "Test Case 21 Failed: Expected False, but got True"
         print_and_log("Test Case 21 Passed: Expected False, got False")
 
@@ -1969,9 +1969,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_artist'
         quant_op = 0  # GreaterEqual
         quant_abs = 150
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_abs=quant_abs, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belong_op=Belong(belong))
         assert result is False, "Test Case 23 Failed: Expected False, but got True"
         print_and_log("Test Case 23 Passed: Expected False, got False")
 
@@ -1981,9 +1981,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'danceability'
         quant_op = 0  # GreaterEqual
         quant_abs = 15
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                  quant_abs=quant_abs, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                    quant_abs=quant_abs, belong_op=Belong(belong))
         assert result is False, "Test Case 24 Failed: Expected False, but got True"
         print_and_log("Test Case 24 Passed: Expected False, got False")
 
@@ -1991,8 +1991,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         invalid_values = ['Green', 'Blue', 'Red', 'Yellow', 'Black', 154.75]
         field = 'danceability'
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, belong_op=Belong(belong))
         assert result is True, "Test Case 27 Failed: Expected True, but got False"
         print_and_log("Test Case 27 Passed: Expected True, got True")
 
@@ -2000,8 +2000,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         invalid_values = ['Martin Garrix', 'Maroon 5']
         field = 'track_artist'
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, belong_op=Belong(belong))
         assert result is False, "Test Case 28 Failed: Expected False, but got True"
         print_and_log("Test Case 28 Passed: Expected False, got False")
 
@@ -2009,8 +2009,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong = 1
         invalid_values = None
         field = 'track_album_release_date'
-        result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                  invalid_values=invalid_values, belongOp=Belong(belong))
+        result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                    invalid_values=invalid_values, belong_op=Belong(belong))
         assert result is True, "Test Case 29 Failed: Expected True, but got False"
         print_and_log("Test Case 29 Passed: Expected True, got True")
 
@@ -2026,10 +2026,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                      quant_abs=quant_abs, quant_rel=quant_rel,
-                                                      belongOp=Belong(belong))
+            result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                        invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                        quant_abs=quant_abs, quant_rel=quant_rel,
+                                                        belong_op=Belong(belong))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Caso 11
@@ -2039,9 +2039,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 0
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                      belongOp=Belong(belong))
+            result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                        invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                        belong_op=Belong(belong))
         print_and_log("Test Case 11 Passed: Expected ValueError, got ValueError")
 
         # Caso 14
@@ -2052,9 +2052,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                      quant_rel=quant_rel, belongOp=Belong(belong))
+            result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                        invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                        quant_rel=quant_rel, belong_op=Belong(belong))
         print_and_log("Test Case 14 Passed: Expected ValueError, got ValueError")
 
         # Caso 15
@@ -2065,9 +2065,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                      quant_rel=quant_rel, belongOp=Belong(belong))
+            result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                        invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                        quant_rel=quant_rel, belong_op=Belong(belong))
         print_and_log("Test Case 15 Passed: Expected ValueError, got ValueError")
 
         # Caso 25
@@ -2079,10 +2079,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                      quant_abs=quant_abs, quant_rel=quant_rel,
-                                                      belongOp=Belong(belong))
+            result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                        invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                        quant_abs=quant_abs, quant_rel=quant_rel,
+                                                        belong_op=Belong(belong))
         print_and_log("Test Case 25 Passed: Expected ValueError, got ValueError")
 
         # Caso 26
@@ -2092,9 +2092,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 0  # GreaterEqual
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                      belongOp=Belong(belong))
+            result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                        invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                        belong_op=Belong(belong))
         print_and_log("Test Case 26 Passed: Expected ValueError, got ValueError")
 
         # Caso 30
@@ -2105,9 +2105,9 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.checkInvalidValues(data_dictionary=self.data_dictionary, field=field,
-                                                      invalid_values=invalid_values, quant_op=Operator(quant_op),
-                                                      quant_rel=quant_rel, belongOp=Belong(belong))
+            result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
+                                                        invalid_values=invalid_values, quant_op=Operator(quant_op),
+                                                        quant_rel=quant_rel, belong_op=Belong(belong))
         print_and_log("Test Case 30 Passed: Expected ValueError, got ValueError")
 
         print_and_log("")
