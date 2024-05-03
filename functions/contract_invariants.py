@@ -142,11 +142,17 @@ class Invariants:
         result = True
 
         if derived_type_output == DerivedType.MOSTFREQUENT:
-            result = check_fix_value_most_frequent(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_in, belong_op_out, axis_param, field)
+            result = check_fix_value_most_frequent(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                   fix_value_input=fix_value_input, belong_op_in=belong_op_in,
+                                                   belong_op_out=belong_op_out, axis_param=axis_param, field=field)
         elif derived_type_output == DerivedType.PREVIOUS:
-            result = check_fix_value_previous(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_in, belong_op_out, axis_param, field)
+            result = check_fix_value_previous(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                              fix_value_input=fix_value_input, belong_op_in=belong_op_in,
+                                              belong_op_out=belong_op_out, axis_param=axis_param, field=field)
         elif derived_type_output == DerivedType.NEXT:
-            result = check_fix_value_next(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_in, belong_op_out, axis_param, field)
+            result = check_fix_value_next(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                          fix_value_input=fix_value_input, belong_op_in=belong_op_in,
+                                          belong_op_out=belong_op_out, axis_param=axis_param, field=field)
 
         return True if result else False
 

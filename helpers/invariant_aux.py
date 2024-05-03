@@ -10,20 +10,26 @@ from helpers.enumerations import DerivedType, Belong, SpecialType, Closure
 def check_fix_value_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                          fix_value_input, belong_op_out: Belong, axis_param: int, field: str) -> bool:
     """
-        Check if the most frequent value is applied correctly on the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
+    Check if the most frequent value is applied correctly on the fix input value
+    to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
 
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
-            :param fix_value_input: input value to apply the most frequent value
-            :param belong_op_out: (Belong) then condition to check the invariant
-            :param axis_param: (int) axis to apply the most frequent value
-            :param field: (str) field to apply the most frequent value
+    params:
+        :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
+        :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
+        :param fix_value_input: input value to apply the most frequent value
+        :param belong_op_out: (Belong) then condition to check the invariant
+        :param axis_param: (int) axis to apply the most frequent value
+        :param field: (str) field to apply the most frequent value
 
-        Returns:
-            :return: True if the most frequent value is applied correctly on the fix input value
-        """
+    Returns:
+        :return: True if the most frequent value is applied correctly on the fix input value
+    """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
@@ -32,13 +38,14 @@ def check_fix_value_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_
                     if value == fix_value_input:
                         if data_dictionary_out.at[row_index, column_index] != most_frequent_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent_value, " but is: ", data_dictionary_out.loc[row_index, column_index])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
-                        if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[
-                            row_index, column_index]:
-                            return False
+                        if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[row_index, column_index]:
+                            result = False
+                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
         elif axis_param == 0:  # Applies the lambda function at the column level
             for col in data_dictionary_in.columns:
                 most_frequent_value = data_dictionary_in[col].value_counts().idxmax()
@@ -48,12 +55,14 @@ def check_fix_value_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_
                                 pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(
                             data_dictionary_out.at[idx, col])):
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", most_frequent_value, " but is: ", data_dictionary_out.loc[idx, col])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[idx, col] != data_dictionary_in.loc[idx, col]:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.loc[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
         else:  # Applies at the dataframe level
             # Calculate the most frequent value
             most_frequent_value = data_dictionary_in.stack().value_counts().idxmax()
@@ -62,14 +71,16 @@ def check_fix_value_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_
                     if value == fix_value_input:
                         if data_dictionary_out.at[idx, col_name] != most_frequent_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", most_frequent_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                             data_dictionary_in.at[idx, col_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.loc[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -83,19 +94,18 @@ def check_fix_value_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_
                             pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                                     data_dictionary_out.at[idx, field])):
                         if belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", most_frequent_value, " but is: ", data_dictionary_out.loc[idx, field])
                         elif belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
                 else:
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                             pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                                     data_dictionary_out.at[idx, field])):
-                        return False
+                        result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
+    return True if result else False
 
 
 def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -117,10 +127,11 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
         Returns:
             :return: True if the most frequent value is applied correctly on the fix input value
     """
-    result = True
+    result = False
 
-    result = check_fix_value_most_frequent_belong(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out, axis_param, field)
-
+    result = check_fix_value_most_frequent_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                  fix_value_input=fix_value_input, belong_op_out=belong_op_out,
+                                                  axis_param=axis_param, field=field)
 
     return True if result else False
 
@@ -128,20 +139,26 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
 def check_fix_value_previous_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
                                     belong_op_out: Belong, axis_param: int, field: str) -> bool:
     """
-        Check if the previous value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
+    Check if the previous value is applied correctly to the fix input value
+    to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
 
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the previous value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the previous value
-            :param fix_value_input: input value to apply the previous value
-            :param belong_op_out: (Belong) then condition to check the invariant
-            :param axis_param: (int) axis to apply the previous value
-            :param field: (str) field to apply the previous value
+    params:
+        :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the previous value
+        :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the previous value
+        :param fix_value_input: input value to apply the previous value
+        :param belong_op_out: (Belong) then condition to check the invariant
+        :param axis_param: (int) axis to apply the previous value
+        :param field: (str) field to apply the previous value
 
-        Returns:
-            :return: True if the previous value is applied correctly to the fix input value
-        """
+    Returns:
+        :return: True if the previous value is applied correctly to the fix input value
+    """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
@@ -153,21 +170,25 @@ def check_fix_value_previous_belong(data_dictionary_in: pd.DataFrame, data_dicti
                             if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.at[
                                 row_index, column_name]:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if column_index - 1 in data_dictionary_in.columns:
                                 if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.at[
                                     row_index, column_index - 1]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index-1], " but is: ", data_dictionary_out.at[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
                     else:
                         if data_dictionary_out.iloc[row_index, column_index] != data_dictionary_in.iloc[
                             row_index, column_index]:
-                            return False
+                            result = False
+                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(data_dictionary_in.columns):
                 for row_index, value in data_dictionary_in[column_name].items():
@@ -176,22 +197,25 @@ def check_fix_value_previous_belong(data_dictionary_in: pd.DataFrame, data_dicti
                             if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.at[
                                 row_index, column_name]:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index - 1, column_name]:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index-1, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                     else:
                         if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.at[
                             row_index, column_name] and not (
                                 pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.loc[row_index - 1, column_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
 
@@ -205,114 +229,26 @@ def check_fix_value_previous_belong(data_dictionary_in: pd.DataFrame, data_dicti
                     if idx == 0:
                         if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.at[idx, field])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx-1, field], " but is: ", data_dictionary_out.at[idx, field])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                 else:
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                         if idx != 0 and (
                                 not pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
                                 data_dictionary_out.loc[idx - 1, field])):
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
-
-
-def check_fix_value_previous_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                               fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the previous value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is NOTBELONG and belong_op_out is BELONG
-
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the previous value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the previous value
-            :param fix_value_input: input value to apply the previous value
-            :param axis_param: (int) axis to apply the previous value
-            :param field: (str) field to apply the previous value
-
-        Returns:
-            :return: True if the previous value is applied correctly to the fix input value
-        """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_name, value in row.items():
-                    value = data_dictionary_in.at[row_index, column_name]
-                    if value == fix_value_input:
-                        return False
-        elif axis_param == 0:  # Applies at the column level
-            for column_index, column_name in enumerate(data_dictionary_in.columns):
-                for row_index, value in data_dictionary_in[column_name].items():
-                    if value == fix_value_input:
-                        return False
-        else:  # Applies at the dataframe level
-            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if value == fix_value_input:
-                    return False
-
-    return True
-
-
-def check_fix_value_previous_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                   fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the previous value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in and belong_op_out are NOTBELONG
-
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the previous value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the previous value
-            :param fix_value_input: input value to apply the previous value
-            :param axis_param: (int) axis to apply the previous value
-            :param field: (str) field to apply the previous value
-            :param axis_param: (int) axis to apply the previous value
-            :param field: (str) field to apply the previous value
-
-        Returns:
-            :return: True if the previous value is applied correctly to the fix input value
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_name, value in row.items():
-                    value = data_dictionary_in.at[row_index, column_name]
-                    if value == fix_value_input:
-                        return False
-        elif axis_param == 0:  # Applies at the column level
-            for column_index, column_name in enumerate(data_dictionary_in.columns):
-                for row_index, value in data_dictionary_in[column_name].items():
-                    if value == fix_value_input:
-                        return False
-        else:  # Applies at the dataframe level
-            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if value == fix_value_input:
-                    return False
-
-    return True
+    return True if result else False
 
 
 def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -334,17 +270,11 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
         Returns:
             :return: True if the previous value is applied correctly on the fix input value
     """
-    result = True
+    result = False
 
-    if belong_op_in == Belong.BELONG:
-        result = check_fix_value_previous_belong(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out,
-                                                 axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_fix_value_previous_not_belong_belong(data_dictionary_in, data_dictionary_out, fix_value_input,
-                                                            axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_fix_value_previous_not_belong_not_belong(data_dictionary_in, data_dictionary_out, fix_value_input,
-                                                                axis_param, field)
+    result = check_fix_value_previous_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                             fix_value_input=fix_value_input, belong_op_out=belong_op_out,
+                                             axis_param=axis_param, field=field)
 
     return True if result else False
 
@@ -352,20 +282,26 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
 def check_fix_value_next_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
                                 belong_op_out: Belong, axis_param: int, field: str) -> bool:
     """
-        Check if the next value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
+    Check if the next value is applied correctly to the fix input value
+    to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
 
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the next value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the next value
-            :param fix_value_input: input value to apply the next value
-            :param belong_op_out: (Belong) then condition to check the invariant
-            :param axis_param: (int) axis to apply the next value
-            :param field: (str) field to apply the next value
+    params:
+        :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the next value
+        :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the next value
+        :param fix_value_input: input value to apply the next value
+        :param belong_op_out: (Belong) then condition to check the invariant
+        :param axis_param: (int) axis to apply the next value
+        :param field: (str) field to apply the next value
 
-        Returns:
-            :return: True if the next value is applied correctly to the fix input value
-        """
+    Returns:
+        :return: True if the next value is applied correctly to the fix input value
+    """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
@@ -377,22 +313,25 @@ def check_fix_value_next_belong(data_dictionary_in: pd.DataFrame, data_dictionar
                             if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.at[
                                 row_index, column_name]:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.iloc[
                                 row_index, column_index + 1]:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index + 1], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                     else:
                         if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.at[
                             row_index, column_name] and (
                                 not pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ",data_dictionary_out.at[row_index, column_name])
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(data_dictionary_in.columns):
                 for row_index, value in data_dictionary_in[column_name].items():
@@ -401,22 +340,26 @@ def check_fix_value_next_belong(data_dictionary_in: pd.DataFrame, data_dictionar
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index, column_name]:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index + 1, column_name]:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index+1, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                     else:
                         if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                             row_index, column_name] and (
                                 not pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the NEXT operation")
 
@@ -430,112 +373,25 @@ def check_fix_value_next_belong(data_dictionary_in: pd.DataFrame, data_dictionar
                     if idx == len(data_dictionary_in) - 1:
                         if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.iloc[idx, field], " but is: ", data_dictionary_out.at[idx, field])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.iloc[idx + 1, field], " but is: ", data_dictionary_out.at[idx, field])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                 else:
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
                             not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                        return False
+                        result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.iloc[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
-
-
-def check_fix_value_next_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                           fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the next value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is NOTBELONG and belong_op_out is BELONG
-
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the next value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the next value
-            :param fix_value_input: input value to apply the next value
-            :param axis_param: (int) axis to apply the next value
-            :param field: (str) field to apply the next value
-
-        Returns:
-            :return: True if the next value is applied correctly to the fix input value
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_name, value in row.items():
-                    value = data_dictionary_in.at[row_index, column_name]
-                    if value == fix_value_input:
-                        return False
-        elif axis_param == 0:  # Applies at the column level
-            for column_index, column_name in enumerate(data_dictionary_in.columns):
-                for row_index, value in data_dictionary_in[column_name].items():
-                    if value == fix_value_input:
-                        return False
-        else:  # Applies at the dataframe level
-            raise ValueError("The axis cannot be None when applying the NEXT operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if value == fix_value_input:
-                    return False
-
-    return True
-
-
-def check_fix_value_next_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                               fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the next value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is NOTBELONG and belong_op_out is NOTBELONG
-
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the next value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the next value
-            :param fix_value_input: input value to apply the next value
-            :param axis_param: (int) axis to apply the next value
-            :param field: (str) field to apply the next value
-
-        Returns:
-            :return: True if the next value is applied correctly to the fix input value
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_name, value in row.items():
-                    value = data_dictionary_in.at[row_index, column_name]
-                    if value == fix_value_input:
-                        return False
-        elif axis_param == 0:  # Applies at the column level
-            for column_index, column_name in enumerate(data_dictionary_in.columns):
-                for row_index, value in data_dictionary_in[column_name].items():
-                    if value == fix_value_input:
-                        return False
-        else:  # Applies at the dataframe level
-            raise ValueError("The axis cannot be None when applying the NEXT operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if value == fix_value_input:
-                    return False
-
-    return True
-
+    return True if result else False
 
 
 def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -556,20 +412,13 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
         Returns:
             :return: True if the next value is applied correctly on the fix input value
     """
-    result = True
+    result = False
 
-    if belong_op_in == Belong.BELONG:
-        result = check_fix_value_next_belong(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out,
-                                             axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_fix_value_next_not_belong_belong(data_dictionary_in, data_dictionary_out, fix_value_input,
-                                                        axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_fix_value_next_not_belong_not_belong(data_dictionary_in, data_dictionary_out, fix_value_input,
-                                                            axis_param, field)
+    result = check_fix_value_next_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                         fix_value_input=fix_value_input, belong_op_out=belong_op_out,
+                                         axis_param=axis_param, field=field)
 
     return True if result else False
-
 
 
 def check_interval_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -593,6 +442,12 @@ def check_interval_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_d
     Returns:
         :return: True if the most frequent value is applied correctly on the interval
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
@@ -601,14 +456,14 @@ def check_interval_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_d
                     if check_interval_condition(value, left_margin, right_margin, closure_type):
                         if data_dictionary_out.at[row_index, column_index] != most_frequent_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[row_index, column_index] and (
                                 not pd.isnull(data_dictionary_in.loc[row_index, column_index]) and pd.isnull(
                                 data_dictionary_out.loc[row_index, column_index])):
-                            return False
+                            result = False
         elif axis_param == 0:  # Applies the lambda function at the column level
             for col in data_dictionary_in.columns:
                 most_frequent_value = data_dictionary_in[col].value_counts().idxmax()
@@ -616,14 +471,14 @@ def check_interval_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_d
                     if check_interval_condition(value, left_margin, right_margin, closure_type):
                         if data_dictionary_out.at[idx, col] != most_frequent_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[idx, col] != data_dictionary_in.loc[idx, col] and (
                                 not pd.isnull(data_dictionary_in.at[idx, col]) and pd.isnull(
                                 data_dictionary_out.at[idx, col])):
-                            return False
+                            result = False
         else:  # Applies at the dataframe level
             # Calculate the most frequent value
             most_frequent_value = data_dictionary_in.stack().value_counts().idxmax()
@@ -632,14 +487,14 @@ def check_interval_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_d
                     if check_interval_condition(value, left_margin, right_margin, closure_type):
                         if data_dictionary_out.at[idx, col_name] != most_frequent_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and (
                                 not pd.isnull(data_dictionary_in.at[idx, col_name]) and pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                            return False
+                            result = False
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -651,115 +506,16 @@ def check_interval_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_d
                 if check_interval_condition(value, left_margin, right_margin, closure_type):
                     if data_dictionary_out.at[idx, field] != most_frequent_value:
                         if belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
                         elif belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
                 else:
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
                             not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                        return False
+                        result = False
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
-
-
-def check_interval_most_frequent_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                   left_margin: float, right_margin: float, closure_type: Closure,
-                                                   axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the most frequent value is applied correctly on the interval
-    to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is NOTBELONG and belong_op_out is BELONG
-
-    params:
-        :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
-        :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
-        :param left_margin: (float) left margin of the interval
-        :param right_margin: (float) right margin of the interval
-        :param closure_type: (Closure) closure of the interval
-        :param axis_param: (int) axis to apply the most frequent value
-        :param field: (str) field to apply the most frequent value
-
-    Returns:
-        :return: True if the most frequent value is applied correctly on the interval
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_index, value in row.items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        elif axis_param == 0:  # Applies the lambda function at the column level
-            for col in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        else:  # Applies at the dataframe level
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if check_interval_condition(value, left_margin, right_margin, closure_type):
-                    return False
-
-    return True
-
-
-def check_interval_most_frequent_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                       left_margin: float, right_margin: float, closure_type: Closure,
-                                                       axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the most frequent value is applied correctly on the interval
-    to the data_dictionary_out respect to the data_dictionary_in when belong_op_in and belong_op_out are NOTBELONG
-
-    params:
-        :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
-        :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
-        :param left_margin: (float) left margin of the interval
-        :param right_margin: (float) right margin of the interval
-        :param closure_type: (Closure) closure of the interval
-        :param axis_param: (int) axis to apply the most frequent value
-        :param field: (str) field to apply the most frequent value
-
-    Returns:
-        :return: True if the most frequent value is applied correctly on the interval
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_index, value in row.items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        elif axis_param == 0:  # Applies the lambda function at the column level
-            for col in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        else:  # Applies at the dataframe level
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if check_interval_condition(value, left_margin, right_margin, closure_type):
-                    return False
-
-    return True
+    return True if result else False
 
 
 def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -784,17 +540,11 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
     Returns:
         :return: True if the most frequent value is applied correctly on the interval
     """
-    result = True
+    result = False
 
-    if belong_op_in == Belong.BELONG:
-        result = check_interval_most_frequent_belong(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                                     closure_type, belong_op_out, axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_interval_most_frequent_not_belong_belong(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                                                closure_type, axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_interval_most_frequent_not_belong_not_belong(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                                                    closure_type, axis_param, field)
+    result = check_interval_most_frequent_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                 left_margin=left_margin, right_margin=right_margin, closure_type=closure_type,
+                                                 belong_op_out=belong_op_out, axis_param=axis_param, field=field)
 
     return True if result else False
 
@@ -1156,98 +906,6 @@ def check_interval_next_belong(data_dictionary_in: pd.DataFrame, data_dictionary
         return False
 
 
-def check_interval_next_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                          left_margin: float, right_margin: float, closure_type: Closure,
-                                          axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the next value is applied correctly on the interval
-    to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is NOTBELONG and belong_op_out is BELONG
-
-    params:
-        :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the next value
-        :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the next value
-        :param left_margin: (float) left margin of the interval
-        :param right_margin: (float) right margin of the interval
-        :param closure_type: (Closure) closure of the interval
-        :param axis_param: (int) axis to apply the next value
-        :param field: (str) field to apply the next value
-
-    Returns:
-        :return: True if the next value is applied correctly on the interval
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_name, value in row.items():
-                    value = data_dictionary_in.at[row_index, column_name]
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        elif axis_param == 0:  # Applies at the column level
-            for column_index, column_name in enumerate(data_dictionary_in.columns):
-                for row_index, value in data_dictionary_in[column_name].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        else:  # Applies at the dataframe level
-            raise ValueError("The axis cannot be None when applying the NEXT operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if check_interval_condition(value, left_margin, right_margin, closure_type):
-                    return False
-
-    return True
-
-
-def check_interval_next_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                              left_margin: float, right_margin: float, closure_type: Closure,
-                                              axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the next value is applied correctly on the interval
-    to the data_dictionary_out respect to the data_dictionary_in when belong_op_in and belong_op_out are NOTBELONG
-
-    params:
-        :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the next value
-        :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the next value
-        :param left_margin: (float) left margin of the interval
-        :param right_margin: (float) right margin of the interval
-        :param closure_type: (Closure) closure of the interval
-        :param axis_param: (int) axis to apply the next value
-        :param field: (str) field to apply the next value
-
-    Returns:
-        :return: True if the next value is applied correctly on the interval
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_name, value in row.items():
-                    value = data_dictionary_in.at[row_index, column_name]
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        elif axis_param == 0:  # Applies at the column level
-            for column_index, column_name in enumerate(data_dictionary_in.columns):
-                for row_index, value in data_dictionary_in[column_name].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-        else:  # Applies at the dataframe level
-            raise ValueError("The axis cannot be None when applying the NEXT operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if check_interval_condition(value, left_margin, right_margin, closure_type):
-                    return False
-
-    return True
-
-
 def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                         left_margin: float, right_margin: float, closure_type: Closure,
                         belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
@@ -1270,19 +928,11 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
     Returns:
         :return: True if the next value is applied correctly on the interval
     """
-    result = True
+    result = False
 
-    if belong_op_in == Belong.BELONG:
-        result = check_interval_next_belong(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                            closure_type, belong_op_out, axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_interval_next_not_belong_belong(data_dictionary_in, data_dictionary_out, left_margin,
-                                                       right_margin,
-                                                       closure_type, axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_interval_next_not_belong_not_belong(data_dictionary_in, data_dictionary_out, left_margin,
-                                                           right_margin,
-                                                           closure_type, axis_param, field)
+    result = check_interval_next_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                        left_margin=left_margin, right_margin=right_margin, closure_type=closure_type,
+                                        belong_op_out=belong_op_out, axis_param=axis_param, field=field)
 
     return True if result else False
 
@@ -1304,6 +954,12 @@ def check_fix_value_interpolation_belong(data_dictionary_in: pd.DataFrame, data_
         Returns:
             :return: True if the interpolation is applied correctly to the fix value input
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     data_dictionary_in_copy = data_dictionary_in.copy()
     if field is None:
         if axis_param == 0:
@@ -1318,12 +974,14 @@ def check_fix_value_interpolation_belong(data_dictionary_in: pd.DataFrame, data_
                     if data_dictionary_in.at[idx, col_name] == fix_value_input:
                         if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", col_name, " value should be: ",data_dictionary_in.at[idx, col_name], " but is: ",data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
                 numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -1333,13 +991,16 @@ def check_fix_value_interpolation_belong(data_dictionary_in: pd.DataFrame, data_
             for col_name in data_dictionary_in.columns:
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, col_name] == fix_value_input:
+                        if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -1354,129 +1015,16 @@ def check_fix_value_interpolation_belong(data_dictionary_in: pd.DataFrame, data_
             if data_dictionary_in.at[idx, field] == fix_value_input:
                 if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
                     if belong_op_out == Belong.BELONG:
-                        return False
+                        result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                     elif belong_op_out == Belong.NOTBELONG:
-                        return True
+                        result = True
             else:
                 if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                    return False
+                    result = False
+                    print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
-    else:
-        return True
-
-
-def check_fix_value_interpolation_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                    fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the interpolation is applied correctly to the fix value input when the input and output dataframe
-        when belong_op_in is NOTBELONG and belong_op_out is BELONG
-        params:
-            :param data_dictionary_in: dataframe with the data before the interpolation
-            :param data_dictionary_out: dataframe with the data after the interpolation
-            :param fix_value_input: value to apply the interpolation
-            :param axis_param: axis to apply the interpolation
-            :param field: field to apply the interpolation
-
-        Returns:
-            :return: True if the interpolation is applied correctly to the fix value input
-    """
-    data_dictionary_in_copy = data_dictionary_in.copy()
-    if field is None:
-        if axis_param == 0:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                data_dictionary_in_copy[col_name] = (
-                    data_dictionary_in[col_name].apply(lambda x: np.nan if x == fix_value_input else x).
-                    interpolate(method='linear', limit_direction='both'))
-
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                for idx in data_dictionary_in.index:
-                    if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                       return False
-        elif axis_param == 1:
-            for idx, row in data_dictionary_in.iterrows():
-                numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                data_dictionary_in_copy[row] = (
-                    numeric_data[row].apply(lambda x: np.nan if x == fix_value_input else x).
-                    interpolate(method='linear', limit_direction='both'))
-            for col_name in data_dictionary_in.columns:
-                for idx in data_dictionary_in.index:
-                    if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("The field is not numeric")
-
-        data_dictionary_in_copy[field] = (data_dictionary_in[field].apply(lambda x: np.nan if x == fix_value_input else x).
-                                         interpolate(method='linear', limit_direction='both'))
-
-        for idx in data_dictionary_in.index:
-            if data_dictionary_in.at[idx, field] == fix_value_input:
-                return False
-
-    return True
-
-
-def check_fix_value_interpolation_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                        fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the interpolation is applied correctly to the fix value input when the input and output dataframe
-        when belong_op_in is NOTBELONG and belong_op_out is NOTBELONG
-        params:
-            :param data_dictionary_in: dataframe with the data before the interpolation
-            :param data_dictionary_out: dataframe with the data after the interpolation
-            :param fix_value_input: value to apply the interpolation
-            :param axis_param: axis to apply the interpolation
-            :param field: field to apply the interpolation
-
-        Returns:
-            :return: True if the interpolation is applied correctly to the fix value input
-    """
-    data_dictionary_in_copy = data_dictionary_in.copy()
-    if field is None:
-        if axis_param == 0:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                data_dictionary_in_copy[col_name] = (
-                    data_dictionary_in[col_name].apply(lambda x: np.nan if x == fix_value_input else x).
-                    interpolate(method='linear', limit_direction='both'))
-
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                for idx in data_dictionary_in.index:
-                    if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                        return False
-        elif axis_param == 1:
-            for idx, row in data_dictionary_in.iterrows():
-                numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                data_dictionary_in_copy[row] = (
-                    numeric_data[row].apply(lambda x: np.nan if x == fix_value_input else x).
-                    interpolate(method='linear', limit_direction='both'))
-            for col_name in data_dictionary_in.columns:
-                for idx in data_dictionary_in.index:
-                    if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("The field is not numeric")
-
-        data_dictionary_in_copy[field] = (data_dictionary_in[field].apply(lambda x: np.nan if x == fix_value_input else x).
-                                         interpolate(method='linear', limit_direction='both'))
-
-        for idx in data_dictionary_in.index:
-            if data_dictionary_in.at[idx, field] == fix_value_input:
-                return False
-
-    return True
+    return True if result else False
 
 
 def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1498,28 +1046,14 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
         Returns:
             :return: True if the interpolation is applied correctly to the fix value
     """
-    result = True
+    result = False
 
     if axis_param is None and field is None:
         raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
-    if (belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG) or (
-            belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG):
-        result = check_fix_value_interpolation_belong(data_dictionary_in=data_dictionary_in,
-                                                      data_dictionary_out=data_dictionary_out,
-                                                      fix_value_input=fix_value_input,
-                                                      belong_op_out=belong_op_out,
-                                                      axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_fix_value_interpolation_not_belong_belong(data_dictionary_in=data_dictionary_in,
-                                                                 data_dictionary_out=data_dictionary_out,
-                                                                 fix_value_input=fix_value_input,
-                                                                 axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_fix_value_interpolation_not_belong_not_belong(data_dictionary_in=data_dictionary_in,
-                                                                     data_dictionary_out=data_dictionary_out,
-                                                                     fix_value_input=fix_value_input,
-                                                                     axis_param=axis_param, field=field)
+    result = check_fix_value_interpolation_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                  fix_value_input=fix_value_input, belong_op_out=belong_op_out,
+                                                  axis_param=axis_param, field=field)
 
     return True if result else False
 
@@ -1527,19 +1061,25 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
 def check_fix_value_mean_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
                                 belong_op_out: Belong, axis_param: int = None, field: str = None) -> bool:
     """
-        Check if the special type mean is applied correctly when the input and output dataframes
-        when belong_op_in and belong_op_out are BELONG
-        params::
-            :param data_dictionary_in: dataframe with the data before the mean
-            :param data_dictionary_out: dataframe with the data after the mean
-            :param fix_value_input: fix value to apply the mean
-            :param belong_op_out: then condition to check the invariant
-            :param axis_param: axis to apply the mean
-            :param field: field to apply the mean
+    Check if the special type mean is applied correctly when the input and output dataframes
+    when belong_op_in and belong_op_out are BELONG
+    params::
+        :param data_dictionary_in: dataframe with the data before the mean
+        :param data_dictionary_out: dataframe with the data after the mean
+        :param fix_value_input: fix value to apply the mean
+        :param belong_op_out: then condition to check the invariant
+        :param axis_param: axis to apply the mean
+        :param field: field to apply the mean
 
-        Returns:
-            :return: True if the special type mean is applied correctly
-        """
+    Returns:
+        :return: True if the special type mean is applied correctly
+    """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     if field is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1553,15 +1093,17 @@ def check_fix_value_mean_belong(data_dictionary_in: pd.DataFrame, data_dictionar
                         if data_dictionary_in.at[idx, col_name] == fix_value_input:
                             if data_dictionary_out.at[idx, col_name] != mean_value:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", mean_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
@@ -1572,15 +1114,17 @@ def check_fix_value_mean_belong(data_dictionary_in: pd.DataFrame, data_dictionar
                         if data_dictionary_in.at[idx, col_name] == fix_value_input:
                             if data_dictionary_out.at[idx, col_name] != mean:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", mean, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
                 numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -1590,14 +1134,16 @@ def check_fix_value_mean_belong(data_dictionary_in: pd.DataFrame, data_dictionar
                     if value == fix_value_input:
                         if data_dictionary_out.at[idx, col_name] != mean:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", mean, " but is: ", data_dictionary_out.loc[idx, col_name])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -1610,139 +1156,18 @@ def check_fix_value_mean_belong(data_dictionary_in: pd.DataFrame, data_dictionar
             if value == fix_value_input:
                 if data_dictionary_out.at[idx, field] != mean:
                     if belong_op_out == Belong.BELONG:
-                        return False
+                        result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", mean, " but is: ", data_dictionary_out.loc[idx, field])
                     elif belong_op_out == Belong.NOTBELONG:
-                        return True
+                        result = True
             else:
                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                 pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                    return False
+                    result = False
+                    print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
-    else:
-        return True
-
-
-def check_fix_value_mean_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                                           axis_param: int, field: str) -> bool:
-    """
-        Check if the special type mean is applied correctly when the input and output dataframes
-        when belong_op_in is NOTBELONG and belong_op_out is BELONG
-        params::
-            :param data_dictionary_in: dataframe with the data before the mean
-            :param data_dictionary_out: dataframe with the data after the mean
-            :param fix_value_input: fix value to apply the mean
-            :param axis_param: axis to apply the mean
-            :param field: field to apply the mean
-
-        Returns:
-            :return: True if the special type mean is applied correctly
-        """
-    if field is None:
-        if axis_param is None:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
-            # Calculate the mean of these numeric columns
-            mean_value = only_numbers_df.mean().mean()
-            # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 0:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                mean = data_dictionary_in[col_name].mean()
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 1:
-            for idx, row in data_dictionary_in.iterrows():
-                numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                mean = numeric_data.mean()
-                # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                for col_name, value in numeric_data.items():
-                    if value == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-        # Check the data_dictionary_out positions with missing values have been replaced with the mean
-        mean = data_dictionary_in[field].mean()
-        for idx, value in data_dictionary_in[field].items():
-            if value == fix_value_input:
-                return False
-
-        return True
-
-
-def check_fix_value_mean_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                                               axis_param: int, field: str) -> bool:
-    """
-        Check if the special type mean is applied correctly when the input and output dataframes
-        when belong_op_in is and belong_op_out are NOTBELONG
-        params::
-            :param data_dictionary_in: dataframe with the data before the mean
-            :param data_dictionary_out: dataframe with the data after the mean
-            :param fix_value_input: fix value to apply the mean
-            :param axis_param: axis to apply the mean
-            :param field: field to apply the mean
-
-        Returns:
-            :return: True if the special type mean is applied correctly
-        """
-    if field is None:
-        if axis_param is None:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
-            # Calculate the mean of these numeric columns
-            mean_value = only_numbers_df.mean().mean()
-            # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 0:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                mean = data_dictionary_in[col_name].mean()
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 1:
-            for idx, row in data_dictionary_in.iterrows():
-                numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                mean = numeric_data.mean()
-                # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                for col_name, value in numeric_data.items():
-                    if value == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-        # Check the data_dictionary_out positions with missing values have been replaced with the mean
-        mean = data_dictionary_in[field].mean()
-        for idx, value in data_dictionary_in[field].items():
-            if value == fix_value_input:
-                return False
-
-        return True
+    return True if result else False
 
 
 def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -1763,38 +1188,36 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
     Returns:
         :return: True if the mean is applied correctly to the fix value
     """
-    result = True
+    result = False
 
-    if (belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG) or (
-            belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG):
-        result = check_fix_value_mean_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                             fix_value_input=fix_value_input, belong_op_out=belong_op_out,
-                                             axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_fix_value_mean_not_belong_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                        fix_value_input=fix_value_input, axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_fix_value_mean_not_belong_not_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                            fix_value_input=fix_value_input, axis_param=axis_param, field=field)
+    result = check_fix_value_mean_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                         fix_value_input=fix_value_input, belong_op_out=belong_op_out,
+                                         axis_param=axis_param, field=field)
 
     return True if result else False
 
 
 def check_fix_value_median_belong(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out, axis_param, field):
     """
-        Check if the median is applied correctly to the fix input value when the input and output dataframes
-        when belong_op_in and belong_op_out are BELONG
-        params::
-            :param data_dictionary_in: dataframe with the data before the median
-            :param data_dictionary_out: dataframe with the data after the median
-            :param fix_value_input: fix value to apply the median
-            :param belong_op_out: then condition to check the invariant
-            :param axis_param: axis to apply the median
-            :param field: field to apply the median
+    Check if the median is applied correctly to the fix input value when the input and output dataframes
+    when belong_op_in and belong_op_out are BELONG
+    params::
+        :param data_dictionary_in: dataframe with the data before the median
+        :param data_dictionary_out: dataframe with the data after the median
+        :param fix_value_input: fix value to apply the median
+        :param belong_op_out: then condition to check the invariant
+        :param axis_param: axis to apply the median
+        :param field: field to apply the median
 
-        Returns:
-            :return: True if the median is applied correctly to the fix value
-        """
+    Returns:
+        :return: True if the median is applied correctly to the fix value
+    """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     if field is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1808,14 +1231,16 @@ def check_fix_value_median_belong(data_dictionary_in, data_dictionary_out, fix_v
                         if data_dictionary_in.at[idx, col_name] == fix_value_input:
                             if data_dictionary_out.at[idx, col_name] != median_value:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             # Check the data_dictionary_out positions with missing values have been replaced with the median
@@ -1826,14 +1251,16 @@ def check_fix_value_median_belong(data_dictionary_in, data_dictionary_out, fix_v
                         if data_dictionary_in.at[idx, col_name] == fix_value_input:
                             if data_dictionary_out.at[idx, col_name] != median:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else:
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
                 numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -1843,12 +1270,14 @@ def check_fix_value_median_belong(data_dictionary_in, data_dictionary_out, fix_v
                     if value == fix_value_input:
                         if data_dictionary_out.at[idx, col_name] != median:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -1862,140 +1291,18 @@ def check_fix_value_median_belong(data_dictionary_in, data_dictionary_out, fix_v
             if value == fix_value_input:
                 if data_dictionary_out.at[idx, field] != median:
                     if belong_op_out == Belong.BELONG:
-                        return False
+                        result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, field])
                     elif belong_op_out == Belong.NOTBELONG:
-                        return True
+                        result = True
             else:
                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                 pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                    return False
+                    result = False
+                    print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
-    else:
-        return True
-
-
-def check_fix_value_median_not_belong_belong(data_dictionary_in, data_dictionary_out, fix_value_input, axis_param, field):
-    """
-            Check if the median is applied correctly to the fix input value when the input and output dataframes
-            when belong_op_in is NOTBELONG and belong_op_out is BELONG
-            params::
-                :param data_dictionary_in: dataframe with the data before the median
-                :param data_dictionary_out: dataframe with the data after the median
-                :param fix_value_input: fix value to apply the median
-                :param axis_param: axis to apply the median
-                :param field: field to apply the median
-
-            Returns:
-                :return: True if the median is applied correctly to the fix value
-            """
-    if field is None:
-        if axis_param is None:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
-            # Calculate the median of these numeric columns
-            median_value = only_numbers_df.median().median()
-            # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 0:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                median = data_dictionary_in[col_name].median()
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 1:
-            for idx, row in data_dictionary_in.iterrows():
-                numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                median = numeric_data.median()
-                # Check if the missing values in the row have been replaced with the median in data_dictionary_out
-                for col_name, value in numeric_data.items():
-                    if value == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        # Check the data_dictionary_out positions with missing values have been replaced with the median
-        median = data_dictionary_in[field].median()
-        for idx, value in data_dictionary_in[field].items():
-            if value == fix_value_input:
-                return False
-
-    return True
-
-
-def check_fix_value_median_not_belong_not_belong(data_dictionary_in, data_dictionary_out, fix_value_input, axis_param, field):
-    """
-        Check if the median is applied correctly to the fix input value when the input and output dataframes
-        when belong_op_in and belong_op_out are both NOTBELONG
-        params::
-            :param data_dictionary_in: dataframe with the data before the median
-            :param data_dictionary_out: dataframe with the data after the median
-            :param fix_value_input: fix value to apply the median
-            :param axis_param: axis to apply the median
-            :param field: field to apply the median
-
-        Returns:
-            :return: True if the median is applied correctly to the fix value
-    """
-    if field is None:
-        if axis_param is None:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
-            # Calculate the median of these numeric columns
-            median_value = only_numbers_df.median().median()
-            # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 0:
-            # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                median = data_dictionary_in[col_name].median()
-                for idx, value in data_dictionary_in[col_name].items():
-                    if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                        if data_dictionary_in.at[idx, col_name] == fix_value_input:
-                            return False
-        elif axis_param == 1:
-            for idx, row in data_dictionary_in.iterrows():
-                numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                median = numeric_data.median()
-                # Check if the missing values in the row have been replaced with the median in data_dictionary_out
-                for col_name, value in numeric_data.items():
-                    if value == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        # Check the data_dictionary_out positions with missing values have been replaced with the median
-        median = data_dictionary_in[field].median()
-        for idx, value in data_dictionary_in[field].items():
-            if value == fix_value_input:
-                return False
-
-    return True
-
+    return True if result else False
 
 def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
                            belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
@@ -2015,19 +1322,11 @@ def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out
         Returns:
             :return: True if median is applied correctly to the fix value
     """
-    result = True
+    result = False
 
-    if (belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG) or (
-            belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG):
-        result = check_fix_value_median_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+    result = check_fix_value_median_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
                                                fix_value_input=fix_value_input, belong_op_out=belong_op_out,
                                                axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_fix_value_median_not_belong_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                          fix_value_input=fix_value_input, axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_fix_value_median_not_belong_not_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                              fix_value_input=fix_value_input, axis_param=axis_param, field=field)
 
     return True if result else False
 
