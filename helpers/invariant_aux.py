@@ -1347,15 +1347,19 @@ def check_fix_value_closest_belong(data_dictionary_in: pd.DataFrame, data_dictio
         Returns:
             :return: True if the closest is applied correctly to the fix input value
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
     if field is None:
         if axis_param is None:
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
             # Flatten the DataFrame into a single series of values
             flattened_values = only_numbers_df.values.flatten().tolist()
-
             # Find the closest numeric value to the fix value
             closest_value = find_closest_value(flattened_values, fix_value_input)
-
             # Replace the missing values with the closest numeric values
             for i in range(len(data_dictionary_in.index)):
                 for j in range(len(data_dictionary_in.columns)):
@@ -1363,35 +1367,35 @@ def check_fix_value_closest_belong(data_dictionary_in: pd.DataFrame, data_dictio
                     if current_value == fix_value_input:
                         if data_dictionary_out.iloc[i, j] != closest_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", i, " and column: ", j, " value should be: ", closest_value, " but is: ", data_dictionary_out.loc[i, j])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if pd.isnull(data_dictionary_in.iloc[i, j]):
                             raise ValueError(
                                 "Error: it's not possible to apply the closest operation to the null values")
                         if (data_dictionary_out.loc[i, j] != data_dictionary_in.loc[i, j]) and not (
                                 pd.isnull(data_dictionary_in.loc[i, j]) or pd.isnull(data_dictionary_out.loc[i, j])):
-                            return False
+                            result = False
+                            print("Error in row: ", i, " and column: ", j, " value should be: ", data_dictionary_in.loc[i, j], " but is: ", data_dictionary_out.loc[i, j])
         elif axis_param == 0:
             # Iterate over each column
             for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-
                 # Flatten the column into a list of values
                 flattened_values = data_dictionary_in[col_name].values.flatten().tolist()
-
                 # Find the closest numeric value to the fix value in the column
                 closest_value = find_closest_value(flattened_values, fix_value_input)
-
                 # Replace the missing values with the closest numeric values in the column
                 for i in range(len(data_dictionary_in.index)):
                     current_value = data_dictionary_in[col_name].iloc[i]
                     if current_value == fix_value_input:
                         if data_dictionary_out[col_name].iloc[i] != closest_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", i, " and column: ", col_name, " value should be: ", closest_value, " but is: ", data_dictionary_out.loc[i, col_name])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if pd.isnull(data_dictionary_in[col_name].iloc[i]):
                             raise ValueError(
@@ -1399,29 +1403,28 @@ def check_fix_value_closest_belong(data_dictionary_in: pd.DataFrame, data_dictio
                         if (data_dictionary_out[col_name].iloc[i] != data_dictionary_in[col_name].iloc[i]) and not (
                                 pd.isnull(data_dictionary_in[col_name].iloc[i]) or pd.isnull(
                                 data_dictionary_out[col_name].iloc[i])):
-                            return False
+                            result = False
+                            print("Error in row: ", i, " and column: ", col_name, " value should be: ", data_dictionary_in[col_name].iloc[i], " but is: ", data_dictionary_out.loc[i, col_name])
         elif axis_param == 1:
             # Iterate over each row
             for row_idx in range(len(data_dictionary_in.index)):
                 # Get the numeric values in the current row
                 row_df = pd.DataFrame([data_dictionary_in.iloc[row_idx]])
                 numeric_values_in_row = row_df.select_dtypes(include=[np.number]).values.tolist()
-
                 # Flatten the row into a list of values
                 flattened_values = [val for sublist in numeric_values_in_row for val in sublist]
-
                 # Find the closest numeric value to the fix value in the row
                 closest_value = find_closest_value(flattened_values, fix_value_input)
-
                 # Replace the missing values with the closest numeric values in the row
                 for col_name in data_dictionary_in.columns:
                     current_value = data_dictionary_in.at[row_idx, col_name]
                     if current_value == fix_value_input:
                         if data_dictionary_out.at[row_idx, col_name] != closest_value:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", row_idx, " and column: ", col_name, " value should be: ", closest_value, " but is: ", data_dictionary_out.loc[row_idx, col_name])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else:
                         if pd.isnull(data_dictionary_in.at[
                                          row_idx, col_name]):
@@ -1431,7 +1434,8 @@ def check_fix_value_closest_belong(data_dictionary_in: pd.DataFrame, data_dictio
                             row_idx, col_name]) and not (
                                 pd.isnull(data_dictionary_in.loc[row_idx, col_name]) or pd.isnull(
                                 data_dictionary_out.loc[row_idx, col_name])):
-                            return False
+                            result = False
+                            print("Error in row: ", row_idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[row_idx, col_name], " but is: ", data_dictionary_out.loc[row_idx, col_name])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -1441,19 +1445,18 @@ def check_fix_value_closest_belong(data_dictionary_in: pd.DataFrame, data_dictio
 
         # Flatten the column into a list of values
         flattened_values = data_dictionary_in[field].values.flatten().tolist()
-
         # Find the closest numeric value to the fix value in the column
         closest_value = find_closest_value(flattened_values, fix_value_input)
-
         # Replace the missing values with the closest numeric values in the column
         for i in range(len(data_dictionary_in.index)):
             current_value = data_dictionary_in[field].iloc[i]
             if current_value == fix_value_input:
                 if data_dictionary_out[field].iloc[i] != closest_value:
                     if belong_op_out == Belong.BELONG:
-                        return False
+                        result = False
+                        print("Error in row: ", i, " and column: ", field, " value should be: ", closest_value, " but is: ", data_dictionary_out.loc[i, field])
                     elif belong_op_out == Belong.NOTBELONG:
-                        return True
+                        result = True
             else:
                 if pd.isnull(data_dictionary_in[field].iloc[i]):
                     raise ValueError(
@@ -1461,14 +1464,10 @@ def check_fix_value_closest_belong(data_dictionary_in: pd.DataFrame, data_dictio
                 if (data_dictionary_out[field].iloc[i] != data_dictionary_in[field].iloc[i]) and not (
                         pd.isnull(data_dictionary_in[field].iloc[i]) or pd.isnull(
                         data_dictionary_out[field].iloc[i])):
-                    return False
+                    result = False
+                    print("Error in row: ", i, " and column: ", field, " value should be: ", data_dictionary_in[field].iloc[i], " but is: ", data_dictionary_out.loc[i, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
-        return False
-    else:
-        return True
+    return True if result else False
 
 
 def check_fix_value_closest_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -1608,20 +1607,11 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         Returns:
             :return: True if closest value is applied correctly to the fix value
     """
-    result = True
+    result = False
 
-    if (belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG) or (
-            belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG):
-        result = check_fix_value_closest_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+    result = check_fix_value_closest_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
                                                 fix_value_input=fix_value_input, belong_op_out=belong_op_out,
                                                 axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_fix_value_closest_not_belong_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                           fix_value_input=fix_value_input, axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_fix_value_closest_not_belong_not_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                               fix_value_input=fix_value_input, axis_param=axis_param, field=field)
-
     return True if result else False
 
 
