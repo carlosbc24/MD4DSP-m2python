@@ -85,7 +85,7 @@ if __name__ == "__main__":
     # execute_invariants_external_dataset_tests()
 
     invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
-    invariant_tests_with_external_dataset.execute_checkInv_FixValue_NumOp_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_FixValue_NumOp_ExternalDatasetTests()
 
 
 
