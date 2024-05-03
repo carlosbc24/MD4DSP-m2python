@@ -98,96 +98,6 @@ def check_fix_value_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_
         return False
 
 
-def check_fix_value_most_frequent_notbelong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                   fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the most frequent value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is NOTBELONG and belong_op_out is BELONG
-
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
-            :param fix_value_input: input value to apply the most frequent value
-            :param axis_param: (int) axis to apply the most frequent value
-            :param field: (str) field to apply the most frequent value
-
-        Returns:
-            :return: True if the most frequent value is applied correctly to the fix input value
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_index, value in row.items():
-                    if value == fix_value_input:
-                        return False
-        elif axis_param == 0:  # Applies the lambda function at the column level
-            for col in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col].items():
-                    if value == fix_value_input:
-                        return False
-        else:  # Applies at the dataframe level
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if value == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if value == fix_value_input:
-                    return False
-
-    return True
-
-
-def check_fix_value_most_frequent_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                        fix_value_input, axis_param: int, field: str) -> bool:
-    """
-        Check if the most frequent value is applied correctly to the fix input value
-        to the data_dictionary_out respect to the data_dictionary_in when belong_op_in and belong_op_out are NOTBELONG
-
-        params:
-            :param data_dictionary_in: (pd.DataFrame) dataframe with the data before the most frequent value
-            :param data_dictionary_out: (pd.DataFrame) dataframe with the data after the most frequent value
-            :param fix_value_input: input value to apply the most frequent value
-            :param axis_param: (int) axis to apply the most frequent value
-            :param field: (str) field to apply the most frequent value
-
-        Returns:
-            :return: True if the most frequent value is applied correctly to the fix input value
-    """
-    if field is None:
-        if axis_param == 1:  # Applies in a row level
-            for row_index, row in data_dictionary_in.iterrows():
-                for column_index, value in row.items():
-                    if value == fix_value_input:
-                        return False
-        elif axis_param == 0:  # Applies the lambda function at the column level
-            for col in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col].items():
-                    if value == fix_value_input:
-                        return False
-        else:  # Applies at the dataframe level
-            for col_name in data_dictionary_in.columns:
-                for idx, value in data_dictionary_in[col_name].items():
-                    if value == fix_value_input:
-                        return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field does not exist in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
-                if value == fix_value_input:
-                    return False
-
-    return True
-
-
 def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                   fix_value_input, belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
                                   axis_param: int = None, field: str = None) -> bool:
@@ -209,12 +119,8 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
     """
     result = True
 
-    if belong_op_in == Belong.BELONG:
-        result = check_fix_value_most_frequent_belong(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out, axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_fix_value_most_frequent_notbelong_belong(data_dictionary_in, data_dictionary_out, fix_value_input, axis_param, field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_fix_value_most_frequent_not_belong_not_belong(data_dictionary_in, data_dictionary_out, fix_value_input, axis_param, field)
+    result = check_fix_value_most_frequent_belong(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out, axis_param, field)
+
 
     return True if result else False
 

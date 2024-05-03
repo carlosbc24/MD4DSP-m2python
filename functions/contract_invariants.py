@@ -46,6 +46,11 @@ class Invariants:
             # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
             fix_value_input, fix_value_output = cast_type_FixValue(data_type_input, fix_value_input, data_type_output,
                                                                fix_value_output)
+        result=None
+        if belong_op_out == Belong.BELONG:
+            result=True
+        elif belong_op_out == Belong.NOTBELONG:
+            result=False
 
         if field is None:
             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -56,10 +61,12 @@ class Invariants:
                         if value == fix_value_input:
                             # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
                             if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
-                                return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                 # Iterar sobre las filas y columnas de data_dictionary_in
                 for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -67,23 +74,12 @@ class Invariants:
                         # Comprobar si el valor es igual a fix_value_input
                         if value == fix_value_input:
                             # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
-                            if data_dictionary_out.loc[row_index, column_name] == fix_value_output:
-                                return False
+                            if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
+                                result = True
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                return False
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            return False
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
 
         elif field is not None:
             if field in data_dictionary_in.columns and field in data_dictionary_out.columns:
@@ -93,34 +89,27 @@ class Invariants:
                         if value == fix_value_input:
                             # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
                             if data_dictionary_out.loc[row_index, field] != fix_value_output:
-                                return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", field, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, field])
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                                return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", field, " value should be: ", data_dictionary_in.loc[row_index, field], " but is: ", data_dictionary_out.loc[row_index, field])
                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                     for row_index, value in data_dictionary_in[field].items():
                         # Comprobar si el valor es igual a fix_value_input
                         if value == fix_value_input:
                             # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
-                            if data_dictionary_out.loc[row_index, field] == fix_value_output:
-                                return False
+                            if data_dictionary_out.loc[row_index, field] != fix_value_output:
+                                result = True
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                                return False
-                elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-                    for row_index, value in data_dictionary_in[field].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            return False
-                elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-                    for row_index, value in data_dictionary_in[field].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", field, " value should be: ", data_dictionary_in.loc[row_index, field], " but is: ", data_dictionary_out.loc[row_index, field])
             elif field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-        return True
+        return True if result else False
 
     def check_inv_fix_value_derived_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                           fix_value_input, derived_type_output: DerivedType, belong_op_in: Belong = Belong.BELONG,
@@ -253,16 +242,6 @@ class Invariants:
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
                                 return False
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if check_interval_condition(value, left_margin, right_margin, closure_type):
-                            return False
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if check_interval_condition(value, left_margin, right_margin, closure_type):
-                            return False
 
         elif field is not None:
             if field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
@@ -281,14 +260,6 @@ class Invariants:
                     else: # Si el valor no es igual a fix_value_input
                         if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
                             return False
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-                for row_index, value in data_dictionary_in[field].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-                for row_index, value in data_dictionary_in[field].items():
-                    if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        return False
 
 
         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -565,128 +536,6 @@ class Invariants:
                                     if data_dictionary_out.loc[idx, col] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, col])):
                                         return False
 
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-                if special_type_input == SpecialType.MISSING:
-                    for column_index, column_name in enumerate(data_dictionary_in.columns):
-                        for row_index, value in data_dictionary_in[column_name].items():
-                            if value in missing_values or pd.isnull(value):
-                                return False
-                elif special_type_input == SpecialType.INVALID:
-                    for column_index, column_name in enumerate(data_dictionary_in.columns):
-                        for row_index, value in data_dictionary_in[column_name].items():
-                            if value in missing_values:
-                                return False
-                elif special_type_input == SpecialType.OUTLIER:
-                    threshold = 1.5
-                    if axis_param is None:
-                        Q1 = data_dictionary_in.stack().quantile(0.25)
-                        Q3 = data_dictionary_in.stack().quantile(0.75)
-                        IQR = Q3 - Q1
-                        # Define the lower and upper bounds
-                        lower_bound = Q1 - threshold * IQR
-                        upper_bound = Q3 + threshold * IQR
-                        # Identify the outliers in the dataframe
-                        numeric_values = data_dictionary_in.select_dtypes(include=[np.number])
-                        for col in numeric_values.columns:
-                            for idx in numeric_values.index:
-                                value = numeric_values.loc[idx, col]
-                                is_outlier = (value < lower_bound) or (value > upper_bound)
-                                if is_outlier:
-                                    return False
-                    elif axis_param == 0:
-                        # Iterate over each numeric column
-                        for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                            # Calculate the Q1, Q3, and IQR for each column
-                            Q1 = data_dictionary_in[col].quantile(0.25)
-                            Q3 = data_dictionary_in[col].quantile(0.75)
-                            IQR = Q3 - Q1
-                            # Define the lower and upper bounds
-                            lower_bound = Q1 - threshold * IQR
-                            upper_bound = Q3 + threshold * IQR
-                            # Identify the outliers in the column
-                            for idx in data_dictionary_in.index:
-                                value = data_dictionary_in.loc[idx, col]
-                                is_outlier = (value < lower_bound) or (value > upper_bound)
-                                if is_outlier:
-                                    return False
-                    elif axis_param == 1:
-                        # Iterate over each row
-                        for idx in data_dictionary_in.index:
-                            # Calculate the Q1, Q3, and IQR for each row
-                            Q1 = data_dictionary_in.loc[idx].quantile(0.25)
-                            Q3 = data_dictionary_in.loc[idx].quantile(0.75)
-                            IQR = Q3 - Q1
-                            # Define the lower and upper bounds
-                            lower_bound = Q1 - threshold * IQR
-                            upper_bound = Q3 + threshold * IQR
-                            # Identify the outliers in the row
-                            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                                value = data_dictionary_in.loc[idx, col]
-                                is_outlier = (value < lower_bound) or (value > upper_bound)
-                                if is_outlier:
-                                    return False
-
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-                if special_type_input == SpecialType.MISSING:
-                    for column_index, column_name in enumerate(data_dictionary_in.columns):
-                        for row_index, value in data_dictionary_in[column_name].items():
-                            if value in missing_values or pd.isnull(value):
-                                return False
-                elif special_type_input == SpecialType.INVALID:
-                    for column_index, column_name in enumerate(data_dictionary_in.columns):
-                        for row_index, value in data_dictionary_in[column_name].items():
-                            if value in missing_values:
-                                return False
-                elif special_type_input == SpecialType.OUTLIER:
-                    threshold = 1.5
-                    if axis_param is None:
-                        Q1 = data_dictionary_in.stack().quantile(0.25)
-                        Q3 = data_dictionary_in.stack().quantile(0.75)
-                        IQR = Q3 - Q1
-                        # Define the lower and upper bounds
-                        lower_bound = Q1 - threshold * IQR
-                        upper_bound = Q3 + threshold * IQR
-                        # Identify the outliers in the dataframe
-                        numeric_values = data_dictionary_in.select_dtypes(include=[np.number])
-                        for col in numeric_values.columns:
-                            for idx in numeric_values.index:
-                                value = numeric_values.loc[idx, col]
-                                is_outlier = (value < lower_bound) or (value > upper_bound)
-                                if is_outlier:
-                                    return False
-                    elif axis_param == 0:
-                        # Iterate over each numeric column
-                        for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                            # Calculate the Q1, Q3, and IQR for each column
-                            Q1 = data_dictionary_in[col].quantile(0.25)
-                            Q3 = data_dictionary_in[col].quantile(0.75)
-                            IQR = Q3 - Q1
-                            # Define the lower and upper bounds
-                            lower_bound = Q1 - threshold * IQR
-                            upper_bound = Q3 + threshold * IQR
-                            # Identify the outliers in the column
-                            for idx in data_dictionary_in.index:
-                                value = data_dictionary_in.loc[idx, col]
-                                is_outlier = (value < lower_bound) or (value > upper_bound)
-                                if is_outlier:
-                                    return False
-                    elif axis_param == 1:
-                        # Iterate over each row
-                        for idx in data_dictionary_in.index:
-                            # Calculate the Q1, Q3, and IQR for each row
-                            Q1 = data_dictionary_in.loc[idx].quantile(0.25)
-                            Q3 = data_dictionary_in.loc[idx].quantile(0.75)
-                            IQR = Q3 - Q1
-                            # Define the lower and upper bounds
-                            lower_bound = Q1 - threshold * IQR
-                            upper_bound = Q3 + threshold * IQR
-                            # Identify the outliers in the row
-                            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                                value = data_dictionary_in.loc[idx, col]
-                                is_outlier = (value < lower_bound) or (value > upper_bound)
-                                if is_outlier:
-                                    return False
-
         elif field is not None:
             if field in data_dictionary_in.columns and field in data_dictionary_out.columns:
                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -762,56 +611,6 @@ class Invariants:
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[idx, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, field])):
                                     return False
-
-                elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-                    if special_type_input == SpecialType.MISSING:
-                        for row_index, value in data_dictionary_in[field].items():
-                            if value in missing_values or pd.isnull(value):
-                                return False
-                    elif special_type_input == SpecialType.INVALID:
-                        for row_index, value in data_dictionary_in[field].items():
-                            if value in missing_values:
-                                return False
-                    elif special_type_input == SpecialType.OUTLIER:
-                        threshold = 1.5
-                        # Calculate the Q1, Q3, and IQR for each column
-                        Q1 = data_dictionary_in[field].quantile(0.25)
-                        Q3 = data_dictionary_in[field].quantile(0.75)
-                        IQR = Q3 - Q1
-                        # Define the lower and upper bounds
-                        lower_bound = Q1 - threshold * IQR
-                        upper_bound = Q3 + threshold * IQR
-                        # Identify the outliers in the column
-                        for idx in data_dictionary_in.index:
-                            value = data_dictionary_in.loc[idx, field]
-                            is_outlier = (value < lower_bound) or (value > upper_bound)
-                            if is_outlier:
-                                return False
-
-                elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-                    if special_type_input == SpecialType.MISSING:
-                        for row_index, value in data_dictionary_in[field].items():
-                            if value in missing_values or pd.isnull(value):
-                                return False
-                    elif special_type_input == SpecialType.INVALID:
-                        for row_index, value in data_dictionary_in[field].items():
-                            if value in missing_values:
-                                return False
-                    elif special_type_input == SpecialType.OUTLIER:
-                        threshold = 1.5
-                        # Calculate the Q1, Q3, and IQR for each column
-                        Q1 = data_dictionary_in[field].quantile(0.25)
-                        Q3 = data_dictionary_in[field].quantile(0.75)
-                        IQR = Q3 - Q1
-                        # Define the lower and upper bounds
-                        lower_bound = Q1 - threshold * IQR
-                        upper_bound = Q3 + threshold * IQR
-                        # Identify the outliers in the column
-                        for idx in data_dictionary_in.index:
-                            value = data_dictionary_in.loc[idx, field]
-                            is_outlier = (value < lower_bound) or (value > upper_bound)
-                            if is_outlier:
-                                return False
 
             elif field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")

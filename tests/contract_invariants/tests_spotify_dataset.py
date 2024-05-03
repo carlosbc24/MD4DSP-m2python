@@ -301,10 +301,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         fix_value_input = '2019-07-05'
         fix_value_output = True
-        result_df = self.data_transformations.transform_fix_value_fix_value(
-            data_dictionary=self.small_batch_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                            fix_value_input=fix_value_input,
+                                                                            fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -313,24 +313,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert result_invariant is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, and got False")
 
-        # Caso 9
-        # Ejecutar la invariante: cambiar el valor fijo string 'Maroon 5' por el valor fijo de tipo FLOAT 3.0
-        # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
-        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
-        expected_df = self.small_batch_dataset.copy()
-        fix_value_input = 'Maroon 5'
-        fix_value_output = 3.0
-        result_df = self.data_transformations.transform_fix_value_fix_value(
-            data_dictionary=self.small_batch_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
-        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(1), belong_op_out=Belong(0),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
-        assert result_invariant is False, "Test Case 9 Failed: Expected False, but got True"
-        print_and_log("Test Case 9 Passed: Expected False, and got False")
+
 
         # Caso 10
         # Ejecutar la invariante: cambiar el valor fijo de tipo FLOAT 2.33e-5 por el valor fijo de tipo STRING "Near 0"
@@ -524,25 +507,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                          fix_value_output=fix_value_output)
         assert result_invariant is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, and got False")
-
-        # Caso 9
-        # Ejecutar la invariante: cambiar el valor fijo string 'Maroon 5' por el valor fijo de tipo FLOAT 3.0
-        # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
-        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
-        expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 'Maroon 5'
-        fix_value_output = 3.0
-        result_df = self.data_transformations.transform_fix_value_fix_value(
-            data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
-        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(1), belong_op_out=Belong(0),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
-        assert result_invariant is False, "Test Case 9 Failed: Expected False, but got True"
-        print_and_log("Test Case 9 Passed: Expected False, and got False")
 
         # Caso 10
         # Ejecutar la invariante: cambiar el valor fijo de tipo FLOAT 2.33e-5 por el valor fijo de tipo STRING "Near 0"
