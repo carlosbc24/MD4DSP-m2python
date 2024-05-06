@@ -76,6 +76,7 @@ class Invariants:
                             # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
                             if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
                                 result = True
+                                print("Row: ", row_index, " and column: ", column_name, " value should not be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
                                 result = False
@@ -102,6 +103,7 @@ class Invariants:
                             # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
                             if data_dictionary_out.loc[row_index, field] != fix_value_output:
                                 result = True
+                                print("Row: ", row_index, " and column: ", field, " value should not be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, field])
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
                                 result = False
@@ -143,15 +145,15 @@ class Invariants:
 
         if derived_type_output == DerivedType.MOSTFREQUENT:
             result = check_fix_value_most_frequent(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                   fix_value_input=fix_value_input, belong_op_in=belong_op_in,
+                                                   fix_value_input=fix_value_input,
                                                    belong_op_out=belong_op_out, axis_param=axis_param, field=field)
         elif derived_type_output == DerivedType.PREVIOUS:
             result = check_fix_value_previous(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                              fix_value_input=fix_value_input, belong_op_in=belong_op_in,
+                                              fix_value_input=fix_value_input,
                                               belong_op_out=belong_op_out, axis_param=axis_param, field=field)
         elif derived_type_output == DerivedType.NEXT:
             result = check_fix_value_next(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                          fix_value_input=fix_value_input, belong_op_in=belong_op_in,
+                                          fix_value_input=fix_value_input,
                                           belong_op_out=belong_op_out, axis_param=axis_param, field=field)
 
         return True if result else False
@@ -188,23 +190,23 @@ class Invariants:
         if num_op_output == Operation.INTERPOLATION:
             result = check_fix_value_interpolation(data_dictionary_in=data_dictionary_in,
                                                    data_dictionary_out=data_dictionary_out, fix_value_input=fix_value_input,
-                                                   belong_op_in=belong_op_in, belong_op_out=belong_op_out,
+                                                   belong_op_out=belong_op_out,
                                                    axis_param=axis_param, field=field)
 
         elif num_op_output == Operation.MEAN:
             result = check_fix_value_mean(data_dictionary_in=data_dictionary_in,
                                           data_dictionary_out=data_dictionary_out, fix_value_input=fix_value_input,
-                                          belong_op_in=belong_op_in, belong_op_out=belong_op_out,
+                                          belong_op_out=belong_op_out,
                                           axis_param=axis_param, field=field)
         elif num_op_output == Operation.MEDIAN:
             result = check_fix_value_median(data_dictionary_in=data_dictionary_in,
                                             data_dictionary_out=data_dictionary_out, fix_value_input=fix_value_input,
-                                            belong_op_in=belong_op_in, belong_op_out=belong_op_out,
+                                            belong_op_out=belong_op_out,
                                             axis_param=axis_param, field=field)
         elif num_op_output == Operation.CLOSEST:
             result = check_fix_value_closest(data_dictionary_in=data_dictionary_in,
                                              data_dictionary_out=data_dictionary_out, fix_value_input=fix_value_input,
-                                             belong_op_in=belong_op_in, belong_op_out=belong_op_out,
+                                             belong_op_out=belong_op_out,
                                              axis_param=axis_param, field=field)
 
         return True if result else False
@@ -235,6 +237,12 @@ class Invariants:
         if data_type_output is not None:  # If it is specified, the transformation is performed
             vacio, fix_value_output = cast_type_FixValue(None, None, data_type_output, fix_value_output)
 
+        result = None
+        if belong_op_out == Belong.BELONG:
+            result = True
+        elif belong_op_out == Belong.NOTBELONG:
+            result = False
+
         if field is None:
             if (belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG) or (belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG):
                 for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -242,12 +250,14 @@ class Invariants:
                         if check_interval_condition(value, left_margin, right_margin, closure_type):
                             if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, column_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
                         else: # Si el valor no es igual a fix_value_input
                             if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
 
         elif field is not None:
             if field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
@@ -260,20 +270,16 @@ class Invariants:
                     if check_interval_condition(value, left_margin, right_margin, closure_type):
                         if data_dictionary_out.loc[row_index, field] != fix_value_output:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", row_index, " and column: ", field, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, field])
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
                     else: # Si el valor no es igual a fix_value_input
                         if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                            return False
+                            result = False
+                            print("Error in row: ", row_index, " and column: ", field, " value should be: ", data_dictionary_in.loc[row_index, field], " but is: ", data_dictionary_out.loc[row_index, field])
 
-
-        if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-            return True
-        elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-            return False
-        else:
-            return True
+        return True if result else False
 
     def check_inv_interval_derived_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                          left_margin: float, right_margin: float,
@@ -298,17 +304,23 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        result = True
+        result = False
 
         if derived_type_output == DerivedType.MOSTFREQUENT:
-            result = check_interval_most_frequent(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                                  closure_type, belong_op_in, belong_op_out, axis_param, field)
+            result = check_interval_most_frequent(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                  left_margin=left_margin, right_margin=right_margin,
+                                                  closure_type=closure_type, belong_op_out=belong_op_out,
+                                                  axis_param=axis_param, field=field)
         elif derived_type_output == DerivedType.PREVIOUS:
-            result = check_interval_previous(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                             closure_type, belong_op_in, belong_op_out, axis_param, field)
+            result = check_interval_previous(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                             left_margin=left_margin, right_margin=right_margin,
+                                             closure_type=closure_type, belong_op_out=belong_op_out,
+                                             axis_param=axis_param, field=field)
         elif derived_type_output == DerivedType.NEXT:
-            result = check_interval_next(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                         closure_type, belong_op_in, belong_op_out, axis_param, field)
+            result = check_interval_next(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                         left_margin=left_margin, right_margin=right_margin,
+                                         closure_type=closure_type, belong_op_out=belong_op_out,
+                                         axis_param=axis_param, field=field)
 
         return True if result else False
 
@@ -335,20 +347,28 @@ class Invariants:
             True if the invariant is satisfied, False otherwise
         """
 
-        result = True
+        result = False
 
         if num_op_output == Operation.INTERPOLATION:
-            result = check_interval_interpolation(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                                  closure_type, belong_op_in, belong_op_out, axis_param, field)
+            result = check_interval_interpolation(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                  left_margin=left_margin, right_margin=right_margin,
+                                                  closure_type=closure_type, belong_op_in=belong_op_in,
+                                                  belong_op_out=belong_op_out, axis_param=axis_param, field=field)
         elif num_op_output == Operation.MEAN:
-            result = check_interval_mean(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                         closure_type, belong_op_in, belong_op_out, axis_param, field)
+            result = check_interval_mean(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                         left_margin=left_margin, right_margin=right_margin,
+                                         closure_type=closure_type, belong_op_in=belong_op_in,
+                                         belong_op_out=belong_op_out, axis_param=axis_param, field=field)
         elif num_op_output == Operation.MEDIAN:
-            result = check_interval_median(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                           closure_type, belong_op_in, belong_op_out, axis_param, field)
+            result = check_interval_median(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                           left_margin=left_margin, right_margin=right_margin,
+                                           closure_type=closure_type, belong_op_in=belong_op_in,
+                                           belong_op_out=belong_op_out, axis_param=axis_param, field=field)
         elif num_op_output == Operation.CLOSEST:
-            result = check_interval_closest(data_dictionary_in, data_dictionary_out, left_margin, right_margin,
-                                            closure_type, belong_op_in, belong_op_out, axis_param, field)
+            result = check_interval_closest(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                            left_margin=left_margin, right_margin=right_margin,
+                                            closure_type=closure_type, belong_op_in=belong_op_in,
+                                            belong_op_out=belong_op_out, axis_param=axis_param, field=field)
 
         return True if result else False
 
@@ -376,6 +396,12 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
+        result = None
+        if belong_op_out == Belong.BELONG:
+            result = True
+        elif belong_op_out == Belong.NOTBELONG:
+            result = False
+
         if data_type_output is not None:  # If it is specified, the casting is performed
             vacio, fix_value_output = cast_type_FixValue(None, None, data_type_output, fix_value_output)
 
@@ -386,19 +412,23 @@ class Invariants:
                         for row_index, value in data_dictionary_in[column_name].items():
                             if value in missing_values or pd.isnull(value):
                                 if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, column_name] != value:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                 elif special_type_input == SpecialType.INVALID:
                     for column_index, column_name in enumerate(data_dictionary_in.columns):
                         for row_index, value in data_dictionary_in[column_name].items():
                             if value in missing_values:
                                 if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                 elif special_type_input == SpecialType.OUTLIER:
                     threshold = 1.5
                     if axis_param is None:
@@ -416,10 +446,12 @@ class Invariants:
                                 is_outlier = (value < lower_bound) or (value > upper_bound)
                                 if is_outlier:
                                     if data_dictionary_out.loc[idx, col] != fix_value_output:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, col])
                                 else: # Si el valor no es igual a fix_value_input
                                     if data_dictionary_out.loc[idx, col] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, col])):
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, col])
                     elif axis_param == 0:
                         # Iterate over each numeric column
                         for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -436,10 +468,12 @@ class Invariants:
                                 is_outlier = (value < lower_bound) or (value > upper_bound)
                                 if is_outlier:
                                     if data_dictionary_out.loc[idx, col] != fix_value_output:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, col])
                                 else: # Si el valor no es igual a fix_value_input
                                     if data_dictionary_out.loc[idx, col] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, col])):
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, col])
                     elif axis_param == 1:
                         # Iterate over each row
                         for idx in data_dictionary_in.index:
@@ -456,30 +490,36 @@ class Invariants:
                                 is_outlier = (value < lower_bound) or (value > upper_bound)
                                 if is_outlier:
                                     if data_dictionary_out.loc[idx, col] != fix_value_output:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, col])
                                 else: # Si el valor no es igual a fix_value_input
                                     if data_dictionary_out.loc[idx, col] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, col])):
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, col])
 
             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                 if special_type_input == SpecialType.MISSING:
                     for column_index, column_name in enumerate(data_dictionary_in.columns):
                         for row_index, value in data_dictionary_in[column_name].items():
                             if value in missing_values or pd.isnull(value):
-                                if data_dictionary_out.loc[row_index, column_name] == fix_value_output:
-                                    return False
+                                if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_name, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, column_name] != value:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                 elif special_type_input == SpecialType.INVALID:
                     for column_index, column_name in enumerate(data_dictionary_in.columns):
                         for row_index, value in data_dictionary_in[column_name].items():
                             if value in missing_values:
-                                if data_dictionary_out.loc[row_index, column_name] == fix_value_output:
-                                    return False
+                                if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_name, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                 elif special_type_input == SpecialType.OUTLIER:
                     threshold = 1.5
                     if axis_param is None:
@@ -496,11 +536,13 @@ class Invariants:
                                 value = numeric_values.loc[idx, col]
                                 is_outlier = (value < lower_bound) or (value > upper_bound)
                                 if is_outlier:
-                                    if data_dictionary_out.loc[idx, col] == fix_value_output:
-                                        return False
+                                    if data_dictionary_out.loc[idx, col] != fix_value_output:
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, col])
                                 else: # Si el valor no es igual a fix_value_input
                                     if data_dictionary_out.loc[idx, col] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, col])):
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, col])
                     elif axis_param == 0:
                         # Iterate over each numeric column
                         for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -516,11 +558,13 @@ class Invariants:
                                 value = data_dictionary_in.loc[idx, col]
                                 is_outlier = (value < lower_bound) or (value > upper_bound)
                                 if is_outlier:
-                                    if data_dictionary_out.loc[idx, col] == fix_value_output:
-                                        return False
+                                    if data_dictionary_out.loc[idx, col] != fix_value_output:
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, col])
                                 else: # Si el valor no es igual a fix_value_input
                                     if data_dictionary_out.loc[idx, col] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, col])):
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, col])
                     elif axis_param == 1:
                         # Iterate over each row
                         for idx in data_dictionary_in.index:
@@ -536,11 +580,13 @@ class Invariants:
                                 value = data_dictionary_in.loc[idx, col]
                                 is_outlier = (value < lower_bound) or (value > upper_bound)
                                 if is_outlier:
-                                    if data_dictionary_out.loc[idx, col] == fix_value_output:
-                                        return False
+                                    if data_dictionary_out.loc[idx, col] != fix_value_output:
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, col])
                                 else: # Si el valor no es igual a fix_value_input
                                     if data_dictionary_out.loc[idx, col] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, col])):
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, col])
 
         elif field is not None:
             if field in data_dictionary_in.columns and field in data_dictionary_out.columns:
@@ -549,18 +595,22 @@ class Invariants:
                         for row_index, value in data_dictionary_in[field].items():
                             if value in missing_values or pd.isnull(value):
                                 if data_dictionary_out.loc[row_index, field] != fix_value_output:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", field, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, field])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, field] != value:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", field, " value should be: ", value, " but is: ", data_dictionary_out.loc[row_index, field])
                     elif special_type_input == SpecialType.INVALID:
                         for row_index, value in data_dictionary_in[field].items():
                             if value in missing_values:
                                 if data_dictionary_out.loc[row_index, field] != fix_value_output:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", field, " value should not be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, field])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", field, " value should be: ", value, " but is: ", data_dictionary_out.loc[row_index, field])
                     elif special_type_input == SpecialType.OUTLIER:
                         threshold = 1.5
                         # Calculate the Q1, Q3, and IQR for each column
@@ -576,28 +626,34 @@ class Invariants:
                             is_outlier = (value < lower_bound) or (value > upper_bound)
                             if is_outlier:
                                 if data_dictionary_out.loc[idx, field] != fix_value_output:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", field, " value should not be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, field])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[idx, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, field])):
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", field, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, field])
 
                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                     if special_type_input == SpecialType.MISSING:
                         for row_index, value in data_dictionary_in[field].items():
                             if value in missing_values or pd.isnull(value):
-                                if data_dictionary_out.loc[row_index, field] == fix_value_output:
-                                    return False
+                                if data_dictionary_out.loc[row_index, field] != fix_value_output:
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", field, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, field])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, field] != value:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", field, " value should be: ", value, " but is: ", data_dictionary_out.loc[row_index, field])
                     elif special_type_input == SpecialType.INVALID:
                         for row_index, value in data_dictionary_in[field].items():
                             if value in missing_values:
-                                if data_dictionary_out.loc[row_index, field] == fix_value_output:
-                                    return False
+                                if data_dictionary_out.loc[row_index, field] != fix_value_output:
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", field, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[row_index, field])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", field, " value should be: ", value, " but is: ", data_dictionary_out.loc[row_index, field])
                     elif special_type_input == SpecialType.OUTLIER:
                         threshold = 1.5
                         # Calculate the Q1, Q3, and IQR for each column
@@ -612,16 +668,18 @@ class Invariants:
                             value = data_dictionary_in.loc[idx, field]
                             is_outlier = (value < lower_bound) or (value > upper_bound)
                             if is_outlier:
-                                if data_dictionary_out.loc[idx, field] == fix_value_output:
-                                    return False
+                                if data_dictionary_out.loc[idx, field] != fix_value_output:
+                                    result = True
+                                    print("Row: ", idx, " and column: ", field, " value should be: ", fix_value_output, " but is: ", data_dictionary_out.loc[idx, field])
                             else: # Si el valor no es igual a fix_value_input
                                 if data_dictionary_out.loc[idx, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[idx, field])):
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", field, " value should be: ", value, " but is: ", data_dictionary_out.loc[idx, field])
 
             elif field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-        return True
+        return True if result else False
 
     def check_inv_special_value_derived_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                               special_type_input: SpecialType, derived_type_output: DerivedType,
