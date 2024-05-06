@@ -719,14 +719,8 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        data_dictionary_outliers_mask = None
         result = True
 
-        if special_type_input == SpecialType.OUTLIER:
-            data_dictionary_outliers_mask = get_outliers(data_dictionary_in, field, axis_param)
-
-            if axis_param is None:
-                missing_values = data_dictionary_in.where(data_dictionary_outliers_mask == 1).stack().tolist()
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             if derived_type_output == DerivedType.MOSTFREQUENT:
                 result = check_special_type_most_frequent(data_dictionary_in, data_dictionary_out, special_type_input,
@@ -741,6 +735,7 @@ class Invariants:
         elif special_type_input == SpecialType.OUTLIER:
             # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
             # If the outliers are applied at the dataframe level, previous and next cannot be applied.
+            data_dictionary_outliers_mask = get_outliers(data_dictionary_in, field, axis_param)
 
             if axis_param is None:
                 missing_values = data_dictionary_in.where(data_dictionary_outliers_mask == 1).stack().tolist()
