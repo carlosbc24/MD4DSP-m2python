@@ -2287,7 +2287,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
     def execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
-        Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_NumOp
+        Execute the invariant test using a small batch of the dataset for the function check_inv_interval_num_op
         """
 
         # ------------------------------------------BELONG-BELONG----------------------------------------------
@@ -2346,11 +2346,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Caso 5
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+        # expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
         #                                                                 left_margin=0, right_margin=3, closure_type=Closure(0),
         #                                                                 num_op_output=Operation(1), axis_param=1)
         #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
+        # result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
         #                                                  closure_type=Closure(0), num_op_output=Operation(1), axis_param=1,
         #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
         #                                                  data_dictionary_out=expected)
@@ -2372,11 +2372,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 6 Passed: Expected True, got True")
 
         # Caso 7
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+        # expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
         #                                                                 left_margin=0, right_margin=3, closure_type=Closure(2),
         #                                                                 num_op_output=Operation(2), axis_param=1)
         #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
+        # result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
         #                                                  closure_type=Closure(2), num_op_output=Operation(2), axis_param=1,
         #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
         #                                                  data_dictionary_out=expected)
@@ -2556,11 +2556,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 18 Passed: Expected True, got True")
 
         # Caso 19
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.small_batch_dataset.copy(),
+        # expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
         #                                                                 left_margin=0, right_margin=3, closure_type=Closure(0),
         #                                                                 num_op_output=Operation(1), axis_param=1)
         #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
+        # result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, right_margin=3,
         #                                                  closure_type=Closure(0), num_op_output=Operation(1), axis_param=1,
         #                                                  belong_op_in=Belong(0), belong_op_out=Belong(1),
         #                                                  data_dictionary_out=expected)
@@ -2709,312 +2709,273 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
     def execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset(self):
         """
-        Execute the invariant test using the whole dataset for the function checkInv_Interval_NumOp
+        Execute the invariant test using the whole dataset for the function check_inv_interval_num_op
         """
 
         # # ------------------------------------------BELONG-BELONG----------------------------------------------
-        # # Caso 1
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=2, right_margin=4, closure_type=Closure(1),
-        #                                                               num_op_output=Operation(0), axis_param=0, field=None)
-        # # Aplicar la transformación de datos
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2,
-        #                                                  right_margin=4, closure_type=Closure(1), num_op_output=Operation(0),
-        #                                                  axis_param=0, belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 1 Failed: Expected True, but got False"
-        # print_and_log("Test Case 1 Passed: Expected True, got True")
-        #
-        # # Caso 2
-        # # Crear un DataFrame de prueba
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=3, right_margin=4,
-        #                                                               closure_type=Closure(3), num_op_output=Operation(0),
-        #                                                               axis_param=1)
-        # # Aplicar la invariante
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=3, right_margin=4,
-        #                                                  closure_type=Closure(3), num_op_output=Operation(0), axis_param=1,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 2 Failed: Expected True, but got False"
-        # print_and_log("Test Case 2 Passed: Expected True, got True")
-        #
-        # # Caso 3
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=0, right_margin=3, closure_type=Closure(0),
-        #                                                                 num_op_output=Operation(1), axis_param=None)
-        # # Aplicar la transformación de datos
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        #                                                  closure_type=Closure(0), num_op_output=Operation(1),
-        #                                                  axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 3 Failed: Expected True, but got False"
-        # print_and_log("Test Case 3 Passed: Expected True, got True")
-        #
-        # # Caso 4
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=0, right_margin=3, closure_type=Closure(0),
-        #                                                                 num_op_output=Operation(1), axis_param=0)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        #                                                  closure_type=Closure(0), num_op_output=Operation(1), axis_param=0,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 4 Failed: Expected True, but got False"
-        # print_and_log("Test Case 4 Passed: Expected True, got True")
-        #
-        # # Caso 5
-        # # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        # #                                                                 left_margin=0, right_margin=3, closure_type=Closure(0),
-        # #                                                                 num_op_output=Operation(1), axis_param=1)
-        # #
-        # # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        # #                                                  closure_type=Closure(0), num_op_output=Operation(1), axis_param=1,
-        # #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        # #                                                  data_dictionary_out=expected)
-        # # # Verificar si el resultado obtenido coincide con el esperado
-        # # assert result is True, "Test Case 5 Failed: Expected True, but got False"
-        # # print_and_log("Test Case 5 Passed: Expected True, got True")
-        #
-        # # Caso 6
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=0, right_margin=3, closure_type=Closure(2),
-        #                                                                 num_op_output=Operation(2), axis_param=None)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        #                                                  closure_type=Closure(2), num_op_output=Operation(2),
-        #                                                  axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 6 Failed: Expected True, but got False"
-        # print_and_log("Test Case 6 Passed: Expected True, got True")
-        #
-        # # Caso 7
-        # # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        # #                                                                 left_margin=0, right_margin=3, closure_type=Closure(2),
-        # #                                                                 num_op_output=Operation(2), axis_param=1)
-        # #
-        # # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        # #                                                  closure_type=Closure(2), num_op_output=Operation(2), axis_param=1,
-        # #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        # #                                                  data_dictionary_out=expected)
-        # # # Verificar si el resultado obtenido coincide con el esperado
-        # # assert result is True, "Test Case 7 Failed: Expected True, but got False"
-        # # print_and_log("Test Case 7 Passed: Expected True, got True")
-        #
-        # # Caso 8
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=2, right_margin=4, closure_type=Closure(0),
-        #                                                                 num_op_output=Operation(3), axis_param=None)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
-        #                                                  closure_type=Closure(0), num_op_output=Operation(3),
-        #                                                  axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        #
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 8 Failed: Expected True, but got False"
-        # print_and_log("Test Case 8 Passed: Expected True, got True")
-        #
-        # # Caso 9
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=2, right_margin=4, closure_type=Closure(0),
-        #                                                                 num_op_output=Operation(3), axis_param=0)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
-        #                                                  closure_type=Closure(0), num_op_output=Operation(3), axis_param=0,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        #
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 9 Failed: Expected True, but got False"
-        # print_and_log("Test Case 9 Passed: Expected True, got True")
-        #
-        # # Caso 10
-        # field = 'T'
-        # expected_exception = ValueError
-        # with self.assertRaises(expected_exception) as context:
-        #     expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=2, right_margin=4, closure_type=Closure(3),
-        #                                                                 num_op_output=Operation(0), axis_param=None, field=field)
-        # print_and_log("Test Case 10.1 Passed: expected ValueError, got ValueError")
-        #
-        #
-        # expected_exception = ValueError
-        # with self.assertRaises(expected_exception) as context:
-        #     result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2,
-        #                                                      right_margin=4,
-        #                                                      closure_type=Closure(3), num_op_output=Operation(0),
-        #                                                      axis_param=None, field=field,
-        #                                                      belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                      data_dictionary_out=expected)
-        # print_and_log("Test Case 10.2 Passed: expected ValueError, got ValueError")
-        #
-        # # Caso 11
-        # field = 'track_popularity'
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=2, right_margin=4,
-        #                                                               closure_type=Closure(3),
-        #                                                               num_op_output=Operation(0), axis_param=None,
-        #                                                               field=field)
-        #
-        # # Aplicar la transformación de datos
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
-        #                                                  closure_type=Closure(3), num_op_output=Operation(0),
-        #                                                  axis_param=None, field=field, belong_op_in=Belong(0),
-        #                                                  belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 11 Failed: Expected True, but got False"
-        # print_and_log("Test Case 11 Passed: Expected True, got True")
-        #
-        # # Caso 12
-        # field = 'track_popularity'
-        # # Definir el resultado esperado
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=2, right_margin=4,
-        #                                                                 closure_type=Closure(3),
-        #                                                                 num_op_output=Operation(1), axis_param=None,
-        #                                                                 field=field)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
-        #                                                  closure_type=Closure(3), num_op_output=Operation(1),
-        #                                                  axis_param=None, field=field,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 12 Failed: Expected True, but got False"
-        # print_and_log("Test Case 12 Passed: Expected True, got True")
-        #
-        # # Caso 13
-        # field = 'track_popularity'
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=2, right_margin=4,
-        #                                                               closure_type=Closure(3), num_op_output=Operation(2),
-        #                                                               axis_param=None, field=field)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
-        #                                                  closure_type=Closure(3), num_op_output=Operation(2),
-        #                                                  axis_param=None, field=field,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 13 Failed: Expected True, but got False"
-        # print_and_log("Test Case 13 Passed: Expected True, got True")
-        #
-        # # Caso 14
-        # field = 'track_popularity'
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=2, right_margin=4,
-        #                                                               closure_type=Closure(3), num_op_output=Operation(3),
-        #                                                               axis_param=None, field=field)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
-        #                                                  closure_type=Closure(3), num_op_output=Operation(3),
-        #                                                  axis_param=None, field=field,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(0),
-        #                                                  data_dictionary_out=expected)
-        #
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 14 Failed: Expected True, but got False"
-        # print_and_log("Test Case 14 Passed: Expected True, got True")
-        #
-        # # ------------------------------------------BELONG-NOTBELONG----------------------------------------------
-        # # Caso 15
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=2, right_margin=4, closure_type=Closure(1),
-        #                                                                 num_op_output=Operation(0), axis_param=0)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
-        #                                                  closure_type=Closure(1), num_op_output=Operation(0), axis_param=0,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is False, "Test Case 15 Failed: Expected False, but got True"
-        # print_and_log("Test Case 15 Passed: Expected False, got False")
-        #
-        # # Caso 16
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=3, right_margin=4,
-        #                                                               closure_type=Closure(3), num_op_output=Operation(0),
-        #                                                               axis_param=1, field=None)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=3, right_margin=4,
-        #                                                  closure_type=Closure(3), num_op_output=Operation(0), axis_param=1,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is False, "Test Case 16 Failed: Expected False, but got True"
-        # print_and_log("Test Case 16 Passed: Expected False, got False")
-        #
-        # # Caso 17
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=1, right_margin=3, closure_type=Closure(0),
-        #                                                               num_op_output=Operation(1), axis_param=None)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        #                                                  closure_type=Closure(0), num_op_output=Operation(1),
-        #                                                  axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 17 Failed: Expected True, but got False"
-        # print_and_log("Test Case 17 Passed: Expected True, got True")
-        #
-        # # Caso 18
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                               left_margin=2, right_margin=3, closure_type=Closure(2),
-        #                                                               num_op_output=Operation(1), axis_param=0)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        #                                                  closure_type=Closure(0), num_op_output=Operation(1), axis_param=0,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 18 Failed: Expected True, but got False"
-        # print_and_log("Test Case 18 Passed: Expected True, got True")
-        #
-        # # Caso 19
-        # # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        # #                                                                 left_margin=0, right_margin=3, closure_type=Closure(0),
-        # #                                                                 num_op_output=Operation(1), axis_param=1)
-        # #
-        # # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        # #                                                  closure_type=Closure(0), num_op_output=Operation(1), axis_param=1,
-        # #                                                  belong_op_in=Belong(0), belong_op_out=Belong(1),
-        # #                                                  data_dictionary_out=expected)
-        # # # Verificar si el resultado obtenido coincide con el esperado
-        # # assert result is False, "Test Case 19 Failed: Expected False, but got True"
-        # # print_and_log("Test Case 19 Passed: Expected False, got False")
-        #
-        # # Caso 20
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=0, right_margin=3, closure_type=Closure(2),
-        #                                                                 num_op_output=Operation(2), axis_param=None)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        #                                                  closure_type=Closure(2), num_op_output=Operation(2),
-        #                                                  axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is False, "Test Case 20 Failed: Expected False, but got True"
-        # print_and_log("Test Case 20 Passed: Expected False, got False")
-        #
-        # # Caso 21
-        # expected = self.data_transformations.transform_Interval_NumOp(data_dictionary=self.rest_of_dataset.copy(),
-        #                                                                 left_margin=0, right_margin=50, closure_type=Closure(2),
-        #                                                                 num_op_output=Operation(2), axis_param=1)
-        #
-        # result = self.invariants.checkInv_Interval_NumOp(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
-        #                                                  closure_type=Closure(2), num_op_output=Operation(2), axis_param=1,
-        #                                                  belong_op_in=Belong(0), belong_op_out=Belong(1),
-        #                                                  data_dictionary_out=expected)
-        # # Verificar si el resultado obtenido coincide con el esperado
-        # assert result is True, "Test Case 21 Failed: Expected True, but got False"
-        # print_and_log("Test Case 21 Passed: Expected True, got True")
+        # Caso 1
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=2, right_margin=4, closure_type=Closure(1),
+                                                                      num_op_output=Operation(0), axis_param=0, field=None)
+        # Aplicar la transformación de datos
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2,
+                                                         right_margin=4, closure_type=Closure(1), num_op_output=Operation(0),
+                                                         axis_param=0, belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        # Crear un DataFrame de prueba
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=3, right_margin=4,
+                                                                      closure_type=Closure(3), num_op_output=Operation(0),
+                                                                      axis_param=1)
+        # Aplicar la invariante
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=3, right_margin=4,
+                                                         closure_type=Closure(3), num_op_output=Operation(0), axis_param=1,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0, right_margin=3, closure_type=Closure(0),
+                                                                        num_op_output=Operation(1), axis_param=None)
+        # Aplicar la transformación de datos
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                         closure_type=Closure(0), num_op_output=Operation(1),
+                                                         axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0, right_margin=3, closure_type=Closure(0),
+                                                                        num_op_output=Operation(1), axis_param=0)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                         closure_type=Closure(0), num_op_output=Operation(1), axis_param=0,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+        # Caso 6
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0, right_margin=3, closure_type=Closure(2),
+                                                                        num_op_output=Operation(2), axis_param=None)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                         closure_type=Closure(2), num_op_output=Operation(2),
+                                                         axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
+
+        # Caso 8
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=2, right_margin=4, closure_type=Closure(0),
+                                                                        num_op_output=Operation(3), axis_param=None)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                         closure_type=Closure(0), num_op_output=Operation(3),
+                                                         axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
+
+        # Caso 9
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=2, right_margin=4, closure_type=Closure(0),
+                                                                        num_op_output=Operation(3), axis_param=0)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                         closure_type=Closure(0), num_op_output=Operation(3), axis_param=0,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
+
+        # Caso 10
+        field = 'T'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=2, right_margin=4, closure_type=Closure(3),
+                                                                        num_op_output=Operation(0), axis_param=None, field=field)
+        print_and_log("Test Case 10.1 Passed: expected ValueError, got ValueError")
+
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2,
+                                                             right_margin=4,
+                                                             closure_type=Closure(3), num_op_output=Operation(0),
+                                                             axis_param=None, field=field,
+                                                             belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                             data_dictionary_out=expected)
+        print_and_log("Test Case 10.2 Passed: expected ValueError, got ValueError")
+
+        # Caso 11
+        field = 'track_popularity'
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=2, right_margin=4,
+                                                                      closure_type=Closure(3),
+                                                                      num_op_output=Operation(0), axis_param=None,
+                                                                      field=field)
+
+        # Aplicar la transformación de datos
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                         closure_type=Closure(3), num_op_output=Operation(0),
+                                                         axis_param=None, field=field, belong_op_in=Belong(0),
+                                                         belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
+
+        # Caso 12
+        field = 'track_popularity'
+        # Definir el resultado esperado
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=2, right_margin=4,
+                                                                        closure_type=Closure(3),
+                                                                        num_op_output=Operation(1), axis_param=None,
+                                                                        field=field)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                         closure_type=Closure(3), num_op_output=Operation(1),
+                                                         axis_param=None, field=field,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 12 Failed: Expected True, but got False"
+        print_and_log("Test Case 12 Passed: Expected True, got True")
+
+        # Caso 13
+        field = 'track_popularity'
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=2, right_margin=4,
+                                                                      closure_type=Closure(3), num_op_output=Operation(2),
+                                                                      axis_param=None, field=field)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                         closure_type=Closure(3), num_op_output=Operation(2),
+                                                         axis_param=None, field=field,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        # Caso 14
+        field = 'track_popularity'
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=2, right_margin=4,
+                                                                      closure_type=Closure(3), num_op_output=Operation(3),
+                                                                      axis_param=None, field=field)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                         closure_type=Closure(3), num_op_output=Operation(3),
+                                                         axis_param=None, field=field,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                         data_dictionary_out=expected)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 14 Failed: Expected True, but got False"
+        print_and_log("Test Case 14 Passed: Expected True, got True")
+
+        # ------------------------------------------BELONG-NOTBELONG----------------------------------------------
+        # Caso 15
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=2, right_margin=4, closure_type=Closure(1),
+                                                                        num_op_output=Operation(0), axis_param=0)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2, right_margin=4,
+                                                         closure_type=Closure(1), num_op_output=Operation(0), axis_param=0,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 15 Failed: Expected False, but got True"
+        print_and_log("Test Case 15 Passed: Expected False, got False")
+
+        # Caso 16
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=3, right_margin=4,
+                                                                      closure_type=Closure(3), num_op_output=Operation(0),
+                                                                      axis_param=1, field=None)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=3, right_margin=4,
+                                                         closure_type=Closure(3), num_op_output=Operation(0), axis_param=1,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, got False")
+
+        # Caso 17
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=1, right_margin=3, closure_type=Closure(0),
+                                                                      num_op_output=Operation(1), axis_param=None)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                         closure_type=Closure(0), num_op_output=Operation(1),
+                                                         axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 17 Failed: Expected True, but got False"
+        print_and_log("Test Case 17 Passed: Expected True, got True")
+
+        # Caso 18
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      left_margin=2, right_margin=3, closure_type=Closure(2),
+                                                                      num_op_output=Operation(1), axis_param=0)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                         closure_type=Closure(0), num_op_output=Operation(1), axis_param=0,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, got True")
+
+        # Caso 20
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0, right_margin=3, closure_type=Closure(2),
+                                                                        num_op_output=Operation(2), axis_param=None)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                         closure_type=Closure(2), num_op_output=Operation(2),
+                                                         axis_param=None, belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 20 Failed: Expected False, but got True"
+        print_and_log("Test Case 20 Passed: Expected False, got False")
+
+        # Caso 21
+        expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                        left_margin=0, right_margin=50, closure_type=Closure(2),
+                                                                        num_op_output=Operation(2), axis_param=1)
+
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=0, right_margin=3,
+                                                         closure_type=Closure(2), num_op_output=Operation(2), axis_param=1,
+                                                         belong_op_in=Belong(0), belong_op_out=Belong(1),
+                                                         data_dictionary_out=expected)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 21 Failed: Expected True, but got False"
+        print_and_log("Test Case 21 Passed: Expected True, got True")
 
         # Caso 22
         expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
@@ -3127,11 +3088,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 28 Failed: Expected False, but got True"
         print_and_log("Test Case 28 Passed: Expected False, got False")
-
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 30 Failed: Expected False, but got True"
-        print_and_log("Test Case 30 Passed: Expected False, got False")
 
 
     def execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests(self):
