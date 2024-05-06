@@ -30,6 +30,8 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
+    keep_no_trans_result = True
+
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
@@ -45,7 +47,7 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
                                 print("Row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent_value, " but is: ", data_dictionary_out.loc[row_index, column_index])
                     else:
                         if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[row_index, column_index]:
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
         elif axis_param == 0:  # Applies the lambda function at the column level
             for col in data_dictionary_in.columns:
@@ -63,7 +65,7 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
                                 print("Row: ", idx, " and column: ", col, " value should be: ", most_frequent_value, " but is: ", data_dictionary_out.loc[idx, col])
                     else:
                         if data_dictionary_out.loc[idx, col] != data_dictionary_in.loc[idx, col]:
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.loc[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
         else:  # Applies at the dataframe level
             # Calculate the most frequent value
@@ -82,7 +84,7 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
                         if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                             data_dictionary_in.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.loc[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -106,10 +108,14 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                             pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                                     data_dictionary_out.at[idx, field])):
-                        result = False
+                        keep_no_trans_result = False
                         print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -134,6 +140,8 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
         result = True
     elif belong_op_out == Belong.NOTBELONG:
         result = False
+
+    keep_no_trans_result = True
 
     if field is None:
         if axis_param == 1:  # Applies in a row level
@@ -164,7 +172,7 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     else:
                         if data_dictionary_out.iloc[row_index, column_index] != data_dictionary_in.iloc[
                             row_index, column_index]:
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
 
         elif axis_param == 0:  # Applies at the column level
@@ -194,7 +202,7 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
                             row_index, column_name] and not (
                                 pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.loc[row_index - 1, column_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
@@ -227,10 +235,14 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
                         if idx != 0 and (
                                 not pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
                                 data_dictionary_out.loc[idx - 1, field])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -255,6 +267,8 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
         result = True
     elif belong_op_out == Belong.NOTBELONG:
         result = False
+
+    keep_no_trans_result = True
 
     if field is None:
         if axis_param == 1:  # Applies in a row level
@@ -286,7 +300,7 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                             row_index, column_name] and (
                                 not pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ",data_dictionary_out.at[row_index, column_name])
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -315,7 +329,7 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                             row_index, column_name] and (
                                 not pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
 
         else:  # Applies at the dataframe level
@@ -348,10 +362,14 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
                             not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                        result = False
+                        keep_no_trans_result = False
                         print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.iloc[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -381,6 +399,8 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
+    keep_no_trans_result = True
+
     if field is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
@@ -398,7 +418,7 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
                         if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[row_index, column_index] and (
                                 not pd.isnull(data_dictionary_in.loc[row_index, column_index]) and pd.isnull(
                                 data_dictionary_out.loc[row_index, column_index])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
         elif axis_param == 0:  # Applies the lambda function at the column level
             for col in data_dictionary_in.columns:
@@ -416,7 +436,7 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
                         if data_dictionary_out.loc[idx, col] != data_dictionary_in.loc[idx, col] and (
                                 not pd.isnull(data_dictionary_in.at[idx, col]) and pd.isnull(
                                 data_dictionary_out.at[idx, col])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.loc[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
         else:  # Applies at the dataframe level
             # Calculate the most frequent value
@@ -435,7 +455,7 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
                         if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and (
                                 not pd.isnull(data_dictionary_in.at[idx, col_name]) and pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.loc[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -456,10 +476,14 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
                             not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                        result = False
+                        keep_no_trans_result = False
                         print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -488,6 +512,8 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         result = True
     elif belong_op_out == Belong.NOTBELONG:
         result = False
+
+    keep_no_trans_result = True
 
     if field is None:
         if axis_param == 1:  # Applies in a row level
@@ -523,7 +549,7 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                             row_index, column_name] and (
                                     not pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -534,10 +560,10 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 row_index, column_name]:
                                 if belong_op_out == Belong.BELONG:
                                     result = False
-                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
                                     result = True
-                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                         else:
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index - 1, column_name] and (
@@ -546,17 +572,17 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.loc[row_index, column_name])):
                                 if belong_op_out == Belong.BELONG:
                                     result = False
-                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index-1, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index-1, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
                                     result = True
-                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index-1, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index-1, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                     else:
                         if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                             row_index, column_name] and (
                                     not pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            result = False
-                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                            keep_no_trans_result = False
+                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
 
@@ -589,10 +615,14 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
                                     not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                        result = False
+                        keep_no_trans_result = False
                         print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -621,6 +651,8 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         result = True
     elif belong_op_out == Belong.NOTBELONG:
         result = False
+
+    keep_no_trans_result = True
 
     if field is None:
         if axis_param == 1:  # Applies in a row level
@@ -655,7 +687,7 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                             row_index, column_name] and (
                                     not pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
         elif axis_param == 0:  # Applies at the column level
             for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -686,7 +718,7 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                             row_index, column_name] and not (
                                      pd.isnull(data_dictionary_in.at[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the NEXT operation")
@@ -720,10 +752,14 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                      pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                        result = False
+                        keep_no_trans_result = False
                         print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.iloc[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -753,6 +789,8 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
+    keep_no_trans_result = True
+
     data_dictionary_in_copy = data_dictionary_in.copy()
     if field is None:
         if axis_param == 0:
@@ -774,7 +812,7 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
                                 print("Row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                     else:
                         if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Row: ", idx, " and column: ", col_name, " value should be: ",data_dictionary_in.at[idx, col_name], " but is: ",data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
@@ -794,7 +832,7 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
                                 print("Row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                     else:
                         if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -817,10 +855,14 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
                         print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
             else:
                 if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -845,6 +887,8 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
+    keep_no_trans_result = True
+
     if field is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -868,7 +912,7 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -890,7 +934,7 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
@@ -910,7 +954,7 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                         if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -933,10 +977,14 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                 pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out, axis_param, field):
@@ -960,6 +1008,8 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
+    keep_no_trans_result = True
+
     if field is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -982,7 +1032,7 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1003,7 +1053,7 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
@@ -1021,7 +1071,7 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
                                 print("Row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                     else:
                         if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -1045,10 +1095,14 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                 pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                                 data_dictionary_out.at[idx, field])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
@@ -1072,6 +1126,8 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         result = True
     elif belong_op_out == Belong.NOTBELONG:
         result = False
+
+    keep_no_trans_result = True
 
     if field is None:
         if axis_param is None:
@@ -1098,7 +1154,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 "Error: it's not possible to apply the closest operation to the null values")
                         if (data_dictionary_out.loc[i, j] != data_dictionary_in.loc[i, j]) and not (
                                 pd.isnull(data_dictionary_in.loc[i, j]) or pd.isnull(data_dictionary_out.loc[i, j])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", i, " and column: ", j, " value should be: ", data_dictionary_in.loc[i, j], " but is: ", data_dictionary_out.loc[i, j])
         elif axis_param == 0:
             # Iterate over each column
@@ -1125,7 +1181,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                         if (data_dictionary_out[col_name].iloc[i] != data_dictionary_in[col_name].iloc[i]) and not (
                                 pd.isnull(data_dictionary_in[col_name].iloc[i]) or pd.isnull(
                                 data_dictionary_out[col_name].iloc[i])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", i, " and column: ", col_name, " value should be: ", data_dictionary_in[col_name].iloc[i], " but is: ", data_dictionary_out.loc[i, col_name])
         elif axis_param == 1:
             # Iterate over each row
@@ -1157,7 +1213,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                             row_idx, col_name]) and not (
                                 pd.isnull(data_dictionary_in.loc[row_idx, col_name]) or pd.isnull(
                                 data_dictionary_out.loc[row_idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", row_idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[row_idx, col_name], " but is: ", data_dictionary_out.loc[row_idx, col_name])
 
     elif field is not None:
@@ -1188,10 +1244,14 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                 if (data_dictionary_out[field].iloc[i] != data_dictionary_in[field].iloc[i]) and not (
                         pd.isnull(data_dictionary_in[field].iloc[i]) or pd.isnull(
                         data_dictionary_out[field].iloc[i])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", i, " and column: ", field, " value should be: ", data_dictionary_in[field].iloc[i], " but is: ", data_dictionary_out.loc[i, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1222,6 +1282,8 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
         result = True
     elif belong_op_out == Belong.NOTBELONG:
         result = False
+
+    keep_no_trans_result = True
 
     data_dictionary_in_copy = data_dictionary_in.copy()
     if field is None:
@@ -1257,7 +1319,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
                         if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                             data_dictionary_in.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             data_dictionary_in_copy = data_dictionary_in_copy.T
@@ -1294,7 +1356,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
                         if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(
                             data_dictionary_in.at[idx, col])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
 
     elif field is not None:
@@ -1334,10 +1396,14 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
                 if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not (
                         pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
                     data_dictionary_out.at[idx, field])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1368,6 +1434,8 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
+    keep_no_trans_result = True
+
     if field is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1391,7 +1459,7 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1413,7 +1481,7 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
@@ -1433,7 +1501,7 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                         if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -1455,10 +1523,14 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
             else:
                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                         pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1489,6 +1561,8 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
+    keep_no_trans_result = True
+
     if field is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1512,7 +1586,7 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -1534,7 +1608,7 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
                                 idx, col_name]) and not (
                                     pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                     data_dictionary_out.at[idx, col_name])):
-                                result = False
+                                keep_no_trans_result = False
                                 print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
@@ -1554,7 +1628,7 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
                         if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(
                                 data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -1576,10 +1650,14 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
             else:
                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                         pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1609,6 +1687,8 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
         result = True
     elif belong_op_out == Belong.NOTBELONG:
         result = False
+
+    keep_no_trans_result = True
 
     if field is None:
         if axis_param is None:
@@ -1642,7 +1722,7 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
                     else:
                         if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 0:
             for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -1674,7 +1754,7 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
                     else:
                         if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
         elif axis_param == 1:
             for idx, row in data_dictionary_in.iterrows():
@@ -1706,7 +1786,7 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
                     else:
                         if (data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]) and not (
                                 pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                            result = False
+                            keep_no_trans_result = False
                             print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
@@ -1743,10 +1823,14 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
             else:
                 if (data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]) and not (
                         pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                    result = False
+                    keep_no_trans_result = False
                     print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    return True if result else False
+    # Checks that the not transformed cells are not modified 
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
 
 
 def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1798,6 +1882,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                                                         missing_values=missing_values, axis_param=axis_param,
                                                                         field=field)
 
+    # Checks that the not transformed cells are not modified 
     return True if result else False
 
 
@@ -2307,6 +2392,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                                                missing_values=missing_values, axis_param=axis_param,
                                                                field=field)
 
+    # Checks that the not transformed cells are not modified 
     return True if result else False
 
 
@@ -2812,6 +2898,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                                                  missing_values=missing_values, axis_param=axis_param,
                                                                  field=field)
 
+    # Checks that the not transformed cells are not modified 
     return True if result else False
 
 
@@ -3315,6 +3402,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                                                   missing_values=missing_values, axis_param=axis_param,
                                                                   field=field)
 
+    # Checks that the not transformed cells are not modified 
     return True if result else False
 
 
@@ -4263,6 +4351,7 @@ def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dict
                                                          special_type_input=special_type_input, missing_values=missing_values,
                                                          axis_param=axis_param, field=field)
 
+    # Checks that the not transformed cells are not modified 
     return True if result else False
 
 
@@ -4657,6 +4746,7 @@ def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionar
                                                                    missing_values=missing_values, axis_param=axis_param,
                                                                    field=field)
 
+    # Checks that the not transformed cells are not modified 
     return True if result else False
 
 
@@ -4865,9 +4955,6 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
         return False
 
 
-
-
-
 def check_derived_type_next_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                               special_type_input: SpecialType, missing_values: list, axis_param: int,
                                               field: str) -> bool:
@@ -5048,6 +5135,7 @@ def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                                                missing_values=missing_values, axis_param=axis_param,
                                                                field=field)
 
+    # Checks that the not transformed cells are not modified 
     return True if result else False
 
 
