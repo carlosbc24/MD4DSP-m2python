@@ -185,17 +185,17 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
                                 row_index - 1, column_name]:
                                 if belong_op_out == Belong.BELONG:
                                     result = False
-                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index-1, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index-1, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
                                     result = True
-                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index-1, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index-1, column_name], " but is: ", data_dictionary_out.at[row_index, column_name])
                     else:
                         if data_dictionary_out.at[row_index, column_name] != data_dictionary_in.at[
                             row_index, column_name] and not (
                                 pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.loc[row_index - 1, column_name])):
                             result = False
-                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
+                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_name])
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
 
