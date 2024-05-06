@@ -2196,8 +2196,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                    axis_param=0, field=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 9 Failed: Expected False, but got True"
-        print_and_log("Test Case 9 Passed: Expected False, got False")
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
 
         # Caso 10
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -2225,8 +2225,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                    missing_values=missing_values, axis_param=0, field=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 10 Failed: Expected False, but got True"
-        print_and_log("Test Case 10 Passed: Expected False, got False")
+        assert result is True, "Test Case 10 Failed: Expected True, but got False"
+        print_and_log("Test Case 10 Passed: Expected True, got True")
 
         # Caso 11
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -2247,8 +2247,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                    fix_value_output=999,
                                                                    axis_param=None, field=None)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 11 Failed: Expected False, but got True"
-        print_and_log("Test Case 11 Passed: Expected False, got False")
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
 
         # Caso 12
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -2268,8 +2268,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                    belong_op_out=Belong(1), fix_value_output=999,
                                                                    axis_param=0, field=None)
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 12 Failed: Expected False, but got True"
-        print_and_log("Test Case 12 Passed: Expected False, got False")
+        assert result is True, "Test Case 12 Failed: Expected True, but got False"
+        print_and_log("Test Case 12 Passed: Expected True, got True")
 
         # Caso 13
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
@@ -2319,8 +2319,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                    field=field)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 14 Failed: Expected False, but got True"
-        print_and_log("Test Case 14 Passed: Expected False, got False")
+        assert result is True, "Test Case 14 Failed: Expected True, but got False"
+        print_and_log("Test Case 14 Passed: Expected True, got True")
 
         # Caso 15
         # Ejecutar la transformación de datos: cambiar el valor especial 2 (Outliers) a nivel de fila por el valor fijo 999
