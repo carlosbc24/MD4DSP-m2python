@@ -1834,59 +1834,6 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
 
 
 def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                     special_type_input: SpecialType,
-                                     belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                     data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                     axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type interpolation is applied correctly
-    params:
-        :param data_dictionary_in: dataframe with the data before the interpolation
-        :param data_dictionary_out: dataframe with the data after the interpolation
-        :param special_type_input: special type to apply the interpolation
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the interpolation
-        :param field: field to apply the interpolation
-
-    Returns:
-        :return: True if the special type interpolation is applied correctly
-    """
-    result = True
-
-    if axis_param is None and field is None:
-        raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
-
-    if belong_op_in == Belong.BELONG:
-        result = check_special_type_interpolation_belong(data_dictionary_in=data_dictionary_in,
-                                                         data_dictionary_out=data_dictionary_out,
-                                                         special_type_input=special_type_input,
-                                                         belong_op_in=belong_op_in, belong_op_out=belong_op_out,
-                                                         data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                         missing_values=missing_values, axis_param=axis_param,
-                                                         field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_special_type_interpolation_not_belong_belong(data_dictionary_in=data_dictionary_in,
-                                                                    data_dictionary_out=data_dictionary_out,
-                                                                    special_type_input=special_type_input,
-                                                                    data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                                    missing_values=missing_values, axis_param=axis_param,
-                                                                    field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_special_type_interpolation_not_belong_not_belong(data_dictionary_in=data_dictionary_in,
-                                                                        data_dictionary_out=data_dictionary_out,
-                                                                        special_type_input=special_type_input,
-                                                                        data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                                        missing_values=missing_values, axis_param=axis_param,
-                                                                        field=field)
-
-    # Checks that the not transformed cells are not modified 
-    return True if result else False
-
-
-def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                             special_type_input: SpecialType,
                                             belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
                                             data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
@@ -1907,7 +1854,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
 
     Returns:
         :return: True if the special type interpolation is applied correctly
-        """
+    """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    keep_no_trans_result = True
+
     data_dictionary_in_copy = data_dictionary_in.copy()
     if field is None:
         if special_type_input == SpecialType.MISSING:
@@ -1923,12 +1878,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                         if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(data_dictionary_in.at[idx, col_name]):
                             if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                         else:
                             if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -1940,12 +1898,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                         if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(data_dictionary_in.at[idx, col_name]):
                             if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in_copy.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
                         else:
                             if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
         elif special_type_input == SpecialType.INVALID:
             if axis_param == 0:
@@ -1968,12 +1929,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                         if data_dictionary_in.at[idx, col] in missing_values:
                             if data_dictionary_out.at[idx, col] != data_dictionary_in_copy.at[idx, col]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                         else:
                             if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -1995,12 +1959,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                         if data_dictionary_in.at[idx, col] in missing_values:
                             if data_dictionary_out.at[idx, col] != data_dictionary_in_copy.at[idx, col]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                         else:
                             if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
 
         elif special_type_input == SpecialType.OUTLIER:
             if axis_param == 0:
@@ -2024,12 +1991,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             if data_dictionary_out.at[idx, col] != data_dictionary_in_copy.at[idx, col]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                         else:
                             if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2052,12 +2022,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             if data_dictionary_out.at[idx, col] != data_dictionary_in_copy.at[idx, col]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in_copy.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
                         else:
                             if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -2074,12 +2047,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                         data_dictionary_in.at[idx, field]):
                     if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
+                            print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                 else:
                     if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                        return False
+                        keep_no_trans_result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
         elif special_type_input == SpecialType.INVALID:
             data_dictionary_in_copy[field] = (data_dictionary_in[field].apply(lambda x: np.nan if x in missing_values
@@ -2096,12 +2072,15 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                 if data_dictionary_in.at[idx, field] in missing_values:
                     if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
+                            print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                 else:
                     if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                        return False
+                        keep_no_trans_result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
         elif special_type_input == SpecialType.OUTLIER:
             for idx, value in data_dictionary_in[field].items():
@@ -2120,19 +2099,20 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
                 if data_dictionary_outliers_mask.at[idx, field] == 1:
                     if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
+                            print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in_copy.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                 else:
                     if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
-                        return False
+                        keep_no_trans_result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+    if keep_no_trans_result == False:
         return False
     else:
-        return True
+        return True if result else False
 
 
 def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,

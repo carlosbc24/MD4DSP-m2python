@@ -84,7 +84,7 @@ if __name__ == "__main__":
     # execute_invariants_simple_tests()
     # execute_invariants_external_dataset_tests()
     invariant_simple_tests = InvariantsSimpleTest()
-    invariant_simple_tests.execute_checkInv_SpecialValue_DerivedValue()
+    invariant_simple_tests.execute_checkInv_SpecialValue_NumOp()
 
     invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_FixValue_FixValue_ExternalDatasetTests()
@@ -94,8 +94,8 @@ if __name__ == "__main__":
     # invariant_tests_with_external_dataset.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_Interval_NumOp_ExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests()
-    invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests()
+    invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests()
 
 
 

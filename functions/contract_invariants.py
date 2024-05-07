@@ -737,8 +737,6 @@ class Invariants:
                                                  missing_values=missing_values, axis_param=axis_param, field=field)
 
         elif special_type_input == SpecialType.OUTLIER:
-            # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
-            # If the outliers are applied at the dataframe level, previous and next cannot be applied.
             data_dictionary_outliers_mask = get_outliers(data_dictionary_in, field, axis_param)
 
             if axis_param is None:
