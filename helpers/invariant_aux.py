@@ -8,7 +8,7 @@ from helpers.enumerations import DerivedType, Belong, SpecialType, Closure
 
 
 def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                         fix_value_input, belong_op_out: Belong, axis_param: int, field: str) -> bool:
+                                  fix_value_input, belong_op_out: Belong, axis_param: int, field: str) -> bool:
     """
     Check if the most frequent value is applied correctly on the fix input value
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -119,7 +119,7 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
 
 
 def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                                    belong_op_out: Belong, axis_param: int, field: str) -> bool:
+                             belong_op_out: Belong, axis_param: int, field: str) -> bool:
     """
     Check if the previous value is applied correctly to the fix input value
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -246,7 +246,7 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
 
 
 def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                                belong_op_out: Belong, axis_param: int, field: str) -> bool:
+                         belong_op_out: Belong, axis_param: int, field: str) -> bool:
     """
     Check if the next value is applied correctly to the fix input value
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -373,9 +373,9 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
 
 
 def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                        left_margin: float, right_margin: float, closure_type: Closure,
-                                        belong_op_out: Belong,
-                                        axis_param: int = None, field: str = None) -> bool:
+                                 left_margin: float, right_margin: float, closure_type: Closure,
+                                 belong_op_out: Belong,
+                                 axis_param: int = None, field: str = None) -> bool:
     """
     Check if the most frequent value is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -487,9 +487,9 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
 
 
 def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                   left_margin: float, right_margin: float, closure_type: Closure,
-                                   belong_op_out: Belong = Belong.BELONG,
-                                   axis_param: int = None, field: str = None) -> bool:
+                            left_margin: float, right_margin: float, closure_type: Closure,
+                            belong_op_out: Belong = Belong.BELONG,
+                            axis_param: int = None, field: str = None) -> bool:
     """
     Check if the previous value is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -626,9 +626,9 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 
 
 def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                               left_margin: float, right_margin: float, closure_type: Closure,
-                               belong_op_out: Belong = Belong.BELONG,
-                               axis_param: int = None, field: str = None) -> bool:
+                        left_margin: float, right_margin: float, closure_type: Closure,
+                        belong_op_out: Belong = Belong.BELONG,
+                        axis_param: int = None, field: str = None) -> bool:
     """
     Check if the next value is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -763,8 +763,8 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 
 
 def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                         fix_value_input, belong_op_out: Belong, axis_param: int = None,
-                                         field: str = None) -> bool:
+                                  fix_value_input, belong_op_out: Belong, axis_param: int = None,
+                                  field: str = None) -> bool:
     """
         Check if the interpolation is applied correctly to the fix value input when the input and output dataframe
         when belong_op_in is BELONG and belong_op_out is BELONG or NOTBELONG
@@ -866,7 +866,7 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
 
 
 def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                                belong_op_out: Belong, axis_param: int = None, field: str = None) -> bool:
+                         belong_op_out: Belong, axis_param: int = None, field: str = None) -> bool:
     """
     Check if the special type mean is applied correctly when the input and output dataframes
     when belong_op_in and belong_op_out are BELONG
@@ -1106,7 +1106,7 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
 
 
 def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                                   belong_op_out: Belong, axis_param: int = None, field: str = None) -> bool:
+                            belong_op_out: Belong, axis_param: int = None, field: str = None) -> bool:
     """
         Check if the closest is applied correctly to the fix input value
         when the input and output dataframes when belong_op_in is Belong
@@ -1255,9 +1255,9 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 
 
 def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                        left_margin: float, right_margin: float, closure_type: Closure,
-                                        belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                                        field: str = None) -> bool:
+                                 left_margin: float, right_margin: float, closure_type: Closure,
+                                 belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
+                                 field: str = None) -> bool:
     """
     Check if the special type interpolation is applied correctly when the input and output dataframes when belong_op_in is BELONG and belong_op_out is NOTBELONG
     params:
@@ -1407,9 +1407,9 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
 
 
 def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                               left_margin: float, right_margin: float, closure_type: Closure,
-                               belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                               field: str = None) -> bool:
+                        left_margin: float, right_margin: float, closure_type: Closure,
+                        belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
+                        field: str = None) -> bool:
     """
     Check if the mean is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in
@@ -1534,9 +1534,9 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 
 
 def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                 left_margin: float, right_margin: float, closure_type: Closure,
-                                 belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                                 field: str = None) -> bool:
+                          left_margin: float, right_margin: float, closure_type: Closure,
+                          belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
+                          field: str = None) -> bool:
     """
     Check if the median is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in
@@ -1661,9 +1661,9 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
 
 
 def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                  left_margin: float, right_margin: float, closure_type: Closure,
-                                  belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                                  field: str = None) -> bool:
+                           left_margin: float, right_margin: float, closure_type: Closure,
+                           belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
+                           field: str = None) -> bool:
     """
     Check if the closest is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in
@@ -1898,6 +1898,8 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
         :param data_dictionary_in: dataframe with the data before the interpolation
         :param data_dictionary_out: dataframe with the data after the interpolation
         :param special_type_input: special type to apply the interpolation
+        :param belong_op_in: if condition to check the invariant
+        :param belong_op_out: then condition to check the invariant
         :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
         :param missing_values: list of missing values
         :param axis_param: axis to apply the interpolation
@@ -2191,6 +2193,8 @@ def check_special_type_mean_belong(data_dictionary_in: pd.DataFrame, data_dictio
         :param data_dictionary_in: dataframe with the data before the mean
         :param data_dictionary_out: dataframe with the data after the mean
         :param special_type_input: special type to apply the mean
+        :param belong_op_in: if condition to check the invariant
+        :param belong_op_out: then condition to check the invariant
         :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
         :param missing_values: list of missing values
         :param axis_param: axis to apply the mean
@@ -2481,6 +2485,8 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
         :param data_dictionary_in: dataframe with the data before the median
         :param data_dictionary_out: dataframe with the data after the median
         :param special_type_input: special type to apply the median
+        :param belong_op_in: if condition to check the invariant
+        :param belong_op_out: then condition to check the invariant
         :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
         :param missing_values: list of missing values
         :param axis_param: axis to apply the median
@@ -3055,8 +3061,8 @@ def check_special_type_closest_belong(data_dictionary_in: pd.DataFrame, data_dic
         return True
 
 def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                               special_type_input: SpecialType, belong_op_out: Belong, missing_values: list = None,
-                               axis_param: int = None, field: str = None) -> bool:
+                                     special_type_input: SpecialType, belong_op_out: Belong, missing_values: list = None,
+                                     axis_param: int = None, field: str = None) -> bool:
     """
     Check if the special type most frequent is applied correctly when the input and output dataframes when belong_op_in is Belong and belong_op_out is BELONG
 
@@ -3297,8 +3303,8 @@ def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dict
 
 
 def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                       special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
-                                       missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+                                special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
+                                missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
     """
     Check if the derived type previous value is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are both BELONG
 
@@ -3544,8 +3550,8 @@ def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionar
 
 
 def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                   special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
-                                   missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+                            special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
+                            missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
     """
     Check if the derived type next value is applied correctly when the input and output
     dataframes when belong_op_in and belong_op_out are BELONG
