@@ -2709,6 +2709,14 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
     Returns:
         :return: True if the special type closest is applied correctly
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    keep_no_trans_result = True
+
     if field is None:
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             if axis_param is None:
@@ -2731,14 +2739,17 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         if current_value in closest_values:
                             if data_dictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", i, " and column: ", j, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, j])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", i, " and column: ", j, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, j])
                         else:
                             if pd.isnull(data_dictionary_in.iloc[i, j]) and special_type_input == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                             if (data_dictionary_out.iloc[i, j] != data_dictionary_in.iloc[i, j])  and not(pd.isnull(data_dictionary_in.iloc[i, j]) or pd.isnull(data_dictionary_out.iloc[i, j])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", i, " and column: ", j, " value should be: ", data_dictionary_in.at[i, j], " but is: ", data_dictionary_out.loc[i, j])
             elif axis_param == 0:
                 # Iterate over each column
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2766,14 +2777,17 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         if current_value in closest_values:
                             if data_dictionary_out.at[i, col_name] != closest_values[current_value]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", i, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", i, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, col_name])
                         else:
                             if pd.isnull(data_dictionary_in.at[i, col_name]) and special_type_input == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                             if (data_dictionary_out.loc[i, col_name] != data_dictionary_in.loc[i, col_name]) and not(pd.isnull(data_dictionary_in.loc[i, col_name]) or pd.isnull(data_dictionary_out.loc[i, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", i, " and column: ", col_name, " value should be: ", data_dictionary_in.at[i, col_name], " but is: ", data_dictionary_out.loc[i, col_name])
             elif axis_param == 1:
                 # Iterate over each row
                 for row_idx in range(len(data_dictionary_in.index)):
@@ -2801,14 +2815,17 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         if current_value in closest_values:
                             if data_dictionary_out.at[row_idx, col_name] != closest_values[current_value]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_idx, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[row_idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_idx, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[row_idx, col_name])
                         else:
                             if pd.isnull(data_dictionary_in.at[row_idx, col_name]) and special_type_input == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                             if (data_dictionary_out.at[row_idx, col_name] != data_dictionary_in.at[row_idx, col_name]) and not(pd.isnull(data_dictionary_in.loc[row_idx, col_name]) or pd.isnull(data_dictionary_out.loc[row_idx, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[row_idx, col_name], " but is: ", data_dictionary_out.loc[row_idx, col_name])
 
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
@@ -2834,12 +2851,15 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                             current_value = data_dictionary_in.iloc[i, j]
                             if data_dictionary_out.iloc[i, j] != closest_values[current_value]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", i, " and column: ", j, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, j])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", i, " and column: ", j, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, j])
                         else:
                             if (data_dictionary_out.loc[i, j] != data_dictionary_in.loc[i, j]) and not(pd.isnull(data_dictionary_in.loc[i, j]) or pd.isnull(data_dictionary_out.loc[i, j])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", i, " and column: ", j, " value should be: ", data_dictionary_in.at[i, j], " but is: ", data_dictionary_out.loc[i, j])
             elif axis_param == 0:
                 # Iterate over each column
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2868,12 +2888,15 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
                             if data_dictionary_out.at[i, col_name] != closest_values[current_value]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", i, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", i, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, col_name])
                         else:
                             if (data_dictionary_out.loc[i, col_name] != data_dictionary_in.loc[i, col_name]) and not(pd.isnull(data_dictionary_in.loc[i, col_name]) or pd.isnull(data_dictionary_out.loc[i, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", i, " and column: ", col_name, " value should be: ", data_dictionary_in.at[i, col_name], " but is: ", data_dictionary_out.loc[i, col_name])
             elif axis_param == 1:
                 # Iterate over each row
                 for row_idx in range(len(data_dictionary_in.index)):
@@ -2902,12 +2925,15 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         if data_dictionary_outliers_mask.at[row_idx, col_name] == 1:
                             if data_dictionary_out.at[row_idx, col_name] != closest_values[current_value]:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_idx, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[row_idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_idx, " and column: ", col_name, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[row_idx, col_name])
                         else:
                             if (data_dictionary_out.at[row_idx, col_name] != data_dictionary_in.at[row_idx, col_name]) and not(pd.isnull(data_dictionary_in.loc[row_idx, col_name]) or pd.isnull(data_dictionary_out.loc[row_idx, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[row_idx, col_name], " but is: ", data_dictionary_out.loc[row_idx, col_name])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -2938,14 +2964,17 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                     if current_value in closest_values:
                         if data_dictionary_out.at[i, field] != closest_values[current_value]:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", i, " and column: ", field, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, field])
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
+                                print("Row: ", i, " and column: ", field, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, field])
                     else:
                         if pd.isnull(data_dictionary_in.at[i, field]) and special_type_input == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
                         if (data_dictionary_out.at[i, field] != data_dictionary_in.at[i, field]) and not(pd.isnull(data_dictionary_in.loc[i, field]) or pd.isnull(data_dictionary_out.loc[i, field])):
-                            return False
+                            keep_no_trans_result = False
+                            print("Error in row: ", i, " and column: ", field, " value should be: ", data_dictionary_in.at[i, field], " but is: ", data_dictionary_out.loc[i, field])
 
         if special_type_input == SpecialType.OUTLIER:
             # Get the outlier values in the current column
@@ -2971,19 +3000,20 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                     if data_dictionary_outliers_mask.at[i, field] == 1:
                         if data_dictionary_out.at[i, field] != closest_values[current_value]:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", i, " and column: ", field, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, field])
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
+                                print("Row: ", i, " and column: ", field, " value should be: ", closest_values[current_value], " but is: ", data_dictionary_out.loc[i, field])
                     else:
                         if (data_dictionary_out.at[i, field] != data_dictionary_in.at[i, field]) and not(pd.isnull(data_dictionary_in.loc[i, field]) or pd.isnull(data_dictionary_out.loc[i, field])):
-                            return False
+                            keep_no_trans_result = False
+                            print("Error in row: ", i, " and column: ", field, " value should be: ", data_dictionary_in.at[i, field], " but is: ", data_dictionary_out.loc[i, field])
 
-    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+    if keep_no_trans_result == False:
         return False
     else:
-        return True
+        return True if result else False
 
 def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                      special_type_input: SpecialType, belong_op_out: Belong, missing_values: list = None,
