@@ -1834,10 +1834,10 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
 
 
 def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                            special_type_input: SpecialType,
-                                            belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                            data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                            axis_param: int = None, field: str = None) -> bool:
+                                     special_type_input: SpecialType,
+                                     belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                                     data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                                     axis_param: int = None, field: str = None) -> bool:
     """
     Check if the special type interpolation is applied correctly when the input and output dataframe
     when belong_op_in is BELONG and belong_op_out is BELONG or NOTBELONG
@@ -2116,10 +2116,10 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
 
 def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                   special_type_input: SpecialType,
-                                   belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                   data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                   axis_param: int = None, field: str = None) -> bool:
+                            special_type_input: SpecialType,
+                            belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                            data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                            axis_param: int = None, field: str = None) -> bool:
     """
     Check if the special type mean is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are BELONG
     params::
@@ -2408,54 +2408,6 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                               data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
                               axis_param: int = None, field: str = None) -> bool:
     """
-    Check if the special type median is applied correctly
-    params::
-        :param data_dictionary_in: dataframe with the data before the median
-        :param data_dictionary_out: dataframe with the data after the median
-        :param special_type_input: special type to apply the median
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the median
-        :param field: field to apply the median
-
-    Returns:
-        :return: True if the special type median is applied correctly
-    """
-    result = True
-
-    if belong_op_in == Belong.BELONG:
-        result = check_special_type_median_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                  special_type_input=special_type_input,
-                                                  belong_op_in=belong_op_in, belong_op_out=belong_op_out,
-                                                  data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                  missing_values=missing_values, axis_param=axis_param,
-                                                  field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_special_type_median_not_belong_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                             special_type_input=special_type_input,
-                                                             data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                             missing_values=missing_values, axis_param=axis_param,
-                                                             field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_special_type_median_not_belong_not_belong(data_dictionary_in=data_dictionary_in,
-                                                                 data_dictionary_out=data_dictionary_out,
-                                                                 special_type_input=special_type_input,
-                                                                 data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                                 missing_values=missing_values, axis_param=axis_param,
-                                                                 field=field)
-
-    # Checks that the not transformed cells are not modified 
-    return True if result else False
-
-
-def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                     special_type_input: SpecialType,
-                                     belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                     data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                     axis_param: int = None, field: str = None) -> bool:
-    """
     Check if the special type median is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are BELONG
     params::
         :param data_dictionary_in: dataframe with the data before the median
@@ -2471,6 +2423,14 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
     Returns:
         :return: True if the special type median is applied correctly
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    keep_no_trans_result = True
+
     if field is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
@@ -2486,12 +2446,15 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                                     data_dictionary_in.at[idx, col_name]):
                                 if data_dictionary_out.at[idx, col_name] != median_value:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col_name, " value should be: ", median_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                             else:
                                 if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                                    return False
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
@@ -2503,12 +2466,15 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                                     data_dictionary_in.at[idx, col_name]):
                                 if data_dictionary_out.at[idx, col_name] != median:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                             else:
                                 if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                                    return False
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -2518,12 +2484,16 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                         if value in missing_values or pd.isnull(value):
                             if data_dictionary_out.at[idx, col_name] != median:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                         else:
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
+
         if special_type_input == SpecialType.INVALID:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -2537,15 +2507,18 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                             if data_dictionary_in.at[idx, col_name] in missing_values:
                                 if data_dictionary_out.at[idx, col_name] != median_value:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col_name, " value should be: ", median_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                             else:
                                 if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
                                     idx, col_name] and not (
                                         pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
                                     data_dictionary_out.loc[idx, col_name])):
-                                    return False
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
@@ -2556,15 +2529,18 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                             if data_dictionary_in.at[idx, col_name] in missing_values:
                                 if data_dictionary_out.at[idx, col_name] != median:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                             else:
                                 if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
                                     idx, col_name] and not (
                                         pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
                                     data_dictionary_out.loc[idx, col_name])):
-                                    return False
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -2574,15 +2550,18 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                         if value in missing_values:
                             if data_dictionary_out.at[idx, col_name] != median:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                         else:
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
                                 idx, col_name] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
                                 data_dictionary_out.loc[idx, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
@@ -2596,15 +2575,18 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
                             if data_dictionary_out.at[idx, col_name] != median_value:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col_name, " value should be: ", median_value, " but is: ", data_dictionary_out.loc[idx, col_name])
                         else:
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
                                 idx, col_name] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
                                 data_dictionary_out.loc[idx, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
             if axis_param == 0:  # Iterate over each column
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     median = data_dictionary_in[col].median()
@@ -2612,14 +2594,17 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             if data_dictionary_out.at[idx, col] != median:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col])
                         else:
                             if data_dictionary_out.loc[idx, col] != data_dictionary_in.loc[idx, col] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
                                 data_dictionary_out.loc[idx, col])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.loc[idx, col])
             elif axis_param == 1:  # Iterate over each row
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
@@ -2628,14 +2613,17 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
                             if data_dictionary_out.at[idx, col_name] != median:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col_name, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, col_name])
                         else:
                             if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, col_name]) and
                                     pd.isnull(data_dictionary_out.loc[idx, col_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col_name, " value should be: ", data_dictionary_in.at[idx, col_name], " but is: ", data_dictionary_out.loc[idx, col_name])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -2650,12 +2638,15 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                 if value in missing_values or pd.isnull(value):
                     if data_dictionary_out.at[idx, field] != median:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, field])
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
+                            print("Row: ", idx, " and column: ", field, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, field])
                 else:
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
-                        return False
+                        keep_no_trans_result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
         if special_type_input == SpecialType.INVALID:
             # Check the data_dictionary_out positions with missing values have been replaced with the median
             median = data_dictionary_in[field].median()
@@ -2663,84 +2654,42 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
                 if value in missing_values:
                     if data_dictionary_out.at[idx, field] != median:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, field])
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
+                            print("Row: ", idx, " and column: ", field, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, field])
                 else:
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                             pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
                         data_dictionary_out.loc[idx, field])):
-                        return False
+                        keep_no_trans_result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
+
         if special_type_input == SpecialType.OUTLIER:
             for idx, value in data_dictionary_in[field].items():
                 if data_dictionary_outliers_mask.at[idx, field] == 1:
                     median = data_dictionary_in[field].median()
                     if data_dictionary_out.at[idx, field] != median:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                            return False
+                            result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, field])
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                            return True
+                            result = True
+                            print("Row: ", idx, " and column: ", field, " value should be: ", median, " but is: ", data_dictionary_out.loc[idx, field])
                 else:
                     if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                             pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(data_dictionary_out.loc[idx, field])):
-                        return False
+                        keep_no_trans_result = False
+                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+    if keep_no_trans_result == False:
         return False
     else:
-        return True
+        return True if result else False
 
 
 def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                               special_type_input: SpecialType,
-                               belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                               data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                               axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type closest value is applied correctly
-    params::
-        :param data_dictionary_in: dataframe with the data before the closest
-        :param data_dictionary_out: dataframe with the data after the closest
-        :param special_type_input: special type to apply the closest
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the closest
-        :param field: field to apply the closest
-
-    Returns:
-        :return: True if the special type closest is applied correctly
-    """
-    result = True
-
-    if belong_op_in == Belong.BELONG:
-        result = check_special_type_closest_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                   special_type_input=special_type_input, belong_op_in=belong_op_in, belong_op_out=belong_op_out,
-                                                   data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                   missing_values=missing_values, axis_param=axis_param,
-                                                   field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_special_type_closest_not_belong_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                              special_type_input=special_type_input, belong_op_in=belong_op_in, belong_op_out=belong_op_out,
-                                                              data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                              missing_values=missing_values, axis_param=axis_param,
-                                                              field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_special_type_closest_not_belong_not_belong(data_dictionary_in=data_dictionary_in,
-                                                                  data_dictionary_out=data_dictionary_out,
-                                                                  special_type_input=special_type_input, belong_op_in=belong_op_in, belong_op_out=belong_op_out,
-                                                                  data_dictionary_outliers_mask=data_dictionary_outliers_mask,
-                                                                  missing_values=missing_values, axis_param=axis_param,
-                                                                  field=field)
-
-    # Checks that the not transformed cells are not modified 
-    return True if result else False
-
-
-def check_special_type_closest_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                       special_type_input: SpecialType, belong_op_in: Belong, belong_op_out: Belong,
                                       data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
                                       axis_param: int = None, field: str = None) -> bool:
