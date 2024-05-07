@@ -723,14 +723,18 @@ class Invariants:
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             if derived_type_output == DerivedType.MOSTFREQUENT:
-                result = check_special_type_most_frequent(data_dictionary_in, data_dictionary_out, special_type_input,
-                                                          belong_op_in, belong_op_out, missing_values, axis_param, field)
+                result = check_special_type_most_frequent(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                          special_type_input=special_type_input, belong_op_out=belong_op_out,
+                                                          missing_values=missing_values, axis_param=axis_param, field=field)
             elif derived_type_output == DerivedType.PREVIOUS:
-                result = check_special_type_previous(data_dictionary_in, data_dictionary_out, special_type_input,
-                                                     belong_op_in, belong_op_out, missing_values, axis_param, field)
+                result = check_special_type_previous(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                     special_type_input=special_type_input,
+                                                     belong_op_out=belong_op_out, missing_values=missing_values,
+                                                     axis_param=axis_param, field=field)
             elif derived_type_output == DerivedType.NEXT:
-                result = check_special_type_next(data_dictionary_in, data_dictionary_out, special_type_input,
-                                                 belong_op_in, belong_op_out, missing_values, axis_param, field)
+                result = check_special_type_next(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                 special_type_input=special_type_input, belong_op_out=belong_op_out,
+                                                 missing_values=missing_values, axis_param=axis_param, field=field)
 
         elif special_type_input == SpecialType.OUTLIER:
             # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
@@ -740,20 +744,25 @@ class Invariants:
             if axis_param is None:
                 missing_values = data_dictionary_in.where(data_dictionary_outliers_mask == 1).stack().tolist()
                 if derived_type_output == DerivedType.MOSTFREQUENT:
-                    result = check_special_type_most_frequent(data_dictionary_in, data_dictionary_out, special_type_input,
-                                                              belong_op_in, belong_op_out, missing_values, axis_param, field)
+                    result = check_special_type_most_frequent(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                              special_type_input=special_type_input, belong_op_out=belong_op_out,
+                                                              missing_values=missing_values, axis_param=axis_param, field=field)
                 elif derived_type_output == DerivedType.PREVIOUS:
-                    result = check_special_type_previous(data_dictionary_in, data_dictionary_out, special_type_input,
-                                                         belong_op_in, belong_op_out, missing_values, axis_param, field)
+                    result = check_special_type_previous(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                         special_type_input=special_type_input,
+                                                         belong_op_out=belong_op_out, missing_values=missing_values,
+                                                         axis_param=axis_param, field=field)
                 elif derived_type_output == DerivedType.NEXT:
-                    result = check_special_type_next(data_dictionary_in, data_dictionary_out, special_type_input,
-                                                     belong_op_in, belong_op_out, missing_values, axis_param, field)
+                    result = check_special_type_next(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
+                                                     special_type_input=special_type_input, belong_op_out=belong_op_out,
+                                                     missing_values=missing_values, axis_param=axis_param, field=field)
 
             elif axis_param == 0 or axis_param == 1:
-                result = check_derived_type_col_row_outliers(derived_type_output, data_dictionary_in,
-                                                             data_dictionary_out,
-                                                             data_dictionary_outliers_mask, belong_op_in, belong_op_out,
-                                                             axis_param, field)
+                result = check_derived_type_col_row_outliers(derivedTypeOutput=derived_type_output, data_dictionary_in=data_dictionary_in,
+                                                             data_dictionary_out=data_dictionary_out,
+                                                             outliers_dataframe_mask=data_dictionary_outliers_mask,
+                                                             belong_op_in=belong_op_in, belong_op_out=belong_op_out,
+                                                             axis_param=axis_param, field=field)
 
         return True if result else False
 

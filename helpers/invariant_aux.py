@@ -2133,222 +2133,6 @@ def check_special_type_interpolation_belong(data_dictionary_in: pd.DataFrame, da
         return True
 
 
-def check_special_type_interpolation_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                       special_type_input: SpecialType,
-                                                       data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                                       axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type interpolation is applied correctly when the input and output dataframes when belong_op_in is NOTBELONG and belong_op_out is BELONG
-    params:
-        :param data_dictionary_in: dataframe with the data before the interpolation
-        :param data_dictionary_out: dataframe with the data after the interpolation
-        :param special_type_input: special type to apply the interpolation
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the interpolation
-        :param field: field to apply the interpolation
-
-    Returns:
-        :return: True if the special type interpolation is applied correctly
-        """
-    if field is None:
-        if special_type_input == SpecialType.MISSING:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-        if special_type_input == SpecialType.INVALID:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            return False
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Replace the missing values with the mean of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-            if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col].items():
-                        if data_dictionary_outliers_mask.at[idx, col] == 1:
-                            return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    for col_name, value in numeric_data.items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    return False
-        if special_type_input == SpecialType.INVALID:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values:
-                    return False
-        if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    return False
-
-    return True
-
-
-def check_special_type_interpolation_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                           special_type_input: SpecialType,
-                                                           data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                                           axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type interpolation is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are NOTBELONG
-    params:
-        :param data_dictionary_in: dataframe with the data before the interpolation
-        :param data_dictionary_out: dataframe with the data after the interpolation
-        :param special_type_input: special type to apply the interpolation
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the interpolation
-        :param field: field to apply the interpolation
-
-    Returns:
-        :return: True if the special type interpolation is applied correctly
-        """
-    if field is None:
-        if special_type_input == SpecialType.MISSING:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-        if special_type_input == SpecialType.INVALID:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            return False
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Replace the missing values with the mean of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-            if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col].items():
-                        if data_dictionary_outliers_mask.at[idx, col] == 1:
-                            return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    for col_name, value in numeric_data.items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    return False
-        if special_type_input == SpecialType.INVALID:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values:
-                    return False
-        if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    return False
-
-    return True
-
-
 def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                             special_type_input: SpecialType,
                             belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
@@ -2638,222 +2422,6 @@ def check_special_type_mean_belong(data_dictionary_in: pd.DataFrame, data_dictio
         return True
 
 
-def check_special_type_mean_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                              special_type_input: SpecialType,
-                                              data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                              axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type mean is applied correctly when the input and output dataframes when belong_op_in is NotBelong and belong_op_out is BELONG
-    params::
-        :param data_dictionary_in: dataframe with the data before the mean
-        :param data_dictionary_out: dataframe with the data after the mean
-        :param special_type_input: special type to apply the mean
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the mean
-        :param field: field to apply the mean
-
-    Returns:
-        :return: True if the special type mean is applied correctly
-    """
-    if field is None:
-        if special_type_input == SpecialType.MISSING:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-        if special_type_input == SpecialType.INVALID:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            return False
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Replace the missing values with the mean of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-            if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col].items():
-                        if data_dictionary_outliers_mask.at[idx, col] == 1:
-                            return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    for col_name, value in numeric_data.items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    return False
-        if special_type_input == SpecialType.INVALID:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values:
-                    return False
-        if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    return False
-
-    return True
-
-
-def check_special_type_mean_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                  special_type_input: SpecialType,
-                                                  data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                                  axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type mean is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are NOTBELONG
-    params::
-        :param data_dictionary_in: dataframe with the data before the mean
-        :param data_dictionary_out: dataframe with the data after the mean
-        :param special_type_input: special type to apply the mean
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the mean
-        :param field: field to apply the mean
-
-    Returns:
-        :return: True if the special type mean is applied correctly
-    """
-    if field is None:
-        if special_type_input == SpecialType.MISSING:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-        if special_type_input == SpecialType.INVALID:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the mean in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            return False
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Replace the missing values with the mean of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-            if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col].items():
-                        if data_dictionary_outliers_mask.at[idx, col] == 1:
-                            return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    for col_name, value in numeric_data.items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    return False
-        if special_type_input == SpecialType.INVALID:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values:
-                    return False
-        if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    return False
-
-    return True
-
-
 def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                               special_type_input: SpecialType,
                               belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
@@ -3141,222 +2709,6 @@ def check_special_type_median_belong(data_dictionary_in: pd.DataFrame, data_dict
         return False
     else:
         return True
-
-
-def check_special_type_median_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                special_type_input: SpecialType,
-                                                data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                                axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type median is applied correctly when the input and output dataframes when belong_op_in is NotBelong and belong_op_out is BELONG
-    params::
-        :param data_dictionary_in: dataframe with the data before the median
-        :param data_dictionary_out: dataframe with the data after the median
-        :param special_type_input: special type to apply the median
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the median
-        :param field: field to apply the median
-
-    Returns:
-        :return: True if the special type median is applied correctly
-    """
-    if field is None:
-        if special_type_input == SpecialType.MISSING:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the median in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-        if special_type_input == SpecialType.INVALID:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the median in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            return False
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Replace the missing values with the median of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-            if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col].items():
-                        if data_dictionary_outliers_mask.at[idx, col] == 1:
-                            return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    for col_name, value in numeric_data.items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    return False
-        if special_type_input == SpecialType.INVALID:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values:
-                    return False
-        if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    return False
-
-    return True
-
-
-def check_special_type_median_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                    special_type_input: SpecialType,
-                                                    data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                                    axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type median is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are NOTBELONG
-    params::
-        :param data_dictionary_in: dataframe with the data before the median
-        :param data_dictionary_out: dataframe with the data after the median
-        :param special_type_input: special type to apply the median
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the median
-        :param field: field to apply the median
-
-    Returns:
-        :return: True if the special type median is applied correctly
-    """
-    if field is None:
-        if special_type_input == SpecialType.MISSING:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
-                            if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
-                                    data_dictionary_in.at[idx, col_name]):
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the median in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-        if special_type_input == SpecialType.INVALID:
-            if axis_param is None:
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 0:
-                # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    # Check if the missing values in the row have been replaced with the median in data_dictionary_out
-                    for col_name, value in numeric_data.items():
-                        if value in missing_values:
-                            return False
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None:
-                # Replace the missing values with the mean of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col_name].items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-            if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    for idx, value in data_dictionary_in[col].items():
-                        if data_dictionary_outliers_mask.at[idx, col] == 1:
-                            return False
-            elif axis_param == 1:
-                for idx, row in data_dictionary_in.iterrows():
-                    numeric_data = row[row.apply(lambda x: np.isreal(x))]
-                    for col_name, value in numeric_data.items():
-                        if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values or pd.isnull(value):
-                    return False
-        if special_type_input == SpecialType.INVALID:
-            for idx, value in data_dictionary_in[field].items():
-                if value in missing_values:
-                    return False
-        if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    return False
-
-    return True
 
 
 def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -3702,123 +3054,9 @@ def check_special_type_closest_belong(data_dictionary_in: pd.DataFrame, data_dic
     else:
         return True
 
-
-def check_special_type_closest_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                 special_type_input: SpecialType, belong_op_in: Belong, belong_op_out: Belong,
-                                                 data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                                 axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type closest is applied correctly when the input and output dataframes when belong_op_in is NotBelong and belong_op_out is Belong
-    params::
-        :param data_dictionary_in: dataframe with the data before the closest
-        :param data_dictionary_out: dataframe with the data after the closest
-        :param special_type_input: special type to apply the closest
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the closest
-        :param field: field to apply the closest
-
-    Returns:
-        :return: True if the special type closest is applied correctly
-    """
-    if field is None:
-        if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
-            if axis_param is None or axis_param == 0 or axis_param == 1:
-                # Replace the missing values with the closest numeric values
-                for i in range(len(data_dictionary_in.index)):
-                    for j in range(len(data_dictionary_in.columns)):
-                        for missing_value in missing_values:
-                            if data_dictionary_in.iloc[i, j] == missing_value or (pd.isnull(data_dictionary_in.iloc[i, j]) and special_type_input == SpecialType.MISSING):
-                                return False
-
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None or axis_param == 0 or axis_param == 1:
-                for i in range(len(data_dictionary_in.index)):
-                    for j in range(len(data_dictionary_in.columns)):
-                        if data_dictionary_outliers_mask.iloc[i, j] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
-            for i in range(len(data_dictionary_in.index)):
-                for missing_value in missing_values:
-                    if data_dictionary_in.at[i, field] == missing_value or (pd.isnull(data_dictionary_in.at[i, field]) and special_type_input == SpecialType.MISSING):
-                        return False
-
-        if special_type_input == SpecialType.OUTLIER:
-            for i in range(len(data_dictionary_in.index)):
-                if data_dictionary_outliers_mask.at[i, field] == 1:
-                    return False
-
-    return True
-
-
-def check_special_type_closest_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                     special_type_input: SpecialType, belong_op_in: Belong, belong_op_out: Belong,
-                                                     data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                                     axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the special type closest is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are NotBelong
-    params::
-        :param data_dictionary_in: dataframe with the data before the closest
-        :param data_dictionary_out: dataframe with the data after the closest
-        :param special_type_input: special type to apply the closest
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the closest
-        :param field: field to apply the closest
-
-    Returns:
-        :return: True if the special type closest is applied correctly
-    """
-    if field is None:
-        if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
-            if axis_param is None or axis_param == 0 or axis_param == 1:
-                for i in range(len(data_dictionary_in.index)):
-                    for j in range(len(data_dictionary_in.columns)):
-                        for missing_value in missing_values:
-                            if data_dictionary_in.iloc[i, j] == missing_value or (pd.isnull(data_dictionary_in.iloc[i, j]) and special_type_input == SpecialType.MISSING):
-                                return False
-
-        if special_type_input == SpecialType.OUTLIER:
-            if axis_param is None or axis_param == 0 or axis_param == 1:
-                for i in range(len(data_dictionary_in.index)):
-                    for j in range(len(data_dictionary_in.columns)):
-                        if data_dictionary_outliers_mask.iloc[i, j] == 1:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-            raise ValueError("Field is not numeric")
-
-        if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
-            for i in range(len(data_dictionary_in.index)):
-                for missing_value in missing_values:
-                    if data_dictionary_in.at[i, field] == missing_value or (pd.isnull(data_dictionary_in.at[i, field]) and special_type_input == SpecialType.MISSING):
-                        return False
-
-        if special_type_input == SpecialType.OUTLIER:
-            for i in range(len(data_dictionary_in.index)):
-                if data_dictionary_outliers_mask.at[i, field] == 1:
-                    return False
-
-    return True
-
-
-def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                               special_type_input: SpecialType, missing_values: list, axis_param: int,
-                               field: str, belong_op_out: Belong) -> bool:
+def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                               special_type_input: SpecialType, belong_op_out: Belong, missing_values: list = None,
+                               axis_param: int = None, field: str = None) -> bool:
     """
     Check if the special type most frequent is applied correctly when the input and output dataframes when belong_op_in is Belong and belong_op_out is BELONG
 
@@ -3834,6 +3072,14 @@ def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary
 
     :return: True if the special type most frequent is applied correctly, False otherwise
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    keep_no_trans_result = True
+
     if field is None:
         if axis_param == 0:
             if special_type_input == SpecialType.MISSING:
@@ -3843,25 +3089,31 @@ def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary
                         if pd.isnull(value):
                             if data_dictionary_out.loc[row_index, column_name] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_name, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_name])
                         elif missing_values is None:  # If the output value isn't a missing value and isn't equal to the
                             # original value, then return False
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index, column_name]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else:
                             if value in missing_values:
                                 if data_dictionary_out.loc[row_index, column_name] != most_frequent:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else:
                                 if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                     row_index, column_name]:
-                                    return False
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
 
             else:  # It works for invalid values and outliers
                 for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -3870,16 +3122,19 @@ def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary
                         if value in missing_values:
                             if data_dictionary_out.loc[row_index, column_name] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_name])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_name, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else:  # If the output value isn't a missing value and isn't equal to the
                             # original value, then return False
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index, column_name] and not (
                                     pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                     data_dictionary_out.loc[row_index, column_name])) and not (special_type_input == SpecialType.MISSING):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
         elif axis_param == 1:
             if special_type_input == SpecialType.MISSING:
                 # Instead of iterating over the columns, we iterate over the rows to check the derived type
@@ -3889,24 +3144,30 @@ def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary
                         if pd.isnull(value):
                             if data_dictionary_out.loc[row_index, column_index] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                         elif missing_values is None:
                             if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                 row_index, column_index]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
                         else:
                             if value in missing_values:
                                 if data_dictionary_out.loc[row_index, column_index] != most_frequent:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                             else:
                                 if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                     row_index, column_index]:
-                                    return False
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
             else:  # It works for invalid values and outliers
                 for row_index, row in data_dictionary_in.iterrows():
                     most_frequent = row.value_counts().idxmax()
@@ -3914,15 +3175,18 @@ def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary
                         if value in missing_values:
                             if data_dictionary_out.loc[row_index, column_index] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                         else:
                             if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                 row_index, column_index] and not (
                                     pd.isnull(data_dictionary_in.loc[row_index, column_index]) and pd.isnull(
                                     data_dictionary_out.loc[row_index, column_index])) and not (special_type_input == SpecialType.MISSING):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
         elif axis_param is None:
             most_frequent = data_dictionary_in.stack().value_counts().idxmax()
             if special_type_input == SpecialType.MISSING:
@@ -3931,39 +3195,48 @@ def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary
                         if pd.isnull(value):
                             if data_dictionary_out.loc[row_index, column_index] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                         elif missing_values is None:
                             if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                 row_index, column_index]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
                         else:
                             if value in missing_values:
                                 if data_dictionary_out.loc[row_index, column_index] != most_frequent:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                             else:
                                 if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                     row_index, column_index]:
-                                    return False
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
             else:  # It works for invalid values and outliers
                 for row_index, row in data_dictionary_in.iterrows():
                     for column_index, value in row.items():
                         if value in missing_values:
                             if data_dictionary_out.loc[row_index, column_index] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", row_index, " and column: ", column_index, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[row_index, column_index])
                         else:
                             if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                 row_index, column_index] and not (
                                     pd.isnull(data_dictionary_in.loc[row_index, column_index]) and pd.isnull(
                                     data_dictionary_out.loc[row_index, column_index])) and not (special_type_input == SpecialType.MISSING):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
@@ -3976,388 +3249,56 @@ def check_most_frequent_belong(data_dictionary_in: pd.DataFrame, data_dictionary
                     if pd.isnull(value):
                         if data_dictionary_out.loc[idx, field] != most_frequent:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[idx, field])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
+                                print("Row: ", idx, " and column: ", field, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[idx, field])
                     elif missing_values is None:
                         if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
-                            return False
+                            keep_no_trans_result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                     else:
                         if value in missing_values:
                             if data_dictionary_out.loc[idx, field] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
-                                    return False
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", field, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[idx, field])
                                 elif belong_op_out == Belong.NOTBELONG:
-                                    return True
+                                    result = True
+                                    print("Row: ", idx, " and column: ", field, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[idx, field])
                         else:
                             if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[
                                 idx, field]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
             else:  # It works for invalid values and outliers
                 for idx, value in data_dictionary_in[field].items():
                     if value in missing_values:
                         if data_dictionary_out.loc[idx, field] != most_frequent:
                             if belong_op_out == Belong.BELONG:
-                                return False
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[idx, field])
                             elif belong_op_out == Belong.NOTBELONG:
-                                return True
+                                result = True
+                                print("Row: ", idx, " and column: ", field, " value should be: ", most_frequent, " but is: ", data_dictionary_out.loc[idx, field])
                     else:
                         if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[
                             idx, field] and not (
                                 pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
                             data_dictionary_out.loc[idx, field])):
-                            return False
+                            keep_no_trans_result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
+    if keep_no_trans_result == False:
         return False
+    else:
+        return True if result else False
 
 
-def check_most_frequent_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                          special_type_input: SpecialType, missing_values: list, axis_param: int, field) -> bool:
-    """
-    Check if the special type most frequent is applied correctly when the input and output dataframes when belong_op_in is Belong and belong_op_out is NOTBELONG
-
-    params:
-    :param data_dictionary_in: (pd.DataFrame) Dataframe with the data before the most frequent
-    :param data_dictionary_out: (pd.DataFrame) Dataframe with the data after the most frequent
-    :param special_type_input: (SpecialType) Special type to apply the most frequent
-    :param missing_values: (list) List of missing values
-    :param axis_param: (int) Axis to apply the most frequent
-    :param field: (str) Field to apply the most frequent
-
-    :return: True if the special type most frequent is applied correctly, False otherwise
-    """
-    if field is None:
-        if axis_param == 0:
-            if special_type_input == SpecialType.MISSING:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    most_frequent = data_dictionary_in[column_name].value_counts().idxmax()
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if pd.isnull(value):
-                            if data_dictionary_out.loc[row_index, column_name] != most_frequent:
-                                return True
-                        elif missing_values is None:  # If the output value isn't a missing value and isn't equal to the
-                            # original value, then return False
-                            if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
-                                row_index, column_name]:
-                                return False
-                        else:
-                            if value in missing_values:
-                                if data_dictionary_out.loc[row_index, column_name] != most_frequent:
-                                    return False
-                            else:
-                                if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
-                                    row_index, column_name]:
-                                    return False
-            else:  # It works for invalid values and outliers
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    most_frequent = data_dictionary_in[column_name].value_counts().idxmax()
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values:
-                            if data_dictionary_out.loc[row_index, column_name] != most_frequent:
-                                return True
-                        else:  # If the output value isn't a missing value and isn't equal to the
-                            # original value, then return False
-                            if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
-                                row_index, column_name] and not (
-                                    pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
-                                data_dictionary_out.loc[row_index, column_name])) and not (special_type_input == SpecialType.MISSING):
-                                return False
-        elif axis_param == 1:
-            if special_type_input == SpecialType.MISSING:
-                # Instead of iterating over the columns, we iterate over the rows to check the derived type
-                for row_index, row in data_dictionary_in.iterrows():
-                    most_frequent = row.value_counts().idxmax()
-                    for column_index, value in row.items():
-                        if pd.isnull(value):
-                            if data_dictionary_out.loc[row_index, column_index] != most_frequent:
-                                return True
-                        elif missing_values is None:
-                            if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
-                                row_index, column_index]:
-                                return False
-                        else:
-                            if value in missing_values:
-                                if data_dictionary_out.loc[row_index, column_index] != most_frequent:
-                                    return False
-                            else:
-                                if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
-                                    row_index, column_index]:
-                                    return False
-            else:  # It works for invalid values and outliers
-                for row_index, row in data_dictionary_in.iterrows():
-                    most_frequent = row.value_counts().idxmax()
-                    for column_index, value in row.items():
-                        if value in missing_values:
-                            if data_dictionary_out.loc[row_index, column_index] != most_frequent:
-                                return True
-                        else:
-                            if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
-                                row_index, column_index] and not (
-                                    pd.isnull(data_dictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                data_dictionary_out.loc[row_index, column_index])) and not (special_type_input == SpecialType.MISSING):
-                                return False
-        elif axis_param is None:
-            most_frequent = data_dictionary_in.stack().value_counts().idxmax()
-            if special_type_input == SpecialType.MISSING:
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index, value in row.items():
-                        if pd.isnull(value):
-                            if data_dictionary_out.loc[row_index, column_index] != most_frequent:
-                                return True
-                        elif missing_values is None:
-                            if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
-                                row_index, column_index]:
-                                return False
-                        else:
-                            if value in missing_values:
-                                if data_dictionary_out.loc[row_index, column_index] != most_frequent:
-                                    return False
-                            else:
-                                if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
-                                    row_index, column_index]:
-                                    return False
-            else:  # It works for invalid values and outliers
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index, value in row.items():
-                        if value in missing_values:
-                            if data_dictionary_out.loc[row_index, column_index] != most_frequent:
-                                return True
-                        else:
-                            if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
-                                row_index, column_index] and not (
-                                    pd.isnull(data_dictionary_in.loc[row_index, column_index]) and pd.isnull(
-                                data_dictionary_out.loc[row_index, column_index])) and not (special_type_input == SpecialType.MISSING):
-                                return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            most_frequent = data_dictionary_in[field].value_counts().idxmax()
-            if special_type_input == SpecialType.MISSING:
-                for idx, value in data_dictionary_in[field].items():
-                    if pd.isnull(value):
-                        if data_dictionary_out.loc[idx, field] != most_frequent:
-                            return True
-                    elif missing_values is None:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
-                            return False
-                    else:
-                        if value in missing_values:
-                            if data_dictionary_out.loc[idx, field] != most_frequent:
-                                return False
-                        else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[
-                                idx, field]:
-                                return False
-            else:  # It works for invalid values and outliers
-                for idx, value in data_dictionary_in[field].items():
-                    if value in missing_values:
-                        if data_dictionary_out.loc[idx, field] != most_frequent:
-                            return True
-                    else:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[
-                            idx, field] and not (
-                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                            data_dictionary_out.loc[idx, field])):
-                            return False
-
-    return False
-
-
-
-def check_most_frequent_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                          special_type_input: SpecialType, missing_values: list, axis_param: int, field) -> bool:
-    """
-    Check if the special type most frequent is applied correctly when the input and output dataframes when belong_op_in is NOTBELONG and belong_op_out is BELONG
-
-    params:
-    :param data_dictionary_in: (pd.DataFrame) Dataframe with the data before the most frequent
-    :param data_dictionary_out: (pd.DataFrame) Dataframe with the data after the most frequent
-    :param special_type_input: (SpecialType) Special type to apply the most frequent
-    :param missing_values: (list) List of missing values
-    :param axis_param: (int) Axis to apply the most frequent
-    :param field: (str) Field to apply the most frequent
-
-    :return: True if the special type most frequent is applied correctly, False otherwise
-    """
-    if field is None:
-        if axis_param == 0:
-            if special_type_input == SpecialType.MISSING:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    most_frequent = data_dictionary_in[column_name].value_counts().idxmax()
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # It works for invalid values and outliers
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    most_frequent = data_dictionary_in[column_name].value_counts().idxmax()
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values:
-                            return False
-        elif axis_param == 1:
-            if special_type_input == SpecialType.MISSING:
-                # Instead of iterating over the columns, we iterate over the rows to check the derived type
-                for row_index, row in data_dictionary_in.iterrows():
-                    most_frequent = row.value_counts().idxmax()
-                    for column_index, value in row.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # It works for invalid values and outliers
-                for row_index, row in data_dictionary_in.iterrows():
-                    most_frequent = row.value_counts().idxmax()
-                    for column_index, value in row.items():
-                        if value in missing_values:
-                            return False
-        elif axis_param is None:
-            most_frequent = data_dictionary_in.stack().value_counts().idxmax()
-            if special_type_input == SpecialType.MISSING:
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index, value in row.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # It works for invalid values and outliers
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index, value in row.items():
-                        if value in missing_values:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            most_frequent = data_dictionary_in[field].value_counts().idxmax()
-            if special_type_input == SpecialType.MISSING:
-                for idx, value in data_dictionary_in[field].items():
-                    if value in missing_values or pd.isnull(value):
-                        return False
-            else:  # It works for invalid values and outliers
-                for idx, value in data_dictionary_in[field].items():
-                    if value in missing_values:
-                        return False
-
-    return True
-
-
-def check_most_frequent_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                              special_type_input: SpecialType, missing_values: list, axis_param: int, field) -> bool:
-    """
-    Check if the special type most frequent is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are NOTBELONG
-
-    params:
-    :param data_dictionary_in: (pd.DataFrame) Dataframe with the data before the most frequent
-    :param data_dictionary_out: (pd.DataFrame) Dataframe with the data after the most frequent
-    :param special_type_input: (SpecialType) Special type to apply the most frequent
-    :param missing_values: (list) List of missing values
-    :param axis_param: (int) Axis to apply the most frequent
-    :param field: (str) Field to apply the most frequent
-
-    :return: True if the special type most frequent is applied correctly, False otherwise
-    """
-    if field is None:
-        if axis_param == 0:
-            if special_type_input == SpecialType.MISSING:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    most_frequent = data_dictionary_in[column_name].value_counts().idxmax()
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # It works for invalid values and outliers
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    most_frequent = data_dictionary_in[column_name].value_counts().idxmax()
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values:
-                            return False
-        elif axis_param == 1:
-            if special_type_input == SpecialType.MISSING:
-                # Instead of iterating over the columns, we iterate over the rows to check the derived type
-                for row_index, row in data_dictionary_in.iterrows():
-                    most_frequent = row.value_counts().idxmax()
-                    for column_index, value in row.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # It works for invalid values and outliers
-                for row_index, row in data_dictionary_in.iterrows():
-                    most_frequent = row.value_counts().idxmax()
-                    for column_index, value in row.items():
-                        if value in missing_values:
-                            return False
-        elif axis_param is None:
-            most_frequent = data_dictionary_in.stack().value_counts().idxmax()
-            if special_type_input == SpecialType.MISSING:
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index, value in row.items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # It works for invalid values and outliers
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index, value in row.items():
-                        if value in missing_values:
-                            return False
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            most_frequent = data_dictionary_in[field].value_counts().idxmax()
-            if special_type_input == SpecialType.MISSING:
-                for idx, value in data_dictionary_in[field].items():
-                    if value in missing_values or pd.isnull(value):
-                        return False
-            else:  # It works for invalid values and outliers
-                for idx, value in data_dictionary_in[field].items():
-                    if value in missing_values:
-                        return False
-
-    return True
-
-
-def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, special_type_input: SpecialType,
-                                     belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                     missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the derived type most frequent value is applied correctly
-    params:
-        :param data_dictionary_in: dataframe with the data before the MostFrequent
-        :param data_dictionary_out: dataframe with the data after the MostFrequent
-        :param special_type_input: special type to apply the MostFrequent
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the MostFrequent
-        :param field: field to apply the MostFrequent
-
-    Returns:
-        :return: True if the derived type most frequent value is applied correctly
-    """
-    result = True
-
-    if belong_op_in == Belong.BELONG:
-        result=check_most_frequent_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                          special_type_input=special_type_input, missing_values=missing_values,
-                                          axis_param=axis_param, field=field, belong_op_out=belong_op_out)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result=check_most_frequent_not_belong_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                     special_type_input=special_type_input, missing_values=missing_values,
-                                                     axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result=check_most_frequent_not_belong_not_belong(data_dictionary_in=data_dictionary_in, data_dictionary_out=data_dictionary_out,
-                                                         special_type_input=special_type_input, missing_values=missing_values,
-                                                         axis_param=axis_param, field=field)
-
-    # Checks that the not transformed cells are not modified 
-    return True if result else False
-
-
-def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                       special_type_input: SpecialType, missing_values: list, axis_param: int, field: str,
-                                       belong_op_out: Belong = Belong.BELONG) -> bool:
+def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                       special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
+                                       missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
     """
     Check if the derived type previous value is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are both BELONG
 
@@ -4372,6 +3313,14 @@ def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_di
 
     :return: True if the derived type previous value is applied correctly, False otherwise
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    keep_no_trans_result = True
+
     if field is None:
         # Check the previous value of the missing values
         if axis_param == 0:
@@ -4386,24 +3335,29 @@ def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_di
                                         pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                     data_dictionary_out.loc[row_index, column_name])):
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else:
                                 if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                     row_index - 1, column_name] and (
                                         not pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                     data_dictionary_out.loc[row_index - 1, column_name])):
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index - 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index - 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else:
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index, column_name] and not (
                                     pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.loc[row_index, column_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
 
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
                 for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -4413,24 +3367,29 @@ def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_di
                                 if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                     row_index, column_name]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else:
                                 # Check that is posible to access to the previous row
                                 if row_index - 1 in data_dictionary_in.index:
                                     if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                         row_index - 1, column_name]:
                                         if belong_op_out == Belong.BELONG:
-                                            return False
+                                            result = False
+                                            print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index - 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                         elif belong_op_out == Belong.NOTBELONG:
-                                            return True
+                                            result = True
+                                            print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index - 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else:
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index, column_name] and not (pd.isnull(
                                 data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.loc[row_index, column_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
 
         elif axis_param == 1:
             if special_type_input == SpecialType.MISSING:
@@ -4442,21 +3401,26 @@ def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_di
                                 if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[
                                     row_index, column_index]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_index])
                             else:
                                 if column_index - 1 in data_dictionary_in.columns:
                                     if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[
                                         row_index, column_index - 1]:
                                         if belong_op_out == Belong.BELONG:
-                                            return False
+                                            result = False
+                                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index - 1], " but is: ", data_dictionary_out.at[row_index, column_index])
                                         elif belong_op_out == Belong.NOTBELONG:
-                                            return True
+                                            result = True
+                                            print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index - 1], " but is: ", data_dictionary_out.at[row_index, column_index])
                         else:
                             if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[
                                 row_index, column_index]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_index])
 
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
                 for row_index, row in data_dictionary_in.iterrows():
@@ -4467,23 +3431,28 @@ def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_di
                                 if data_dictionary_out.iloc[row_index, column_index] != data_dictionary_in.iloc[
                                     row_index, column_index]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.iloc[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.iloc[row_index, column_index])
                             else:
                                 if column_index - 1 in data_dictionary_in.columns:
                                     if data_dictionary_out.iloc[row_index, column_index] != data_dictionary_in.iloc[
                                         row_index, column_index - 1]:
                                         if belong_op_out == Belong.BELONG:
-                                            return False
+                                            result = False
+                                            print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index - 1], " but is: ", data_dictionary_out.iloc[row_index, column_index])
                                         elif belong_op_out == Belong.NOTBELONG:
-                                            return True
+                                            result = True
+                                            print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index - 1], " but is: ", data_dictionary_out.iloc[row_index, column_index])
                         else:
                             if data_dictionary_out.iloc[row_index, column_index] != data_dictionary_in.iloc[
                                 row_index, column_index] and not (
                                     pd.isnull(data_dictionary_in.iloc[row_index, column_index]) and pd.isnull(
                                     data_dictionary_out.iloc[row_index, column_index])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.iloc[row_index, column_index], " but is: ", data_dictionary_out.iloc[row_index, column_index])
 
         elif axis_param is None:
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
@@ -4500,36 +3469,46 @@ def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_di
                             if idx == 0:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                             else:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx - 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx - 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                         else:
                             if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                 else: # missing_values is None
                     for idx, value in data_dictionary_in[field].items():
                         if pd.isnull(value):
                             if idx == 0:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                             else:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx - 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx - 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                         else:
                             if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
             elif special_type_input == SpecialType.INVALID:
                 if missing_values is not None:
@@ -4538,221 +3517,35 @@ def check_derived_type_previous_belong(data_dictionary_in: pd.DataFrame, data_di
                             if idx == 0:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                             else:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx - 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx - 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                         else:
                             if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
                                 data_dictionary_out.loc[idx, field])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
+    if keep_no_trans_result == False:
         return False
+    else:
+        return True if result else False
 
 
-def check_derived_type_previous_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                  special_type_input: SpecialType, missing_values: list, axis_param: int,
-                                                  field: str) -> bool:
-    """
-    Check if the derived type previous value is applied correctly when the input and output dataframes when belong_op_in is NOTBELONG and belong_op_out is BELONG
-
-    params:
-    :param data_dictionary_in: (pd.DataFrame) Dataframe with the data before the Previous
-    :param data_dictionary_out: (pd.DataFrame) Dataframe with the data after the Previous
-    :param special_type_input: (SpecialType) Special type to apply the Previous
-    :param missing_values: (list) List of missing values
-    :param axis_param: (int) Axis to apply the Previous
-    :param field: (str) Field to apply the Previous
-
-    :return: True if the derived type previous value is applied correctly, False otherwise
-    """
-    if field is None:
-        # Check the previous value of the missing values
-        if axis_param == 0:
-            if special_type_input == SpecialType.MISSING:
-                # Manual check of the previous operacion to the missing values in the columns
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values:
-                            return False
-
-        elif axis_param == 1:
-            if special_type_input == SpecialType.MISSING:
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.at[row_index, column_index]
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.iloc[row_index, column_index]
-                        if value in missing_values:
-                            return False
-
-        elif axis_param is None:
-            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            if special_type_input == SpecialType.MISSING:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-                else:  # missing_values is None
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-            elif special_type_input == SpecialType.INVALID:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-    return True
-
-
-def check_derived_type_previous_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                      special_type_input: SpecialType, missing_values: list, axis_param: int,
-                                                      field: str) -> bool:
-    """
-    Check if the derived type previous value is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are NOTBELONG
-
-    params:
-    :param data_dictionary_in: (pd.DataFrame) Dataframe with the data before the Previous
-    :param data_dictionary_out: (pd.DataFrame) Dataframe with the data after the Previous
-    :param special_type_input: (SpecialType) Special type to apply the Previous
-    :param missing_values: (list) List of missing values
-    :param axis_param: (int) Axis to apply the Previous
-    :param field: (str) Field to apply the Previou
-
-    :return: True if the derived type previous value is applied correctly, False otherwise
-    """
-    if field is None:
-        # Check the previous value of the missing values
-        if axis_param == 0:
-            if special_type_input == SpecialType.MISSING:
-                # Manual check of the previous operacion to the missing values in the columns
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values:
-                            return False
-
-        elif axis_param == 1:
-            if special_type_input == SpecialType.MISSING:
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.at[row_index, column_index]
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.iloc[row_index, column_index]
-                        if value in missing_values:
-                            return False
-
-        elif axis_param is None:
-            raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            if special_type_input == SpecialType.MISSING:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-                else:  # missing_values is None
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-            elif special_type_input == SpecialType.INVALID:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-    return True
-
-
-def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                special_type_input: SpecialType,
-                                belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the derived type previous value is applied correctly
-    params:
-        :param data_dictionary_in: dataframe with the data before the Previous
-        :param data_dictionary_out: dataframe with the data after th Previous
-        :param special_type_input: special type to apply the Previous
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the Previous
-        :param field: field to apply the Previous
-
-    Returns:
-        :return: True if the derived type previous value is applied correctly
-    """
-    result = True
-    if belong_op_in == Belong.BELONG:
-        result = check_derived_type_previous_belong(data_dictionary_in=data_dictionary_in,
-                                                    data_dictionary_out=data_dictionary_out,
-                                                    special_type_input=special_type_input,
-                                                    missing_values=missing_values,
-                                                    axis_param=axis_param, field=field, belong_op_out=belong_op_out)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_derived_type_previous_not_belong_belong(data_dictionary_in=data_dictionary_in,
-                                                               data_dictionary_out=data_dictionary_out,
-                                                               special_type_input=special_type_input,
-                                                               missing_values=missing_values,
-                                                               axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_derived_type_previous_not_belong_not_belong(data_dictionary_in=data_dictionary_in,
-                                                                   data_dictionary_out=data_dictionary_out,
-                                                                   special_type_input=special_type_input,
-                                                                   missing_values=missing_values, axis_param=axis_param,
-                                                                   field=field)
-
-    # Checks that the not transformed cells are not modified 
-    return True if result else False
-
-
-def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                   special_type_input: SpecialType, missing_values: list, axis_param: int,
-                                   field: str, belong_op_out: Belong = Belong.BELONG) -> bool:
+def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                   special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
+                                   missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
     """
     Check if the derived type next value is applied correctly when the input and output
     dataframes when belong_op_in and belong_op_out are BELONG
@@ -4766,6 +3559,14 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
 
     :return: True if the derived type next value is applied correctly, False otherwise
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    keep_no_trans_result = True
+
     if field is None:
         # Define the lambda function to replace the values within missing values by the value of the next position
         if axis_param == 0:
@@ -4779,22 +3580,27 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
                                         pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                     data_dictionary_out.loc[row_index, column_name])):
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else:
                                 if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                     row_index + 1, column_name] and not (
                                          pd.isnull(data_dictionary_out.loc[row_index, column_name]) and pd.isnull(data_dictionary_in.loc[row_index + 1, column_name])):
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index + 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index + 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else:
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index, column_name] and not (
                                     pd.isnull(data_dictionary_in.loc[row_index, column_name]) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
 
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
                 for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -4804,23 +3610,27 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
                                 if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                     row_index, column_name]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                             else:
                                 if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                     row_index + 1, column_name]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index + 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index + 1, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
                         else:
                             if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                                 row_index, column_name] and not (pd.isnull(
                                 data_dictionary_in.loc[row_index, column_name]) and pd.isnull(
                                 data_dictionary_out.loc[row_index, column_name])):
-                                return False
-
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_name, " value should be: ", data_dictionary_in.loc[row_index, column_name], " but is: ", data_dictionary_out.loc[row_index, column_name])
 
         elif axis_param == 1:
             if special_type_input == SpecialType.MISSING:
@@ -4832,22 +3642,27 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
                                 if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[
                                     row_index, column_index]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_index])
                             else:
                                 if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[
                                     row_index, column_index + 1]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index + 1], " but is: ", data_dictionary_out.at[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index + 1], " but is: ", data_dictionary_out.at[row_index, column_index])
                         else:
                             if data_dictionary_out.at[row_index, column_index] != data_dictionary_in.at[
                                 row_index, column_index] and not (
                                     pd.isnull(data_dictionary_in.at[row_index, column_index]) and pd.isnull(
                                 data_dictionary_out.at[row_index, column_index])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.at[row_index, column_index], " but is: ", data_dictionary_out.at[row_index, column_index])
 
             else:  # SPECIAL_TYPE is INVALID or OUTLIER
                 for row_index, row in data_dictionary_in.iterrows():
@@ -4861,22 +3676,27 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
                                 if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                     row_index, column_index]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
                             else:
                                 if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                     row_index, next_column_name]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, next_column_name], " but is: ", data_dictionary_out.loc[row_index, column_index])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, next_column_name], " but is: ", data_dictionary_out.loc[row_index, column_index])
                         else:
                             if data_dictionary_out.loc[row_index, column_index] != data_dictionary_in.loc[
                                 row_index, column_index] and not (
                                     pd.isnull(data_dictionary_in.loc[row_index, column_index]) and pd.isnull(
                                     data_dictionary_out.loc[row_index, column_index])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", row_index, " and column: ", column_index, " value should be: ", data_dictionary_in.loc[row_index, column_index], " but is: ", data_dictionary_out.loc[row_index, column_index])
 
         elif axis_param is None:
             raise ValueError("The axis cannot be None when applying the NEXT operation")
@@ -4893,19 +3713,24 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
                             if idx == len(data_dictionary_in) - 1:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                             else:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx + 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx + 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                         else:
                             if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(data_dictionary_out.loc[idx, field])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
                 else:
                     for idx, value in data_dictionary_in[field].items():
@@ -4913,19 +3738,23 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
                             if idx == len(data_dictionary_in) - 1:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                             else:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx + 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx + 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                         else:
                             if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(data_dictionary_out.loc[idx, field])):
-                                return False
+                                keep_no_trans_result = False
 
             elif special_type_input == SpecialType.INVALID:
                 if missing_values is not None:
@@ -4934,209 +3763,30 @@ def check_derived_type_next_belong(data_dictionary_in: pd.DataFrame, data_dictio
                             if idx == len(data_dictionary_in) - 1:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
                             else:
                                 if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
                                     if belong_op_out == Belong.BELONG:
-                                        return False
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx + 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                                     elif belong_op_out == Belong.NOTBELONG:
-                                        return True
+                                        result = True
+                                        print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx + 1, field], " but is: ", data_dictionary_out.loc[idx, field])
                         else:
                             if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
                                 data_dictionary_out.loc[idx, field])):
-                                return False
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.loc[idx, field], " but is: ", data_dictionary_out.loc[idx, field])
 
-    if belong_op_out == Belong.BELONG:
-        return True
-    elif belong_op_out == Belong.NOTBELONG:
+    if keep_no_trans_result == False:
         return False
-
-
-def check_derived_type_next_not_belong_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                              special_type_input: SpecialType, missing_values: list, axis_param: int,
-                                              field: str) -> bool:
-    """
-    Check if the derived type next value is applied correctly when the input and output dataframes when belong_op_in is NOTBELONG and belong_op_out is BELONG
-    :param data_dictionary_in: (pd.DataFrame) Dataframe with the data before the next
-    :param data_dictionary_out: (pd.DataFrame) Dataframe with the data after the next
-    :param special_type_input: (SpecialType) Special type to apply the next
-    :param missing_values: (list) List of missing values
-    :param axis_param: (int) Axis to apply the next
-    :param field: (str) Field to apply the next
-
-    :return: True if the derived type next value is applied correctly, False otherwise
-    """
-    if field is None:
-        # Define the lambda function to replace the values within missing values by the value of the next position
-        if axis_param == 0:
-            if special_type_input == SpecialType.MISSING:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values:
-                            return False
-
-        elif axis_param == 1:
-            if special_type_input == SpecialType.MISSING:
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.at[row_index, column_index]
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.iloc[row_index, column_index]
-                        if value in missing_values:
-                            return False
-
-        elif axis_param is None:
-            raise ValueError("The axis cannot be None when applying the NEXT operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            if special_type_input == SpecialType.MISSING:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-                else:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-            elif special_type_input == SpecialType.INVALID:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-    return True
-
-
-def check_derived_type_next_not_belong_not_belong(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                                  special_type_input: SpecialType, missing_values: list, axis_param: int,
-                                                  field: str) -> bool:
-    """
-    Check if the derived type next value is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are NOTBELONG
-    :param data_dictionary_in: (pd.DataFrame) Dataframe with the data before the next
-    :param data_dictionary_out: (pd.DataFrame) Dataframe with the data after the next
-    :param special_type_input: (SpecialType) Special type to apply the next
-    :param missing_values: (list) List of missing values
-    :param axis_param: (int) Axis to apply the next
-    :param field: (str) Field to apply the next
-
-    :return: True if the derived type next value is applied correctly, False otherwise
-    """
-    if field is None:
-        # Define the lambda function to replace the values within missing values by the value of the next position
-        if axis_param == 0:
-            if special_type_input == SpecialType.MISSING:
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if value in missing_values:
-                            return False
-
-        elif axis_param == 1:
-            if special_type_input == SpecialType.MISSING:
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.at[row_index, column_index]
-                        if value in missing_values or pd.isnull(value):
-                            return False
-            else:  # SPECIAL_TYPE is INVALID or OUTLIER
-                for row_index, row in data_dictionary_in.iterrows():
-                    for column_index in range(len(data_dictionary_in.columns)):
-                        value = data_dictionary_in.iloc[row_index, column_index]
-                        if value in missing_values:
-                            return False
-
-        elif axis_param is None:
-            raise ValueError("The axis cannot be None when applying the NEXT operation")
-
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
-            raise ValueError("The field is not in the dataframe")
-
-        elif field in data_dictionary_in.columns:
-            if special_type_input == SpecialType.MISSING:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values or pd.isnull(value):
-                            return False
-
-                else:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-            elif special_type_input == SpecialType.INVALID:
-                if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
-                        if value in missing_values:
-                            return False
-
-    return True
-
-
-def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                            special_type_input: SpecialType,
-                            belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                            missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
-    """
-    Check if the derived type next value is applied correctly
-    params:
-        :param data_dictionary_in: dataframe with the data before the Next
-        :param data_dictionary_out: dataframe with the data after the Next
-        :param special_type_input: special type to apply the Next
-        :param belong_op_in: if condition to check the invariant
-        :param belong_op_out: then condition to check the invariant
-        :param missing_values: list of missing values
-        :param axis_param: axis to apply the Next
-        :param field: field to apply the Next
-
-    Returns:
-        :return: True if the derived type next value is applied correctly
-    """
-    result = True
-
-    if belong_op_in == Belong.BELONG:
-        result = check_derived_type_next_belong(data_dictionary_in=data_dictionary_in,
-                                                data_dictionary_out=data_dictionary_out,
-                                                special_type_input=special_type_input, missing_values=missing_values,
-                                                axis_param=axis_param, field=field, belong_op_out=belong_op_out)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-        result = check_derived_type_next_not_belong_belong(data_dictionary_in=data_dictionary_in,
-                                                           data_dictionary_out=data_dictionary_out,
-                                                           special_type_input=special_type_input, missing_values=missing_values,
-                                                           axis_param=axis_param, field=field)
-    elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-        result = check_derived_type_next_not_belong_not_belong(data_dictionary_in=data_dictionary_in,
-                                                               data_dictionary_out=data_dictionary_out,
-                                                               special_type_input=special_type_input,
-                                                               missing_values=missing_values, axis_param=axis_param,
-                                                               field=field)
-
-    # Checks that the not transformed cells are not modified 
-    return True if result else False
+    else:
+        return True if result else False
 
 
 def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dictionary_in: pd.DataFrame,
@@ -5157,354 +3807,184 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
 
     :return: True if the derived type is applied correctly to the outliers, False otherwise
     """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    keep_no_trans_result = True
+
     if field is None:
-        if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        if np.issubdtype(data_dictionary_in[col].dtype, np.number):
-                            for idx, value in data_dictionary_in[col].items():
-                                if outliers_dataframe_mask.at[idx, col] == 1:
-                                    if data_dictionary_out.at[idx, col] != data_dictionary_in[
-                                        col].value_counts().idxmax():
-                                        return False
-                                else:
-                                    if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
+        if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+            if axis_param == 0:
+                for col in data_dictionary_in.columns:
+                    if np.issubdtype(data_dictionary_in[col].dtype, np.number):
+                        for idx, value in data_dictionary_in[col].items():
+                            if outliers_dataframe_mask.at[idx, col] == 1:
+                                if data_dictionary_out.at[idx, col] != data_dictionary_in[
+                                    col].value_counts().idxmax():
+                                    if belong_op_out == Belong.BELONG:
+                                        result = False
+                                        print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in[col].value_counts().idxmax(), " but is: ", data_dictionary_out.at[idx, col])
+                                    elif belong_op_out == Belong.NOTBELONG:
+                                        result = True
+                                        print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in[col].value_counts().idxmax(), " but is: ", data_dictionary_out.at[idx, col])
+                            else:
+                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
+                                data_dictionary_out.loc[idx, col])):
+                                    keep_no_trans_result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.at[idx, col])
+            elif axis_param == 1:
+                for idx, row in data_dictionary_in.iterrows():
+                    for col in row.index:
+                        if outliers_dataframe_mask.at[idx, col] == 1:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.loc[idx].mode()[0]:
+                                if belong_op_out == Belong.BELONG:
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.loc[idx].mode()[0], " but is: ", data_dictionary_out.at[idx, col])
+                                elif belong_op_out == Belong.NOTBELONG:
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.loc[idx].mode()[0], " but is: ", data_dictionary_out.at[idx, col])
+                        else:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
                                     pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                        return False
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.loc[idx].mode()[0]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
+                                data_dictionary_out.loc[idx, col])):
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.at[idx, col])
 
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != 0:
-                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
-                                # de la fila anterior de out
-                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
-                                    if data_dictionary_out.at[idx, col] != data_dictionary_out.at[idx - 1, col]:
-                                        return False
-                                else:
-                                    if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx - 1, col]:
-                                        return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
-                                prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, prev_col]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
+        elif derivedTypeOutput == DerivedType.PREVIOUS:
+            if axis_param == 0:
+                for col in data_dictionary_in.columns:
+                    for idx, value in data_dictionary_in[col].items():
+                        if outliers_dataframe_mask.at[idx, col] == 1 and idx != 0:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_out.at[idx - 1, col]:
+                                if belong_op_out == Belong.BELONG:
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_out.at[idx - 1, col], " but is: ", data_dictionary_out.at[idx, col])
+                                elif belong_op_out == Belong.NOTBELONG:
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_out.at[idx - 1, col], " but is: ", data_dictionary_out.at[idx, col])
+                        else:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
+                                data_dictionary_out.loc[idx, col])):
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.at[idx, col])
+            elif axis_param == 1:
+                for idx, row in data_dictionary_in.iterrows():
+                    for col in row.index:
+                        if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
+                            prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, prev_col]:
+                                if belong_op_out == Belong.BELONG:
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, prev_col], " but is: ", data_dictionary_out.at[idx, col])
+                                elif belong_op_out == Belong.NOTBELONG:
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, prev_col], " but is: ", data_dictionary_out.at[idx, col])
+                        else:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
+                                data_dictionary_out.loc[idx, col])):
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.at[idx, col])
 
-            elif derivedTypeOutput == DerivedType.NEXT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != len(data_dictionary_in) - 1:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx + 1, col] and not (pd.isnull(
-                                    data_dictionary_out.at[idx, col]) and pd.isnull(data_dictionary_in.at[idx + 1, col])):
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-                elif axis_param == 1:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != data_dictionary_in.columns[-1]:
-                                next_col = data_dictionary_in.columns[data_dictionary_in.columns.get_loc(col) + 1]
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, next_col]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-
-        elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        if np.issubdtype(data_dictionary_in[col].dtype, np.number):
-                            for idx, value in data_dictionary_in[col].items():
-                                if outliers_dataframe_mask.at[idx, col] == 1:
-                                    if data_dictionary_out.at[idx, col] == data_dictionary_in[
-                                        col].value_counts().idxmax():
-                                        return False
-                                else:
-                                    if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                            pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                        data_dictionary_out.loc[idx, col])):
-                                        return False
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1:
-                                if data_dictionary_out.at[idx, col] == data_dictionary_in.loc[idx].mode()[0]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != 0:
-                                # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
-                                # de la fila anterior de out
-                                if outliers_dataframe_mask.at[idx - 1, col] == 1:
-                                    if data_dictionary_out.at[idx, col] == data_dictionary_out.at[idx - 1, col]:
-                                        return False
-                                else:
-                                    if data_dictionary_out.at[idx, col] == data_dictionary_in.at[idx - 1, col]:
-                                        return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
-                                prev_col = row.index[row.index.get_loc(col) - 1]  # Get the previous column
-                                if data_dictionary_out.at[idx, col] == data_dictionary_in.at[idx, prev_col]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-
-            elif derivedTypeOutput == DerivedType.NEXT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != len(data_dictionary_in) - 1:
-                                if data_dictionary_out.at[idx, col] == data_dictionary_in.at[idx + 1, col]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-                elif axis_param == 1:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != data_dictionary_in.columns[-1]:
-                                next_col = data_dictionary_in.columns[data_dictionary_in.columns.get_loc(col) + 1]
-                                if data_dictionary_out.at[idx, col] == data_dictionary_in.at[idx, next_col]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col])):
-                                    return False
-
-
-
-        elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        if np.issubdtype(data_dictionary_in[col].dtype, np.number):
-                            for idx, value in data_dictionary_in[col].items():
-                                if outliers_dataframe_mask.at[idx, col] == 1:
-                                    return False
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1:
-                                return False
-
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != 0:
-                                return False
-
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
-                                return False
-
-            elif derivedTypeOutput == DerivedType.NEXT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != len(data_dictionary_in) - 1:
-                                return False
-                elif axis_param == 1:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != data_dictionary_in.columns[-1]:
-                                return False
-
-        elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        if np.issubdtype(data_dictionary_in[col].dtype, np.number):
-                            for idx, value in data_dictionary_in[col].items():
-                                if outliers_dataframe_mask.at[idx, col] == 1:
-                                    return False
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1:
-                                return False
-
-            elif derivedTypeOutput == DerivedType.PREVIOUS:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != 0:
-                                return False
-
-                elif axis_param == 1:
-                    for idx, row in data_dictionary_in.iterrows():
-                        for col in row.index:
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != 0:
-                                return False
-
-            elif derivedTypeOutput == DerivedType.NEXT:
-                if axis_param == 0:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and idx != len(data_dictionary_in) - 1:
-                                return False
-                elif axis_param == 1:
-                    for col in data_dictionary_in.columns:
-                        for idx, value in data_dictionary_in[col].items():
-                            if outliers_dataframe_mask.at[idx, col] == 1 and col != data_dictionary_in.columns[-1]:
-                                return False
+        elif derivedTypeOutput == DerivedType.NEXT:
+            if axis_param == 0:
+                for col in data_dictionary_in.columns:
+                    for idx, value in data_dictionary_in[col].items():
+                        if outliers_dataframe_mask.at[idx, col] == 1 and idx != len(data_dictionary_in) - 1:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx + 1, col] and not (pd.isnull(
+                                data_dictionary_out.at[idx, col]) and pd.isnull(data_dictionary_in.at[idx + 1, col])):
+                                if belong_op_out == Belong.BELONG:
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx + 1, col], " but is: ", data_dictionary_out.at[idx, col])
+                                elif belong_op_out == Belong.NOTBELONG:
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx + 1, col], " but is: ", data_dictionary_out.at[idx, col])
+                        else:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
+                                data_dictionary_out.loc[idx, col])):
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.at[idx, col])
+            elif axis_param == 1:
+                for col in data_dictionary_in.columns:
+                    for idx, value in data_dictionary_in[col].items():
+                        if outliers_dataframe_mask.at[idx, col] == 1 and col != data_dictionary_in.columns[-1]:
+                            next_col = data_dictionary_in.columns[data_dictionary_in.columns.get_loc(col) + 1]
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, next_col]:
+                                if belong_op_out == Belong.BELONG:
+                                    result = False
+                                    print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, next_col], " but is: ", data_dictionary_out.at[idx, col])
+                                elif belong_op_out == Belong.NOTBELONG:
+                                    result = True
+                                    print("Row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, next_col], " but is: ", data_dictionary_out.at[idx, col])
+                        else:
+                            if data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
+                                data_dictionary_out.loc[idx, col])):
+                                keep_no_trans_result = False
+                                print("Error in row: ", idx, " and column: ", col, " value should be: ", data_dictionary_in.at[idx, col], " but is: ", data_dictionary_out.at[idx, col])
 
     elif field is not None:
         if field not in data_dictionary_in.columns:
             raise ValueError("The field is not in the dataframe")
         elif field in outliers_dataframe_mask.columns:
-            if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in[field].value_counts().idxmax():
-                                return False
-                        else:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
-                                return False
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != 0:
-                            # Si el outlier de la fila anterior era igual a 1, entonces el valor de out debe ser igual al
-                            # de la fila anterior de out
-                            if outliers_dataframe_mask.at[idx - 1, field] == 1:
-                                if data_dictionary_out.at[idx, field] != data_dictionary_out.at[idx - 1, field]:
-                                    return False
-                            else:
-                                if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx - 1, field]:
-                                    return False
-                        else:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
-                                return False
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != len(data_dictionary_in) - 1:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx + 1, field]:
-                                return False
-                        else:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
-                                return False
+            if derivedTypeOutput == DerivedType.MOSTFREQUENT:
+                for idx, value in data_dictionary_in[field].items():
+                    if outliers_dataframe_mask.at[idx, field] == 1:
+                        if data_dictionary_out.at[idx, field] != data_dictionary_in[field].value_counts().idxmax():
+                            if belong_op_out == Belong.BELONG:
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in[field].value_counts().idxmax(), " but is: ", data_dictionary_out.at[idx, field])
+                            elif belong_op_out == Belong.NOTBELONG:
+                                result = True
+                                print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in[field].value_counts().idxmax(), " but is: ", data_dictionary_out.at[idx, field])
+                    else:
+                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
+                            data_dictionary_out.loc[idx, field])):
+                            keep_no_trans_result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-            elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1:
-                            if data_dictionary_out.at[idx, field] == data_dictionary_in[field].value_counts().idxmax():
-                                return False
-                        else:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
-                                return False
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != 0:
-                            if data_dictionary_out.at[idx, field] == data_dictionary_in.at[idx - 1, field]:
-                                return False
-                        else:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
-                                return False
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != len(data_dictionary_in) - 1:
-                            if data_dictionary_out.at[idx, field] == data_dictionary_in.at[idx + 1, field]:
-                                return False
-                        else:
-                            if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
-                                return False
+            elif derivedTypeOutput == DerivedType.PREVIOUS:
+                for idx, value in data_dictionary_in[field].items():
+                    if outliers_dataframe_mask.at[idx, field] == 1 and idx != 0:
+                        if data_dictionary_out.at[idx, field] != data_dictionary_out.at[idx - 1, field]:
+                            if belong_op_out == Belong.BELONG:
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_out.at[idx - 1, field], " but is: ", data_dictionary_out.at[idx, field])
+                            elif belong_op_out == Belong.NOTBELONG:
+                                result = True
+                                print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_out.at[idx - 1, field], " but is: ", data_dictionary_out.at[idx, field])
+                    else:
+                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
+                            data_dictionary_out.loc[idx, field])):
+                            keep_no_trans_result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.BELONG:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1:
-                            return False
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != 0:
-                            return False
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != len(data_dictionary_in) - 1:
-                            return False
+            elif derivedTypeOutput == DerivedType.NEXT:
+                for idx, value in data_dictionary_in[field].items():
+                    if outliers_dataframe_mask.at[idx, field] == 1 and idx != len(data_dictionary_in) - 1:
+                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx + 1, field]:
+                            if belong_op_out == Belong.BELONG:
+                                result = False
+                                print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx + 1, field], " but is: ", data_dictionary_out.at[idx, field])
+                            elif belong_op_out == Belong.NOTBELONG:
+                                result = True
+                                print("Row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx + 1, field], " but is: ", data_dictionary_out.at[idx, field])
+                    else:
+                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
+                            data_dictionary_out.loc[idx, field])):
+                            keep_no_trans_result = False
+                            print("Error in row: ", idx, " and column: ", field, " value should be: ", data_dictionary_in.at[idx, field], " but is: ", data_dictionary_out.at[idx, field])
 
-            elif belong_op_in == Belong.NOTBELONG and belong_op_out == Belong.NOTBELONG:
-                if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1:
-                            return False
-                elif derivedTypeOutput == DerivedType.PREVIOUS:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != 0:
-                            return False
-                elif derivedTypeOutput == DerivedType.NEXT:
-                    for idx, value in data_dictionary_in[field].items():
-                        if outliers_dataframe_mask.at[idx, field] == 1 and idx != len(data_dictionary_in) - 1:
-                            return False
-
-    return True
+    if keep_no_trans_result == False:
+        return False
+    else:
+        return True if result else False
