@@ -44,13 +44,13 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        for i in range(len(input_values_list)):
-            if data_type_input_list is not None and data_type_output_list is not None:  # If the data types are specified, the transformation is performed
-                # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
-                fix_value_input, fix_value_output = cast_type_FixValue(data_type_input=data_type_input_list[i],
-                                                                       fix_value_input=input_values_list[i],
-                                                                       data_type_output=data_type_output_list[i],
-                                                                       fix_value_output=output_values_list[i])
+        # for i in range(len(input_values_list)):
+        #     if data_type_input_list is not None and data_type_output_list is not None:  # If the data types are specified, the transformation is performed
+        #         # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
+        #         fix_value_input, fix_value_output = cast_type_FixValue(data_type_input=data_type_input_list[i],
+        #                                                                fix_value_input=input_values_list[i],
+        #                                                                data_type_output=data_type_output_list[i],
+        #                                                                fix_value_output=output_values_list[i])
         result=None
         if belong_op_out == Belong.BELONG:
             result=True
@@ -67,61 +67,42 @@ class Invariants:
                 mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
 
         if field is None:
-            if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                # Iterar sobre las filas y columnas de data_dictionary_in
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
-                            if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
+            # Iterar sobre las filas y columnas de data_dictionary_in
+            for column_index, column_name in enumerate(data_dictionary_in.columns):
+                for row_index, value in data_dictionary_in[column_name].items():
+                    # Comprobar si el valor es igual a fix_value_input
+                    if value in mapping_values:
+                        # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
+                        if data_dictionary_out.loc[row_index, column_name] != mapping_values[value]:
+                            if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
-                        else: # Si el valor no es igual a fix_value_input
-                            if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {data_dictionary_in.loc[row_index, column_name]} but is: {data_dictionary_out.loc[row_index, column_name]}")
-            elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                # Iterar sobre las filas y columnas de data_dictionary_in
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
-                            if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
+                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                            elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {row_index} and column: {column_name} value should not be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
-                        else: # Si el valor no es igual a fix_value_input
-                            if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {data_dictionary_in.loc[row_index, column_name]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                print_and_log(f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                    else: # Si el valor no es igual a fix_value_input
+                        if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
+                            keep_no_trans_result = False
+                            print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {data_dictionary_in.loc[row_index, column_name]} but is: {data_dictionary_out.loc[row_index, column_name]}")
 
         elif field is not None:
             if field in data_dictionary_in.columns and field in data_dictionary_out.columns:
-                if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                    for row_index, value in data_dictionary_in[field].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
-                            if data_dictionary_out.loc[row_index, field] != fix_value_output:
+                for row_index, value in data_dictionary_in[field].items():
+                    # Comprobar si el valor es igual a fix_value_input
+                    if value in mapping_values:
+                        # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
+                        if data_dictionary_out.loc[row_index, field] != mapping_values[value]:
+                            if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {field} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field]}")
-                        else: # Si el valor no es igual a fix_value_input
-                            if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {row_index} and column: {field} value should be: {data_dictionary_in.loc[row_index, field]} but is: {data_dictionary_out.loc[row_index, field]}")
-                elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                    for row_index, value in data_dictionary_in[field].items():
-                        # Comprobar si el valor es igual a fix_value_input
-                        if value == fix_value_input:
-                            # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
-                            if data_dictionary_out.loc[row_index, field] != fix_value_output:
+                                print_and_log(f"Error in row: {row_index} and column: {field} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field]}")
+                            elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {row_index} and column: {field} value should not be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field]}")
-                        else: # Si el valor no es igual a fix_value_input
-                            if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {row_index} and column: {field} value should be: {data_dictionary_in.loc[row_index, field]} but is: {data_dictionary_out.loc[row_index, field]}")
+                                print_and_log(f"Row: {row_index} and column: {field} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field]}")
+                    else: # Si el valor no es igual a fix_value_input
+                        if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
+                            keep_no_trans_result = False
+                            print_and_log(f"Error in row: {row_index} and column: {field} value should be: {data_dictionary_in.loc[row_index, field]} but is: {data_dictionary_out.loc[row_index, field]}")
+
             elif field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
