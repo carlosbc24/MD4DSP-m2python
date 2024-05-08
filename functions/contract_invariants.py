@@ -24,10 +24,10 @@ class Invariants:
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
     def check_inv_fix_value_fix_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                      fix_value_input, fix_value_output, belong_op_in: Belong = Belong.BELONG,
-                                      belong_op_out: Belong = Belong.BELONG, input_values_list: list = None,
-                                      output_values_list: list = None, data_type_input: DataType = None,
-                                      data_type_output: DataType = None, field: str = None) -> bool:
+                                      input_values_list: list = None, output_values_list: list = None,
+                                      belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                                      data_type_input_list: DataType = None, data_type_output_list: DataType = None,
+                                      field: str = None) -> bool:
         """
         Check the invariant of the FixValue - FixValue relation (Mapping) is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -44,10 +44,13 @@ class Invariants:
         returns:
             True if the invariant is satisfied, False otherwise
         """
-        if data_type_input is not None and data_type_output is not None:  # If the data types are specified, the transformation is performed
-            # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
-            fix_value_input, fix_value_output = cast_type_FixValue(data_type_input, fix_value_input, data_type_output,
-                                                               fix_value_output)
+        for i in range(len(input_values_list)):
+            if data_type_input_list is not None and data_type_output_list is not None:  # If the data types are specified, the transformation is performed
+                # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
+                fix_value_input, fix_value_output = cast_type_FixValue(data_type_input=data_type_input_list[i],
+                                                                       fix_value_input=input_values_list[i],
+                                                                       data_type_output=data_type_output_list[i],
+                                                                       fix_value_output=output_values_list[i])
         result=None
         if belong_op_out == Belong.BELONG:
             result=True
@@ -55,6 +58,13 @@ class Invariants:
             result=False
 
         keep_no_trans_result = True
+
+        # Create a dictionary to store the mapping equivalence between the input and output values
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
 
         if field is None:
             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:

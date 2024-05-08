@@ -92,8 +92,8 @@ def count_abs_frequency(value, data_dictionary: pd.DataFrame, field: str = None)
         return count
 
 
-def cast_type_FixValue(data_type_input: DataType = None, fix_value_input=None, data_type_output: DataType = None,
-                       fix_value_output=None):
+def cast_type_FixValue(data_type_input: DataType = None, fix_value_input: object = None, data_type_output: DataType = None,
+                       fix_value_output: object = None) -> object:
     """
     Cast the value fix_value_input to the type data_type_output
     and the value fix_value_output to the type data_type_output
