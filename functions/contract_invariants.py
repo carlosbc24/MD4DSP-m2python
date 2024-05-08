@@ -51,6 +51,10 @@ class Invariants:
         #                                                                fix_value_input=input_values_list[i],
         #                                                                data_type_output=data_type_output_list[i],
         #                                                                fix_value_output=output_values_list[i])
+
+        if input_values_list.__sizeof__() != output_values_list.__sizeof__():
+            raise ValueError("The input and output values lists must have the same length")
+
         result=None
         if belong_op_out == Belong.BELONG:
             result=True
