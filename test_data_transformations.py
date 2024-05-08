@@ -40,7 +40,7 @@ def execute_data_transformations_external_dataset_tests():
 
 if __name__ == "__main__":
     # Set the logger to save the logs of the execution in the path logs/test
-    set_logger("test")
+    set_logger("test_data_transformations")
 
     # Calculate execution time for each test block (data_transformations)
     execute_data_transformations_simple_tests()
