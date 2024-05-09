@@ -129,13 +129,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                  pd.to_datetime('2021-01-01'), pd.to_datetime('2021-01-01'),
                                  pd.to_datetime('2021-08-01')]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = True
+        fix_value_output = [True]
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input=DataType(1),
-                                                                            fix_value_input=pd.to_datetime(
-                                                                                '2021-01-01'),
-                                                                            data_type_output=DataType(4),
-                                                                            fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
+                                                                            input_values_list=[pd.to_datetime('2021-01-01')],
+                                                                            data_type_output_list=None,
+                                                                            output_values_list=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [True, pd.to_datetime('2021-09-01'), True, True, True],
                                     'B': [True, True, True, True, pd.to_datetime('2021-08-01')]})
@@ -148,12 +147,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Crear un DataFrame de prueba
         df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', '8', None]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = 3.0
+        fix_value_output = [3.0]
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input=DataType(0),
-                                                                            fix_value_input='Clara',
-                                                                            data_type_output=DataType(6),
-                                                                            fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
+                                                                            input_values_list=['Clara'],
+                                                                            data_type_output_list=None,
+                                                                            output_values_list=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [3.0, 'Ana', 3.0, 3.0, np.NaN], 'B': [3.0, 3.0, 'Ana', '8', None]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -165,10 +164,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # fijo de tipo FLOAT 3.0 por el valor fijo de tipo STRING 'Clara'
         df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 2.0, 2.0, 2.0]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = 'Clara'
+        fix_value_output = ['Clara']
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_fix_value_fix_value(df, fix_value_input=3.0,
-                                                                            fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0],
+                                                                            output_values_list=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 2.0, 2.0, 2.0]})
