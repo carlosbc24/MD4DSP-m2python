@@ -12,9 +12,9 @@ class DataTransformations:
     # Interval - FixValue, Interval - DerivedValue, Interval - NumOp
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
-    def transform_fix_value_fix_value(self, data_dictionary: pd.DataFrame, fix_value_input, fix_value_output,
-                                      data_type_input: DataType = None,
-                                      data_type_output: DataType = None, field: str = None) -> pd.DataFrame:
+    def transform_fix_value_fix_value(self, data_dictionary: pd.DataFrame, input_values_list: list = None,
+                                      output_values_list: list = None, data_type_input_list: DataType = None,
+                                      data_type_output_list: DataType = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - FixValue relation
         params:
@@ -27,17 +27,35 @@ class DataTransformations:
         Returns:
             data_dictionary with the fix_value_input and fix_value_output values changed to the type data_type_input and data_type_output respectively
         """
-        if data_type_input is not None and data_type_output is not None:  # If the data types are specified, the transformation is performed
-            # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
-            fix_value_input, fix_value_output = cast_type_FixValue(data_type_input, fix_value_input, data_type_output,
-                                                               fix_value_output)
+        # for i in range(len(input_values_list)):
+        #     if data_type_input_list is not None and data_type_output_list is not None:  # If the data types are specified, the transformation is performed
+        #         # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
+        #         fix_value_input, fix_value_output = cast_type_FixValue(data_type_input=data_type_input_list[i],
+        #                                                                fix_value_input=input_values_list[i],
+        #                                                                data_type_output=data_type_output_list[i],
+        #                                                                fix_value_output=output_values_list[i])
+
+        if input_values_list.__sizeof__() != output_values_list.__sizeof__():
+            raise ValueError("The input and output values lists must have the same length")
+
+        # Create a dictionary to store the mapping equivalence between the input and output values
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
 
         if field is None:
-            data_dictionary = data_dictionary.replace(fix_value_input, fix_value_output)
+            for column_index, column_name in enumerate(data_dictionary.columns):
+                for row_index, value in data_dictionary[column_name].items():
+                    if value in mapping_values:
+                        data_dictionary.at[row_index, column_name] = mapping_values[value]
         elif field is not None:
             if field in data_dictionary.columns:
-                data_dictionary.loc[:, field] = data_dictionary.loc[:, field].replace(fix_value_input, fix_value_output)
-                # data_dictionary[field] = data_dictionary[field].replace(fix_value_input, fix_value_output)
+                for row_index in data_dictionary[field].index:
+                    value = data_dictionary.at[row_index, field]
+                    if value in mapping_values:
+                        data_dictionary.at[row_index, field] = mapping_values[value]
             elif field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
