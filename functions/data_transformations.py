@@ -13,8 +13,8 @@ class DataTransformations:
     # SpecialValue - FixValue, SpecialValue - DerivedValue, SpecialValue - NumOp
 
     def transform_fix_value_fix_value(self, data_dictionary: pd.DataFrame, input_values_list: list = None,
-                                      output_values_list: list = None, data_type_input_list: DataType = None,
-                                      data_type_output_list: DataType = None, field: str = None) -> pd.DataFrame:
+                                      output_values_list: list = None, data_type_input_list: list = None,
+                                      data_type_output_list: list = None, field: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FixValue - FixValue relation
         params:
@@ -27,16 +27,19 @@ class DataTransformations:
         Returns:
             data_dictionary with the fix_value_input and fix_value_output values changed to the type data_type_input and data_type_output respectively
         """
-        # for i in range(len(input_values_list)):
-        #     if data_type_input_list is not None and data_type_output_list is not None:  # If the data types are specified, the transformation is performed
-        #         # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
-        #         fix_value_input, fix_value_output = cast_type_FixValue(data_type_input=data_type_input_list[i],
-        #                                                                fix_value_input=input_values_list[i],
-        #                                                                data_type_output=data_type_output_list[i],
-        #                                                                fix_value_output=output_values_list[i])
-
         if input_values_list.__sizeof__() != output_values_list.__sizeof__():
             raise ValueError("The input and output values lists must have the same length")
+
+        if data_type_input_list.__sizeof__() != data_type_output_list.__sizeof__():
+            raise ValueError("The input and output data types lists must have the same length")
+
+        for i in range(len(input_values_list)):
+            if data_type_input_list is not None and data_type_output_list is not None:  # If the data types are specified, the transformation is performed
+                # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
+                input_values_list[i], output_values_list[i] = cast_type_FixValue(data_type_input=data_type_input_list[i],
+                                                                                 fix_value_input=input_values_list[i],
+                                                                                 data_type_output=data_type_output_list[i],
+                                                                                 fix_value_output=output_values_list[i])
 
         # Create a dictionary to store the mapping equivalence between the input and output values
         mapping_values = {}
