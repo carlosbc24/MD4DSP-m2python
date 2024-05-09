@@ -148,14 +148,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Crear un DataFrame de prueba
-        expected_df = self.small_batch_dataset.copy()
         fix_value_input = [67]
         fix_value_output = [1]
         field = 'track_popularity'
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            field=field, fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
-        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
+                                                                            field=field, input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                                          data_type_input_list=None,
@@ -177,8 +176,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = ['All the Time - Don Diablo Remix']
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -196,8 +195,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = ['2019-07-05']
         fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -214,8 +213,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = ['Maroon 5']
         fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -232,8 +231,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_input = [2.33e-5]
         fix_value_output = ["Near 0"]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -253,8 +252,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_popularity'
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(), field=field,
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -277,8 +276,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -297,8 +296,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [True]
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -312,11 +311,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         output_values_list = [3.0, 14]
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
+
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                          data_type_input_list=None, input_values_list=input_values_list,
@@ -332,11 +329,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.small_batch_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.1)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=[3.1, 14])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -353,11 +347,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.small_batch_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                           data_type_input_list=None, input_values_list=input_values_list,
@@ -372,11 +363,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.small_batch_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.1)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=[3.1, 14])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -393,12 +381,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.small_batch_dataset.copy()
 
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.1)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                                input_values_list=input_values_list,
+                                                                                output_values_list=output_values_list)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
@@ -415,11 +402,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.small_batch_dataset.copy()
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=3.0)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -437,11 +421,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.small_batch_dataset.copy()
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input=3.0,
-                                                                            fix_value_output=6.0)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -469,8 +450,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [1]
         field = 'track_popularity'
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
-                                                                            field=field, fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            field=field, input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -495,8 +476,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -516,8 +497,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -536,8 +517,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -556,8 +537,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ["Near 0"]
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -578,8 +559,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field = 'track_popularity'
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(), field=field,
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -603,8 +584,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -625,8 +606,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -640,13 +621,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Definir el valor fijo y la condición para el cambio
         output_values_list = [3.0, 14]
         input_values_list = ['Maroon 5', 'Katy Perry']
-        result_df = self.data_transformations.transform_fix_value_fix_value(
-            data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input='Maroon 5',
-            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(
             data_dictionary_in=self.rest_of_dataset.copy(),
             data_dictionary_out=result_df,
@@ -663,11 +640,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.rest_of_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.1)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=[3.1, 14])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -684,11 +658,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.rest_of_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(
             data_dictionary_in=self.rest_of_dataset.copy(),
             data_dictionary_out=result_df,
@@ -704,11 +675,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.rest_of_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.1)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=[3.1, 14])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -725,12 +693,11 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.rest_of_dataset.copy()
 
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.1)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=14)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                                input_values_list=input_values_list,
+                                                                                output_values_list=output_values_list)
         expected_exception = ValueError
         with self.assertRaises(expected_exception) as context:
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -747,11 +714,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.rest_of_dataset.copy()
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Katy Perry',
-                                                                            fix_value_output=3.0)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -769,11 +733,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.rest_of_dataset.copy()
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input='Maroon 5',
-                                                                            fix_value_output=3.0)
-        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
-                                                                            fix_value_input=3.0,
-                                                                            fix_value_output=6.0)
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
