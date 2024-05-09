@@ -465,20 +465,20 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 67
-        fix_value_output = 1
+        fix_value_input = [67]
+        fix_value_output = [1]
         field = 'track_popularity'
-        result_df = self.data_transformations.transform_fix_value_fix_value(
-            data_dictionary=self.rest_of_dataset.copy(), field=field,
-            fix_value_input=fix_value_input,
-            fix_value_output=fix_value_output)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            field=field, fix_value_input=fix_value_input,
+                                                                            fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
-                                                                         data_type_input=DataType(2),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output,
-                                                                         data_type_output=DataType(2),
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         data_type_input_list=None,
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output,
+                                                                         data_type_output_list=None,
                                                                          field=field)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result_invariant is True, "Test Case 1 Failed: Expected True, but got False"
@@ -491,17 +491,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # y verificar si el resultado obtenido coincide con el esperado. En este caso se prueba sobre el dataframe entero
         # independientemente de la columna
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 'All the Time - Don Diablo Remix'
-        fix_value_output = 'todos los tiempo - Don Diablo Remix'
+        fix_value_input = ['All the Time - Don Diablo Remix']
+        fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
         assert result_invariant is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 
@@ -511,17 +512,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = '2019-07-05'
-        fix_value_output = True
+        fix_value_input = ['2019-07-05']
+        fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
         assert result_invariant is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, and got True")
 
@@ -530,17 +532,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 'Maroon 5'
-        fix_value_output = 3.0
+        fix_value_input = ['Maroon 5']
+        fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
         assert result_invariant is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, and got True")
 
@@ -549,17 +552,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 2.33e-5
-        fix_value_output = "Near 0"
+        fix_value_input = [2.33e-5]
+        fix_value_output = ["Near 0"]
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(0),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
         assert result_invariant is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, and got True")
 
@@ -569,8 +573,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 67
-        fix_value_output = 1
+        fix_value_input = [67]
+        fix_value_output = [1]
         field = 'track_popularity'
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(), field=field,
@@ -578,33 +582,35 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(1),
-                                                                         data_type_input=DataType(2),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output,
-                                                                         data_type_output=DataType(2),
-                                                                         field=field)
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(1),
+                                                                         data_type_input_list=None,
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output,
+                                                                         data_type_output_list=None, field=field)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result_invariant is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, and got False")
 
-        # Caso 7 Ejecutar la invariante: cambiar el valor fijo 'All the Time - Don Diablo Remix' del dataframe por el
-        # valor fijo 'todos los tiempo - Don Diablo Remix' sobre el batch pequeño del dataset de prueba. Sobre un
-        # dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si
-        # el resultado obtenido coincide con el esperado. En este caso se prueba sobre el dataframe entero
+        # Caso 7
+        # Ejecutar la invariante: cambiar el valor fijo 'All the Time - Don Diablo Remix'
+        # del dataframe por el valor fijo 'todos los tiempo - Don Diablo Remix' sobre el batch pequeño del dataset de
+        # prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado. En este caso se prueba sobre el dataframe entero
         # independientemente de la columna
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 'All the Time - Don Diablo Remix'
-        fix_value_output = 'todos los tiempo - Don Diablo Remix'
+        fix_value_input = ['All the Time - Don Diablo Remix']
+        fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(1),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(1),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
         assert result_invariant is False, "Test Case 7 Failed: Expected False, but got True"
         print_and_log("Test Case 7 Passed: Expected False, and got False")
 
@@ -614,19 +620,170 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = '2019-07-05'
-        fix_value_output = True
+        fix_value_input = ['2019-07-05']
+        fix_value_output = [True]
+
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.rest_of_dataset.copy(),
             fix_value_input=fix_value_input,
             fix_value_output=fix_value_output)
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0), belong_op_out=Belong(1),
-                                                                         fix_value_input=fix_value_input,
-                                                                         fix_value_output=fix_value_output)
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(1),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
         assert result_invariant is False, "Test Case 8 Failed: Expected False, but got True"
         print_and_log("Test Case 8 Passed: Expected False, and got False")
+
+        # Caso 9
+        # Definir el valor fijo y la condición para el cambio
+        output_values_list = [3.0, 14]
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        result_df = self.data_transformations.transform_fix_value_fix_value(
+            data_dictionary=self.rest_of_dataset.copy(),
+            fix_value_input='Maroon 5',
+            fix_value_output=3.0)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Katy Perry',
+                                                                            fix_value_output=14)
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=result_df,
+            data_type_input_list=None, input_values_list=input_values_list,
+            data_type_output_list=None, belong_op_out=Belong(0),
+            output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
+
+        # Caso 10
+        # Definir el valor fijo y la condición para el cambio
+        output_values_list = [3.0, 14]
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        result_df = self.rest_of_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Maroon 5',
+                                                                            fix_value_output=3.1)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Katy Perry',
+                                                                            fix_value_output=14)
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, got False")
+
+        # Caso 11
+        output_values_list = [3.0, 14]
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        result_df = self.rest_of_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Maroon 5',
+                                                                            fix_value_output=3.0)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Katy Perry',
+                                                                            fix_value_output=14)
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=result_df,
+            data_type_input_list=None, input_values_list=input_values_list,
+            data_type_output_list=None, belong_op_out=Belong(1),
+            output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, got False")
+
+        # Caso 12
+        output_values_list = [3.0, 14]
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        result_df = self.rest_of_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Maroon 5',
+                                                                            fix_value_output=3.1)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Katy Perry',
+                                                                            fix_value_output=14)
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(1),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 12 Failed: Expected True, but got False"
+        print_and_log("Test Case 12 Passed: Expected True, got True")
+
+        # Caso 13
+        output_values_list = [3.0]
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        result_df = self.rest_of_dataset.copy()
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Maroon 5',
+                                                                            fix_value_output=3.1)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Katy Perry',
+                                                                            fix_value_output=14)
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                                   data_dictionary_out=result_df,
+                                                                   data_type_input_list=None,
+                                                                   input_values_list=input_values_list,
+                                                                   data_type_output_list=None, belong_op_out=Belong(1),
+                                                                   output_values_list=output_values_list)
+        print_and_log("Test Case 13 Passed: Expected ValueError, got ValueError")
+
+        # Caso 14
+        output_values_list = [3.0, 3.0]
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        result_df = self.rest_of_dataset.copy()
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Maroon 5',
+                                                                            fix_value_output=3.0)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Katy Perry',
+                                                                            fix_value_output=3.0)
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(1),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, got False")
+
+        # Caso 15
+        output_values_list = [3.0, 6.0]
+        input_values_list = ['Maroon 5', 3.0]
+        result_df = self.rest_of_dataset.copy()
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input='Maroon 5',
+                                                                            fix_value_output=3.0)
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            fix_value_input=3.0,
+                                                                            fix_value_output=6.0)
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 15 Failed: Expected True, but got False"
+        print_and_log("Test Case 15 Passed: Expected True, got True")
 
 
     def execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests(self):
@@ -907,16 +1064,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 1
         # Ejecutar la invariante: cambiar el valor fijo 0 de la columna 'mode' por el valor derivado 0 (Most frequent)
         # a nivel de columna sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
-        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el
-        # esperado
+        # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Definir el resultado esperado
         expected_df = self.rest_of_dataset.copy()
         fix_value_input = 0
         field = 'mode'
-        result_df = self.data_transformations.transform_fix_value_derived_value(
-            data_dictionary=self.rest_of_dataset.copy(),
-            fix_value_input=fix_value_input,
-            derived_type_output=DerivedType(0), field=field)
+        result_df = self.data_transformations.transform_fix_value_derived_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                                fix_value_input=fix_value_input,
+                                                                                derived_type_output=DerivedType(0), field=field)
         result_invariant = self.invariants.check_inv_fix_value_derived_value(data_dictionary_in=expected_df,
                                                                              data_dictionary_out=result_df,
                                                                              belong_op_in=Belong(0), belong_op_out=Belong(0),
