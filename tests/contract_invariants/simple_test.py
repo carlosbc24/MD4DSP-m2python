@@ -4119,6 +4119,10 @@ class InvariantsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 32 Passed: Expected True, got True")
 
     def execute_checkInv_MissingValue_MissingValue(self):
+        """
+        Execute the simple tests of the function checkInv_MissingValue_MissingValue
+        """
+
         # Caso 1
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})

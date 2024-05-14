@@ -828,16 +828,19 @@ class Invariants:
     def check_inv_missing_value_missing_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                               belong_op_out: Belong = Belong.BELONG, field: str = None) -> bool:
         """
-        Check the invariant of the MissingValue - MissingValue relation is satisfied in the dataDicionary_out
-        respect to the data_dictionary_in
-        params:
-            :param data_dictionary_in: dataframe with the data
-            :param data_dictionary_out: dataframe with the data
-            :param belong_op_out: then condition to check the invariant
-            :param field: field to check the invariant
+        This function checks if the invariant of the MissingValue - MissingValue relation is satisfied in the output dataframe
+        with respect to the input dataframe. The invariant is satisfied if all missing values in the input dataframe are still
+        missing in the output dataframe.
 
-        returns:
-            True if the invariant is satisfied, False otherwise
+        Parameters:
+            data_dictionary_in (pd.DataFrame): The input dataframe.
+            data_dictionary_out (pd.DataFrame): The output dataframe.
+            belong_op_out (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the missing values are still missing.
+                                    If it's Belong.NOTBELONG, the function checks if the missing values are not missing anymore.
+            field (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+
+        Returns:
+            bool: True if the invariant is satisfied, False otherwise.
         """
         result = None
         if belong_op_out == Belong.BELONG:
