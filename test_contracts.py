@@ -79,12 +79,12 @@ if __name__ == "__main__":
 
     # FINAL TESTS
     # Calculate execution time for each test block (pre-post)
-    # execute_prepost_simple_tests()
-    # execute_prepost_external_dataset_tests()
-    # execute_invariants_simple_tests()
-    # execute_invariants_external_dataset_tests()
-    invariant_simple_tests = InvariantsSimpleTest()
-    invariant_simple_tests.execute_checkInv_MissingValue_MissingValue()
+    execute_prepost_simple_tests()
+    execute_prepost_external_dataset_tests()
+    execute_invariants_simple_tests()
+    execute_invariants_external_dataset_tests()
+    # invariant_simple_tests = InvariantsSimpleTest()
+    # invariant_simple_tests.execute_checkInv_MissingValue_MissingValue()
 
     # invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_FixValue_FixValue_ExternalDatasetTests()
@@ -96,6 +96,7 @@ if __name__ == "__main__":
     # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_MissingValue_MissingValue_ExternalDatasetTests()
 
 
 
