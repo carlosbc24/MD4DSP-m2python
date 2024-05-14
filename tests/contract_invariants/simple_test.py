@@ -54,7 +54,8 @@ class InvariantsSimpleTest(unittest.TestCase):
             self.execute_checkInv_Interval_NumOp,
             self.execute_checkInv_SpecialValue_FixValue,
             self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue
         ]
 
         print_and_log("")
@@ -4117,3 +4118,31 @@ class InvariantsSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 32 Failed: Expected True, but got False"
         print_and_log("Test Case 32 Passed: Expected True, got True")
 
+    def execute_checkInv_MissingValue_MissingValue(self):
+        # Caso 1
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+
+        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
+                                                                       data_dictionary_out=expected_df.copy(),
+                                                                       belong_op_out=Belong(1), field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+
+        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
+                                                                       data_dictionary_out=expected_df.copy(),
+                                                                       belong_op_out=Belong(0), field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
