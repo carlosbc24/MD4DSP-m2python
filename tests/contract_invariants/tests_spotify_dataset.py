@@ -6316,6 +6316,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_SmallBatchTests_checkInv_MissingValue_MissingValue_ExternalDatasetTest(self):
+        """
+        Execute the invariant test using a small batch of the dataset for the function checkInv_MissingValue_MissingValue
+        """
         # Caso 1
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                        data_dictionary_out=self.small_batch_dataset.copy(),
@@ -6454,6 +6457,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_WholeDatasetTests_checkInv_MissingValue_MissingValue_ExternalDatasetTest(self):
+        """
+        Execute the invariant test using the whole dataset for the function checkInv_MissingValue_MissingValue
+        """
         # Caso 1
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                        data_dictionary_out=self.rest_of_dataset.copy(),
