@@ -833,11 +833,7 @@ class Invariants:
         params:
             :param data_dictionary_in: dataframe with the data
             :param data_dictionary_out: dataframe with the data
-            :param missing_values_input: list of missing values
-            :param missing_values_output: list of missing values
-            :param belong_op_in: if condition to check the invariant
             :param belong_op_out: then condition to check the invariant
-            :param axis_param: axis to check the invariant
             :param field: field to check the invariant
 
         returns:
