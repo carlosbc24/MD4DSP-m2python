@@ -826,8 +826,7 @@ class Invariants:
 
 
     def check_inv_missing_value_missing_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                              belong_op_out: Belong = Belong.BELONG,
-                                              axis_param: int = None, field: str = None) -> bool:
+                                              belong_op_out: Belong = Belong.BELONG, field: str = None) -> bool:
         """
         Check the invariant of the MissingValue - MissingValue relation is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -846,10 +845,45 @@ class Invariants:
         """
         result = None
         if belong_op_out == Belong.BELONG:
-            result = True
-        elif belong_op_out == Belong.NOTBELONG:
             result = False
+        elif belong_op_out == Belong.NOTBELONG:
+            result = True
 
-        #TODO: Try to use the function isin
+        keep_no_trans_result = True
 
-        return True if result else False
+        if field is None:
+            for column_index, column_name in enumerate(data_dictionary_in.columns):
+                for row_index, value in data_dictionary_in[column_name].items():
+                    if pd.isnull(value):
+                        if not pd.isnull(data_dictionary_out.loc[row_index, column_name]):
+                            if belong_op_out == Belong.BELONG:
+                                result = True
+                                print_and_log(f"Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                            elif belong_op_out == Belong.NOTBELONG:
+                                result = False
+                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                    else:
+                        if data_dictionary_out.loc[row_index, column_name] != value:
+                            keep_no_trans_result = False
+                            print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+        elif field is not None:
+            if field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
+                raise ValueError("The field does not exist in the dataframe")
+            for row_index, value in data_dictionary_in[field].items():
+                if pd.isnull(value):
+                    if not pd.isnull(data_dictionary_out.loc[row_index, field]):
+                        if belong_op_out == Belong.BELONG:
+                            result = True
+                            print_and_log(f"Row: {row_index} and column: {field} value should be: {value} but is: {data_dictionary_out.loc[row_index, field]}")
+                        elif belong_op_out == Belong.NOTBELONG:
+                            result = False
+                            print_and_log(f"Error in row: {row_index} and column: {field} value should be: {value} but is: {data_dictionary_out.loc[row_index, field]}")
+                else:
+                    if data_dictionary_out.loc[row_index, field] != value:
+                        keep_no_trans_result = False
+                        print_and_log(f"Error in row: {row_index} and column: {field} value should be: {value} but is: {data_dictionary_out.loc[row_index, field]}")
+
+        if keep_no_trans_result == False:
+            return False
+        else:
+            return True if result else False
