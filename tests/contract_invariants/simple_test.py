@@ -4146,3 +4146,45 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
         print_and_log("Test Case 2 Passed: Expected False, got False")
+
+        # Caso 3
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, 5], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+
+        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
+                                                                       data_dictionary_out=expected_df.copy(),
+                                                                       belong_op_out=Belong(0), field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 5, 1], 'B': [2, 3, 4, 6, 5], 'C': [5, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+
+        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
+                                                                       data_dictionary_out=expected_df.copy(),
+                                                                       belong_op_out=Belong(0), field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+        # Caso 5
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 3, 0], 'D': [1, 8.2, 3, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, np.NaN, 1], 'B': [2, 3, 4, 6, np.NaN], 'C': [np.NaN, 4, 3, 4, 0], 'D': [1, 8.2, 3, 1, 2]})
+
+        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
+                                                                       data_dictionary_out=expected_df.copy(),
+                                                                       belong_op_out=Belong(1), field=None)
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 5 Failed: Expected False, but got True"
+        print_and_log("Test Case 5 Passed: Expected False, got False")
