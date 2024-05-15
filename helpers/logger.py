@@ -16,16 +16,19 @@ def set_logger(logger_name: str = "test"):
         os.makedirs(log_path)
 
     existing_logs = [f for f in os.listdir(log_path) if f.startswith(f'{logger_name}Log_')]
-    log_numbers = [int(os.path.splitext(f)[0].split('_')[1]) for f in existing_logs] if existing_logs else [0]
+    log_numbers = [int(os.path.splitext(f)[0].split('_')[-1]) for f in existing_logs] if existing_logs else [0]
     next_log_number = max(log_numbers) + 1
 
     log_filename = os.path.abspath(
-        os.path.join(log_path, f'{logger_name}Log_{next_log_number}.log'))
+        os.path.join(log_path, f'{logger_name}_log_{next_log_number}.log'))
     # print(f'Log file: {log_filename}')
 
     try:
-        logging.basicConfig(filename=log_filename, level=logging.INFO,
-                            format='%(asctime)s - %(levelname)s - %(message)s')
+        logging.basicConfig(filename=log_filename, level=logging.DEBUG,
+                            format="%(asctime)-15s %(levelname)8s %(name)s %(message)s")
+        logging.getLogger("matplotlib.font_manager").disabled = True
+        logging.getLogger("matplotlib.colorbar").disabled = True
+        logging.getLogger("matplotlib.pyplot").disabled = True
     except Exception as e:
         print(f"Error al configurar el registro: {e}")
 
@@ -38,5 +41,5 @@ def print_and_log(message, level=logging.INFO):
     message (str): message to print and save in the log
     level (int): level of the message
     """
-    # print(message)
+    print(message)
     logging.log(level, message)

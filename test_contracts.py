@@ -75,7 +75,7 @@ def execute_invariants_external_dataset_tests():
 
 if __name__ == "__main__":
     # Set the logger to save the logs of the execution in the path logs/test
-    set_logger("test")
+    set_logger("test_contracts")
 
     # FINAL TESTS
     # Calculate execution time for each test block (pre-post)
@@ -83,3 +83,20 @@ if __name__ == "__main__":
     execute_prepost_external_dataset_tests()
     execute_invariants_simple_tests()
     execute_invariants_external_dataset_tests()
+    # invariant_simple_tests = InvariantsSimpleTest()
+    # invariant_simple_tests.execute_checkInv_MissingValue_MissingValue()
+
+    # invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_FixValue_FixValue_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_FixValue_NumOp_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_Interval_FixValue_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_Interval_NumOp_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests()
+    # invariant_tests_with_external_dataset.execute_checkInv_MissingValue_MissingValue_ExternalDatasetTests()
+
+
+

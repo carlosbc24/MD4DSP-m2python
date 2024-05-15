@@ -157,12 +157,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Crear un DataFrame de prueba
         expected_df = self.small_batch_dataset.copy()
-        fix_value_input = 67
-        fix_value_output = 1
+        fix_value_input = [67]
+        fix_value_output = [1]
         field = 'track_popularity'
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output,
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
                                                                             field=field)
         expected_df['track_popularity'] = expected_df['track_popularity'].replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -176,11 +176,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # y verificar si el resultado obtenido coincide con el esperado.
         # En este caso se prueba sobre el dataframe entero independientemente de la columna
         expected_df = self.small_batch_dataset.copy()
-        fix_value_input = 'All the Time - Don Diablo Remix'
-        fix_value_output = 'todos los tiempo - Don Diablo Remix'
+        fix_value_input = ['All the Time - Don Diablo Remix']
+        fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -193,11 +193,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fix_value_input = '2019-07-05'
-        fix_value_output = True
+        fix_value_input = ['2019-07-05']
+        fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fix_value_input,
                                                                                                   fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -210,11 +210,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fix_value_input = 'Maroon 5'
-        fix_value_output = 3.0
+        fix_value_input = ['Maroon 5']
+        fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -226,15 +226,100 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.small_batch_dataset.copy()
-        fix_value_input = 2.33e-5
-        fix_value_output = "Near 0"
+        fix_value_input = [2.33e-5]
+        fix_value_output = ["Near 0"]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
+
+        # Caso 6
+        expected_df = self.small_batch_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        output_values_list = ['Clara', 'Ana']
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
+
+        for column_index, column_name in enumerate(self.small_batch_dataset.copy().columns):
+            for row_index, value in expected_df[column_name].items():
+                if value in mapping_values:
+                    expected_df.at[row_index, column_name] = mapping_values[value]
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        expected_df = self.small_batch_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        output_values_list = ['Clara', 'Clara']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
+
+        for column_index, column_name in enumerate(self.small_batch_dataset.copy().columns):
+            for row_index, value in expected_df[column_name].items():
+                if value in mapping_values:
+                    expected_df.at[row_index, column_name] = mapping_values[value]
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 8
+        expected_df = self.small_batch_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        fix_value_output = ['Clara']
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                                input_values_list=input_values_list,
+                                                                                output_values_list=fix_value_output)
+        print_and_log("Test Case 8 Passed: expected Value Error, got Value Error")
+
+        # Caso 9
+        expected_df = self.small_batch_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        output_values_list = ['Katy Perry', 'Carlos']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
+
+        for column_index, column_name in enumerate(self.small_batch_dataset.copy().columns):
+            for row_index, value in expected_df[column_name].items():
+                if value in mapping_values:
+                    expected_df.at[row_index, column_name] = mapping_values[value]
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
     def execute_WholeDatasetTests_execute_transform_FixValue_FixValue_ExternalDataset(self):
         """
@@ -248,12 +333,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         # Crear un DataFrame de prueba
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 67
-        fix_value_output = 1
+        fix_value_input = [67]
+        fix_value_output = [1]
         field = 'track_popularity'
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output,
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
                                                                             field=field)
         expected_df['track_popularity'] = expected_df['track_popularity'].replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -267,11 +352,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # y verificar si el resultado obtenido coincide con el esperado.
         # En este caso se prueba sobre el dataframe entero independientemente de la columna
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 'All the Time - Don Diablo Remix'
-        fix_value_output = 'todos los tiempo - Don Diablo Remix'
+        fix_value_input = ['All the Time - Don Diablo Remix']
+        fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -284,11 +369,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # copia del batch grande del dataset de prueba cambiar los valores manualmente y verificar si el resultado
         # obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = '2019-07-05'
-        fix_value_output = True
+        fix_value_input = ['2019-07-05']
+        fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fix_value_input,
                                                                                                   fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -301,11 +386,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 'Maroon 5'
-        fix_value_output = 3.0
+        fix_value_input = ['Maroon 5']
+        fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -317,11 +402,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # sobre el batch grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de
         # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 2.33e-5
-        fix_value_output = "Near 0"
+        fix_value_input = [2.33e-5]
+        fix_value_output = ["Near 0"]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -334,15 +419,100 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # grande del dataset de prueba. Sobre un dataframe de copia del batch grande del dataset de prueba cambiar los
         # valores manualmente y verificar si el resultado obtenido coincide con el esperado
         expected_df = self.rest_of_dataset.copy()
-        fix_value_input = 0.833
-        fix_value_output = 1
+        fix_value_input = [0.833]
+        fix_value_output = [1]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
-                                                                            fix_value_input=fix_value_input,
-                                                                            fix_value_output=fix_value_output)
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output)
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
+
+        # Caso 7
+        expected_df = self.rest_of_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        output_values_list = ['Clara', 'Ana']
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
+
+        for column_index, column_name in enumerate(self.rest_of_dataset.copy().columns):
+            for row_index, value in expected_df[column_name].items():
+                if value in mapping_values:
+                    expected_df.at[row_index, column_name] = mapping_values[value]
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
+
+        # Caso 8
+        expected_df = self.rest_of_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        output_values_list = ['Clara', 'Clara']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
+
+        for column_index, column_name in enumerate(self.rest_of_dataset.copy().columns):
+            for row_index, value in expected_df[column_name].items():
+                if value in mapping_values:
+                    expected_df.at[row_index, column_name] = mapping_values[value]
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 8 Passed: the function returned the expected dataframe")
+
+        # Caso 9
+        expected_df = self.rest_of_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        fix_value_output = ['Clara']
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                                input_values_list=input_values_list,
+                                                                                output_values_list=fix_value_output)
+        print_and_log("Test Case 9 Passed: expected Value Error, got Value Error")
+
+        # Caso 10
+        expected_df = self.rest_of_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        output_values_list = ['Katy Perry', 'Carlos']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list)
+        mapping_values = {}
+
+        for input_value in input_values_list:
+            if input_value not in mapping_values:
+                mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
+
+        for column_index, column_name in enumerate(self.rest_of_dataset.copy().columns):
+            for row_index, value in expected_df[column_name].items():
+                if value in mapping_values:
+                    expected_df.at[row_index, column_name] = mapping_values[value]
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
 
     def execute_transform_FixValue_DerivedValue_ExternalDatasetTests(self):
         """
