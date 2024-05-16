@@ -810,16 +810,13 @@ class DataTransformations:
             if field not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
             elif field in data_dictionary.columns:
-                if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
-                    if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
-                        data_dictionary_copy = apply_derived_type(special_type_input, derived_type_output, data_dictionary_copy,
-                                                                  missing_values, axis_param, field)
-                    elif special_type_input == SpecialType.OUTLIER:
-                        data_dictionary_copy_copy = get_outliers(data_dictionary_copy, field, axis_param)
-                        data_dictionary_copy = apply_derived_type_col_row_outliers(derived_type_output, data_dictionary_copy,
-                                                                                   data_dictionary_copy_copy, axis_param, field)
-                else:
-                    raise ValueError("The field is not numeric")
+                if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
+                    data_dictionary_copy = apply_derived_type(special_type_input, derived_type_output, data_dictionary_copy,
+                                                              missing_values, axis_param, field)
+                elif special_type_input == SpecialType.OUTLIER:
+                    data_dictionary_copy_copy = get_outliers(data_dictionary_copy, field, axis_param)
+                    data_dictionary_copy = apply_derived_type_col_row_outliers(derived_type_output, data_dictionary_copy,
+                                                                               data_dictionary_copy_copy, axis_param, field)
 
         return data_dictionary_copy
 
