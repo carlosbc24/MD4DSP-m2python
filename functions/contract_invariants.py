@@ -262,10 +262,6 @@ class Invariants:
                                     print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
-                        else: # Si el valor no es igual a fix_value_input
-                            if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {data_dictionary_in.loc[row_index, column_name]} but is: {data_dictionary_out.loc[row_index, column_name]}")
 
         elif field is not None:
             if field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
@@ -282,10 +278,6 @@ class Invariants:
                                 print_and_log(f"Error in row: {row_index} and column: {field} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field]}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
-                    else: # Si el valor no es igual a fix_value_input
-                        if data_dictionary_out.loc[row_index, field] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field])):
-                            keep_no_trans_result = False
-                            print_and_log(f"Error in row: {row_index} and column: {field} value should be: {data_dictionary_in.loc[row_index, field]} but is: {data_dictionary_out.loc[row_index, field]}")
 
         # Checks that the not transformed cells are not modified
         if keep_no_trans_result == False:
