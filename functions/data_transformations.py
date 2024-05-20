@@ -1,4 +1,6 @@
 # Importing functions and classes from packages
+
+
 import numpy as np
 import pandas as pd
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
@@ -860,5 +862,43 @@ class DataTransformations:
                                                         special_type_input=special_type_input,
                                                         data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                         missing_values=missing_values, axis_param=axis_param, field=field)
+
+        return data_dictionary_copy
+
+
+    def transform_derived_field(self, data_dictionary: pd.DataFrame, field_in: str, field_out: str,
+                                data_type_output: DataType = None) -> pd.DataFrame:
+        """
+        Execute the data transformation of the DerivedField relation
+        Args:
+            data_dictionary: dataframe with the data
+            data_type_output: data type of the output field
+            field_in: field to execute the data transformation
+            field_out: field to store the output value
+        Returns:
+            pd.DataFrame:
+        """
+        data_dictionary_copy=data_dictionary.copy()
+
+        if field_in not in data_dictionary.columns:
+            raise ValueError("The field does not exist in the dataframe")
+        def cast_type_column():
+            if data_type_output is not None:
+                if data_type_output == DataType.STRING:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(str)
+                elif data_type_output == DataType.TIME:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype('datetime64[ns]')
+                elif data_type_output == DataType.INTEGER:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
+                elif data_type_output == DataType.DATETIME:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype('datetime64[ns]')
+                elif data_type_output == DataType.BOOLEAN:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(bool)
+                elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(float)
+
+        data_dictionary_copy[field_out] = data_dictionary_copy[field_in].copy()
+        if data_type_output is not None:
+            cast_type_column()
 
         return data_dictionary_copy
