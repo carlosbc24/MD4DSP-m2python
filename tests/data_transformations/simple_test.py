@@ -2406,3 +2406,79 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                              axis_param=0, field=field)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 16 Passed: got the dataframe expected")
+
+    def execute_transform_derived_field(self):
+        """
+        Execute the simple tests of the function transform_derived_field
+        """
+        print_and_log("Testing transform_derived_field Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': ['0', '2', '3', '4', '1']})
+
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
+                                                                     data_type_output=DataType(0),
+                                                                     field_in='A', field_out='A_binned')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': [0, 2, 3, 4, 1]})
+
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
+                                                                     data_type_output=None,
+                                                                     field_in='A', field_out='A_binned')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        datadic = pd.DataFrame(
+            {'A': ['0', '2', '3', '4', '1'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': ['0', '2', '3', '4', '1'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': [0, 2, 3, 4, 1]})
+
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
+                                                                     data_type_output=DataType(2),
+                                                                     field_in='A', field_out='A_binned')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': [0, 2, 3, 4, 1]})
+        expected_df = expected_df.astype({
+            'A_binned': 'float64'  # Convertir A_binned a float64
+        })
+
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
+                                                                     data_type_output=DataType(6),
+                                                                     field_in='A', field_out='A_binned')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5
+        datadic = pd.DataFrame(
+            {'A': ['21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': ['21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2],
+             'A_binned': [pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True)]})
+
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
+                                                                     data_type_output=DataType(3),
+                                                                     field_in='A', field_out='A_binned')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
