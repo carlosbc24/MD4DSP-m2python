@@ -315,7 +315,7 @@ class DataTransformations:
 
     def transform_interval_fix_value(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
                                      closure_type: Closure, fix_value_output, data_type_output: DataType = None,
-                                     field: str = None) -> pd.DataFrame:
+                                     field_in: str = None, field_out: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the Interval - FixValue relation
         :param data_dictionary: dataframe with the data
@@ -332,7 +332,7 @@ class DataTransformations:
 
         data_dictionary_copy = data_dictionary.copy()
 
-        if field is None:
+        if field_in is None:
             # Apply the lambda function to the entire dataframe
             if closure_type == Closure.openOpen:
                 data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if (
@@ -347,23 +347,23 @@ class DataTransformations:
                 data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
                                 np.issubdtype(type(x), np.number) and (left_margin <= x) and (x <= right_margin) else x))
 
-        elif field is not None:
-            if field not in data_dictionary.columns:
+        elif field_in is not None:
+            if field_in not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in data_dictionary.columns:
-                if np.issubdtype(data_dictionary[field].dtype, np.number):
+            elif field_in in data_dictionary.columns:
+                if np.issubdtype(data_dictionary[field_in].dtype, np.number):
                     if closure_type == Closure.openOpen:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin < x) and (x < right_margin) else x)
                     elif closure_type == Closure.openClosed:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin < x) and (x <= right_margin) else x)
                     elif closure_type == Closure.closedOpen:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin <= x) and (x < right_margin) else x)
                     elif closure_type == Closure.closedClosed:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin <= x) and (x <= right_margin) else x)
                 else:
                     raise ValueError("The field is not numeric")

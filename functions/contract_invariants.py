@@ -220,7 +220,7 @@ class Invariants:
     def check_inv_interval_fix_value(self, data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                      left_margin: float, right_margin: float, closure_type: Closure, fix_value_output,
                                      belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                     data_type_output: DataType = None, field: str = None) -> bool:
+                                     data_type_output: DataType = None, field_in: str = None, field_out: str = None) -> bool:
         """
         Check the invariant of the Interval - FixValue relation is satisfied in the dataDicionary_out
         respect to the data_dictionary_in
@@ -251,33 +251,31 @@ class Invariants:
 
         keep_no_trans_result = True
 
-        if field is None:
-            if (belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG) or (belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG):
-                for column_index, column_name in enumerate(data_dictionary_in.columns):
-                    for row_index, value in data_dictionary_in[column_name].items():
-                        if check_interval_condition(value, left_margin, right_margin, closure_type):
-                            if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
-                                if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    result = False
-                                    print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
-                                elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    result = True
-
-        elif field is not None:
-            if field not in data_dictionary_in.columns or field not in data_dictionary_out.columns:
-                raise ValueError("The field does not exist in the dataframe")
-            if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
-                raise ValueError("The field is not numeric")
-
-            if (belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG) or (belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG):
-                for row_index, value in data_dictionary_in[field].items():
+        if field_in is None:
+            for column_index, column_name in enumerate(data_dictionary_in.columns):
+                for row_index, value in data_dictionary_in[column_name].items():
                     if check_interval_condition(value, left_margin, right_margin, closure_type):
-                        if data_dictionary_out.loc[row_index, field] != fix_value_output:
+                        if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {field} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field]}")
+                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
+
+        elif field_in is not None:
+            if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
+                raise ValueError("The field does not exist in the dataframe")
+            if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+                raise ValueError("The field is not numeric")
+
+            for row_index, value in data_dictionary_in[field_in].items():
+                if check_interval_condition(value, left_margin, right_margin, closure_type):
+                    if data_dictionary_out.loc[row_index, field_out] != fix_value_output:
+                        if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
+                            result = False
+                            print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field_out]}")
+                        elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+                            result = True
 
         # Checks that the not transformed cells are not modified
         if keep_no_trans_result == False:

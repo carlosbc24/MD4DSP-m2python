@@ -671,7 +671,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                         right_margin=5,
                                                                         closure_type=Closure(0),
                                                                         data_type_output=DataType(0),
-                                                                        fix_value_output='Suspenso', field=field)
+                                                                        fix_value_output='Suspenso', field_in=field, field_out=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 5], 'B': [2, 3, 6, 0, 5],
                                  'C': [1, 2, 3, 4, 5]})
@@ -689,7 +689,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                         right_margin=5,
                                                                         closure_type=Closure(1),
                                                                         data_type_output=DataType(0),
-                                                                        fix_value_output='Suspenso', field=field)
+                                                                        fix_value_output='Suspenso', field_in=field, field_out=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': [0, 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'], 'B': [2, 3, 6, 0, 5],
                                  'C': [1, 2, 3, 4, 5]})
@@ -707,7 +707,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                         right_margin=5,
                                                                         closure_type=Closure(2),
                                                                         data_type_output=DataType(0),
-                                                                        fix_value_output='Suspenso', field=field)
+                                                                        fix_value_output='Suspenso', field_in=field, field_out=field)
         # Definir el resultado esperado
         expected = pd.DataFrame({'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 5], 'B': [2, 3, 6, 0, 5],
                                  'C': [1, 2, 3, 4, 5]})
@@ -725,7 +725,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                         right_margin=5,
                                                                         closure_type=Closure(3),
                                                                         data_type_output=DataType(0),
-                                                                        fix_value_output='Suspenso', field=field)
+                                                                        fix_value_output='Suspenso', field_in=field, field_out=field)
         # Definir el resultado esperado
         expected = pd.DataFrame(
             {'A': ['Suspenso', 'Suspenso', 'Suspenso', 'Suspenso', 'Suspenso'], 'B': [2, 3, 6, 0, 5],

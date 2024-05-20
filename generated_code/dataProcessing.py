@@ -361,60 +361,60 @@ class DataProcessing:
 		
 		data_model_impute_mean_in_transformed=data_model_impute_mean_in.copy()
 
-		missing_values_list_parameter_num_op_impute_mean=[]
-		data_model_impute_mean_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_mean_in_transformed,
-																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
-																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-																	  axis_param=0, field = 'avg_income')
-		missing_values_list_parameter_num_op_impute_mean=[]
-		data_model_impute_mean_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_mean_in_transformed,
-																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
-																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-																	  axis_param=0, field = 'distance')
-
-		data_model_impute_mean_out=data_model_impute_mean_in_transformed
-		data_model_impute_mean_out.to_csv('data_model_impute_mean_out.csv')
-
-		missing_values_POST_value_range_impute_mean_avg_income=[]
-		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_mean_out, field='avg_income',
-										missing_values=missing_values_POST_value_range_impute_mean_avg_income,
-										quant_abs=None, quant_rel=None, quant_op=None):
-			print('POSTCONDITION POST_value_range_impute_mean_avg_income VALIDATED')
-		else:
-			print('POSTCONDITION POST_value_range_impute_mean_avg_income NOT VALIDATED')
-
-		missing_values_POST_value_range_impute_mean_distance=[]
-		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_mean_out, field='distance',
-										missing_values=missing_values_POST_value_range_impute_mean_distance,
-										quant_abs=None, quant_rel=None, quant_op=None):
-			print('POSTCONDITION POST_value_range_impute_mean_distance VALIDATED')
-		else:
-			print('POSTCONDITION POST_value_range_impute_mean_distance NOT VALIDATED')
-
-		missing_values_INV_condition_avg_income=[]
-		if invariants.check_inv_special_value_num_op(data_dictionary_in=data_model_impute_mean_in,
-												data_dictionary_out=data_model_impute_mean_out,
-												belong_op_in=Belong(0),
-												belong_op_out=Belong(0),
-												special_type_input=SpecialType(0),
-												num_op_output=Operation(1),
-												missing_values=missing_values_INV_condition_avg_income, axis_param=0, field='avg_income'):
-			print('INVARIANT INV_condition_avg_income VALIDATED')
-		else:
-			print('INVARIANT INV_condition_avg_income NOT VALIDATED')
-
-
-		missing_values_INV_condition_distance=[]
-		if invariants.check_inv_special_value_num_op(data_dictionary_in=data_model_impute_mean_in,
-												data_dictionary_out=data_model_impute_mean_out,
-												belong_op_in=Belong(0),
-												belong_op_out=Belong(0),
-												special_type_input=SpecialType(0),
-												num_op_output=Operation(1),
-												missing_values=missing_values_INV_condition_distance, axis_param=0, field='distance'):
-			print('INVARIANT INV_condition_distance VALIDATED')
-		else:
-			print('INVARIANT INV_condition_distance NOT VALIDATED')
+		# missing_values_list_parameter_num_op_impute_mean=[]
+		# data_model_impute_mean_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_mean_in_transformed,
+		# 															  special_type_input=SpecialType(0), num_op_output=Operation(1),
+		# 															  missing_values=missing_values_list_parameter_num_op_impute_mean,
+		# 															  axis_param=0, field = 'avg_income')
+		# missing_values_list_parameter_num_op_impute_mean=[]
+		# data_model_impute_mean_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_mean_in_transformed,
+		# 															  special_type_input=SpecialType(0), num_op_output=Operation(1),
+		# 															  missing_values=missing_values_list_parameter_num_op_impute_mean,
+		# 															  axis_param=0, field = 'distance')
+		#
+		# data_model_impute_mean_out=data_model_impute_mean_in_transformed
+		# data_model_impute_mean_out.to_csv('data_model_impute_mean_out.csv')
+		#
+		# missing_values_POST_value_range_impute_mean_avg_income=[]
+		# if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_mean_out, field='avg_income',
+		# 								missing_values=missing_values_POST_value_range_impute_mean_avg_income,
+		# 								quant_abs=None, quant_rel=None, quant_op=None):
+		# 	print('POSTCONDITION POST_value_range_impute_mean_avg_income VALIDATED')
+		# else:
+		# 	print('POSTCONDITION POST_value_range_impute_mean_avg_income NOT VALIDATED')
+		#
+		# missing_values_POST_value_range_impute_mean_distance=[]
+		# if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_mean_out, field='distance',
+		# 								missing_values=missing_values_POST_value_range_impute_mean_distance,
+		# 								quant_abs=None, quant_rel=None, quant_op=None):
+		# 	print('POSTCONDITION POST_value_range_impute_mean_distance VALIDATED')
+		# else:
+		# 	print('POSTCONDITION POST_value_range_impute_mean_distance NOT VALIDATED')
+		#
+		# missing_values_INV_condition_avg_income=[]
+		# if invariants.check_inv_special_value_num_op(data_dictionary_in=data_model_impute_mean_in,
+		# 										data_dictionary_out=data_model_impute_mean_out,
+		# 										belong_op_in=Belong(0),
+		# 										belong_op_out=Belong(0),
+		# 										special_type_input=SpecialType(0),
+		# 										num_op_output=Operation(1),
+		# 										missing_values=missing_values_INV_condition_avg_income, axis_param=0, field='avg_income'):
+		# 	print('INVARIANT INV_condition_avg_income VALIDATED')
+		# else:
+		# 	print('INVARIANT INV_condition_avg_income NOT VALIDATED')
+		#
+		#
+		# missing_values_INV_condition_distance=[]
+		# if invariants.check_inv_special_value_num_op(data_dictionary_in=data_model_impute_mean_in,
+		# 										data_dictionary_out=data_model_impute_mean_out,
+		# 										belong_op_in=Belong(0),
+		# 										belong_op_out=Belong(0),
+		# 										special_type_input=SpecialType(0),
+		# 										num_op_output=Operation(1),
+		# 										missing_values=missing_values_INV_condition_distance, axis_param=0, field='distance'):
+		# 	print('INVARIANT INV_condition_distance VALIDATED')
+		# else:
+		# 	print('INVARIANT INV_condition_distance NOT VALIDATED')
 		
 		
 #-----------------New DataProcessing-----------------
