@@ -1,13 +1,13 @@
+import os
 import sys
 from pathlib import Path
-
-import pandas as pd
 
 # Add the project's root to the python path
 script_location = Path(__file__).absolute().parent
 parent_directory = script_location.parent
 sys.path.append(str(parent_directory))
 
+import pandas as pd
 import functions.contract_invariants as contract_invariants
 import functions.contract_pre_post as contract_pre_post
 from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataType, DerivedType, Closure
@@ -16,103 +16,10 @@ class DataProcessing:
 		pre_post=contract_pre_post.ContractsPrePost()
 		invariants=contract_invariants.Invariants()
 #-----------------New DataProcessing-----------------
-		data_model_impute_sex_in=pd.read_csv('../data_model.csv')
-
-		missing_values_PRE_value_range_impute_sex=[]
-		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_sex_in, field='sex', 
-										missing_values=missing_values_PRE_value_range_impute_sex,
-										quant_op=Operator(2), quant_rel=70.0/100):
-			print('PRECONDITION PRE_value_range_impute_sex VALIDATED')
-		else:
-			print('PRECONDITION PRE_value_range_impute_sex NOT VALIDATED')
-		
-		missing_values_POST_value_range_impute_sex=[]
-		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_sex_out, field='sex', 
-										missing_values=missing_values_POST_value_range_impute_sex,
-										quant_abs=None, quant_rel=None, quant_op=None):
-			print('POSTCONDITION POST_value_range_impute_sex VALIDATED')
-		else:
-			print('POSTCONDITION POST_value_range_impute_sex NOT VALIDATED')
-		
-		missing_values_INV_condition_impute_sex=[]
-		if invariants.check_inv_special_value_derived_value(data_dictionary_in=data_model_impute_sex_in,
-									data_dictionary_out=data_model_impute_sex_out,
-									belong_op_in=Belong(0),
-									belong_op_out=Belong(0),
-									special_type_input=SpecialType(0),
-									derived_type_output=DerivedType(0),
-									missing_values=missing_values_INV_condition_impute_sex, axis_param=0, field='sex'):
-			print('INVARIANT INV_condition_impute_sex VALIDATED')
-		else:
-			print('INVARIANT INV_condition_impute_sex NOT VALIDATED')
-		
-		
-#-----------------New DataProcessing-----------------
-		data_model_impute_IRSCHOOL_in=pd.read_csv('../data_model.csv')
-
-		missing_values_PRE_value_range_impute_IRSCHOOL=[]
-		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_IRSCHOOL_in, field='IRSCHOOL', 
-										missing_values=missing_values_PRE_value_range_impute_IRSCHOOL,
-										quant_op=Operator(2), quant_rel=30.0/100):
-			print('PRECONDITION PRE_value_range_impute_IRSCHOOL VALIDATED')
-		else:
-			print('PRECONDITION PRE_value_range_impute_IRSCHOOL NOT VALIDATED')
-		
-		missing_values_POST_value_range_impute_IRSCHOOL=[]
-		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_IRSCHOOL_out, field='IRSCHOOL', 
-										missing_values=missing_values_POST_value_range_impute_IRSCHOOL,
-										quant_abs=None, quant_rel=None, quant_op=None):
-			print('POSTCONDITION POST_value_range_impute_IRSCHOOL VALIDATED')
-		else:
-			print('POSTCONDITION POST_value_range_impute_IRSCHOOL NOT VALIDATED')
-		
-		missing_values_INV_condition_impute_IRSCHOOL=[]
-		if invariants.check_inv_special_value_derived_value(data_dictionary_in=data_model_impute_IRSCHOOL_in,
-									data_dictionary_out=data_model_impute_IRSCHOOL_out,
-									belong_op_in=Belong(0),
-									belong_op_out=Belong(0),
-									special_type_input=SpecialType(0),
-									derived_type_output=DerivedType(0),
-									missing_values=missing_values_INV_condition_impute_IRSCHOOL, axis_param=0, field='IRSCHOOL'):
-			print('INVARIANT INV_condition_impute_IRSCHOOL VALIDATED')
-		else:
-			print('INVARIANT INV_condition_impute_IRSCHOOL NOT VALIDATED')
-		
-		
-#-----------------New DataProcessing-----------------
-		data_model_impute_ETHNICITY_in=pd.read_csv('../data_model.csv')
-
-		missing_values_PRE_value_range_impute_ETHNICITY=[]
-		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_ETHNICITY_in, field='ETHNICITY', 
-										missing_values=missing_values_PRE_value_range_impute_ETHNICITY,
-										quant_op=Operator(2), quant_rel=30.0/100):
-			print('PRECONDITION PRE_value_range_impute_ETHNICITY VALIDATED')
-		else:
-			print('PRECONDITION PRE_value_range_impute_ETHNICITY NOT VALIDATED')
-		
-		missing_values_POST_value_range_impute_ETHNICITY=[]
-		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_ETHNICITY_out, field='ETHNICITY', 
-										missing_values=missing_values_POST_value_range_impute_ETHNICITY,
-										quant_abs=None, quant_rel=None, quant_op=None):
-			print('POSTCONDITION POST_value_range_impute_ETHNICITY VALIDATED')
-		else:
-			print('POSTCONDITION POST_value_range_impute_ETHNICITY NOT VALIDATED')
-		
-		missing_values_INV_condition_impute_ETHNICITY=[]
-		if invariants.check_inv_special_value_derived_value(data_dictionary_in=data_model_impute_ETHNICITY_in,
-									data_dictionary_out=data_model_impute_ETHNICITY_out,
-									belong_op_in=Belong(0),
-									belong_op_out=Belong(0),
-									special_type_input=SpecialType(0),
-									derived_type_output=DerivedType(0),
-									missing_values=missing_values_INV_condition_impute_ETHNICITY, axis_param=0, field='ETHNICITY'):
-			print('INVARIANT INV_condition_impute_ETHNICITY VALIDATED')
-		else:
-			print('INVARIANT INV_condition_impute_ETHNICITY NOT VALIDATED')
-		
-		
-#-----------------New DataProcessing-----------------
 		data_model_impute_in=pd.read_csv('../data_model.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_impute_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_impute_out=pd.read_csv('../workflow_datasets/data_model_impute_out.csv')
 
 		missing_values_PRE_value_range_impute_sex_columns=[4]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_in, field='sex', 
@@ -155,7 +62,7 @@ class DataProcessing:
 			print('POSTCONDITION POST_value_range_impute_IRSCHOOL_columns NOT VALIDATED')
 		
 		missing_values_POST_value_range_impute_ETHNICITY_columns=[]
-		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_ETHNICITY_out, field='ETHNICITY', 
+		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_out, field='ETHNICITY', 
 										missing_values=missing_values_POST_value_range_impute_ETHNICITY_columns,
 										quant_abs=None, quant_rel=None, quant_op=None):
 			print('POSTCONDITION POST_value_range_impute_ETHNICITY_columns VALIDATED')
@@ -202,7 +109,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_ACADEMIC_INTEREST_2_in=pd.read_csv('../data_model.csv')
+		data_model_impute_ACADEMIC_INTEREST_2_in=pd.read_csv('../workflow_datasets/data_model_impute_out.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_impute_out2.csv'):		#If the output DataDictionary exists, we store it
+			data_model_impute_ACADEMIC_INTEREST_2_out=pd.read_csv('../workflow_datasets/data_model_impute_out2.csv')
 
 		missing_values_PRE_value_range_impute_ACADEMIC_INTEREST_2=[]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_ACADEMIC_INTEREST_2_in, field='ACADEMIC_INTEREST_2', 
@@ -267,7 +177,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_mean_in=pd.read_csv('../data_model.csv')
+		data_model_impute_mean_in=pd.read_csv('../workflow_datasets/data_model_impute_out2.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_impute_out3.csv'):		#If the output DataDictionary exists, we store it
+			data_model_impute_mean_out=pd.read_csv('../workflow_datasets/data_model_impute_out3.csv')
 
 		missing_values_PRE_value_range_impute_mean_avg_income=[]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_mean_in, field='avg_income', 
@@ -328,7 +241,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_linear_interpolation_in=pd.read_csv('../data_model.csv')
+		data_model_impute_linear_interpolation_in=pd.read_csv('../workflow_datasets/data_model_impute_out3.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_impute_out4.csv'):		#If the output DataDictionary exists, we store it
+			data_model_impute_linear_interpolation_out=pd.read_csv('../workflow_datasets/data_model_impute_out4.csv')
 
 		missing_values_PRE_value_range_impute_linear_interpolation_satscore=[]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_linear_interpolation_in, field='satscore', 
@@ -360,7 +276,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_row_filter_in=pd.read_csv('../workflow_datasets/data_model_impute_out.csv')
+		data_model_row_filter_in=pd.read_csv('../workflow_datasets/data_model_impute_out4.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_row_filter_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_row_filter_out=pd.read_csv('../workflow_datasets/data_model_row_filter_out.csv')
 
 		if pre_post.check_fix_value_range(value=0, data_dictionary=data_model_row_filter_in, belong_op=Belong(0), field='init_span',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -376,6 +295,9 @@ class DataProcessing:
 		
 #-----------------New DataProcessing-----------------
 		data_model_column_cont_filter_in=pd.read_csv('../workflow_datasets/data_model_row_filter_out.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_col_filter_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_column_cont_filter_out=pd.read_csv('../workflow_datasets/data_model_col_filter_out.csv')
 
 		field_list_PRE_field_range_column_cont_filter=['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNCTS', 'telecq', 'stuemail', 'interest']
 		if pre_post.check_field_range(fields=field_list_PRE_field_range_column_cont_filter,
@@ -396,7 +318,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_column_cat_filter_in=pd.read_csv('../workflow_datasets/data_model_row_filter_out.csv')
+		data_model_column_cat_filter_in=pd.read_csv('../workflow_datasets/data_model_col_filter_out.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_col_filter_out2.csv'):		#If the output DataDictionary exists, we store it
+			data_model_column_cat_filter_out=pd.read_csv('../workflow_datasets/data_model_col_filter_out2.csv')
 
 		field_list_PRE_field_range_column_cat_filter=['CONTACT_CODE1']
 		if pre_post.check_field_range(fields=field_list_PRE_field_range_column_cat_filter,
@@ -417,7 +342,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_map_territory_in=pd.read_csv('../workflow_datasets/data_model_col_filter_out.csv')
+		data_model_map_territory_in=pd.read_csv('../workflow_datasets/data_model_col_filter_out2.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_map_territory_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_map_territory_out=pd.read_csv('../workflow_datasets/data_model_map_territory_out.csv')
 
 		if pre_post.check_fix_value_range(value='A', data_dictionary=data_model_map_territory_in, belong_op=Belong(0), field='TERRITORY',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -429,6 +357,17 @@ class DataProcessing:
 			print('PRECONDITION PRE_value_range_territory VALIDATED')
 		else:
 			print('PRECONDITION PRE_value_range_territory NOT VALIDATED')
+		
+		if pre_post.check_fix_value_range(value='A', data_dictionary=data_model_map_territory_out, belong_op=Belong(0), field='TERRITORY',
+										quant_abs=None, quant_rel=None, quant_op=None):
+			print('POSTCONDITION POST_value_range_territory VALIDATED')
+		else:
+			print('POSTCONDITION POST_value_range_territory NOT VALIDATED')
+		if pre_post.check_fix_value_range(value='N', data_dictionary=data_model_map_territory_out, belong_op=Belong(0), field='TERRITORY',
+										quant_abs=None, quant_rel=None, quant_op=None):
+			print('POSTCONDITION POST_value_range_territory VALIDATED')
+		else:
+			print('POSTCONDITION POST_value_range_territory NOT VALIDATED')
 		
 		
 		input_values_list_INV_condition_map_categorical_col=['A', 'N']
@@ -446,24 +385,16 @@ class DataProcessing:
 												data_type_input_list=data_type_input_list_INV_condition_map_categorical_col,
 												data_type_output_list=data_type_output_list_INV_condition_map_categorical_col,
 												field='TERRITORY'):
-			print('PRECONDITION INV_condition_map_categorical_col VALIDATED')
+			print('INVARIANT INV_condition_map_categorical_col VALIDATED')
 		else:
-			print('PRECONDITION INV_condition_map_categorical_col NOT VALIDATED')
+			print('INVARIANT INV_condition_map_categorical_col NOT VALIDATED')
 		
-		
-		if pre_post.check_fix_value_range(value='A', data_dictionary=data_model_map_territory_out, belong_op=Belong(0), field='TERRITORY',
-										quant_abs=None, quant_rel=None, quant_op=None):
-			print('POSTCONDITION POST_value_range_territory VALIDATED')
-		else:
-			print('POSTCONDITION POST_value_range_territory NOT VALIDATED')
-		if pre_post.check_fix_value_range(value='N', data_dictionary=data_model_map_territory_out, belong_op=Belong(0), field='TERRITORY',
-										quant_abs=None, quant_rel=None, quant_op=None):
-			print('POSTCONDITION POST_value_range_territory VALIDATED')
-		else:
-			print('POSTCONDITION POST_value_range_territory NOT VALIDATED')
 		
 #-----------------New DataProcessing-----------------
 		data_model_map_Instate_in=pd.read_csv('../workflow_datasets/data_model_map_territory_out.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_map_instate_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_map_Instate_out=pd.read_csv('../workflow_datasets/data_model_map_instate_out.csv')
 
 		if pre_post.check_fix_value_range(value='Y', data_dictionary=data_model_map_Instate_in, belong_op=Belong(0), field='Instate',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -511,6 +442,9 @@ class DataProcessing:
 #-----------------New DataProcessing-----------------
 		data_model_stringToNumber_in=pd.read_csv('../workflow_datasets/data_model_map_instate_out.csv')
 
+		if os.path.exists('../workflow_datasets/data_model_stringToNumber_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_stringToNumber_out=pd.read_csv('../workflow_datasets/data_model_stringToNumber_out.csv')
+
 		if invariants.check_inv_missing_value_missing_value(data_dictionary_in=data_model_stringToNumber_in,
 												data_dictionary_out=data_model_stringToNumber_out,
 												belong_op_out=Belong(1), field='TERRITORY'):
@@ -552,7 +486,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_outlier_closest_in=pd.read_csv('../workflow_datasets/data_model_stringToNumber_in.csv')
+		data_model_impute_outlier_closest_in=pd.read_csv('../workflow_datasets/data_model_stringToNumber_out.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_imputeOutliers_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_impute_outlier_closest_out=pd.read_csv('../workflow_datasets/data_model_imputeOutliers_out.csv')
 
 		if pre_post.check_outliers(belong_op=Belong(0), data_dictionary=data_model_impute_outlier_closest_in, field='avg_income', 
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -699,7 +636,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_binner_in=pd.read_csv('../workflow_datasets/data_model_stringToNumber_in.csv')
+		data_model_binner_in=pd.read_csv('../workflow_datasets/data_model_imputeOutliers_out.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_binner1_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_binner_out=pd.read_csv('../workflow_datasets/data_model_binner1_out.csv')
 
 		if pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=data_model_binner_in,
 		                                	closure_type=Closure(0), belong_op=Belong(0), field='TOTAL_CONTACTS'):
@@ -843,7 +783,10 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_binner_in=pd.read_csv('../workflow_datasets/data_model_stringToNumber_in.csv')
+		data_model_binner_in=pd.read_csv('../workflow_datasets/data_model_binner1_out.csv')
+
+		if os.path.exists('../workflow_datasets/data_model_binner2_out.csv'):		#If the output DataDictionary exists, we store it
+			data_model_binner_out=pd.read_csv('../workflow_datasets/data_model_binner2_out.csv')
 
 		if pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=data_model_binner_in,
 		                                	closure_type=Closure(3), belong_op=Belong(0), field='TERRITORY'):
