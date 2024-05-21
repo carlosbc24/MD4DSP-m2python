@@ -1,12 +1,3 @@
-import os
-import sys
-from pathlib import Path
-
-# Add the project's root to the python path
-script_location = Path(__file__).absolute().parent
-parent_directory = script_location.parent
-sys.path.append(str(parent_directory))
-
 import pandas as pd
 import functions.contract_invariants as contract_invariants
 import functions.contract_pre_post as contract_pre_post
@@ -18,7 +9,7 @@ class DataProcessing:
 		invariants=contract_invariants.Invariants()
 		transformations=data_transformations.DataTransformations()
 #-----------------New DataProcessing-----------------
-		data_model_impute_in=pd.read_csv('../data_model.csv')
+		data_model_impute_in=pd.read_csv('./data_model.csv')
 
 		missing_values_PRE_value_range_impute_sex_columns=[4]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_in, field='sex', 
@@ -62,7 +53,7 @@ class DataProcessing:
 																	  axis_param=0, field = 'ETHNICITY')
 		
 		data_model_impute_out=data_model_impute_in_transformed
-		data_model_impute_out.to_csv('../workflow_datasets/data_model_impute_out.csv')
+		data_model_impute_out.to_csv('./workflow_datasets/data_model_impute_out.csv')
 		
 		missing_values_POST_value_range_impute_sex_columns=[]
 		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_out, field='sex', 
@@ -128,7 +119,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_ACADEMIC_INTEREST_2_in=pd.read_csv('../workflow_datasets/data_model_impute_out.csv')
+		data_model_impute_ACADEMIC_INTEREST_2_in=pd.read_csv('./workflow_datasets/data_model_impute_out.csv')
 
 		missing_values_PRE_value_range_impute_ACADEMIC_INTEREST_2=[]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_ACADEMIC_INTEREST_2_in, field='ACADEMIC_INTEREST_2', 
@@ -161,7 +152,7 @@ class DataProcessing:
 																	  axis_param=0, field = 'ACADEMIC_INTEREST_1')
 		
 		data_model_impute_ACADEMIC_INTEREST_2_out=data_model_impute_ACADEMIC_INTEREST_2_in_transformed
-		data_model_impute_ACADEMIC_INTEREST_2_out.to_csv('../workflow_datasets/data_model_impute_out2.csv')
+		data_model_impute_ACADEMIC_INTEREST_2_out.to_csv('./workflow_datasets/data_model_impute_out2.csv')
 		
 		missing_values_POST_value_range_impute_ACADEMIC_INTEREST_2=[]
 		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_ACADEMIC_INTEREST_2_out, field='ACADEMIC_INTEREST_2', 
@@ -210,7 +201,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_mean_in=pd.read_csv('../workflow_datasets/data_model_impute_out2.csv')
+		data_model_impute_mean_in=pd.read_csv('./workflow_datasets/data_model_impute_out2.csv')
 
 		missing_values_PRE_value_range_impute_mean_avg_income=[]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_mean_in, field='avg_income', 
@@ -241,7 +232,7 @@ class DataProcessing:
 																	  axis_param=0, field = 'distance')
 		
 		data_model_impute_mean_out=data_model_impute_mean_in_transformed
-		data_model_impute_mean_out.to_csv('../workflow_datasets/data_model_impute_out3.csv')
+		data_model_impute_mean_out.to_csv('./workflow_datasets/data_model_impute_out3.csv')
 		
 		missing_values_POST_value_range_impute_mean_avg_income=[]
 		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_mean_out, field='avg_income', 
@@ -286,7 +277,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_linear_interpolation_in=pd.read_csv('../workflow_datasets/data_model_impute_out3.csv')
+		data_model_impute_linear_interpolation_in=pd.read_csv('./workflow_datasets/data_model_impute_out3.csv')
 
 		missing_values_PRE_value_range_impute_linear_interpolation_satscore=[]
 		if pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=data_model_impute_linear_interpolation_in, field='satscore', 
@@ -304,7 +295,7 @@ class DataProcessing:
 																	  axis_param=0, field = 'satscore')
 		
 		data_model_impute_linear_interpolation_out=data_model_impute_linear_interpolation_in_transformed
-		data_model_impute_linear_interpolation_out.to_csv('../workflow_datasets/data_model_impute_out4.csv')
+		data_model_impute_linear_interpolation_out.to_csv('./workflow_datasets/data_model_impute_out4.csv')
 		
 		missing_values_POST_value_range_impute_linear_interpolation_satscore=[]
 		if pre_post.check_missing_range(belong_op=Belong(1), data_dictionary=data_model_impute_linear_interpolation_out, field='satscore', 
@@ -328,7 +319,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_row_filter_in=pd.read_csv('../workflow_datasets/data_model_impute_out4.csv')
+		data_model_row_filter_in=pd.read_csv('./workflow_datasets/data_model_impute_out4.csv')
 
 		if pre_post.check_fix_value_range(value=0, data_dictionary=data_model_row_filter_in, belong_op=Belong(0), field='init_span',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -345,7 +336,7 @@ class DataProcessing:
 			print('POSTCONDITION POST_value_range_row_filter NOT VALIDATED')
 		
 #-----------------New DataProcessing-----------------
-		data_model_column_cont_filter_in=pd.read_csv('../workflow_datasets/data_model_row_filter_out.csv')
+		data_model_column_cont_filter_in=pd.read_csv('./workflow_datasets/data_model_row_filter_out.csv')
 
 		field_list_PRE_field_range_column_cont_filter=['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNCTS', 'telecq', 'stuemail', 'interest']
 		if pre_post.check_field_range(fields=field_list_PRE_field_range_column_cont_filter,
@@ -368,7 +359,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_column_cat_filter_in=pd.read_csv('../workflow_datasets/data_model_col_filter_out.csv')
+		data_model_column_cat_filter_in=pd.read_csv('./workflow_datasets/data_model_col_filter_out.csv')
 
 		field_list_PRE_field_range_column_cat_filter=['CONTACT_CODE1']
 		if pre_post.check_field_range(fields=field_list_PRE_field_range_column_cat_filter,
@@ -391,7 +382,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_map_territory_in=pd.read_csv('../workflow_datasets/data_model_col_filter_out2.csv')
+		data_model_map_territory_in=pd.read_csv('./workflow_datasets/data_model_col_filter_out2.csv')
 
 		if pre_post.check_fix_value_range(value='A', data_dictionary=data_model_map_territory_in, belong_op=Belong(0), field='TERRITORY',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -415,7 +406,7 @@ class DataProcessing:
 								                                      data_type_input_list = data_type_input_list_parameter_map_territory_A,
 								                                      data_type_output_list = data_type_output_list_parameter_map_territory_A, field = 'TERRITORY')
 		
-		data_model_map_territory_out.to_csv('../workflow_datasets/data_model_map_territory_out.csv')
+		data_model_map_territory_out.to_csv('./workflow_datasets/data_model_map_territory_out.csv')
 		
 		if pre_post.check_fix_value_range(value='A', data_dictionary=data_model_map_territory_out, belong_op=Belong(0), field='TERRITORY',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -450,7 +441,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_map_Instate_in=pd.read_csv('../workflow_datasets/data_model_map_territory_out.csv')
+		data_model_map_Instate_in=pd.read_csv('./workflow_datasets/data_model_map_territory_out.csv')
 
 		if pre_post.check_fix_value_range(value='Y', data_dictionary=data_model_map_Instate_in, belong_op=Belong(0), field='Instate',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -495,7 +486,7 @@ class DataProcessing:
 								                                      data_type_input_list = data_type_input_list_parameter_map_instate_Y,
 								                                      data_type_output_list = data_type_output_list_parameter_map_instate_Y, field = 'Instate')
 		
-		data_model_map_Instate_out.to_csv('../workflow_datasets/data_model_map_instate_out.csv')
+		data_model_map_Instate_out.to_csv('./workflow_datasets/data_model_map_instate_out.csv')
 		
 		if pre_post.check_fix_value_range(value='Y', data_dictionary=data_model_map_Instate_out, belong_op=Belong(0), field='Instate',
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -509,7 +500,7 @@ class DataProcessing:
 			print('POSTCONDITION POST_value_range_Instate NOT VALIDATED')
 		
 #-----------------New DataProcessing-----------------
-		data_model_stringToNumber_in=pd.read_csv('../workflow_datasets/data_model_map_instate_out.csv')
+		data_model_stringToNumber_in=pd.read_csv('./workflow_datasets/data_model_map_instate_out.csv')
 
 		
 		if invariants.check_inv_missing_value_missing_value(data_dictionary_in=data_model_stringToNumber_in,
@@ -553,7 +544,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_impute_outlier_closest_in=pd.read_csv('../workflow_datasets/data_model_stringToNumber_out.csv')
+		data_model_impute_outlier_closest_in=pd.read_csv('./workflow_datasets/data_model_stringToNumber_out.csv')
 
 		if pre_post.check_outliers(belong_op=Belong(0), data_dictionary=data_model_impute_outlier_closest_in, field='avg_income', 
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -624,7 +615,7 @@ class DataProcessing:
 																	  axis_param=0, field = 'Instate')
 		
 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_transformed
-		data_model_impute_outlier_closest_out.to_csv('../workflow_datasets/data_model_imputeOutliers_out.csv')
+		data_model_impute_outlier_closest_out.to_csv('./workflow_datasets/data_model_imputeOutliers_out.csv')
 		
 		if pre_post.check_outliers(belong_op=Belong(1), data_dictionary=data_model_impute_outlier_closest_out, field='avg_income', 
 										quant_abs=None, quant_rel=None, quant_op=None):
@@ -735,7 +726,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_binner_in=pd.read_csv('../workflow_datasets/data_model_imputeOutliers_out.csv')
+		data_model_binner_in=pd.read_csv('./workflow_datasets/data_model_imputeOutliers_out.csv')
 
 		if pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=data_model_binner_in,
 		                                	closure_type=Closure(0), belong_op=Belong(0), field='TOTAL_CONTACTS'):
@@ -790,7 +781,7 @@ class DataProcessing:
 																	  field_in = 'SOLICITED_CNTCTS',
 																	  field_out = 'SOLICITED_CNTCTS_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner1_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner1_out.csv')
 		
 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
 																	  left_margin=1.0, right_margin=4.0,
@@ -816,7 +807,7 @@ class DataProcessing:
 																	  field_in = 'SOLICITED_CNTCTS',
 																	  field_out = 'SOLICITED_CNTCTS_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner1_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner1_out.csv')
 		
 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
 																	  left_margin=4.0, right_margin=1000.0,
@@ -842,7 +833,7 @@ class DataProcessing:
 																	  field_in = 'SOLICITED_CNTCTS',
 																	  field_out = 'SOLICITED_CNTCTS_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner1_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner1_out.csv')
 		
 		if pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=data_model_binner_out,
 		                                	closure_type=Closure(0), belong_op=Belong(1), field='TOTAL_CONTACTS_binned'):
@@ -968,7 +959,7 @@ class DataProcessing:
 		
 		
 #-----------------New DataProcessing-----------------
-		data_model_binner_in=pd.read_csv('../workflow_datasets/data_model_binner1_out.csv')
+		data_model_binner_in=pd.read_csv('./workflow_datasets/data_model_binner1_out.csv')
 
 		if pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=data_model_binner_in,
 		                                	closure_type=Closure(3), belong_op=Belong(0), field='TERRITORY'):
@@ -989,7 +980,7 @@ class DataProcessing:
 																	  field_in = 'TERRITORY',
 																	  field_out = 'TERRITORY_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner2_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
 		
 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
 																	  left_margin=1.0, right_margin=3.0,
@@ -999,7 +990,7 @@ class DataProcessing:
 																	  field_in = 'TERRITORY',
 																	  field_out = 'TERRITORY_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner2_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
 		
 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
 																	  left_margin=3.0, right_margin=5.0,
@@ -1009,7 +1000,7 @@ class DataProcessing:
 																	  field_in = 'TERRITORY',
 																	  field_out = 'TERRITORY_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner2_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
 		
 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
 																	  left_margin=5.0, right_margin=7.0,
@@ -1019,7 +1010,7 @@ class DataProcessing:
 																	  field_in = 'TERRITORY',
 																	  field_out = 'TERRITORY_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner2_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
 		
 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
 																	  left_margin=7.0, right_margin=1000.0,
@@ -1029,7 +1020,7 @@ class DataProcessing:
 																	  field_in = 'TERRITORY',
 																	  field_out = 'TERRITORY_binned')
 		data_model_binner_out=data_model_binner_in_transformed
-		data_model_binner_out.to_csv('../workflow_datasets/data_model_binner2_out.csv')
+		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
 		
 		if pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=data_model_binner_out,
 		                                	closure_type=Closure(0), belong_op=Belong(1), field='TERRITORY_binned'):
