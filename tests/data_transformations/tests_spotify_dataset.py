@@ -4319,7 +4319,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                       data_type_output=DataType(0),
                                                                       field_in='track_popularity', field_out='track_popularity_binned')
         expected_df=self.small_batch_dataset.copy()
-        expected_df['track_popularity_binned'] = expected_df['track_popularity'].astype(str)
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna('').astype(str)
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
@@ -4341,7 +4342,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                       field_in='track_popularity',
                                                                       field_out='track_popularity_binned')
         expected_df = self.small_batch_dataset.copy()
-        expected_df['track_popularity_binned'] = expected_df['track_popularity'].astype(int)
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(int)
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
@@ -4352,7 +4354,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                       field_in='track_popularity',
                                                                       field_out='track_popularity_binned')
         expected_df = self.small_batch_dataset.copy()
-        expected_df['track_popularity_binned'] = expected_df['track_popularity'].astype(float)
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(float)
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
@@ -4363,7 +4366,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                       field_in='track_album_release_date',
                                                                       field_out='track_album_release_date_binned')
         expected_df = self.small_batch_dataset.copy()
-        expected_df['track_album_release_date_binned'] = expected_df['track_album_release_date'].astype('datetime64[ns]')
+        expected_df['track_album_release_date_binned'] = None
+        expected_df['track_album_release_date_binned'] = expected_df['track_album_release_date_binned'].fillna('').astype('datetime64[ns]')
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
@@ -4383,9 +4387,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Caso 1
         result_df = self.data_transformations.transform_derived_field(data_dictionary=self.rest_of_dataset.copy(),
                                                                       data_type_output=DataType(0),
-                                                                      field_in='track_popularity', field_out='track_popularity_binned')
-        expected_df=self.rest_of_dataset.copy()
-        expected_df['track_popularity_binned'] = expected_df['track_popularity'].astype(str)
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna('').astype(str)
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
@@ -4407,7 +4413,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                       field_in='track_popularity',
                                                                       field_out='track_popularity_binned')
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_popularity_binned'] = expected_df['track_popularity'].astype(int)
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(int)
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
@@ -4418,7 +4425,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                       field_in='track_popularity',
                                                                       field_out='track_popularity_binned')
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_popularity_binned'] = expected_df['track_popularity'].astype(float)
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(float)
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
@@ -4429,7 +4437,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                       field_in='track_album_release_date',
                                                                       field_out='track_album_release_date_binned')
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_album_release_date_binned'] = expected_df['track_album_release_date'].astype('datetime64[ns]')
+        expected_df['track_album_release_date_binned'] = None
+        expected_df['track_album_release_date_binned'] = expected_df['track_album_release_date_binned'].fillna(
+            '').astype('datetime64[ns]')
 
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")

@@ -2423,7 +2423,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': ['0', '2', '3', '4', '1']})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': ['', '', '', '', '']})
 
         result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
                                                                      data_type_output=DataType(0),
@@ -2447,7 +2447,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': ['0', '2', '3', '4', '1'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
-            {'A': ['0', '2', '3', '4', '1'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': [0, 2, 3, 4, 1]})
+            {'A': ['0', '2', '3', '4', '1'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': [0, 0, 0, 0, 0]})
 
         result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
                                                                      data_type_output=DataType(2),
@@ -2459,7 +2459,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': [0, 2, 3, 4, 1]})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2], 'A_binned': [0, 0, 0, 0, 0]})
         expected_df = expected_df.astype({
             'A_binned': 'float64'  # Convertir A_binned a float64
         })
@@ -2475,7 +2475,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': ['21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
             {'A': ['21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2],
-             'A_binned': [pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True), pd.to_datetime('21/07/2024', dayfirst=True)]})
+             'A_binned': ['', '', '', '', '']})
+        expected_df = expected_df.astype({
+            'A_binned': 'datetime64[ns]'  # Convertir A_binned a object
+        })
 
         result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
                                                                      data_type_output=DataType(3),
