@@ -322,7 +322,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
     """
     data_dictionary_copy_copy = data_dictionary_copy.copy()
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
@@ -414,39 +414,39 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                             data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy.at[idx, col]
                 data_dictionary_copy_copy = data_dictionary_copy_copy.T
                 return data_dictionary_copy_copy
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_copy[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
             raise ValueError("The field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
-            data_dictionary_copy[field] = data_dictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
-            data_dictionary_copy[field]=data_dictionary_copy[field].interpolate(method='linear', limit_direction='both')
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
+            data_dictionary_copy[field_out]=data_dictionary_copy[field_in].interpolate(method='linear', limit_direction='both')
 
         if special_type_input == SpecialType.INVALID:
-            data_dictionary_copy_copy[field] = data_dictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
-            data_dictionary_copy_copy[field] = data_dictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
 
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
-                if pd.isnull(data_dictionary_copy.at[idx, field]):
+                if pd.isnull(data_dictionary_copy.at[idx, field_in]):
                     # Replace the value with the corresponding one from data_dictionary_copy_copy
-                    data_dictionary_copy_copy.at[idx, field] = data_dictionary_copy.at[idx, field]
+                    data_dictionary_copy_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
             return data_dictionary_copy_copy
 
         if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_copy[field].items():
-                if data_dictionary_copy_mask.at[idx, field] == 1:
-                    data_dictionary_copy_copy.at[idx, field] = np.NaN
-            data_dictionary_copy_copy[field] = data_dictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                    data_dictionary_copy_copy.at[idx, field_in] = np.NaN
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
-                if pd.isnull(data_dictionary_copy.at[idx, field]):
+                if pd.isnull(data_dictionary_copy.at[idx, field_in]):
                     # Replace the value with the corresponding one from data_dictionary_copy_copy
-                    data_dictionary_copy_copy.at[idx, field] = data_dictionary_copy.at[idx, field]
+                    data_dictionary_copy_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
             return data_dictionary_copy_copy
 
     return data_dictionary_copy
