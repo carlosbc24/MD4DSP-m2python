@@ -1,4 +1,6 @@
 # Importing functions and classes from packages
+
+
 import numpy as np
 import pandas as pd
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
@@ -315,7 +317,7 @@ class DataTransformations:
 
     def transform_interval_fix_value(self, data_dictionary: pd.DataFrame, left_margin: float, right_margin: float,
                                      closure_type: Closure, fix_value_output, data_type_output: DataType = None,
-                                     field: str = None) -> pd.DataFrame:
+                                     field_in: str = None, field_out: str = None) -> pd.DataFrame:
         """
         Execute the data transformation of the Interval - FixValue relation
         :param data_dictionary: dataframe with the data
@@ -332,7 +334,7 @@ class DataTransformations:
 
         data_dictionary_copy = data_dictionary.copy()
 
-        if field is None:
+        if field_in is None:
             # Apply the lambda function to the entire dataframe
             if closure_type == Closure.openOpen:
                 data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if (
@@ -347,23 +349,23 @@ class DataTransformations:
                 data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
                                 np.issubdtype(type(x), np.number) and (left_margin <= x) and (x <= right_margin) else x))
 
-        elif field is not None:
-            if field not in data_dictionary.columns:
+        elif field_in is not None:
+            if field_in not in data_dictionary.columns:
                 raise ValueError("The field does not exist in the dataframe")
 
-            elif field in data_dictionary.columns:
-                if np.issubdtype(data_dictionary[field].dtype, np.number):
+            elif field_in in data_dictionary.columns:
+                if np.issubdtype(data_dictionary[field_in].dtype, np.number):
                     if closure_type == Closure.openOpen:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin < x) and (x < right_margin) else x)
                     elif closure_type == Closure.openClosed:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin < x) and (x <= right_margin) else x)
                     elif closure_type == Closure.closedOpen:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin <= x) and (x < right_margin) else x)
                     elif closure_type == Closure.closedClosed:
-                        data_dictionary_copy[field] = data_dictionary[field].apply(
+                        data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
                             lambda x: fix_value_output if (left_margin <= x) and (x <= right_margin) else x)
                 else:
                     raise ValueError("The field is not numeric")
@@ -860,5 +862,45 @@ class DataTransformations:
                                                         special_type_input=special_type_input,
                                                         data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                         missing_values=missing_values, axis_param=axis_param, field=field)
+
+        return data_dictionary_copy
+
+
+    def transform_derived_field(self, data_dictionary: pd.DataFrame, field_in: str, field_out: str,
+                                data_type_output: DataType = None) -> pd.DataFrame:
+        """
+        Execute the data transformation of the DerivedField relation
+        Args:
+            data_dictionary: dataframe with the data
+            data_type_output: data type of the output field
+            field_in: field to execute the data transformation
+            field_out: field to store the output value
+        Returns:
+            pd.DataFrame:
+        """
+        data_dictionary_copy=data_dictionary.copy()
+
+        if field_in not in data_dictionary.columns:
+            raise ValueError("The field does not exist in the dataframe")
+        def cast_type_column():
+            if data_type_output is not None:
+                if data_type_output == DataType.STRING:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype(str)
+                elif data_type_output == DataType.TIME:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype('datetime64[ns]')
+                elif data_type_output == DataType.INTEGER:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(0).astype(int)
+                elif data_type_output == DataType.DATETIME:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype('datetime64[ns]')
+                elif data_type_output == DataType.BOOLEAN:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(False).astype(bool)
+                elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
+                    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(0).astype(float)
+
+        if data_type_output is not None:                            # If the type is not None, the new field is initialize to None and then casted
+            data_dictionary_copy[field_out] = None
+            cast_type_column()
+        else:                                                       # If the type is None, the new field is a copy of the input field
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in]
 
         return data_dictionary_copy

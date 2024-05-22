@@ -1038,7 +1038,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(0), data_type_output=DataType(0),
-                                                              fix_value_output='Suspenso', field=field,
+                                                              fix_value_output='Suspenso', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0),
                                                               belong_op_out=Belong(0), data_dictionary_out=expected)
 
@@ -1057,7 +1057,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(1), data_type_output=DataType(0),
-                                                              fix_value_output='Suspenso', field=field,
+                                                              fix_value_output='Suspenso', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                               data_dictionary_out=expected)
 
@@ -1076,7 +1076,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(2), data_type_output=DataType(0),
-                                                              fix_value_output='Suspenso', field=field,
+                                                              fix_value_output='Suspenso', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                               data_dictionary_out=expected)
 
@@ -1096,7 +1096,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(3), data_type_output=DataType(0),
-                                                              fix_value_output='Suspe', field=field,
+                                                              fix_value_output='Suspe', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                               data_dictionary_out=expected)
 
@@ -1185,7 +1185,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(0), data_type_output=DataType(0),
-                                                              fix_value_output='Suspenso', field=field,
+                                                              fix_value_output='Suspenso', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0),
                                                               belong_op_out=Belong(1), data_dictionary_out=expected)
 
@@ -1204,7 +1204,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(1), data_type_output=DataType(0),
-                                                              fix_value_output='Suspenso', field=field,
+                                                              fix_value_output='Suspenso', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0), belong_op_out=Belong(1),
                                                               data_dictionary_out=expected)
 
@@ -1223,7 +1223,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(2), data_type_output=DataType(0),
-                                                              fix_value_output='Suspenso', field=field,
+                                                              fix_value_output='Suspenso', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0), belong_op_out=Belong(1),
                                                               data_dictionary_out=expected)
 
@@ -1243,7 +1243,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_interval_fix_value(data_dictionary_in=datadic.copy(), left_margin=0,
                                                               right_margin=5,
                                                               closure_type=Closure(3), data_type_output=DataType(0),
-                                                              fix_value_output='Suspenso', field=field,
+                                                              fix_value_output='Suspenso', field_in=field, field_out=field,
                                                               belong_op_in=Belong(0), belong_op_out=Belong(1),
                                                               data_dictionary_out=expected)
 

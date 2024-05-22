@@ -79,6 +79,22 @@ Once the tests have finished, one log will be created for each execution of the 
 # Generated contract calls via Acceleo (Code Generation)
 
 The contract calls are generated in a Python script via Acceleo. Once the generated is generated, it must be moved to the `generated_code` directory. The script to test the code generation is named `dataProcessing.py`. You'll just need to run the script to call the contracts. The dataset used to test this generated script must be named 'data_model.csv' and must be located in a parent directory to the generated script.
+The generated files can be executed by running one of the following commands:
+
+1. Execute just the data transformations script:
+   ```bash
+    python -m generated_code.data_transformations
+    ```
+
+2. Execute just the contracts script:
+   ```bash
+    python -m generated_code.contracts
+    ```
+
+3. Execute both, the data transformations and the contracts by running the following command:
+   ```bash
+    python -m generated_code.dataProcessing
+    ```
 
 ## Project Structure
 

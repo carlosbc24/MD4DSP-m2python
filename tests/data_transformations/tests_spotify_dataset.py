@@ -1358,7 +1358,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                         right_margin=69, closure_type=Closure(3),
                                                                         data_type_output=DataType(0),
                                                                         fix_value_output='65<=Pop<=69',
-                                                                        field=field)
+                                                                        field_in=field, field_out=field)
 
         expected_df['track_popularity'] = expected_df['track_popularity'].apply(
             lambda x: '65<=Pop<=69' if 65 <= x <= 69 else x)
@@ -1387,7 +1387,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
-                fix_value_output=101, field=field)
+                fix_value_output=101, field_in=field, field_out=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
@@ -1397,7 +1397,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                         left_margin=0.06,
                                                                         right_margin=0.1270, closure_type=Closure(1),
-                                                                        fix_value_output=33, field=field)
+                                                                        fix_value_output=33, field_in=field, field_out=field)
 
         expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
 
@@ -1411,7 +1411,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
-                fix_value_output=101, field=field)
+                fix_value_output=101, field_in=field, field_out=field)
         print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
     def execute_WholeDatasetTests_execute_transform_Interval_FixValue_ExternalDataset(self):
@@ -1428,7 +1428,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                         right_margin=69, closure_type=Closure(2),
                                                                         data_type_output=DataType(0),
                                                                         fix_value_output='65<=Pop<69',
-                                                                        field=field)
+                                                                        field_in=field, field_out=field)
 
         expected_df['track_popularity'] = expected_df['track_popularity'].apply(
             lambda x: '65<=Pop<69' if 65 <= x < 69 else x)
@@ -1457,7 +1457,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                    left_margin=65,
                                                                    right_margin=69, closure_type=Closure(2),
-                                                                   fix_value_output=101, field=field)
+                                                                   fix_value_output=101, field_in=field, field_out=field)
         print_and_log("Test Case 3 Passed: expected ValueError, got ValueError")
 
         # Caso 4
@@ -1467,7 +1467,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result = self.data_transformations.transform_interval_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                         left_margin=0.06,
                                                                         right_margin=0.1270, closure_type=Closure(1),
-                                                                        fix_value_output=33, field=field)
+                                                                        fix_value_output=33, field_in=field, field_out=field)
 
         expected_df['speechiness'] = expected_df['speechiness'].apply(lambda x: 33 if 0.06 < x <= 0.1270 else x)
 
@@ -4284,3 +4284,165 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
+
+    def execute_transform_derived_field_ExternalDatasetTests(self):
+        """
+        Execute the data transformation test with external dataset for the function transform_SpecialValue_NumOp
+        """
+        print_and_log("Testing transform_derived_field Data Transformation Function")
+        print_and_log("")
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_execute_transform_derived_field_ExternalDataset()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_execute_transform_derived_field_ExternalDataset()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_execute_transform_derived_field_ExternalDataset(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_derived_field
+        """
+        print_and_log("Testing transform_derived_field Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.small_batch_dataset.copy(),
+                                                                      data_type_output=DataType(0),
+                                                                      field_in='track_popularity', field_out='track_popularity_binned')
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna('').astype(str)
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.small_batch_dataset.copy(),
+                                                                      data_type_output=None,
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity_binned'] = expected_df['track_popularity']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.small_batch_dataset.copy(),
+                                                                      data_type_output=DataType(2),
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(int)
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.small_batch_dataset.copy(),
+                                                                      data_type_output=DataType(6),
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(float)
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.small_batch_dataset.copy(),
+                                                                      data_type_output=DataType(3),
+                                                                      field_in='track_album_release_date',
+                                                                      field_out='track_album_release_date_binned')
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_album_release_date_binned'] = None
+        expected_df['track_album_release_date_binned'] = expected_df['track_album_release_date_binned'].fillna('').astype('datetime64[ns]')
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+    def execute_WholeDatasetTests_execute_transform_derived_field_ExternalDataset(self):
+        """
+        Execute the data transformation test using the whole dataset for the function transform_derived_field
+        """
+        print_and_log("Testing transform_derived_field Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      data_type_output=DataType(0),
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna('').astype(str)
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      data_type_output=None,
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity_binned'] = expected_df['track_popularity']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      data_type_output=DataType(2),
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(int)
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      data_type_output=DataType(6),
+                                                                      field_in='track_popularity',
+                                                                      field_out='track_popularity_binned')
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity_binned'] = None
+        expected_df['track_popularity_binned'] = expected_df['track_popularity_binned'].fillna(0).astype(float)
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5
+        result_df = self.data_transformations.transform_derived_field(data_dictionary=self.rest_of_dataset.copy(),
+                                                                      data_type_output=DataType(3),
+                                                                      field_in='track_album_release_date',
+                                                                      field_out='track_album_release_date_binned')
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_album_release_date_binned'] = None
+        expected_df['track_album_release_date_binned'] = expected_df['track_album_release_date_binned'].fillna(
+            '').astype('datetime64[ns]')
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+
+

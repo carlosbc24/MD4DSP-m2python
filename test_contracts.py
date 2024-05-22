@@ -85,6 +85,7 @@ if __name__ == "__main__":
     execute_invariants_external_dataset_tests()
     # invariant_simple_tests = InvariantsSimpleTest()
     # invariant_simple_tests.execute_checkInv_MissingValue_MissingValue()
+    # invariant_simple_tests.execute_checkInv_Interval_FixValue()
 
     # invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_FixValue_FixValue_ExternalDatasetTests()
