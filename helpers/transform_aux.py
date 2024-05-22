@@ -104,7 +104,8 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
     the derived type is applied to the whole dataframe.
     If axis_param is 0, the derived type is applied to each column. If axis_param is 1,
     the derived type is applied to each row.
-    :param field: field to apply the derived type.
+    :param field_in: field to apply the derived type.
+    :param field_out: field to store the result of the derived type.
 
     :return: dataframe with the derived type applied to the outliers
     """
@@ -156,14 +157,20 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
             for idx, value in data_dictionary_copy[field_in].items():
                 if data_dictionary_copy_copy.at[idx, field_in] == 1:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy[field_in].value_counts().idxmax()
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
         elif derived_type_output == DerivedType.PREVIOUS:
             for idx, value in data_dictionary_copy[field_in].items():
                 if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != 0:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx - 1, field_in]
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
         elif derived_type_output == DerivedType.NEXT:
             for idx, value in data_dictionary_copy[field_in].items():
                 if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != len(data_dictionary_copy) - 1:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx + 1, field_in]
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
 
     return data_dictionary_copy
 
@@ -181,7 +188,8 @@ def apply_derived_type(special_type_input: SpecialType, derived_type_output: Der
     the derived type is applied to the whole dataframe.
     If axis_param is 0, the derived type is applied to each column. If axis_param is 1,
     the derived type is applied to each row.
-    :param field: field to apply the derived type.
+    :param field_in: field to apply the derived type.
+    :param field_out: field to store the result of the derived type.
 
     :return: dataframe with the derived type applied to the missing values
     """
@@ -287,7 +295,7 @@ def apply_derived_type(special_type_input: SpecialType, derived_type_output: Der
                 if missing_values is not None:
                     data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i + 1]
                                                             if (value in missing_values or pd.isnull(
-                        value)) and i < len(data_dictionary_copy[field_in]) - 1 else value for i, value in
+                                    value)) and i < len(data_dictionary_copy[field_in]) - 1 else value for i, value in
                                                             enumerate(data_dictionary_copy[field_in])],
                                                            index=data_dictionary_copy[field_in].index)
                 else:
@@ -316,7 +324,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
     :param special_type_input: special type to apply to the missing values
     :param missing_values: list of missing values
     :param axis_param: axis to apply the interpolation.
-    :param field: field to apply the interpolation.
+    :param field_in: field to apply the interpolation.
+    :param field_out: field to store the result of the interpolation.
 
     :return: dataframe with the interpolation applied to the missing values
     """
@@ -414,6 +423,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                             data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy.at[idx, col]
                 data_dictionary_copy_copy = data_dictionary_copy_copy.T
                 return data_dictionary_copy_copy
+
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
@@ -440,6 +450,9 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
             for idx, value in data_dictionary_copy[field_in].items():
                 if data_dictionary_copy_mask.at[idx, field_in] == 1:
                     data_dictionary_copy_copy.at[idx, field_in] = np.NaN
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
+
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
             # For each índex in the column
             for idx in data_dictionary_copy.index:
@@ -463,7 +476,8 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
     :param data_dictionary_copy_mask: dataframe with the outliers
     :param missing_values: list of missing values
     :param axis_param: axis to apply the mean.
-    :param field: field to apply the mean.
+    :param field_in: field to apply the mean.
+    :param field_out: field to store the result of the mean.
 
     :return: dataframe with the mean applied to the missing values
     """
@@ -567,6 +581,8 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
             for idx, value in data_dictionary_copy[field_in].items():
                 if data_dictionary_copy_mask.at[idx, field_in] == 1:
                     data_dictionary_copy.at[idx, field_out] = mean
+                else:
+                    data_dictionary_copy.at[idx, field_out] = value
 
 
     return data_dictionary_copy
@@ -582,7 +598,8 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
     :param special_type_input: special type to apply to the missing values
     :param missing_values: list of missing values
     :param axis_param: axis to apply the median.
-    :param field: field to apply the median.
+    :param field_in: field to apply the median.
+    :param field_out: field to store the result of the median.
 
     :return: dataframe with the median applied to the missing values
     """
@@ -685,6 +702,8 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
             for idx, value in data_dictionary_copy[field_in].items():
                 if data_dictionary_copy_mask.at[idx, field_in] == 1:
                     data_dictionary_copy.at[idx, field_out] = median
+                else:
+                    data_dictionary_copy.at[idx, field_out] = value
 
     return data_dictionary_copy
 
@@ -700,7 +719,8 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
     :param data_dictionary_copy_mask: dataframe with the outliers mask
     :param missing_values: list of missing values
     :param axis_param: axis to apply the closest value.
-    :param field: field to apply the closest value.
+    :param field_in: field to apply the closest value.
+    :param field_out: field to store the closest value.
 
     :return: dataframe with the closest applied to the missing values
     """
@@ -894,5 +914,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                     current_value = data_dictionary_copy.at[i, field_in]
                     if data_dictionary_copy_mask.at[i, field_in] == 1:
                         data_dictionary_copy.at[i, field_out] = closest_values[current_value]
+                    else:
+                        data_dictionary_copy.at[i, field_out] = data_dictionary_copy.at[i, field_in]
 
     return data_dictionary_copy

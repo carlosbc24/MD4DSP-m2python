@@ -25,7 +25,8 @@ class DataTransformations:
             fix_value_input: input value to check
             data_type_output: data type of the output value
             fix_value_output: output value to check
-            field: field to execute the data transformation
+            field_in: field to execute the data transformation
+            field_out: field to store the result of the operation
         Returns:
             data_dictionary with the fix_value_input and fix_value_output values changed to the type data_type_input and data_type_output respectively
         """
@@ -81,7 +82,8 @@ class DataTransformations:
             fix_value_input: input value to check
             derived_type_output: derived type of the output value
             axis_param: axis to execute the data transformation - 0: column, None: dataframe
-            field: field to execute the data transformation
+            field_in: field to execute the data transformation
+            field_out: field to store the result of the operation
 
             return: data_dictionary with the fix_value_input values replaced by the value derived from the operation derived_type_output
         """
@@ -156,7 +158,8 @@ class DataTransformations:
             fix_value_input: input value to check
             num_op_output: operation to execute the data transformation
             axis_param: axis to execute the data transformation
-            field: field to execute the data transformation
+            field_in: field to execute the data transformation
+            field_out: field to store the result of the operation
         Returns:
             data_dictionary with the fix_value_input values replaced by the result of the operation num_op_output
         """
@@ -324,7 +327,8 @@ class DataTransformations:
         :param closure_type: closure type of the interval
         :param data_type_output: data type of the output value
         :param fix_value_output: output value to check
-        :param field: field to execute the data transformation
+        :param field_in: field to execute the data transformation
+        :param field_out: field to store the result of the operation
         :return: data_dictionary with the values of the interval changed to the value fix_value_output
         """
         if data_type_output is not None:  # If it is specified, the transformation is performed
@@ -381,7 +385,8 @@ class DataTransformations:
         :param closure_type: closure type of the interval
         :param derived_type_output: derived type of the output value
         :param axis_param: axis to execute the data transformation
-        :param field: field to execute the data transformation
+        :param field_in: field to execute the data transformation
+        :param field_out: field to store the result of the operation
 
         :return: data_dictionary with the values of the interval changed to the
             value derived from the operation derived_type_output
@@ -461,7 +466,8 @@ class DataTransformations:
         :param closure_type: closure type of the interval
         :param num_op_output: operation to execute the data transformation
         :param axis_param: axis to execute the data transformation
-        :param field: field to execute the data transformation
+        :param field_in: field to execute the data transformation
+        :param field_out: field to store the result of the operation
         :return: data_dictionary with the values of the interval changed to the result of the operation num_op_output
         """
         data_dictionary_copy = data_dictionary.copy()
@@ -474,7 +480,7 @@ class DataTransformations:
                     for col in data_dictionary_copy.columns:
                         if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                             data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
-                            data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                     # Iterate over each column
                     for col in data_dictionary_copy.columns:
                         # For each index in the column
@@ -682,7 +688,8 @@ class DataTransformations:
         :param fix_value_output: output value to check
         :param missing_values: list of missing values
         :param axis_param: axis to execute the data transformation
-        :param field: field to execute the data transformation
+        :param field_in: field to execute the data transformation
+        :param field_out: field to store the data transformation
         :return: data_dictionary with the values of the special type changed to the value fix_value_output
         """
         if data_type_output is not None:  # If it is specified, the casting is performed
@@ -758,10 +765,11 @@ class DataTransformations:
                     Q1 = data_dictionary_copy[field_in].quantile(0.25)
                     Q3 = data_dictionary_copy[field_in].quantile(0.75)
                     IQR = Q3 - Q1
-                    data_dictionary_copy[field_out] = data_dictionary_copy[field_in].where(
-                        ~((data_dictionary_copy[field_in] < Q1 - threshold * IQR) |
-                          (data_dictionary_copy[field_in] > Q3 + threshold * IQR)),
-                        other=fix_value_output)
+
+                    outlier_condition = ((data_dictionary_copy[field_in] < Q1 - threshold * IQR) |
+                                         (data_dictionary_copy[field_in] > Q3 + threshold * IQR))
+                    data_dictionary_copy[field_out] = np.where(outlier_condition, fix_value_output, data_dictionary_copy[field_in])
+
                 else:
                     raise ValueError("The field is not numeric")
 
@@ -777,7 +785,8 @@ class DataTransformations:
         :param derived_type_output: derived type of the output value
         :param missing_values: list of missing values
         :param axis_param: axis to execute the data transformation
-        :param field: field to execute the data transformation
+        :param field_in: field to execute the data transformation
+        :param field_out: field to store the output value
         :return: data_dictionary with the values of the special type changed to the value derived from the operation derived_type_output
         """
         data_dictionary_copy = data_dictionary.copy()
@@ -825,7 +834,8 @@ class DataTransformations:
         :param special_type_input: special type of the input value
         :param num_op_output: operation to execute the data transformation
         :param axis_param: axis to execute the data transformation
-        :param field: field to execute the data transformation
+        :param field_in: field to execute the data transformation
+        :param field_out: field to store the output value
         :return: data_dictionary with the values of the special type changed to the result of the operation num_op_output
         """
         data_dictionary_copy = data_dictionary.copy()
