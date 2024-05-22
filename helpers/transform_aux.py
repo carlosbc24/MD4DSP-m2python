@@ -468,7 +468,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
     :return: dataframe with the mean applied to the missing values
     """
 
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -548,26 +548,26 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = mean
 
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        elif field in data_dictionary_copy.columns:
-            if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
-                if special_type_input == SpecialType.MISSING:
-                    mean = data_dictionary_copy[field].mean()
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: mean if x in missing_values else x)
-                if special_type_input == SpecialType.INVALID:
-                    mean = data_dictionary_copy[field].mean()
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: mean if x in missing_values else x)
-                if special_type_input == SpecialType.OUTLIER:
-                    mean=data_dictionary_copy[field].mean()
-                    for idx, value in data_dictionary_copy[field].items():
-                        if data_dictionary_copy_mask.at[idx, field] == 1:
-                            data_dictionary_copy.at[idx, field] = mean
-            else:
-                raise ValueError("The field is not numeric")
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
+            raise ValueError("The field is not numeric")
+
+        if special_type_input == SpecialType.MISSING:
+            mean = data_dictionary_copy[field_in].mean()
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                lambda x: mean if x in missing_values else x)
+        if special_type_input == SpecialType.INVALID:
+            mean = data_dictionary_copy[field_in].mean()
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                lambda x: mean if x in missing_values else x)
+        if special_type_input == SpecialType.OUTLIER:
+            mean=data_dictionary_copy[field_in].mean()
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                    data_dictionary_copy.at[idx, field_out] = mean
+
 
     return data_dictionary_copy
 
