@@ -94,7 +94,7 @@ def get_outliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: i
 
 def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_dictionary_copy: pd.DataFrame,
                                         data_dictionary_copy_copy: pd.DataFrame,
-                                        axis_param: int = None, field: str = None) -> pd.DataFrame:
+                                        axis_param: int = None, field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the derived type to the outliers of a dataframe
     :param derived_type_output: derived type to apply to the outliers
@@ -108,7 +108,7 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
 
     :return: dataframe with the derived type applied to the outliers
     """
-    if field is None:
+    if field_in is None:
         if derived_type_output == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
@@ -148,22 +148,22 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
                             next_col = data_dictionary_copy.columns[data_dictionary_copy.columns.get_loc(col) + 1]
                             data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, next_col]
 
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        elif field in data_dictionary_copy_copy.columns:
-            if derived_type_output == DerivedType.MOSTFREQUENT:
-                for idx, value in data_dictionary_copy[field].items():
-                    if data_dictionary_copy_copy.at[idx, field] == 1:
-                        data_dictionary_copy.at[idx, field] = data_dictionary_copy[field].value_counts().idxmax()
-            elif derived_type_output == DerivedType.PREVIOUS:
-                for idx, value in data_dictionary_copy[field].items():
-                    if data_dictionary_copy_copy.at[idx, field] == 1 and idx != 0:
-                        data_dictionary_copy.at[idx, field] = data_dictionary_copy.at[idx - 1, field]
-            elif derived_type_output == DerivedType.NEXT:
-                for idx, value in data_dictionary_copy[field].items():
-                    if data_dictionary_copy_copy.at[idx, field] == 1 and idx != len(data_dictionary_copy) - 1:
-                        data_dictionary_copy.at[idx, field] = data_dictionary_copy.at[idx + 1, field]
+
+        if derived_type_output == DerivedType.MOSTFREQUENT:
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_copy.at[idx, field_in] == 1:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy[field_in].value_counts().idxmax()
+        elif derived_type_output == DerivedType.PREVIOUS:
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != 0:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx - 1, field_in]
+        elif derived_type_output == DerivedType.NEXT:
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != len(data_dictionary_copy) - 1:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx + 1, field_in]
 
     return data_dictionary_copy
 
