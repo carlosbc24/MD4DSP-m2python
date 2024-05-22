@@ -170,7 +170,7 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
 
 def apply_derived_type(special_type_input: SpecialType, derived_type_output: DerivedType,
                        data_dictionary_copy: pd.DataFrame, missing_values: list = None, axis_param: int = None,
-                       field: str = None) -> pd.DataFrame:
+                       field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the derived type to the missing values of a dataframe
     :param special_type_input: special type to apply to the missing values
@@ -186,7 +186,7 @@ def apply_derived_type(special_type_input: SpecialType, derived_type_output: Der
     :return: dataframe with the derived type applied to the missing values
     """
 
-    if field is None:
+    if field_in is None:
         if derived_type_output == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 if special_type_input == SpecialType.MISSING:
@@ -252,58 +252,56 @@ def apply_derived_type(special_type_input: SpecialType, derived_type_output: Der
             elif axis_param is None:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
 
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
 
-        elif field in data_dictionary_copy.columns:
-            if derived_type_output == DerivedType.MOSTFREQUENT:
-                most_frequent = data_dictionary_copy[field].value_counts().idxmax()
-                if special_type_input == SpecialType.MISSING:
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: most_frequent if pd.isnull(x) else x)
+        if derived_type_output == DerivedType.MOSTFREQUENT:
+            most_frequent = data_dictionary_copy[field_in].value_counts().idxmax()
+            if special_type_input == SpecialType.MISSING:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                    lambda x: most_frequent if pd.isnull(x) else x)
+            if missing_values is not None: # It works for missing values, invalid values and outliers
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                    lambda x: most_frequent if x in missing_values else x)
+        elif derived_type_output == DerivedType.PREVIOUS:
+            if special_type_input == SpecialType.MISSING:
+                if missing_values is not None:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i - 1]
+                                                if (value in missing_values or pd.isnull(value)) and i > 0 else value
+                                                    for i, value in enumerate(data_dictionary_copy[field_in])],
+                                                        index=data_dictionary_copy[field_in].index)
+                else:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i - 1] if pd.isnull(value)
+                                                and i > 0 else value for i, value in enumerate(data_dictionary_copy[field_in])],
+                                                    index=data_dictionary_copy[field_in].index)
+            elif special_type_input == SpecialType.INVALID:
                 if missing_values is not None: # It works for missing values, invalid values and outliers
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: most_frequent if x in missing_values else x)
-            elif derived_type_output == DerivedType.PREVIOUS:
-                if special_type_input == SpecialType.MISSING:
-                    if missing_values is not None:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i - 1]
-                                                    if (value in missing_values or pd.isnull(value)) and i > 0 else value
-                                                        for i, value in enumerate(data_dictionary_copy[field])],
-                                                            index=data_dictionary_copy[field].index)
-                    else:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i - 1] if pd.isnull(value)
-                                                    and i > 0 else value for i, value in enumerate(data_dictionary_copy[field])],
-                                                        index=data_dictionary_copy[field].index)
-                elif special_type_input == SpecialType.INVALID:
-                    if missing_values is not None: # It works for missing values, invalid values and outliers
-                        data_dictionary_copy[field] = pd.Series(
-                            [np.nan if pd.isnull(value) else data_dictionary_copy[field].iloc[i - 1]
-                            if value in missing_values and i > 0 else value for i, value in
-                             enumerate(data_dictionary_copy[field])], index=data_dictionary_copy[field].index)
+                    data_dictionary_copy[field_out] = pd.Series(
+                        [np.nan if pd.isnull(value) else data_dictionary_copy[field_in].iloc[i - 1]
+                        if value in missing_values and i > 0 else value for i, value in
+                         enumerate(data_dictionary_copy[field_in])], index=data_dictionary_copy[field_in].index)
 
-            elif derived_type_output == DerivedType.NEXT:
-                if special_type_input == SpecialType.MISSING:
-                    if missing_values is not None:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i + 1]
-                                                                if (value in missing_values or pd.isnull(
-                            value)) and i < len(data_dictionary_copy[field]) - 1 else value for i, value in
-                                                                enumerate(data_dictionary_copy[field])],
-                                                               index=data_dictionary_copy[field].index)
-                    else:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i + 1]
-                                                                if pd.isnull(value) and i < len(
-                            data_dictionary_copy[field]) - 1 else value for i, value in
-                                                                enumerate(data_dictionary_copy[field])],
-                                                               index=data_dictionary_copy[field].index)
-                elif special_type_input == SpecialType.INVALID:
-                    if missing_values is not None:
-                        data_dictionary_copy[field] = pd.Series(
-                            [np.nan if pd.isnull(value) else data_dictionary_copy[field].iloc[i + 1]
-                            if value in missing_values and i < len(data_dictionary_copy[field]) - 1 else value for
-                             i, value in
-                             enumerate(data_dictionary_copy[field])], index=data_dictionary_copy[field].index)
+        elif derived_type_output == DerivedType.NEXT:
+            if special_type_input == SpecialType.MISSING:
+                if missing_values is not None:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i + 1]
+                                                            if (value in missing_values or pd.isnull(
+                        value)) and i < len(data_dictionary_copy[field_in]) - 1 else value for i, value in
+                                                            enumerate(data_dictionary_copy[field_in])],
+                                                           index=data_dictionary_copy[field_in].index)
+                else:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i + 1]
+                                                            if pd.isnull(value) and i < len(
+                                                            data_dictionary_copy[field_in]) - 1 else value for i, value in
+                                                            enumerate(data_dictionary_copy[field_in])],
+                                                           index=data_dictionary_copy[field_in].index)
+            elif special_type_input == SpecialType.INVALID:
+                if missing_values is not None:
+                    data_dictionary_copy[field_out] = pd.Series(
+                        [np.nan if pd.isnull(value) else data_dictionary_copy[field_in].iloc[i + 1]
+                        if value in missing_values and i < len(data_dictionary_copy[field_in]) - 1 else value for
+                         i, value in enumerate(data_dictionary_copy[field_in])], index=data_dictionary_copy[field_in].index)
 
     return data_dictionary_copy
 
