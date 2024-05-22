@@ -308,7 +308,8 @@ def apply_derived_type(special_type_input: SpecialType, derived_type_output: Der
 
 def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                                data_dictionary_copy_mask: pd.DataFrame = None,
-                               missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                               missing_values: list = None, axis_param: int = None,
+                               field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the interpolation to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -453,7 +454,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
 
 def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                       data_dictionary_copy_mask: pd.DataFrame = None,
-                      missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                      missing_values: list = None, axis_param: int = None,
+                      field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the mean to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -572,7 +574,8 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
 
 def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                         data_dictionary_copy_mask: pd.DataFrame = None,
-                        missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                        missing_values: list = None, axis_param: int = None,
+                        field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the median to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -692,7 +695,8 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
 
 def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                          data_dictionary_copy_mask: pd.DataFrame = None,
-                         missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                         missing_values: list = None, axis_param: int = None,
+                         field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the closest to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
