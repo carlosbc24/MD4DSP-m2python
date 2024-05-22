@@ -290,7 +290,7 @@ class DataTransformations:
 
             if num_op_output == Operation.INTERPOLATION:
                 data_dictionary_copy_copy = data_dictionary_copy.copy()
-                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].apply(lambda x: x if x != fix_value_input else np.nan)
+                data_dictionary_copy_copy[field_in] = data_dictionary_copy_copy[field_in].apply(lambda x: x if x != fix_value_input else np.nan)
                 data_dictionary_copy_copy[field_out]=data_dictionary_copy_copy[field_in].interpolate(method='linear',limit_direction='both')
                 for idx in data_dictionary_copy.index:
                     # Verify if the value is NaN in the original dataframe
@@ -632,7 +632,7 @@ class DataTransformations:
 
             if num_op_output == Operation.INTERPOLATION:
                 data_dictionary_copy_copy = data_dictionary_copy.copy()
-                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].apply(lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
+                data_dictionary_copy_copy[field_in] = data_dictionary_copy_copy[field_in].apply(lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
                 data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
                 # For each index in the column
                 for idx in data_dictionary_copy.index:
