@@ -785,7 +785,7 @@ class DataTransformations:
         if field_in is None:
             if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
                 data_dictionary_copy = apply_derived_type(special_type_input, derived_type_output, data_dictionary_copy,
-                                                          missing_values, axis_param, field)
+                                                          missing_values, axis_param, field_in, field_out)
 
             elif special_type_input == SpecialType.OUTLIER:
                 # IMPORTANT: The function getOutliers() does the same as apply_derivedTypeOutliers() but at the dataframe level.
@@ -832,29 +832,32 @@ class DataTransformations:
         data_dictionary_copy_mask = None
 
         if special_type_input == SpecialType.OUTLIER:
-            data_dictionary_copy_mask = get_outliers(data_dictionary_copy, field, axis_param)
+            data_dictionary_copy_mask = get_outliers(data_dictionary_copy, field_in, axis_param)
 
         if num_op_output == Operation.INTERPOLATION:
             data_dictionary_copy = special_type_interpolation(data_dictionary_copy=data_dictionary_copy,
                                                               special_type_input=special_type_input,
                                                               data_dictionary_copy_mask=data_dictionary_copy_mask,
                                                               missing_values=missing_values, axis_param=axis_param,
-                                                              field=field)
+                                                              field_in=field_in, field_out=field_out)
         elif num_op_output == Operation.MEAN:
             data_dictionary_copy = special_type_mean(data_dictionary_copy=data_dictionary_copy,
                                                      special_type_input=special_type_input,
                                                      data_dictionary_copy_mask=data_dictionary_copy_mask,
-                                                     missing_values=missing_values, axis_param=axis_param, field=field)
+                                                     missing_values=missing_values, axis_param=axis_param,
+                                                     field_in=field_in, field_out=field_out)
         elif num_op_output == Operation.MEDIAN:
             data_dictionary_copy = special_type_median(data_dictionary_copy=data_dictionary_copy,
                                                        special_type_input=special_type_input,
                                                        data_dictionary_copy_mask=data_dictionary_copy_mask,
-                                                       missing_values=missing_values, axis_param=axis_param, field=field)
+                                                       missing_values=missing_values, axis_param=axis_param,
+                                                       field_in=field_in, field_out=field_out)
         elif num_op_output == Operation.CLOSEST:
             data_dictionary_copy = special_type_closest(data_dictionary_copy=data_dictionary_copy,
                                                         special_type_input=special_type_input,
                                                         data_dictionary_copy_mask=data_dictionary_copy_mask,
-                                                        missing_values=missing_values, axis_param=axis_param, field=field)
+                                                        missing_values=missing_values, axis_param=axis_param,
+                                                        field_in=field_in, field_out=field_out)
 
         return data_dictionary_copy
 
