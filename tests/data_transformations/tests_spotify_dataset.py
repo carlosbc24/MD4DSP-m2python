@@ -110,7 +110,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             self.execute_transform_SpecialValue_FixValue_ExternalDatasetTests,
             self.execute_transform_SpecialValue_DerivedValue_ExternalDatasetTests,
             self.execute_transform_SpecialValue_NumOp_ExternalDatasetTests,
-            self.execute_transform_derived_field_ExternalDatasetTests()
+            self.execute_transform_derived_field_ExternalDatasetTests
         ]
 
         print_and_log("")
