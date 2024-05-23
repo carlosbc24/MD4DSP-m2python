@@ -686,7 +686,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        if np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
             raise ValueError("The field is not numeric")
 
         if special_type_input == SpecialType.MISSING:

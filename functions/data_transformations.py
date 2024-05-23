@@ -769,7 +769,6 @@ class DataTransformations:
                     outlier_condition = ((data_dictionary_copy[field_in] < Q1 - threshold * IQR) |
                                          (data_dictionary_copy[field_in] > Q3 + threshold * IQR))
                     data_dictionary_copy[field_out] = np.where(outlier_condition, fix_value_output, data_dictionary_copy[field_in])
-
                 else:
                     raise ValueError("The field is not numeric")
 
