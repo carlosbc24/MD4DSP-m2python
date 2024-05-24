@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # execute_prepost_simple_tests()
     # execute_prepost_external_dataset_tests()
     execute_invariants_simple_tests()
-    # execute_invariants_external_dataset_tests()
+    execute_invariants_external_dataset_tests()
 
 
     # invariant_simple_tests = InvariantsSimpleTest()
