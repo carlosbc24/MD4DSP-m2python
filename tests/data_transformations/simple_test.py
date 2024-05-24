@@ -129,15 +129,15 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                  pd.to_datetime('2021-01-01'), pd.to_datetime('2021-01-01'),
                                  pd.to_datetime('2021-08-01')]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = [True]
+        fix_value_output = [pd.to_datetime('2024-06-09')]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
                                                                             input_values_list=[pd.to_datetime('2021-01-01')],
                                                                             data_type_output_list=None,
                                                                             output_values_list=fix_value_output)
         # Definir el resultado esperado
-        expected_df = pd.DataFrame({'A': [True, pd.to_datetime('2021-09-01'), True, True, True],
-                                    'B': [True, True, True, True, pd.to_datetime('2021-08-01')]})
+        expected_df = pd.DataFrame({'A': [pd.to_datetime('2024-06-09'), pd.to_datetime('2021-09-01'), pd.to_datetime('2024-06-09'), pd.to_datetime('2024-06-09'), pd.to_datetime('2024-06-09')],
+                                    'B': [pd.to_datetime('2024-06-09'), pd.to_datetime('2024-06-09'), pd.to_datetime('2024-06-09'), pd.to_datetime('2024-06-09'), pd.to_datetime('2021-08-01')]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 3 Passed: the function returned the expected dataframe")
@@ -164,13 +164,13 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # fijo de tipo FLOAT 3.0 por el valor fijo de tipo STRING 'Clara'
         df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 2.0, 2.0, 2.0]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = ['Clara']
+        fix_value_output = [9]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0],
                                                                             output_values_list=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
-            {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 2.0, 2.0, 2.0]})
+            {'A': [9, 2.0, 9, 9, 9], 'B': [9, 9, 2.0, 2.0, 2.0]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 5 Passed: the function returned the expected dataframe")
@@ -178,13 +178,13 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Caso 6
         df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 5.0, 2.0, 2.0]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = ['Clara', 'Ana']
+        fix_value_output = [9, 5]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 5.0],
                                                                             output_values_list=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
-            {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', 2.0, 2.0]})
+            {'A': [9, 2.0, 9, 9, 9], 'B': [9, 9, 5, 2.0, 2.0]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 6 Passed: the function returned the expected dataframe")
@@ -192,13 +192,13 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Caso 7
         df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 5.0, 2.0, 2.0]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = ['Clara', 'Clara']
+        fix_value_output = [9, 9]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 5.0],
                                                                             output_values_list=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
-            {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Clara', 2.0, 2.0]})
+            {'A': [9, 2.0, 9, 9, 9], 'B': [9, 9, 9, 2.0, 2.0]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 7 Passed: the function returned the expected dataframe")
@@ -215,15 +215,15 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 8 Passed: expected Value Error, got Value Error")
 
         # Caso 9
-        df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 'Clara', 2.0, 2.0]})
+        df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 4, 2.0, 2.0]})
         # Definir el valor fijo y la condición para el cambio
-        fix_value_output = ['Clara', 'Ana']
+        fix_value_output = [8, 6]
         # Aplicar la transformación de datos
-        result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 'Clara'],
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 4],
                                                                             output_values_list=fix_value_output)
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
-            {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 'Ana', 2.0, 2.0]})
+            {'A': [8, 2.0, 8, 8, 8], 'B': [8, 8, 6, 2.0, 2.0]})
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
