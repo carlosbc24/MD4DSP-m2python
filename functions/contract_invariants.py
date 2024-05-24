@@ -236,7 +236,8 @@ class Invariants:
             :param belong_op_in: if condition to check the invariant
             :param belong_op_out: then condition to check the invariant
             :param fix_value_output: output value to check
-            :param field: field to check the invariant
+            :param field_in: field to check the invariant
+            :param field_out: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
@@ -303,7 +304,8 @@ class Invariants:
             :param belong_op_in: if condition to check the invariant
             :param belong_op_out: then condition to check the invariant
             :param axis_param: axis to check the invariant
-            :param field: field to check the invariant
+            :param field_in: field to check the invariant
+            :param field_out: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
@@ -345,7 +347,8 @@ class Invariants:
             :param belong_op_in: operation to check the invariant
             :param belong_op_out: operation to check the invariant
             :param axis_param: axis to check the invariant
-            :param field: field to check the invariant
+            :param field_in: field to check the invariant
+            :param field_out: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
@@ -395,7 +398,8 @@ class Invariants:
             :param belong_op_out: then condition to check the invariant
             :param missing_values: list of missing values
             :param axis_param: axis to check the invariant
-            :param field: field to check the invariant
+            :param field_in: field to check the invariant
+            :param field_out: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
@@ -707,7 +711,8 @@ class Invariants:
             :param belong_op_out: then condition to check the invariant
             :param missing_values: list of missing values
             :param axis_param: axis to check the invariant
-            :param field: field to check the invariant
+            :param field_in: field to check the invariant
+            :param field_out: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
@@ -773,7 +778,8 @@ class Invariants:
             :param belong_op_out: then condition to check the invariant
             :param missing_values: list of missing values
             :param axis_param: axis to check the invariant
-            :param field: field to check the invariant
+            :param field_in: field to check the invariant
+            :param field_out: field to check the invariant
 
         returns:
             True if the invariant is satisfied, False otherwise
@@ -829,7 +835,8 @@ class Invariants:
             data_dictionary_out (pd.DataFrame): The output dataframe.
             belong_op_out (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the missing values are still missing.
                                     If it's Belong.NOTBELONG, the function checks if the missing values are not missing anymore.
-            field (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+            field_in (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+            field_out (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
 
         Returns:
             bool: True if the invariant is satisfied, False otherwise.
