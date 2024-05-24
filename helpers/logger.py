@@ -17,12 +17,11 @@ def set_logger(logger_name: str = "test"):
 
     existing_logs = [f for f in os.listdir(log_path) if f.startswith(f'{logger_name}_log_')]
     log_numbers = [int(os.path.splitext(f)[0].split('_')[-1]) for f in existing_logs] if existing_logs else [0]
-    print(f'Existing logs: {existing_logs}')
     next_log_number = max(log_numbers) + 1
 
     log_filename = os.path.abspath(
         os.path.join(log_path, f'{logger_name}_log_{next_log_number}.log'))
-    print(f'Log file: {log_filename}')
+    # print(f'Log file: {log_filename}')
 
     try:
         logging.basicConfig(filename=log_filename, level=logging.DEBUG,
