@@ -45,14 +45,3 @@ if __name__ == "__main__":
     # Calculate execution time for each test block (data_transformations)
     execute_data_transformations_simple_tests()
     execute_data_transformations_external_dataset_tests()
-
-    # data_transformation_simple_tests = DataTransformationsSimpleTest()
-    # data_transformation_simple_tests.execute_transform_Interval_FixValue()
-    # data_transformation_simple_tests.execute_transform_derived_field()
-
-
-    # data_transformations_tests_with_external_dataset = DataTransformationsExternalDatasetTests()
-    # data_transformations_tests_with_external_dataset.execute_transform_Interval_FixValue_ExternalDatasetTests()
-    # data_transformations_tests_with_external_dataset.execute_transform_derived_field_ExternalDatasetTests()
-
-
