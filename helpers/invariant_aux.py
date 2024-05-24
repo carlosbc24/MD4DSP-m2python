@@ -20,7 +20,8 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
         :param fix_value_input: input value to apply the most frequent value
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the most frequent value
-        :param field: (str) field to apply the most frequent value
+        :param field_in: (str) field to apply the most frequent value
+        :param field_out: (str) field to apply the most frequent value
 
     Returns:
         :return: True if the most frequent value is applied correctly on the fix input value
@@ -131,7 +132,8 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
         :param fix_value_input: input value to apply the previous value
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the previous value
-        :param field: (str) field to apply the previous value
+        :param field_in: (str) field to apply the previous value
+        :param field_out: (str) field to apply the previous value
 
     Returns:
         :return: True if the previous value is applied correctly to the fix input value
@@ -258,7 +260,8 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
         :param fix_value_input: input value to apply the next value
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the next value
-        :param field: (str) field to apply the next value
+        :param field_in: (str) field to apply the next value
+        :param field_out: (str) field to apply the next value
 
     Returns:
         :return: True if the next value is applied correctly to the fix input value
@@ -389,7 +392,8 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
         :param closure_type: (Closure) closure of the interval
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the most frequent value
-        :param field: (str) field to apply the most frequent value
+        :param field_in: (str) field to apply the most frequent value
+        :param field_out: (str) field to apply the most frequent value
 
     Returns:
         :return: True if the most frequent value is applied correctly on the interval
@@ -503,7 +507,8 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         :param closure_type: (Closure) closure of the interval
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the previous value
-        :param field: (str) field to apply the previous value
+        :param field_in: (str) field to apply the previous value
+        :param field_out: (str) field to apply the previous value
 
     Returns:
         :return: True if the previous value is applied correctly on the interval
@@ -642,7 +647,8 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         :param closure_type: (Closure) closure of the interval
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the next value
-        :param field: (str) field to apply the next value
+        :param field_in: (str) field to apply the next value
+        :param field_out: (str) field to apply the next value
 
     Returns:
         :return: True if the next value is applied correctly on the interval
@@ -775,7 +781,8 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
             :param fix_value_input: value to apply the interpolation
             :param belong_op_out: then condition to check the invariant
             :param axis_param: axis to apply the interpolation
-            :param field: field to apply the interpolation
+            :param field_in: field to apply the interpolation
+            :param field_out: field to apply the interpolation
 
         Returns:
             :return: True if the interpolation is applied correctly to the fix value input
@@ -877,7 +884,8 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
         :param fix_value_input: fix value to apply the mean
         :param belong_op_out: then condition to check the invariant
         :param axis_param: axis to apply the mean
-        :param field: field to apply the mean
+        :param field_in: field to apply the mean
+        :param field_out: field to apply the mean
 
     Returns:
         :return: True if the special type mean is applied correctly
@@ -999,7 +1007,8 @@ def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out
         :param fix_value_input: fix value to apply the median
         :param belong_op_out: then condition to check the invariant
         :param axis_param: axis to apply the median
-        :param field: field to apply the median
+        :param field_in: field to apply the median
+        :param field_out: field to apply the median
 
     Returns:
         :return: True if the median is applied correctly to the fix value
@@ -1118,7 +1127,8 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             :param fix_value_input: fix value to apply the closest
             :param belong_op_out: then condition to check the invariant
             :param axis_param: axis to apply the closest
-            :param field: field to apply the closest
+            :param field_in: field to apply the closest
+            :param field_out: field to apply the closest
 
         Returns:
             :return: True if the closest is applied correctly to the fix input value
@@ -1271,7 +1281,8 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
         :param belong_op_in: if condition to check the invariant
         :param belong_op_out: then condition to check the invariant
         :param axis_param: axis to apply the interpolation
-        :param field: field to apply the interpolation
+        :param field_in: field to apply the interpolation
+        :param field_out: field to apply the interpolation
 
     Returns:
         :return: True if the special type interpolation is applied correctly
@@ -1425,7 +1436,8 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         :param belong_op_in: (Belong) if condition to check the invariant
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the mean
-        :param field: (str) field to apply the mean
+        :param field_in: (str) field to apply the mean
+        :param field_out: (str) field to apply the mean
 
     Returns:
         :return: True if the mean is applied correctly on the interval
@@ -1552,7 +1564,8 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
         :param belong_op_in: (Belong) if condition to check the invariant
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the median
-        :param field: (str) field to apply the median
+        :param field_in: (str) field to apply the median
+        :param field_out: (str) field to apply the median
 
     Returns:
         :return: True if the median is applied correctly on the interval
@@ -1679,7 +1692,8 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
         :param belong_op_in: (Belong) if condition to check the invariant
         :param belong_op_out: (Belong) then condition to check the invariant
         :param axis_param: (int) axis to apply the closest
-        :param field: (str) field to apply the closest
+        :param field_in: (str) field to apply the closest
+        :param field_out: (str) field to apply the closest
 
     Returns:
         :return: True if the closest is applied correctly on the interval
@@ -1852,7 +1866,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
         :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
         :param missing_values: list of missing values
         :param axis_param: axis to apply the interpolation
-        :param field: field to apply the interpolation
+        :param field_in: field to apply the interpolation
+        :param field_out: field to apply the interpolation
 
     Returns:
         :return: True if the special type interpolation is applied correctly
@@ -2133,7 +2148,8 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
         :param missing_values: list of missing values
         :param axis_param: axis to apply the mean
-        :param field: field to apply the mean
+        :param field_in: field to apply the mean
+        :param field_out: field to apply the mean
 
     Returns:
         :return: True if the special type mean is applied correctly
@@ -2420,7 +2436,8 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
         :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
         :param missing_values: list of missing values
         :param axis_param: axis to apply the median
-        :param field: field to apply the median
+        :param field_in: field to apply the median
+        :param field_out: field to apply the median
 
     Returns:
         :return: True if the special type median is applied correctly
@@ -2692,9 +2709,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
 
 def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                      special_type_input: SpecialType, belong_op_in: Belong, belong_op_out: Belong,
-                                      data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                      axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
+                               special_type_input: SpecialType, belong_op_in: Belong, belong_op_out: Belong,
+                               data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
+                               axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type closest is applied correctly when the input and output dataframes when belong_op_in is Belong
     params:
@@ -3024,7 +3041,8 @@ def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dict
     :param special_type_input: (SpecialType) Special type to apply the most frequent
     :param missing_values: (list) List of missing values
     :param axis_param: (int) Axis to apply the most frequent
-    :param field: (str) Field to apply the most frequent
+    :param field_in: (str) Field to apply the most frequent
+    :param field_out: (str) Field to apply the most frequent
     :param belong_op_out: (Belong) Then condition to check the invariant
 
     :return: True if the special type most frequent is applied correctly, False otherwise
@@ -3263,7 +3281,8 @@ def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionar
     :param special_type_input: (SpecialType) Special type to apply the previous
     :param missing_values: (list) List of missing values
     :param axis_param: (int) Axis to apply the previous
-    :param field: (str) Field to apply the previous
+    :param field_in: (str) Field to apply the previous
+    :param field_out: (str) Field to apply the previous
     :param belong_op_out: (Belong) Then condition to check the invariant
 
     :return: True if the derived type previous value is applied correctly, False otherwise
@@ -3509,7 +3528,8 @@ def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_ou
     :param special_type_input: (SpecialType) Special type to apply the next
     :param missing_values: (list) List of missing values
     :param axis_param: (int) Axis to apply the next
-    :param field: (str) Field to apply the next
+    :param field_in: (str) Field to apply the next
+    :param field_out: (str) Field to apply the next
     :param belong_op_out: (Belong) Belong condition to check the invariant
 
     :return: True if the derived type next value is applied correctly, False otherwise
@@ -3758,7 +3778,8 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
     :param belong_op_out: belong operator condition for the else block of the invariant
     :param axis_param: axis to apply the derived type. If axis_param is None, the derived type is applied to the whole dataframe.
     If axis_param is 0, the derived type is applied to each column. If axis_param is 1, the derived type is applied to each row.
-    :param field: field to apply the derived type.
+    :param field_in: field to apply the derived type.
+    :param field_out: field to apply the derived type.
 
     :return: True if the derived type is applied correctly to the outliers, False otherwise
     """
