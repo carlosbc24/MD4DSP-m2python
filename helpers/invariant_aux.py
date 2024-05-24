@@ -9,7 +9,7 @@ from helpers.logger import print_and_log
 
 
 def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                                  fix_value_input, belong_op_out: Belong, axis_param: int, field: str) -> bool:
+                                  fix_value_input, belong_op_out: Belong, axis_param: int, field_in: str, field_out: str) -> bool:
     """
     Check if the most frequent value is applied correctly on the fix input value
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -33,7 +33,7 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
                 most_frequent_value = row.value_counts().idxmax()
@@ -88,29 +88,29 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.loc[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
 
-        elif field in data_dictionary_in.columns:
-            most_frequent_value = data_dictionary_in[field].value_counts().idxmax()
-            for idx, value in data_dictionary_in[field].items():
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
+            most_frequent_value = data_dictionary_in[field_in].value_counts().idxmax()
+            for idx, value in data_dictionary_in[field_in].items():
                 if value == fix_value_input:
-                    if data_dictionary_out.at[idx, field] != most_frequent_value and not (
-                            pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
-                                    data_dictionary_out.at[idx, field])):
+                    if data_dictionary_out.at[idx, field_out] != most_frequent_value and not (
+                            pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(
+                                    data_dictionary_out.at[idx, field_out])):
                         if belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {most_frequent_value} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {most_frequent_value} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {most_frequent_value} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {most_frequent_value} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                            pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
-                                    data_dictionary_out.at[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                            pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(
+                                    data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -120,7 +120,7 @@ def check_fix_value_most_frequent(data_dictionary_in: pd.DataFrame, data_diction
 
 
 def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                             belong_op_out: Belong, axis_param: int, field: str) -> bool:
+                             belong_op_out: Belong, axis_param: int, field_in: str, field_out: str) -> bool:
     """
     Check if the previous value is applied correctly to the fix input value
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -144,7 +144,7 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
                 for column_name, value in row.items():
@@ -208,36 +208,36 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
 
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
+            for idx, value in data_dictionary_in[field_in].items():
                 if value == fix_value_input:
                     if idx == 0:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                     else:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx - 1, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx-1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx-1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx-1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx-1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                         if idx != 0 and (
-                                not pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx - 1, field])):
+                                not pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                                data_dictionary_out.loc[idx - 1, field_out])):
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -247,7 +247,7 @@ def check_fix_value_previous(data_dictionary_in: pd.DataFrame, data_dictionary_o
 
 
 def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                         belong_op_out: Belong, axis_param: int, field: str) -> bool:
+                         belong_op_out: Belong, axis_param: int, field_in: str, field_out: str) -> bool:
     """
     Check if the next value is applied correctly to the fix input value
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -271,7 +271,7 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
                 for column_name, value in row.items():
@@ -336,35 +336,35 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the NEXT operation")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
 
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
+            for idx, value in data_dictionary_in[field_in].items():
                 if value == fix_value_input:
                     if idx == len(data_dictionary_in) - 1:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                     else:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx + 1, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx + 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx + 1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx + 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx + 1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
-                            not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
-                                data_dictionary_out.at[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and (
+                            not pd.isnull(data_dictionary_in.at[idx, field_in]) and pd.isnull(
+                                data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -376,7 +376,7 @@ def check_fix_value_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
 def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                  left_margin: float, right_margin: float, closure_type: Closure,
                                  belong_op_out: Belong,
-                                 axis_param: int = None, field: str = None) -> bool:
+                                 axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the most frequent value is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -402,7 +402,7 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
                 most_frequent_value = row.value_counts().idxmax()
@@ -459,26 +459,26 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.loc[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
 
-        elif field in data_dictionary_in.columns:
-            most_frequent_value = data_dictionary_in[field].value_counts().idxmax()
-            for idx, value in data_dictionary_in[field].items():
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
+            most_frequent_value = data_dictionary_in[field_in].value_counts().idxmax()
+            for idx, value in data_dictionary_in[field_in].items():
                 if check_interval_condition(value, left_margin, right_margin, closure_type):
-                    if data_dictionary_out.at[idx, field] != most_frequent_value:
+                    if data_dictionary_out.at[idx, field_out] != most_frequent_value:
                         if belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {most_frequent_value} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {most_frequent_value} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_out == Belong.NOTBELONG:
                             result = True
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
-                            not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
-                                data_dictionary_out.at[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and (
+                            not pd.isnull(data_dictionary_in.at[idx, field_in]) and pd.isnull(
+                                data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -490,7 +490,7 @@ def check_interval_most_frequent(data_dictionary_in: pd.DataFrame, data_dictiona
 def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                             left_margin: float, right_margin: float, closure_type: Closure,
                             belong_op_out: Belong = Belong.BELONG,
-                            axis_param: int = None, field: str = None) -> bool:
+                            axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the previous value is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -516,7 +516,7 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
                 for column_name, value in row.items():
@@ -587,37 +587,37 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
 
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
+            for idx, value in data_dictionary_in[field_in].items():
                 if check_interval_condition(value, left_margin, right_margin, closure_type):
                     if idx == 0:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                     else:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field] and (
-                                    not pd.isnull(data_dictionary_in.loc[idx - 1, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx - 1, field_in] and (
+                                    not pd.isnull(data_dictionary_in.loc[idx - 1, field_in]) and pd.isnull(
+                                data_dictionary_out.loc[idx, field_out])):
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx-1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx-1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx-1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx-1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and (
-                                    not pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
-                                data_dictionary_out.at[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and (
+                                    not pd.isnull(data_dictionary_in.at[idx, field_in]) and pd.isnull(
+                                data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -629,7 +629,7 @@ def check_interval_previous(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                         left_margin: float, right_margin: float, closure_type: Closure,
                         belong_op_out: Belong = Belong.BELONG,
-                        axis_param: int = None, field: str = None) -> bool:
+                        axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the next value is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in when belong_op_in is always BELONG
@@ -655,7 +655,7 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param == 1:  # Applies in a row level
             for row_index, row in data_dictionary_in.iterrows():
                 for column_name, value in row.items():
@@ -724,37 +724,37 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         else:  # Applies at the dataframe level
             raise ValueError("The axis cannot be None when applying the NEXT operation")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
 
-        elif field in data_dictionary_in.columns:
-            for idx, value in data_dictionary_in[field].items():
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
+            for idx, value in data_dictionary_in[field_in].items():
                 if check_interval_condition(value, left_margin, right_margin, closure_type):
                     if idx == len(data_dictionary_in) - 1:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                     else:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field] and (
-                                     not pd.isnull(data_dictionary_in.loc[idx + 1, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx + 1, field_in] and (
+                                     not pd.isnull(data_dictionary_in.loc[idx + 1, field_in]) and pd.isnull(
+                                data_dictionary_out.loc[idx, field_out])):
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx + 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx + 1, field_out]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx + 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx + 1, field_out]} but is: {data_dictionary_out.at[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                                     pd.isnull(data_dictionary_in.at[idx, field]) and pd.isnull(
-                                data_dictionary_out.at[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                     pd.isnull(data_dictionary_in.at[idx, field_in]) and pd.isnull(
+                                data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.iloc[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.iloc[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -765,7 +765,7 @@ def check_interval_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 
 def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                   fix_value_input, belong_op_out: Belong, axis_param: int = None,
-                                  field: str = None) -> bool:
+                                  field_in: str = None, field_out: str = None) -> bool:
     """
         Check if the interpolation is applied correctly to the fix value input when the input and output dataframe
         when belong_op_in is BELONG and belong_op_out is BELONG or NOTBELONG
@@ -781,7 +781,7 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
             :return: True if the interpolation is applied correctly to the fix value input
     """
 
-    if axis_param is None and field is None:
+    if axis_param is None and field_in is None:
         raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
     result = None
@@ -793,7 +793,7 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
     keep_no_trans_result = True
 
     data_dictionary_in_copy = data_dictionary_in.copy()
-    if field is None:
+    if field_in is None:
         if axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -836,28 +836,28 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("The field is not numeric")
 
-        data_dictionary_in_copy[field] = (data_dictionary_in[field].apply(lambda x: np.nan if x == fix_value_input else x).
+        data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x == fix_value_input else x).
                                          interpolate(method='linear', limit_direction='both'))
 
         for idx in data_dictionary_in.index:
-            if data_dictionary_in.at[idx, field] == fix_value_input:
-                if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
+            if data_dictionary_in.at[idx, field_in] == fix_value_input:
+                if data_dictionary_out.at[idx, field_out] != data_dictionary_in_copy.at[idx, field_in]:
                     if belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:
-                if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
+                if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not(pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -867,11 +867,11 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
 
 
 def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                         belong_op_out: Belong, axis_param: int = None, field: str = None) -> bool:
+                         belong_op_out: Belong, axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type mean is applied correctly when the input and output dataframes
     when belong_op_in and belong_op_out are BELONG
-    params::
+    params:
         :param data_dictionary_in: dataframe with the data before the mean
         :param data_dictionary_out: dataframe with the data after the mean
         :param fix_value_input: fix value to apply the mean
@@ -890,7 +890,7 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
@@ -958,28 +958,28 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
         # Check the data_dictionary_out positions with missing values have been replaced with the mean
-        mean = data_dictionary_in[field].mean()
-        for idx, value in data_dictionary_in[field].items():
+        mean = data_dictionary_in[field_in].mean()
+        for idx, value in data_dictionary_in[field_in].items():
             if value == fix_value_input:
-                if data_dictionary_out.at[idx, field] != mean:
+                if data_dictionary_out.at[idx, field_out] != mean:
                     if belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:
-                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                                pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
-                                data_dictionary_out.at[idx, field])):
+                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(
+                                data_dictionary_out.at[idx, field_out])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -988,11 +988,12 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
         return True if result else False
 
 
-def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_input, belong_op_out, axis_param, field):
+def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
+                           belong_op_out: Belong, axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the median is applied correctly to the fix input value when the input and output dataframes
     when belong_op_in and belong_op_out are BELONG
-    params::
+    params:
         :param data_dictionary_in: dataframe with the data before the median
         :param data_dictionary_out: dataframe with the data after the median
         :param fix_value_input: fix value to apply the median
@@ -1011,7 +1012,7 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
@@ -1075,29 +1076,29 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         # Check the data_dictionary_out positions with missing values have been replaced with the median
-        median = data_dictionary_in[field].median()
-        for idx, value in data_dictionary_in[field].items():
+        median = data_dictionary_in[field_in].median()
+        for idx, value in data_dictionary_in[field_in].items():
             if value == fix_value_input:
-                if data_dictionary_out.at[idx, field] != median:
+                if data_dictionary_out.at[idx, field_out] != median:
                     if belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:
-                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                                pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
-                                data_dictionary_out.at[idx, field])):
+                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(
+                                data_dictionary_out.at[idx, field_out])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -1107,7 +1108,7 @@ def check_fix_value_median(data_dictionary_in, data_dictionary_out, fix_value_in
 
 
 def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame, fix_value_input,
-                            belong_op_out: Belong, axis_param: int = None, field: str = None) -> bool:
+                            belong_op_out: Belong, axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
         Check if the closest is applied correctly to the fix input value
         when the input and output dataframes when belong_op_in is Belong
@@ -1130,7 +1131,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
             # Flatten the DataFrame into a single series of values
@@ -1217,36 +1218,36 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {row_idx} and column: {col_name} value should be: {data_dictionary_in.at[row_idx, col_name]} but is: {data_dictionary_out.loc[row_idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         # Flatten the column into a list of values
-        flattened_values = data_dictionary_in[field].values.flatten().tolist()
+        flattened_values = data_dictionary_in[field_in].values.flatten().tolist()
         # Find the closest numeric value to the fix value in the column
         closest_value = find_closest_value(flattened_values, fix_value_input)
         # Replace the missing values with the closest numeric values in the column
         for i in range(len(data_dictionary_in.index)):
-            current_value = data_dictionary_in[field].iloc[i]
+            current_value = data_dictionary_in[field_in].iloc[i]
             if current_value == fix_value_input:
-                if data_dictionary_out[field].iloc[i] != closest_value:
+                if data_dictionary_out[field_out].iloc[i] != closest_value:
                     if belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {i} and column: {field} value should be: {closest_value} but is: {data_dictionary_out.loc[i, field]}")
+                        print_and_log(f"Error in row: {i} and column: {field_out} value should be: {closest_value} but is: {data_dictionary_out.loc[i, field_out]}")
                     elif belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {i} and column: {field} value should be: {closest_value} but is: {data_dictionary_out.loc[i, field]}")
+                        print_and_log(f"Row: {i} and column: {field_out} value should be: {closest_value} but is: {data_dictionary_out.loc[i, field_out]}")
             else:
-                if pd.isnull(data_dictionary_in[field].iloc[i]):
+                if pd.isnull(data_dictionary_in[field_in].iloc[i]):
                     raise ValueError(
                         "Error: it's not possible to apply the closest operation to the null values")
-                if (data_dictionary_out[field].iloc[i] != data_dictionary_in[field].iloc[i]) and not (
-                        pd.isnull(data_dictionary_in[field].iloc[i]) or pd.isnull(
-                        data_dictionary_out[field].iloc[i])):
+                if (data_dictionary_out[field_out].iloc[i] != data_dictionary_in[field_in].iloc[i]) and not (
+                        pd.isnull(data_dictionary_in[field_in].iloc[i]) or pd.isnull(
+                        data_dictionary_out[field_out].iloc[i])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {i} and column: {field} value should be: {data_dictionary_in[field].iloc[i]} but is: {data_dictionary_out.loc[i, field]}")
+                    print_and_log(f"Error in row: {i} and column: {field_out} value should be: {data_dictionary_in[field_in].iloc[i]} but is: {data_dictionary_out.loc[i, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -1258,7 +1259,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                  left_margin: float, right_margin: float, closure_type: Closure,
                                  belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                                 field: str = None) -> bool:
+                                 field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type interpolation is applied correctly when the input and output dataframes when belong_op_in is BELONG and belong_op_out is NOTBELONG
     params:
@@ -1275,7 +1276,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
     Returns:
         :return: True if the special type interpolation is applied correctly
     """
-    if axis_param is None and field is None:
+    if axis_param is None and field_in is None:
         raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
     result = None
@@ -1287,7 +1288,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
     keep_no_trans_result = True
 
     data_dictionary_in_copy = data_dictionary_in.copy()
-    if field is None:
+    if field_in is None:
         if axis_param == 0:
             for col in data_dictionary_in.columns:
                 if np.issubdtype(data_dictionary_in[col].dtype, np.number):
@@ -1360,45 +1361,45 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("The field is not numeric")
 
-        data_dictionary_in_copy[field] = data_dictionary_in_copy[field].apply(
+        data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].apply(
             lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
-        data_dictionary_in_copy[field] = data_dictionary_in_copy[field].interpolate(method='linear',
+        data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].interpolate(method='linear',
                                                                                       limit_direction='both')
         # For each index in the column
         for idx in data_dictionary_in.index:
             # Verify if the value is NaN in the original dataframe
-            if pd.isnull(data_dictionary_in.at[idx, field]):
+            if pd.isnull(data_dictionary_in.at[idx, field_in]):
                 # Replace the value with the corresponding one from dataDictionary_copy_copy
-                data_dictionary_in_copy.at[idx, field] = data_dictionary_in.at[idx, field]
+                data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in.at[idx, field_in]
 
         # For each index in the column
         for idx in data_dictionary_in.index:
             # Verify if the value is NaN in the original dataframe
-            if pd.isnull(data_dictionary_in.at[idx, field]):
+            if pd.isnull(data_dictionary_in.at[idx, field_in]):
                 # Replace the value with the corresponding one from data_dictionary_in
-                data_dictionary_in_copy.at[idx, field] = data_dictionary_in.at[idx, field]
+                data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in.at[idx, field_in]
 
         for idx in data_dictionary_in.index:
-            if check_interval_condition(data_dictionary_in.at[idx, field], left_margin, right_margin, closure_type):
-                if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
+            if check_interval_condition(data_dictionary_in.at[idx, field_in], left_margin, right_margin, closure_type):
+                if data_dictionary_out.at[idx, field_out] != data_dictionary_in_copy.at[idx, field_in]:
                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:
-                if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not (
-                        pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(
-                    data_dictionary_out.at[idx, field])):
+                if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not (
+                        pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(
+                    data_dictionary_out.at[idx, field_out])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -1410,7 +1411,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
 def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                         left_margin: float, right_margin: float, closure_type: Closure,
                         belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                        field: str = None) -> bool:
+                        field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the mean is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in
@@ -1437,7 +1438,7 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
@@ -1505,27 +1506,27 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
         # Check the data_dictionary_out positions with missing values have been replaced with the mean
-        mean = data_dictionary_in[field].mean()
-        for idx, value in data_dictionary_in[field].items():
-            if check_interval_condition(data_dictionary_in.at[idx, field], left_margin, right_margin, closure_type):
-                if data_dictionary_out.at[idx, field] != mean:
+        mean = data_dictionary_in[field_in].mean()
+        for idx, value in data_dictionary_in[field_in].items():
+            if check_interval_condition(data_dictionary_in.at[idx, field_in], left_margin, right_margin, closure_type):
+                if data_dictionary_out.at[idx, field_out] != mean:
                     if belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:
-                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                        pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
+                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                        pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -1537,7 +1538,7 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                           left_margin: float, right_margin: float, closure_type: Closure,
                           belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                          field: str = None) -> bool:
+                          field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the median is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in
@@ -1564,7 +1565,7 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
@@ -1632,27 +1633,27 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
         # Check the data_dictionary_out positions with missing values have been replaced with the median
-        median = data_dictionary_in[field].median()
-        for idx, value in data_dictionary_in[field].items():
-            if check_interval_condition(data_dictionary_in.at[idx, field], left_margin, right_margin, closure_type):
-                if data_dictionary_out.at[idx, field] != median:
+        median = data_dictionary_in[field_in].median()
+        for idx, value in data_dictionary_in[field_in].items():
+            if check_interval_condition(data_dictionary_in.at[idx, field_in], left_margin, right_margin, closure_type):
+                if data_dictionary_out.at[idx, field_out] != median:
                     if belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:
-                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                        pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
+                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                        pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -1664,7 +1665,7 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
 def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                            left_margin: float, right_margin: float, closure_type: Closure,
                            belong_op_in: Belong, belong_op_out: Belong, axis_param: int = None,
-                           field: str = None) -> bool:
+                           field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the closest is applied correctly on the interval
     to the data_dictionary_out respect to the data_dictionary_in
@@ -1691,7 +1692,7 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
@@ -1790,14 +1791,14 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
                             keep_no_trans_result = False
                             print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         # Flatten the column into a list of values
-        flattened_values = data_dictionary_in[field].values.flatten().tolist()
+        flattened_values = data_dictionary_in[field_in].values.flatten().tolist()
 
         # Create a dictionary to store the closest value for each value in the interval
         closest_values = {}
@@ -1812,20 +1813,20 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
                     closest_values[value] = find_closest_value(flattened_values, value)
 
         # Check if the closest values have been replaced in the data_dictionary_out
-        for idx, value in data_dictionary_in[field].items():
-            if check_interval_condition(data_dictionary_in.at[idx, field], left_margin, right_margin, closure_type):
-                if data_dictionary_out.at[idx, field] != closest_values[value]:
+        for idx, value in data_dictionary_in[field_in].items():
+            if check_interval_condition(data_dictionary_in.at[idx, field_in], left_margin, right_margin, closure_type):
+                if data_dictionary_out.at[idx, field_out] != closest_values[value]:
                     if belong_op_out == Belong.BELONG:
                         result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {closest_values[value]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {closest_values[value]} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif belong_op_out == Belong.NOTBELONG:
                         result = True
-                        print_and_log(f"Row: {idx} and column: {field} value should be: {closest_values[value]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {closest_values[value]} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:
-                if (data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]) and not (
-                        pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
+                if (data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]) and not (
+                        pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
                     keep_no_trans_result = False
-                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     # Checks that the not transformed cells are not modified 
     if keep_no_trans_result == False:
@@ -1838,7 +1839,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                      special_type_input: SpecialType,
                                      belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
                                      data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                     axis_param: int = None, field: str = None) -> bool:
+                                     axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type interpolation is applied correctly when the input and output dataframe
     when belong_op_in is BELONG and belong_op_out is BELONG or NOTBELONG
@@ -1865,7 +1866,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
     keep_no_trans_result = True
 
     data_dictionary_in_copy = data_dictionary_in.copy()
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -2033,82 +2034,82 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 keep_no_trans_result = False
                                 print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("The field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
-            data_dictionary_in_copy[field] = (data_dictionary_in[field].apply(lambda x: np.nan if x in missing_values else x).
+            data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x in missing_values else x).
                                              interpolate(method='linear', limit_direction='both'))
 
             for idx in data_dictionary_in.index:
-                if data_dictionary_in.at[idx, field] in missing_values or pd.isnull(
-                        data_dictionary_in.at[idx, field]):
-                    if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
+                if data_dictionary_in.at[idx, field_in] in missing_values or pd.isnull(
+                        data_dictionary_in.at[idx, field_in]):
+                    if data_dictionary_out.at[idx, field_out] != data_dictionary_in_copy.at[idx, field_in]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
+                    if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not(pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
         elif special_type_input == SpecialType.INVALID:
-            data_dictionary_in_copy[field] = (data_dictionary_in[field].apply(lambda x: np.nan if x in missing_values
+            data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x in missing_values
                 else x).interpolate(method='linear', limit_direction='both'))
 
             # For each index in the column
             for idx in data_dictionary_in.index:
                 # Verify if the value is NaN in the original dataframe
-                if pd.isnull(data_dictionary_in.at[idx, field]):
+                if pd.isnull(data_dictionary_in.at[idx, field_in]):
                     # Replace the value with the corresponding one from dataDictionary_copy_copy
-                    data_dictionary_in_copy.at[idx, field] = data_dictionary_in.at[idx, field]
+                    data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in.at[idx, field_in]
 
             for idx in data_dictionary_in_copy.index:
-                if data_dictionary_in.at[idx, field] in missing_values:
-                    if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
+                if data_dictionary_in.at[idx, field_in] in missing_values:
+                    if data_dictionary_out.at[idx, field_out] != data_dictionary_in_copy.at[idx, field_in]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
+                    if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not(pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
         elif special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    data_dictionary_in_copy.at[idx, field] = np.NaN
-            data_dictionary_in_copy[field] = data_dictionary_in_copy[field].interpolate(method='linear', limit_direction='both')
+            for idx, value in data_dictionary_in[field_in].items():
+                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
+                    data_dictionary_in_copy.at[idx, field_in] = np.NaN
+            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].interpolate(method='linear', limit_direction='both')
 
             # For each index in the column
             for idx in data_dictionary_in.index:
                 # Verify if the value is NaN in the original dataframe
-                if pd.isnull(data_dictionary_in.at[idx, field]):
+                if pd.isnull(data_dictionary_in.at[idx, field_in]):
                     # Replace the value with the corresponding one from dataDictionary_copy_copy
-                    data_dictionary_in_copy.at[idx, field] = data_dictionary_in.at[idx, field]
+                    data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in.at[idx, field_in]
 
             for idx in data_dictionary_outliers_mask.index:
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    if data_dictionary_out.at[idx, field] != data_dictionary_in_copy.at[idx, field]:
+                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
+                    if data_dictionary_out.at[idx, field_out] != data_dictionary_in_copy.at[idx, field_in]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in_copy.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if (data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field]) and not(pd.isnull(data_dictionary_out.at[idx, field]) or pd.isnull(data_dictionary_out.at[idx, field])):
+                    if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not(pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False
@@ -2120,10 +2121,10 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                             special_type_input: SpecialType,
                             belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
                             data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                            axis_param: int = None, field: str = None) -> bool:
+                            axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type mean is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are BELONG
-    params::
+    params:
         :param data_dictionary_in: dataframe with the data before the mean
         :param data_dictionary_out: dataframe with the data after the mean
         :param special_type_input: special type to apply the mean
@@ -2145,7 +2146,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -2338,64 +2339,64 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 keep_no_trans_result = False
                                 print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            mean = data_dictionary_in[field].mean()
-            for idx, value in data_dictionary_in[field].items():
+            mean = data_dictionary_in[field_in].mean()
+            for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
-                    if data_dictionary_out.at[idx, field] != mean:
+                    if data_dictionary_out.at[idx, field_out] != mean:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
         if special_type_input == SpecialType.INVALID:
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            mean = data_dictionary_in[field].mean()
-            for idx, value in data_dictionary_in[field].items():
+            mean = data_dictionary_in[field_in].mean()
+            for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
-                    if data_dictionary_out.at[idx, field] != mean:
+                    if data_dictionary_out.at[idx, field_out] != mean:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                            pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                        data_dictionary_out.loc[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                            pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                        data_dictionary_out.loc[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
         if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    mean = data_dictionary_in[field].mean()
-                    if data_dictionary_out.at[idx, field] != mean:
+            for idx, value in data_dictionary_in[field_in].items():
+                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
+                    mean = data_dictionary_in[field_in].mean()
+                    if data_dictionary_out.at[idx, field_out] != mean:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {mean} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {mean} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                            pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                        data_dictionary_out.loc[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                            pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                        data_dictionary_out.loc[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False
@@ -2407,10 +2408,10 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                               special_type_input: SpecialType,
                               belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
                               data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                              axis_param: int = None, field: str = None) -> bool:
+                              axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type median is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are BELONG
-    params::
+    params:
         :param data_dictionary_in: dataframe with the data before the median
         :param data_dictionary_out: dataframe with the data after the median
         :param special_type_input: special type to apply the median
@@ -2432,7 +2433,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -2626,63 +2627,63 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 keep_no_trans_result = False
                                 print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
             # Check the data_dictionary_out positions with missing values have been replaced with the median
-            median = data_dictionary_in[field].median()
-            for idx, value in data_dictionary_in[field].items():
+            median = data_dictionary_in[field_in].median()
+            for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
-                    if data_dictionary_out.at[idx, field] != median:
+                    if data_dictionary_out.at[idx, field_out] != median:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
         if special_type_input == SpecialType.INVALID:
             # Check the data_dictionary_out positions with missing values have been replaced with the median
-            median = data_dictionary_in[field].median()
-            for idx, value in data_dictionary_in[field].items():
+            median = data_dictionary_in[field_in].median()
+            for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
-                    if data_dictionary_out.at[idx, field] != median:
+                    if data_dictionary_out.at[idx, field_out] != median:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                            pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                        data_dictionary_out.loc[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                            pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                        data_dictionary_out.loc[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
         if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_in[field].items():
-                if data_dictionary_outliers_mask.at[idx, field] == 1:
-                    median = data_dictionary_in[field].median()
-                    if data_dictionary_out.at[idx, field] != median:
+            for idx, value in data_dictionary_in[field_in].items():
+                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
+                    median = data_dictionary_in[field_in].median()
+                    if data_dictionary_out.at[idx, field_out] != median:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
-                            print_and_log(f"Row: {idx} and column: {field} value should be: {median} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else:
-                    if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                            pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(data_dictionary_out.loc[idx, field])):
+                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                            pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(data_dictionary_out.loc[idx, field_out])):
                         keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False
@@ -2693,10 +2694,10 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                       special_type_input: SpecialType, belong_op_in: Belong, belong_op_out: Belong,
                                       data_dictionary_outliers_mask: pd.DataFrame = None, missing_values: list = None,
-                                      axis_param: int = None, field: str = None) -> bool:
+                                      axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type closest is applied correctly when the input and output dataframes when belong_op_in is Belong
-    params::
+    params:
         :param data_dictionary_in: dataframe with the data before the closest
         :param data_dictionary_out: dataframe with the data after the closest
         :param special_type_input: special type to apply the closest
@@ -2705,7 +2706,8 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
         :param data_dictionary_outliers_mask: dataframe with the mask of the outliers
         :param missing_values: list of missing values
         :param axis_param: axis to apply the closest
-        :param field: field to apply the closest
+        :param field_in: field to apply the closest
+        :param field_out: field to apply the closest
 
     Returns:
         :return: True if the special type closest is applied correctly
@@ -2718,21 +2720,18 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             if axis_param is None:
                 only_numbers_df=data_dictionary_in.select_dtypes(include=[np.number])
                 # Flatten the DataFrame into a single series of values
                 flattened_values = only_numbers_df.values.flatten().tolist()
-
                 # Create a dictionary to store the closest value for each missing value
                 closest_values = {}
-
                 # For each missing value, find the closest numeric value in the flattened series
                 for missing_value in missing_values:
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
-
                 # Replace the missing values with the closest numeric values
                 for i in range(len(data_dictionary_in.index)):
                     for j in range(len(data_dictionary_in.columns)):
@@ -2936,56 +2935,52 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 keep_no_trans_result = False
                                 print_and_log(f"Error in row: {row_idx} and column: {col_name} value should be: {data_dictionary_in.at[row_idx, col_name]} but is: {data_dictionary_out.loc[row_idx, col_name]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             # Get the missing values in the current column
-            missing_values_in_col = [val for val in missing_values if val in data_dictionary_in[field].values]
-
+            missing_values_in_col = [val for val in missing_values if val in data_dictionary_in[field_in].values]
             # If there are no missing values in the column, skip the rest of the loop
-            if missing_values_in_col or pd.isnull(data_dictionary_in[field]).any():
+            if missing_values_in_col or pd.isnull(data_dictionary_in[field_in]).any():
                 # Flatten the column into a list of values
-                flattened_values = data_dictionary_in[field].values.flatten().tolist()
-
+                flattened_values = data_dictionary_in[field_in].values.flatten().tolist()
                 # Create a dictionary to store the closest value for each missing value
                 closest_values = {}
-
                 # For each missing value IN the column (more efficient), find the closest numeric value in the flattened series
                 for missing_value in missing_values_in_col:
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
-
                 # Replace the missing values with the closest numeric values in the column
                 for i in range(len(data_dictionary_in.index)):
-                    current_value = data_dictionary_in.at[i, field]
+                    current_value = data_dictionary_in.at[i, field_in]
                     if current_value in closest_values:
-                        if data_dictionary_out.at[i, field] != closest_values[current_value]:
+                        if data_dictionary_out.at[i, field_out] != closest_values[current_value]:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {i} and column: {field} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field]}")
+                                print_and_log(f"Error in row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {i} and column: {field} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field]}")
+                                print_and_log(f"Row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
                     else:
-                        if pd.isnull(data_dictionary_in.at[i, field]) and special_type_input == SpecialType.MISSING:
+                        if pd.isnull(data_dictionary_in.at[i, field_in]) and special_type_input == SpecialType.MISSING:
                                 raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                        if (data_dictionary_out.at[i, field] != data_dictionary_in.at[i, field]) and not(pd.isnull(data_dictionary_in.loc[i, field]) or pd.isnull(data_dictionary_out.loc[i, field])):
+                        if (data_dictionary_out.at[i, field_out] != data_dictionary_in.at[i, field_in]) and not(pd.isnull(data_dictionary_in.loc[i, field_in]) or pd.isnull(data_dictionary_out.loc[i, field_out])):
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {i} and column: {field} value should be: {data_dictionary_in.at[i, field]} but is: {data_dictionary_out.loc[i, field]}")
+                            print_and_log(f"Error in row: {i} and column: {field_out} value should be: {data_dictionary_in.at[i, field_in]} but is: {data_dictionary_out.loc[i, field_out]}")
 
         if special_type_input == SpecialType.OUTLIER:
             # Get the outlier values in the current column
-            outlier_values_in_col = [data_dictionary_in.at[i, field] for i in range(len(data_dictionary_in.index))
-                                     if data_dictionary_outliers_mask.at[i, field] == 1]
+            outlier_values_in_col = [data_dictionary_in.at[i, field_in] for i in range(len(data_dictionary_in.index))
+                                     if data_dictionary_outliers_mask.at[i, field_in] == 1]
 
             # If there are no outlier values in the column, skip the rest of the loop
             if outlier_values_in_col:
                 # Flatten the column into a list of values
-                flattened_values = data_dictionary_in[field].values.flatten().tolist()
+                flattened_values = data_dictionary_in[field_in].values.flatten().tolist()
 
                 # Create a dictionary to store the closest value for each outlier value
                 closest_values = {}
@@ -2997,19 +2992,19 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
 
                 # Replace the outlier values with the closest numeric values in the column
                 for i in range(len(data_dictionary_in.index)):
-                    current_value = data_dictionary_in.at[i, field]
-                    if data_dictionary_outliers_mask.at[i, field] == 1:
-                        if data_dictionary_out.at[i, field] != closest_values[current_value]:
+                    current_value = data_dictionary_in.at[i, field_in]
+                    if data_dictionary_outliers_mask.at[i, field_in] == 1:
+                        if data_dictionary_out.at[i, field_out] != closest_values[current_value]:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {i} and column: {field} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field]}")
+                                print_and_log(f"Error in row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {i} and column: {field} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field]}")
+                                print_and_log(f"Row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
                     else:
-                        if (data_dictionary_out.at[i, field] != data_dictionary_in.at[i, field]) and not(pd.isnull(data_dictionary_in.loc[i, field]) or pd.isnull(data_dictionary_out.loc[i, field])):
+                        if (data_dictionary_out.at[i, field_out] != data_dictionary_in.at[i, field_in]) and not(pd.isnull(data_dictionary_in.loc[i, field_in]) or pd.isnull(data_dictionary_out.loc[i, field_out])):
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {i} and column: {field} value should be: {data_dictionary_in.at[i, field]} but is: {data_dictionary_out.loc[i, field]}")
+                            print_and_log(f"Error in row: {i} and column: {field_out} value should be: {data_dictionary_in.at[i, field_in]} but is: {data_dictionary_out.loc[i, field_out]}")
 
     if keep_no_trans_result == False:
         return False
@@ -3018,7 +3013,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
 
 def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                      special_type_input: SpecialType, belong_op_out: Belong, missing_values: list = None,
-                                     axis_param: int = None, field: str = None) -> bool:
+                                     axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the special type most frequent is applied correctly when the input and output dataframes when belong_op_in is Belong and belong_op_out is BELONG
 
@@ -3042,7 +3037,7 @@ def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dict
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if axis_param == 0:
             if special_type_input == SpecialType.MISSING:
                 for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -3200,57 +3195,55 @@ def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dict
                                 keep_no_trans_result = False
                                 print_and_log(f"Error in row: {row_index} and column: {column_index} value should be: {data_dictionary_in.loc[row_index, column_index]} but is: {data_dictionary_out.loc[row_index, column_index]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
 
-        elif field in data_dictionary_in.columns:
-            most_frequent = data_dictionary_in[field].value_counts().idxmax()
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
+            most_frequent = data_dictionary_in[field_in].value_counts().idxmax()
             if special_type_input == SpecialType.MISSING:
-                for idx, value in data_dictionary_in[field].items():
+                for idx, value in data_dictionary_in[field_in].items():
                     if pd.isnull(value):
-                        if data_dictionary_out.loc[idx, field] != most_frequent:
+                        if data_dictionary_out.loc[idx, field_out] != most_frequent:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field_out]}")
                     elif missing_values is None:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                     else:
                         if value in missing_values:
-                            if data_dictionary_out.loc[idx, field] != most_frequent:
+                            if data_dictionary_out.loc[idx, field_out] != most_frequent:
                                 if belong_op_out == Belong.BELONG:
                                     result = False
-                                    print_and_log(f"Error in row: {idx} and column: {field} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field]}")
+                                    print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field_out]}")
                                 elif belong_op_out == Belong.NOTBELONG:
                                     result = True
-                                    print_and_log(f"Row: {idx} and column: {field} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field]}")
+                                    print_and_log(f"Row: {idx} and column: {field_out} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field_out]}")
                         else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[
-                                idx, field]:
+                            if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                 keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
             else:  # It works for invalid values and outliers
-                for idx, value in data_dictionary_in[field].items():
+                for idx, value in data_dictionary_in[field_in].items():
                     if value in missing_values:
-                        if data_dictionary_out.loc[idx, field] != most_frequent:
+                        if data_dictionary_out.loc[idx, field_out] != most_frequent:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {most_frequent} but is: {data_dictionary_out.loc[idx, field_out]}")
                     else:
-                        if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[
-                            idx, field] and not (
-                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                            data_dictionary_out.loc[idx, field])):
+                        if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                            data_dictionary_out.loc[idx, field_out])):
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False
@@ -3260,7 +3253,7 @@ def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dict
 
 def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                 special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
-                                missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+                                missing_values: list = None, axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the derived type previous value is applied correctly when the input and output dataframes when belong_op_in and belong_op_out are both BELONG
 
@@ -3283,7 +3276,7 @@ def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionar
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         # Check the previous value of the missing values
         if axis_param == 0:
             if special_type_input == SpecialType.MISSING:
@@ -3419,85 +3412,85 @@ def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionar
         elif axis_param is None:
             raise ValueError("The axis cannot be None when applying the PREVIOUS operation")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
 
-        elif field in data_dictionary_in.columns:
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
             if special_type_input == SpecialType.MISSING:
                 if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
+                    for idx, value in data_dictionary_in[field_in].items():
                         if value in missing_values or pd.isnull(value):
                             if idx == 0:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                             else:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx - 1, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx - 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx - 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx - 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx - 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                            if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                 keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                 else: # missing_values is None
-                    for idx, value in data_dictionary_in[field].items():
+                    for idx, value in data_dictionary_in[field_in].items():
                         if pd.isnull(value):
                             if idx == 0:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                             else:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx - 1, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx - 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx - 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx - 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx - 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                            if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                 keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
             elif special_type_input == SpecialType.INVALID:
                 if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
+                    for idx, value in data_dictionary_in[field_in].items():
                         if value in missing_values:
                             if idx == 0:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                             else:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx - 1, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx - 1, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx - 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx - 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx - 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx - 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
+                            if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                                data_dictionary_out.loc[idx, field_out])):
                                 keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False
@@ -3507,7 +3500,7 @@ def check_special_type_previous(data_dictionary_in: pd.DataFrame, data_dictionar
 
 def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                             special_type_input: SpecialType, belong_op_out: Belong = Belong.BELONG,
-                            missing_values: list = None, axis_param: int = None, field: str = None) -> bool:
+                            missing_values: list = None, axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check if the derived type next value is applied correctly when the input and output
     dataframes when belong_op_in and belong_op_out are BELONG
@@ -3529,7 +3522,7 @@ def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         # Define the lambda function to replace the values within missing values by the value of the next position
         if axis_param == 0:
             if special_type_input == SpecialType.MISSING:
@@ -3663,87 +3656,87 @@ def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         elif axis_param is None:
             raise ValueError("The axis cannot be None when applying the NEXT operation")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
 
-        elif field in data_dictionary_in.columns:
+        elif field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
             if special_type_input == SpecialType.MISSING:
                 if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
+                    for idx, value in data_dictionary_in[field_in].items():
                         if value in missing_values or pd.isnull(value):
                             if idx == len(data_dictionary_in) - 1:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                             else:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx + 1, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx + 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx + 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx + 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx + 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(data_dictionary_out.loc[idx, field])):
+                            if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(data_dictionary_out.loc[idx, field_out])):
                                 keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
                 else:
-                    for idx, value in data_dictionary_in[field].items():
+                    for idx, value in data_dictionary_in[field_in].items():
                         if pd.isnull(value):
                             if idx == len(data_dictionary_in) - 1:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                             else:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx + 1, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx + 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx + 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx + 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx + 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(data_dictionary_out.loc[idx, field])):
+                            if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(data_dictionary_out.loc[idx, field_out])):
                                 keep_no_trans_result = False
 
             elif special_type_input == SpecialType.INVALID:
                 if missing_values is not None:
-                    for idx, value in data_dictionary_in[field].items():
+                    for idx, value in data_dictionary_in[field_in].items():
                         if value in missing_values:
                             if idx == len(data_dictionary_in) - 1:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                             else:
-                                if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx + 1, field]:
+                                if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx + 1, field_in]:
                                     if belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx + 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx + 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                                     elif belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx + 1, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                        print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx + 1, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
                         else:
-                            if data_dictionary_out.loc[idx, field] != data_dictionary_in.loc[idx, field] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                                data_dictionary_out.loc[idx, field])):
+                            if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
+                                    pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                                data_dictionary_out.loc[idx, field_out])):
                                 keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.loc[idx, field]} but is: {data_dictionary_out.loc[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.loc[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False
@@ -3754,7 +3747,7 @@ def check_special_type_next(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dictionary_in: pd.DataFrame,
                                         data_dictionary_out: pd.DataFrame, outliers_dataframe_mask: pd.DataFrame,
                                         belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                        axis_param: int = None, field: str = None) -> bool:
+                                        axis_param: int = None, field_in: str = None, field_out: str = None) -> bool:
     """
     Check the derived type to the outliers of a dataframe
     :param derivedTypeOutput: derived type to apply to the outliers
@@ -3777,7 +3770,7 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
 
     keep_no_trans_result = True
 
-    if field is None:
+    if field_in is None:
         if derivedTypeOutput == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 for col in data_dictionary_in.columns:
@@ -3891,60 +3884,60 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
                                 keep_no_trans_result = False
                                 print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.at[idx, col]}")
 
-    elif field is not None:
-        if field not in data_dictionary_in.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
-        elif field in outliers_dataframe_mask.columns:
+        elif field_in in outliers_dataframe_mask.columns:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
-                for idx, value in data_dictionary_in[field].items():
-                    if outliers_dataframe_mask.at[idx, field] == 1:
-                        if data_dictionary_out.at[idx, field] != data_dictionary_in[field].value_counts().idxmax():
+                for idx, value in data_dictionary_in[field_in].items():
+                    if outliers_dataframe_mask.at[idx, field_in] == 1:
+                        if data_dictionary_out.at[idx, field_out] != data_dictionary_in[field_in].value_counts().idxmax():
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in[field].value_counts().idxmax()} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in[field_in].value_counts().idxmax()} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in[field].value_counts().idxmax()} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in[field_in].value_counts().idxmax()} but is: {data_dictionary_out.at[idx, field_out]}")
                     else:
-                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                            data_dictionary_out.loc[idx, field])):
+                        if data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                            data_dictionary_out.loc[idx, field_out])):
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
             elif derivedTypeOutput == DerivedType.PREVIOUS:
-                for idx, value in data_dictionary_in[field].items():
-                    if outliers_dataframe_mask.at[idx, field] == 1 and idx != 0:
-                        if data_dictionary_out.at[idx, field] != data_dictionary_out.at[idx - 1, field]:
+                for idx, value in data_dictionary_in[field_in].items():
+                    if outliers_dataframe_mask.at[idx, field_in] == 1 and idx != 0:
+                        if data_dictionary_out.at[idx, field_out] != data_dictionary_out.at[idx - 1, field_out]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_out.at[idx - 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_out.at[idx - 1, field_out]} but is: {data_dictionary_out.at[idx, field_in]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_out.at[idx - 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_out.at[idx - 1, field_out]} but is: {data_dictionary_out.at[idx, field_in]}")
                     else:
-                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                            data_dictionary_out.loc[idx, field])):
+                        if data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                            data_dictionary_out.loc[idx, field_out])):
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
             elif derivedTypeOutput == DerivedType.NEXT:
-                for idx, value in data_dictionary_in[field].items():
-                    if outliers_dataframe_mask.at[idx, field] == 1 and idx != len(data_dictionary_in) - 1:
-                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx + 1, field]:
+                for idx, value in data_dictionary_in[field_in].items():
+                    if outliers_dataframe_mask.at[idx, field_in] == 1 and idx != len(data_dictionary_in) - 1:
+                        if data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx + 1, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx + 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx + 1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx + 1, field]} but is: {data_dictionary_out.at[idx, field]}")
+                                print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx + 1, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
                     else:
-                        if data_dictionary_out.at[idx, field] != data_dictionary_in.at[idx, field] and not (
-                                pd.isnull(data_dictionary_in.loc[idx, field]) and pd.isnull(
-                            data_dictionary_out.loc[idx, field])):
+                        if data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in] and not (
+                                pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
+                            data_dictionary_out.loc[idx, field_out])):
                             keep_no_trans_result = False
-                            print_and_log(f"Error in row: {idx} and column: {field} value should be: {data_dictionary_in.at[idx, field]} but is: {data_dictionary_out.at[idx, field]}")
+                            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False

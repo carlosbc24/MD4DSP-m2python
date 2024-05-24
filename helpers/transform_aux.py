@@ -94,7 +94,7 @@ def get_outliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: i
 
 def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_dictionary_copy: pd.DataFrame,
                                         data_dictionary_copy_copy: pd.DataFrame,
-                                        axis_param: int = None, field: str = None) -> pd.DataFrame:
+                                        axis_param: int = None, field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the derived type to the outliers of a dataframe
     :param derived_type_output: derived type to apply to the outliers
@@ -104,11 +104,12 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
     the derived type is applied to the whole dataframe.
     If axis_param is 0, the derived type is applied to each column. If axis_param is 1,
     the derived type is applied to each row.
-    :param field: field to apply the derived type.
+    :param field_in: field to apply the derived type.
+    :param field_out: field to store the result of the derived type.
 
     :return: dataframe with the derived type applied to the outliers
     """
-    if field is None:
+    if field_in is None:
         if derived_type_output == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
@@ -148,29 +149,35 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
                             next_col = data_dictionary_copy.columns[data_dictionary_copy.columns.get_loc(col) + 1]
                             data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, next_col]
 
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        elif field in data_dictionary_copy_copy.columns:
-            if derived_type_output == DerivedType.MOSTFREQUENT:
-                for idx, value in data_dictionary_copy[field].items():
-                    if data_dictionary_copy_copy.at[idx, field] == 1:
-                        data_dictionary_copy.at[idx, field] = data_dictionary_copy[field].value_counts().idxmax()
-            elif derived_type_output == DerivedType.PREVIOUS:
-                for idx, value in data_dictionary_copy[field].items():
-                    if data_dictionary_copy_copy.at[idx, field] == 1 and idx != 0:
-                        data_dictionary_copy.at[idx, field] = data_dictionary_copy.at[idx - 1, field]
-            elif derived_type_output == DerivedType.NEXT:
-                for idx, value in data_dictionary_copy[field].items():
-                    if data_dictionary_copy_copy.at[idx, field] == 1 and idx != len(data_dictionary_copy) - 1:
-                        data_dictionary_copy.at[idx, field] = data_dictionary_copy.at[idx + 1, field]
+
+        if derived_type_output == DerivedType.MOSTFREQUENT:
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_copy.at[idx, field_in] == 1:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy[field_in].value_counts().idxmax()
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
+        elif derived_type_output == DerivedType.PREVIOUS:
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != 0:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx - 1, field_in]
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
+        elif derived_type_output == DerivedType.NEXT:
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != len(data_dictionary_copy) - 1:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx + 1, field_in]
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
 
     return data_dictionary_copy
 
 
 def apply_derived_type(special_type_input: SpecialType, derived_type_output: DerivedType,
                        data_dictionary_copy: pd.DataFrame, missing_values: list = None, axis_param: int = None,
-                       field: str = None) -> pd.DataFrame:
+                       field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the derived type to the missing values of a dataframe
     :param special_type_input: special type to apply to the missing values
@@ -181,12 +188,13 @@ def apply_derived_type(special_type_input: SpecialType, derived_type_output: Der
     the derived type is applied to the whole dataframe.
     If axis_param is 0, the derived type is applied to each column. If axis_param is 1,
     the derived type is applied to each row.
-    :param field: field to apply the derived type.
+    :param field_in: field to apply the derived type.
+    :param field_out: field to store the result of the derived type.
 
     :return: dataframe with the derived type applied to the missing values
     """
 
-    if field is None:
+    if field_in is None:
         if derived_type_output == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 if special_type_input == SpecialType.MISSING:
@@ -252,78 +260,78 @@ def apply_derived_type(special_type_input: SpecialType, derived_type_output: Der
             elif axis_param is None:
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
 
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
 
-        elif field in data_dictionary_copy.columns:
-            if derived_type_output == DerivedType.MOSTFREQUENT:
-                most_frequent = data_dictionary_copy[field].value_counts().idxmax()
-                if special_type_input == SpecialType.MISSING:
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: most_frequent if pd.isnull(x) else x)
+        if derived_type_output == DerivedType.MOSTFREQUENT:
+            most_frequent = data_dictionary_copy[field_in].value_counts().idxmax()
+            if special_type_input == SpecialType.MISSING:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                    lambda x: most_frequent if pd.isnull(x) else x)
+            if missing_values is not None: # It works for missing values, invalid values and outliers
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                    lambda x: most_frequent if x in missing_values else x)
+        elif derived_type_output == DerivedType.PREVIOUS:
+            if special_type_input == SpecialType.MISSING:
+                if missing_values is not None:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i - 1]
+                                                if (value in missing_values or pd.isnull(value)) and i > 0 else value
+                                                    for i, value in enumerate(data_dictionary_copy[field_in])],
+                                                        index=data_dictionary_copy[field_in].index)
+                else:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i - 1] if pd.isnull(value)
+                                                and i > 0 else value for i, value in enumerate(data_dictionary_copy[field_in])],
+                                                    index=data_dictionary_copy[field_in].index)
+            elif special_type_input == SpecialType.INVALID:
                 if missing_values is not None: # It works for missing values, invalid values and outliers
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: most_frequent if x in missing_values else x)
-            elif derived_type_output == DerivedType.PREVIOUS:
-                if special_type_input == SpecialType.MISSING:
-                    if missing_values is not None:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i - 1]
-                                                    if (value in missing_values or pd.isnull(value)) and i > 0 else value
-                                                        for i, value in enumerate(data_dictionary_copy[field])],
-                                                            index=data_dictionary_copy[field].index)
-                    else:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i - 1] if pd.isnull(value)
-                                                    and i > 0 else value for i, value in enumerate(data_dictionary_copy[field])],
-                                                        index=data_dictionary_copy[field].index)
-                elif special_type_input == SpecialType.INVALID:
-                    if missing_values is not None: # It works for missing values, invalid values and outliers
-                        data_dictionary_copy[field] = pd.Series(
-                            [np.nan if pd.isnull(value) else data_dictionary_copy[field].iloc[i - 1]
-                            if value in missing_values and i > 0 else value for i, value in
-                             enumerate(data_dictionary_copy[field])], index=data_dictionary_copy[field].index)
+                    data_dictionary_copy[field_out] = pd.Series(
+                        [np.nan if pd.isnull(value) else data_dictionary_copy[field_in].iloc[i - 1]
+                        if value in missing_values and i > 0 else value for i, value in
+                         enumerate(data_dictionary_copy[field_in])], index=data_dictionary_copy[field_in].index)
 
-            elif derived_type_output == DerivedType.NEXT:
-                if special_type_input == SpecialType.MISSING:
-                    if missing_values is not None:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i + 1]
-                                                                if (value in missing_values or pd.isnull(
-                            value)) and i < len(data_dictionary_copy[field]) - 1 else value for i, value in
-                                                                enumerate(data_dictionary_copy[field])],
-                                                               index=data_dictionary_copy[field].index)
-                    else:
-                        data_dictionary_copy[field] = pd.Series([data_dictionary_copy[field].iloc[i + 1]
-                                                                if pd.isnull(value) and i < len(
-                            data_dictionary_copy[field]) - 1 else value for i, value in
-                                                                enumerate(data_dictionary_copy[field])],
-                                                               index=data_dictionary_copy[field].index)
-                elif special_type_input == SpecialType.INVALID:
-                    if missing_values is not None:
-                        data_dictionary_copy[field] = pd.Series(
-                            [np.nan if pd.isnull(value) else data_dictionary_copy[field].iloc[i + 1]
-                            if value in missing_values and i < len(data_dictionary_copy[field]) - 1 else value for
-                             i, value in
-                             enumerate(data_dictionary_copy[field])], index=data_dictionary_copy[field].index)
+        elif derived_type_output == DerivedType.NEXT:
+            if special_type_input == SpecialType.MISSING:
+                if missing_values is not None:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i + 1]
+                                                            if (value in missing_values or pd.isnull(
+                                    value)) and i < len(data_dictionary_copy[field_in]) - 1 else value for i, value in
+                                                            enumerate(data_dictionary_copy[field_in])],
+                                                           index=data_dictionary_copy[field_in].index)
+                else:
+                    data_dictionary_copy[field_out] = pd.Series([data_dictionary_copy[field_in].iloc[i + 1]
+                                                            if pd.isnull(value) and i < len(
+                                                            data_dictionary_copy[field_in]) - 1 else value for i, value in
+                                                            enumerate(data_dictionary_copy[field_in])],
+                                                           index=data_dictionary_copy[field_in].index)
+            elif special_type_input == SpecialType.INVALID:
+                if missing_values is not None:
+                    data_dictionary_copy[field_out] = pd.Series(
+                        [np.nan if pd.isnull(value) else data_dictionary_copy[field_in].iloc[i + 1]
+                        if value in missing_values and i < len(data_dictionary_copy[field_in]) - 1 else value for
+                         i, value in enumerate(data_dictionary_copy[field_in])], index=data_dictionary_copy[field_in].index)
 
     return data_dictionary_copy
 
 
 def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                                data_dictionary_copy_mask: pd.DataFrame = None,
-                               missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                               missing_values: list = None, axis_param: int = None,
+                               field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the interpolation to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
     :param special_type_input: special type to apply to the missing values
     :param missing_values: list of missing values
     :param axis_param: axis to apply the interpolation.
-    :param field: field to apply the interpolation.
+    :param field_in: field to apply the interpolation.
+    :param field_out: field to store the result of the interpolation.
 
     :return: dataframe with the interpolation applied to the missing values
     """
     data_dictionary_copy_copy = data_dictionary_copy.copy()
 
-    if field is None:
+    if field_in is None:
         if axis_param is None:
             raise ValueError("The axis cannot be None when applying the INTERPOLATION operation")
 
@@ -415,39 +423,43 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                             data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy.at[idx, col]
                 data_dictionary_copy_copy = data_dictionary_copy_copy.T
                 return data_dictionary_copy_copy
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_copy[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
             raise ValueError("The field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
-            data_dictionary_copy[field] = data_dictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
-            data_dictionary_copy[field]=data_dictionary_copy[field].interpolate(method='linear', limit_direction='both')
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
+            data_dictionary_copy[field_out]=data_dictionary_copy[field_in].interpolate(method='linear', limit_direction='both')
 
         if special_type_input == SpecialType.INVALID:
-            data_dictionary_copy_copy[field] = data_dictionary_copy[field].apply(lambda x: np.nan if x in missing_values else x)
-            data_dictionary_copy_copy[field] = data_dictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
 
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
-                if pd.isnull(data_dictionary_copy.at[idx, field]):
+                if pd.isnull(data_dictionary_copy.at[idx, field_in]):
                     # Replace the value with the corresponding one from data_dictionary_copy_copy
-                    data_dictionary_copy_copy.at[idx, field] = data_dictionary_copy.at[idx, field]
+                    data_dictionary_copy_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
             return data_dictionary_copy_copy
 
         if special_type_input == SpecialType.OUTLIER:
-            for idx, value in data_dictionary_copy[field].items():
-                if data_dictionary_copy_mask.at[idx, field] == 1:
-                    data_dictionary_copy_copy.at[idx, field] = np.NaN
-            data_dictionary_copy_copy[field] = data_dictionary_copy_copy[field].interpolate(method='linear', limit_direction='both')
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                    data_dictionary_copy_copy.at[idx, field_in] = np.NaN
+                else:
+                    data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
+
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
-                if pd.isnull(data_dictionary_copy.at[idx, field]):
+                if pd.isnull(data_dictionary_copy.at[idx, field_in]):
                     # Replace the value with the corresponding one from data_dictionary_copy_copy
-                    data_dictionary_copy_copy.at[idx, field] = data_dictionary_copy.at[idx, field]
+                    data_dictionary_copy_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
             return data_dictionary_copy_copy
 
     return data_dictionary_copy
@@ -455,7 +467,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
 
 def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                       data_dictionary_copy_mask: pd.DataFrame = None,
-                      missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                      missing_values: list = None, axis_param: int = None,
+                      field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the mean to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -463,12 +476,13 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
     :param data_dictionary_copy_mask: dataframe with the outliers
     :param missing_values: list of missing values
     :param axis_param: axis to apply the mean.
-    :param field: field to apply the mean.
+    :param field_in: field to apply the mean.
+    :param field_out: field to store the result of the mean.
 
     :return: dataframe with the mean applied to the missing values
     """
 
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -548,44 +562,48 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = mean
 
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        elif field in data_dictionary_copy.columns:
-            if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
-                if special_type_input == SpecialType.MISSING:
-                    mean = data_dictionary_copy[field].mean()
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: mean if x in missing_values else x)
-                if special_type_input == SpecialType.INVALID:
-                    mean = data_dictionary_copy[field].mean()
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: mean if x in missing_values else x)
-                if special_type_input == SpecialType.OUTLIER:
-                    mean=data_dictionary_copy[field].mean()
-                    for idx, value in data_dictionary_copy[field].items():
-                        if data_dictionary_copy_mask.at[idx, field] == 1:
-                            data_dictionary_copy.at[idx, field] = mean
-            else:
-                raise ValueError("The field is not numeric")
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
+            raise ValueError("The field is not numeric")
+
+        if special_type_input == SpecialType.MISSING:
+            mean = data_dictionary_copy[field_in].mean()
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                lambda x: mean if x in missing_values else x)
+        if special_type_input == SpecialType.INVALID:
+            mean = data_dictionary_copy[field_in].mean()
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                lambda x: mean if x in missing_values else x)
+        if special_type_input == SpecialType.OUTLIER:
+            mean=data_dictionary_copy[field_in].mean()
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                    data_dictionary_copy.at[idx, field_out] = mean
+                else:
+                    data_dictionary_copy.at[idx, field_out] = value
+
 
     return data_dictionary_copy
 
 
 def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                         data_dictionary_copy_mask: pd.DataFrame = None,
-                        missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                        missing_values: list = None, axis_param: int = None,
+                        field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the median to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
     :param special_type_input: special type to apply to the missing values
     :param missing_values: list of missing values
     :param axis_param: axis to apply the median.
-    :param field: field to apply the median.
+    :param field_in: field to apply the median.
+    :param field_out: field to store the result of the median.
 
     :return: dataframe with the median applied to the missing values
     """
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
@@ -622,8 +640,6 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                 # Replace the values in missing_values (INVALID VALUES) by the median
                 data_dictionary_copy = data_dictionary_copy.apply(
                     lambda col: col.apply(lambda x: median_value if (x in missing_values) else x))
-
-
             elif axis_param == 0:
                 for col in data_dictionary_copy.columns:
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
@@ -654,7 +670,6 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     for idx, value in data_dictionary_copy[col_name].items():
                         if data_dictionary_copy_mask.at[idx, col_name] == 1:
                             data_dictionary_copy.at[idx, col_name] = median_value
-
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
@@ -668,33 +683,35 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     for col in row.index:
                         if data_dictionary_copy_mask.at[idx, col] == 1:
                             data_dictionary_copy.at[idx, col] = median
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
-        elif field in data_dictionary_copy.columns:
-            if np.issubdtype(data_dictionary_copy[field].dtype, np.number):
-                if special_type_input == SpecialType.MISSING:
-                    median = data_dictionary_copy[field].median()
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: median if x in missing_values or pd.isnull(x) else x)
-                if special_type_input == SpecialType.INVALID:
-                    median = data_dictionary_copy[field].median()
-                    data_dictionary_copy[field] = data_dictionary_copy[field].apply(
-                        lambda x: median if x in missing_values else x)
-                if special_type_input == SpecialType.OUTLIER:
-                    median = data_dictionary_copy[field].median()
-                    for idx, value in data_dictionary_copy[field].items():
-                        if data_dictionary_copy_mask.at[idx, field] == 1:
-                            data_dictionary_copy.at[idx, field] = median
-            else:
-                raise ValueError("The field is not numeric")
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
+            raise ValueError("The field is not numeric")
+
+        if special_type_input == SpecialType.MISSING:
+            median = data_dictionary_copy[field_in].median()
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                lambda x: median if x in missing_values or pd.isnull(x) else x)
+        if special_type_input == SpecialType.INVALID:
+            median = data_dictionary_copy[field_in].median()
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
+                lambda x: median if x in missing_values else x)
+        if special_type_input == SpecialType.OUTLIER:
+            median = data_dictionary_copy[field_in].median()
+            for idx, value in data_dictionary_copy[field_in].items():
+                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                    data_dictionary_copy.at[idx, field_out] = median
+                else:
+                    data_dictionary_copy.at[idx, field_out] = value
 
     return data_dictionary_copy
 
 
 def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input: SpecialType,
                          data_dictionary_copy_mask: pd.DataFrame = None,
-                         missing_values: list = None, axis_param: int = None, field: str = None) -> pd.DataFrame:
+                         missing_values: list = None, axis_param: int = None,
+                         field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Apply the closest to the missing values of a dataframe
     :param data_dictionary_copy: dataframe with the data
@@ -702,26 +719,24 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
     :param data_dictionary_copy_mask: dataframe with the outliers mask
     :param missing_values: list of missing values
     :param axis_param: axis to apply the closest value.
-    :param field: field to apply the closest value.
+    :param field_in: field to apply the closest value.
+    :param field_out: field to store the closest value.
 
     :return: dataframe with the closest applied to the missing values
     """
 
-    if field is None:
+    if field_in is None:
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             if axis_param is None:
                 only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
                 # Flatten the DataFrame into a single series of values
                 flattened_values = only_numbers_df.values.flatten().tolist()
-
                 # Create a dictionary to store the closest value for each missing value
                 closest_values = {}
-
                 # For each missing value, find the closest numeric value in the flattened series
                 for missing_value in missing_values:
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
-
                 # Replace the missing values with the closest numeric values
                 for i in range(len(data_dictionary_copy.index)):
                     for col, value in data_dictionary_copy.iloc[i].items():
@@ -738,22 +753,17 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                 for col_name in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
                     # Get the missing values in the current column
                     missing_values_in_col = [val for val in missing_values if val in data_dictionary_copy[col_name].values]
-
                     # If there are no missing values in the column, skip the rest of the loop
                     if not missing_values_in_col:
                         continue
-
                     # Flatten the column into a list of values
                     flattened_values = data_dictionary_copy[col_name].values.flatten().tolist()
-
                     # Create a dictionary to store the closest value for each missing value
                     closest_values = {}
-
                     # For each missing value IN the column (more efficient), find the closest numeric value in the flattened series
                     for missing_value in missing_values_in_col:
                         if missing_value not in closest_values:
                             closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
-
                     # Replace the missing values with the closest numeric values in the column
                     for i in range(len(data_dictionary_copy.index)):
                         current_value = data_dictionary_copy.at[i, col_name]
@@ -769,22 +779,17 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                     # Get the numeric values in the current row
                     numeric_values_in_row = data_dictionary_copy.iloc[row_idx].select_dtypes(
                         include=[np.number]).values.tolist()
-
                     # Get the missing values in the current row
                     missing_values_in_row = [val for val in missing_values if val in numeric_values_in_row]
-
                     # If there are no missing values in the row, skip the rest of the loop
                     if not missing_values_in_row and not pd.isnull(data_dictionary_copy.iloc[row_idx]).any():
                         continue
-
                     # Create a dictionary to store the closest value for each missing value
                     closest_values = {}
-
                     # For each missing value IN the row (more efficient), find the closest numeric value in the numeric values
                     for missing_value in missing_values_in_row:
                         if missing_value not in closest_values:
                             closest_values[missing_value] = find_closest_value(numeric_values_in_row, missing_value)
-
                     # Replace the missing values with the closest numeric values in the row
                     for col_name in data_dictionary_copy.columns:
                         current_value = data_dictionary_copy.at[row_idx, col_name]
@@ -799,10 +804,8 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                 only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
                 # Flatten the DataFrame into a single series of values
                 flattened_values = only_numbers_df.values.flatten().tolist()
-
                 # Create a dictionary to store the closest value for each outlier value
                 closest_values = {}
-
                 # For each outlier value, find the closest numeric value in the flattened series
                 for i in range(len(data_dictionary_copy.index)):
                     for j in range(len(data_dictionary_copy.columns)):
@@ -810,7 +813,6 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                             current_value = data_dictionary_copy.iloc[i, j]
                             if current_value not in closest_values:
                                 closest_values[current_value] = find_closest_value(flattened_values, current_value)
-
                 # Replace the outlier values with the closest numeric values
                 for i in range(len(data_dictionary_copy.index)):
                     for j in range(len(data_dictionary_copy.columns)):
@@ -830,14 +832,11 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                         continue
                     # Flatten the column into a list of values
                     flattened_values = data_dictionary_copy[col_name].values.flatten().tolist()
-
                     # Create a dictionary to store the closest value for each outlier value
                     closest_values = {}
-
                     for outlier_value in outlier_values_in_col:
                         if outlier_value not in closest_values:
                             closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-
                     # Replace the outlier values with the closest numeric values in the column
                     for i in range(len(data_dictionary_copy.index)):
                         current_value = data_dictionary_copy.at[i, col_name]
@@ -849,84 +848,73 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                     # Get the numeric values in the current row
                     numeric_values_in_row = data_dictionary_copy.iloc[row_idx].select_dtypes(
                         include=[np.number]).values.tolist()
-
                     # Get the outlier values in the current row
                     outlier_values_in_row = [data_dictionary_copy.at[row_idx, col_name] for col_name in
                                              data_dictionary_copy.columns
                                              if data_dictionary_copy_mask.at[row_idx, col_name] == 1]
-
                     # If there are no outlier values in the row, skip the rest of the loop
                     if not outlier_values_in_row:
                         continue
-
                     # Create a dictionary to store the closest value for each outlier value
                     closest_values = {}
-
                     # For each outlier value IN the row (more efficient), find the closest numeric value in the numeric values
                     for outlier_value in outlier_values_in_row:
                         if outlier_value not in closest_values:
                             closest_values[outlier_value] = find_closest_value(numeric_values_in_row, outlier_value)
-
                     # Replace the outlier values with the closest numeric values in the row
                     for col_name in data_dictionary_copy.columns:
                         current_value = data_dictionary_copy.at[row_idx, col_name]
                         if data_dictionary_copy_mask.at[row_idx, col_name] == 1:
                             data_dictionary_copy.at[row_idx, col_name] = closest_values[current_value]
 
-    elif field is not None:
-        if field not in data_dictionary_copy.columns:
+    elif field_in is not None:
+        if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_copy[field].dtype, np.number):
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             # Get the missing values in the current column
-            missing_values_in_col = [val for val in missing_values if val in data_dictionary_copy[field].values]
-
+            missing_values_in_col = [val for val in missing_values if val in data_dictionary_copy[field_in].values]
             # If there are no missing values in the column, skip the rest of the loop
-            if missing_values_in_col or pd.isnull(data_dictionary_copy[field]).any():
+            if missing_values_in_col or pd.isnull(data_dictionary_copy[field_in]).any():
                 # Flatten the column into a list of values
-                flattened_values = data_dictionary_copy[field].values.flatten().tolist()
-
+                flattened_values = data_dictionary_copy[field_in].values.flatten().tolist()
                 # Create a dictionary to store the closest value for each missing value
                 closest_values = {}
-
                 # For each missing value IN the column (more efficient), find the closest numeric value in the flattened series
                 for missing_value in missing_values_in_col:
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
-
                 # Replace the missing values with the closest numeric values in the column
                 for i in range(len(data_dictionary_copy.index)):
-                    current_value = data_dictionary_copy.at[i, field]
+                    current_value = data_dictionary_copy.at[i, field_in]
                     if current_value in closest_values:
-                        data_dictionary_copy.at[i, field] = closest_values[current_value]
+                        data_dictionary_copy.at[i, field_out] = closest_values[current_value]
                     else:
-                        if pd.isnull(data_dictionary_copy.at[i, field]) and special_type_input == SpecialType.MISSING:
+                        if pd.isnull(data_dictionary_copy.at[i, field_in]) and special_type_input == SpecialType.MISSING:
                             raise ValueError("Error: it's not possible to apply the closest operation to the null values")
 
         if special_type_input == SpecialType.OUTLIER:
             # Get the outlier values in the current column
-            outlier_values_in_col = [data_dictionary_copy.at[i, field] for i in range(len(data_dictionary_copy.index))
-                                     if data_dictionary_copy_mask.at[i, field] == 1]
-
+            outlier_values_in_col = [data_dictionary_copy.at[i, field_in] for i in range(len(data_dictionary_copy.index))
+                                     if data_dictionary_copy_mask.at[i, field_in] == 1]
             # If there are no outlier values in the column, skip the rest of the loop
             if outlier_values_in_col:
                 # Flatten the column into a list of values
-                flattened_values = data_dictionary_copy[field].values.flatten().tolist()
-
+                flattened_values = data_dictionary_copy[field_in].values.flatten().tolist()
                 # Create a dictionary to store the closest value for each outlier value
                 closest_values = {}
-
                 # For each outlier value IN the column (more efficient), find the closest numeric value in the flattened series
                 for outlier_value in outlier_values_in_col:
                     if outlier_value not in closest_values:
                         closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-
                 # Replace the outlier values with the closest numeric values in the column
                 for i in range(len(data_dictionary_copy.index)):
-                    current_value = data_dictionary_copy.at[i, field]
-                    if data_dictionary_copy_mask.at[i, field] == 1:
-                        data_dictionary_copy.at[i, field] = closest_values[current_value]
+                    current_value = data_dictionary_copy.at[i, field_in]
+                    if data_dictionary_copy_mask.at[i, field_in] == 1:
+                        data_dictionary_copy.at[i, field_out] = closest_values[current_value]
+                    else:
+                        data_dictionary_copy.at[i, field_out] = data_dictionary_copy.at[i, field_in]
 
     return data_dictionary_copy
