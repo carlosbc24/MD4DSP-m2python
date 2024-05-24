@@ -89,7 +89,7 @@ if __name__ == "__main__":
     # invariant_simple_tests.execute_checkInv_MissingValue_MissingValue()
     # invariant_simple_tests.execute_checkInv_Interval_FixValue()
 
-    invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
+    # invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_FixValue_FixValue_ExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests()
     # invariant_tests_with_external_dataset.execute_checkInv_FixValue_NumOp_ExternalDatasetTests()
