@@ -44,4 +44,4 @@ if __name__ == "__main__":
 
     # Calculate execution time for each test block (data_transformations)
     execute_data_transformations_simple_tests()
-    # execute_data_transformations_external_dataset_tests()
+    execute_data_transformations_external_dataset_tests()

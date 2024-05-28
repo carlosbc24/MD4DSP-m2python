@@ -76,6 +76,18 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         test using a small batch of the dataset for the function transform_SpecialValue_NumOp
         execute_WholeDatasetTests_execute_transform_SpecialValue_NumOp_ExternalDataset: execute the data
         transformation test using the whole dataset for the function transform_SpecialValue_NumOp
+        execute_transform_derived_field_ExternalDatasetTests: execute the data transformation test with external
+        dataset for the function transform_derived_field
+        execute_SmallBatchTests_execute_transform_derived_field_ExternalDataset: execute the data transformation
+        test using a small batch of the dataset for the function transform_derived_field
+        execute_WholeDatasetTests_execute_transform_derived_field_ExternalDataset: execute the data transformation
+        test using the whole dataset for the function transform_derived_field
+        execute_transform_filter_columns_ExternalDatasetTests: execute the data transformation test with external
+        dataset for the function transform_filter_columns
+        execute_SmallBatchTests_execute_transform_filter_columns_ExternalDataset: execute the data transformation
+        test using a small batch of the dataset for the function transform_filter_columns
+        execute_WholeDatasetTests_execute_transform_filter_columns_ExternalDataset: execute the data transformation
+        test using the whole dataset for the function transform_filter_columns
     """
 
     def __init__(self):
