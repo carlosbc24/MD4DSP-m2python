@@ -1,11 +1,11 @@
-
 # Importing functions and classes from packages
 import time
-from helpers.logger import set_logger
+
 from helpers.auxiliar import format_duration
+from helpers.logger import set_logger
 from tests.contract_invariants.simple_test import InvariantsSimpleTest
-from tests.contract_pre_post.simple_test import PrePostSimpleTest
 from tests.contract_invariants.tests_spotify_dataset import InvariantsExternalDatasetTests
+from tests.contract_pre_post.simple_test import PrePostSimpleTest
 from tests.contract_pre_post.tests_spotify_dataset import ContractExternalDatasetTests
 
 
@@ -83,23 +83,3 @@ if __name__ == "__main__":
     execute_prepost_external_dataset_tests()
     execute_invariants_simple_tests()
     execute_invariants_external_dataset_tests()
-
-
-    # invariant_simple_tests = InvariantsSimpleTest()
-    # invariant_simple_tests.execute_checkInv_MissingValue_MissingValue()
-    # invariant_simple_tests.execute_checkInv_Interval_FixValue()
-
-    # invariant_tests_with_external_dataset = InvariantsExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_FixValue_FixValue_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_FixValue_NumOp_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_Interval_FixValue_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_Interval_NumOp_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests()
-    # invariant_tests_with_external_dataset.execute_checkInv_MissingValue_MissingValue_ExternalDatasetTests()
-
-
-
