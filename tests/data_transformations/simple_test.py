@@ -58,7 +58,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             self.execute_transform_SpecialValue_DerivedValue,
             self.execute_transform_SpecialValue_NumOp,
             self.execute_transform_derived_field,
-            self.execute_transform_filter_columns
+            self.execute_transform_filter_columns,
+            self.execute_transform_cast_type
         ]
 
         print_and_log("")
@@ -2668,6 +2669,89 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                        columns=columns, belong_op=Belong(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_transform_cast_type(self):
+        """
+        Execute the simple tests of the function transform_cast_type
+        """
+        print_and_log("Testing transform_cast_type Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1 - String to integer
+        datadic = pd.DataFrame(
+            {'A': ['0', '2', '3', '4', '1'], 'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '1', '2']})
+        expected_df = pd.DataFrame(
+            {'A': ['0', '2', '3', '4', '1'], 'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
+             'D': [1, 8, 6, 1, 2]})
+
+        result_df = self.data_transformations.transform_cast_type(data_dictionary=datadic.copy(),
+                                                                  data_type_output=DataType(2), field='D')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2 - String to float
+        datadic = pd.DataFrame(
+            {'A': ['0', '2', '3', '4.57', '1'], 'B': ['2.4', '3', '4', '6', '12'], 'C': ['10.43', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '144.214', '2']})
+        expected_df = pd.DataFrame(
+            {'A': ['0', '2', '3', '4.57', '1'], 'B': ['2.4', '3', '4', '6', '12'], 'C': ['10.43', '1', '3', '3', '0'],
+             'D': [1.0, 8.0, 6.0, 144.214, 2.0]})
+        result_df = self.data_transformations.transform_cast_type(data_dictionary=datadic.copy(),
+                                                                  data_type_output=DataType(6), field='D')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3 - String to date
+        datadic = pd.DataFrame(
+            {'A': ['2021-01-01', '2021-02-02', '2021-03-03', '2021-04-04', '2021-05-05'],
+             'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '1', '2']})
+        expected_df = pd.DataFrame(
+            {'A': [pd.Timestamp('2021-01-01'), pd.Timestamp('2021-02-02'), pd.Timestamp('2021-03-03'),
+                   pd.Timestamp('2021-04-04'), pd.Timestamp('2021-05-05')], 'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '1', '2']})
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_cast_type(data_dictionary=datadic.copy(),
+                                                          data_type_output=DataType(3), field='A')
+        print_and_log("Test Case 3 Passed: expected exception")
+
+        # Caso 4 - String to boolean
+        datadic = pd.DataFrame(
+            {'A': ['True', None, 'True', None, 'True'], 'B': ['2', '3', '4', '6', '12'],
+             'C': ['10', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '1', '2']})
+        expected_df = pd.DataFrame(
+            {'A': [True, False, True, False, True],  'B': ['2', '3', '4', '6', '12'],
+             'C': ['10', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '1', '2']})
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_cast_type(data_dictionary=datadic.copy(),
+                                                          data_type_output=DataType(4), field='A')
+        print_and_log("Test Case 4 Passed: expected exception")
+
+        # Caso 5 - String to double
+        datadic = pd.DataFrame(
+            {'A': ['0', '2', '3', '4', '1'], 'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '1', '2']})
+        expected_df = pd.DataFrame(
+            {'A': [0.0, 2.0, 3.0, 4.0, 1.0], 'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
+             'D': ['1', '8', '6', '1', '2']})
+        result_df = self.data_transformations.transform_cast_type(data_dictionary=datadic.copy(),
+                                                                  data_type_output=DataType(5), field='A')
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")

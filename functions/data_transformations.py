@@ -1021,3 +1021,31 @@ class DataTransformations:
             return data_dictionary.drop(columns=columns, axis=1)
         elif belong_op == Belong.NOTBELONG:
             return data_dictionary[columns]
+
+
+    def transform_cast_type(self,  data_dictionary: pd.DataFrame, data_type_output: DataType, field: str) -> pd.DataFrame:
+        """
+        Execute the data transformation of the CastType relation
+        Args:
+            data_dictionary: dataframe with the data
+            data_type_output: data type of the output column
+            field: field to execute and store the data transformation
+        Returns:
+            pd.DataFrame:
+        """
+        data_dictionary_copy = data_dictionary.copy()
+
+        if field not in data_dictionary.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+        if data_dictionary[field].dtype != 'object' and data_dictionary[field].dtype != 'string':
+            raise ValueError("The field is not categorical")
+
+        if data_type_output == DataType.INTEGER:
+            data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(int)
+        elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
+            data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(float)
+        else:
+            raise ValueError("The data type is not numeric")
+
+        return data_dictionary_copy

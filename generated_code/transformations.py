@@ -1,324 +1,494 @@
-
 import pandas as pd
+
 import functions.data_transformations as data_transformations
-from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataType, DerivedType, Closure
+from helpers.enumerations import SpecialType, DataType, DerivedType, Closure
+
+
 class DataProcessing:
-	def generateDataProcessing(self):
-		transformations=data_transformations.DataTransformations()
-#-----------------New DataProcessing-----------------
-		data_model_impute_in=pd.read_csv('./data_model.csv')
-		data_model_impute_in_transformed=data_model_impute_in.copy()
-		missing_values_list_parameter_derivedValue_impute_mostFrequent=['4']
-		data_model_impute_in_transformed=transformations.transform_special_value_derived_value(data_dictionary=data_model_impute_in_transformed,
-																	  special_type_input=SpecialType(0), derived_type_output=DerivedType(0),
-																	  missing_values=missing_values_list_parameter_derivedValue_impute_mostFrequent,
-																	  axis_param=0, field = 'sex')
-		missing_values_list_parameter_derivedValue_impute_mostFrequent=[]
-		data_model_impute_in_transformed=transformations.transform_special_value_derived_value(data_dictionary=data_model_impute_in_transformed,
-																	  special_type_input=SpecialType(0), derived_type_output=DerivedType(0),
-																	  missing_values=missing_values_list_parameter_derivedValue_impute_mostFrequent,
-																	  axis_param=0, field = 'IRSCHOOL')
-		missing_values_list_parameter_derivedValue_impute_mostFrequent=[]
-		data_model_impute_in_transformed=transformations.transform_special_value_derived_value(data_dictionary=data_model_impute_in_transformed,
-																	  special_type_input=SpecialType(0), derived_type_output=DerivedType(0),
-																	  missing_values=missing_values_list_parameter_derivedValue_impute_mostFrequent,
-																	  axis_param=0, field = 'ETHNICITY')
-		
-		data_model_impute_out=data_model_impute_in_transformed
-		data_model_impute_out.to_csv('./workflow_datasets/data_model_impute_out.csv')
-		
-#-----------------New DataProcessing-----------------
-		data_model_impute_ACADEMIC_INTEREST_2_in=pd.read_csv('./workflow_datasets/data_model_impute_out.csv')
-		data_model_impute_ACADEMIC_INTEREST_2_in_transformed=data_model_impute_ACADEMIC_INTEREST_2_in.copy()
-		missing_values_list_parameter_fixValue_impute_fixValue=[]
-		data_model_impute_ACADEMIC_INTEREST_2_in_transformed=transformations.transform_special_value_fix_value(data_dictionary=data_model_impute_ACADEMIC_INTEREST_2_in_transformed,
-																	  special_type_input=SpecialType(0), fix_value_output='Unknown',
-																	  missing_values=missing_values_list_parameter_fixValue_impute_fixValue,
-								                                      data_type_output = DataType(0),
-																	  axis_param=0, field = 'ACADEMIC_INTEREST_2')
-		missing_values_list_parameter_fixValue_impute_fixValue=[]
-		data_model_impute_ACADEMIC_INTEREST_2_in_transformed=transformations.transform_special_value_fix_value(data_dictionary=data_model_impute_ACADEMIC_INTEREST_2_in_transformed,
-																	  special_type_input=SpecialType(0), fix_value_output='Unknown',
-																	  missing_values=missing_values_list_parameter_fixValue_impute_fixValue,
-								                                      data_type_output = DataType(0),
-																	  axis_param=0, field = 'ACADEMIC_INTEREST_1')
-		
-		data_model_impute_ACADEMIC_INTEREST_2_out=data_model_impute_ACADEMIC_INTEREST_2_in_transformed
-		data_model_impute_ACADEMIC_INTEREST_2_out.to_csv('./workflow_datasets/data_model_impute_out2.csv')
-		
-#-----------------New DataProcessing-----------------
-# 		data_model_impute_mean_in=pd.read_csv('./workflow_datasets/data_model_impute_out2.csv')
-# 		data_model_impute_mean_in_transformed=data_model_impute_mean_in.copy()
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_mean_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_mean_in_transformed,
-# 																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'avg_income')
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_mean_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_mean_in_transformed,
-# 																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'distance')
-#
-# 		data_model_impute_mean_out=data_model_impute_mean_in_transformed
-# 		data_model_impute_mean_out.to_csv('./workflow_datasets/data_model_impute_out3.csv')
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_impute_linear_interpolation_in=pd.read_csv('./workflow_datasets/data_model_impute_out3.csv')
-# 		data_model_impute_linear_interpolation_in_transformed=data_model_impute_linear_interpolation_in.copy()
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_linear_interpolation_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_linear_interpolation_in_transformed,
-# 																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'satscore')
-#
-# 		data_model_impute_linear_interpolation_out=data_model_impute_linear_interpolation_in_transformed
-# 		data_model_impute_linear_interpolation_out.to_csv('./workflow_datasets/data_model_impute_out4.csv')
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_row_filter_in=pd.read_csv('./workflow_datasets/data_model_impute_out4.csv')
-# 		data_model_row_filter_in_transformed=data_model_row_filter_in.copy()
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_column_cont_filter_in=pd.read_csv('./workflow_datasets/data_model_row_filter_out.csv')
-# 		data_model_column_cont_filter_in_transformed=data_model_column_cont_filter_in.copy()
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_column_cat_filter_in=pd.read_csv('./workflow_datasets/data_model_col_filter_out.csv')
-# 		data_model_column_cat_filter_in_transformed=data_model_column_cat_filter_in.copy()
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_map_territory_in=pd.read_csv('./workflow_datasets/data_model_col_filter_out2.csv')
-# 		input_values_list_parameter_map_territory_A=['A', 'N']
-# 		output_values_list_parameter_map_territory_A=['0', '0']
-# 		data_type_input_list_parameter_map_territory_A=[DataType(0), DataType(0)]
-# 		data_type_output_list_parameter_map_territory_A=[DataType(0), DataType(0)]
-#
-#
-# 		data_model_map_territory_out=transformations.transform_fix_value_fix_value(data_dictionary=data_model_map_territory_in, input_values_list=input_values_list_parameter_map_territory_A,
-# 																	  output_values_list=output_values_list_parameter_map_territory_A,
-# 								                                      data_type_input_list = data_type_input_list_parameter_map_territory_A,
-# 								                                      data_type_output_list = data_type_output_list_parameter_map_territory_A, field = 'TERRITORY')
-#
-# 		data_model_map_territory_out.to_csv('./workflow_datasets/data_model_map_territory_out.csv')
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_map_Instate_in=pd.read_csv('./workflow_datasets/data_model_map_territory_out.csv')
-# 		input_values_list_parameter_map_instate_Y=['Y', 'N']
-# 		output_values_list_parameter_map_instate_Y=['1', '0']
-# 		data_type_input_list_parameter_map_instate_Y=[DataType(0), DataType(0)]
-# 		data_type_output_list_parameter_map_instate_Y=[DataType(0), DataType(0)]
-#
-#
-# 		data_model_map_Instate_out=transformations.transform_fix_value_fix_value(data_dictionary=data_model_map_Instate_in, input_values_list=input_values_list_parameter_map_instate_Y,
-# 																	  output_values_list=output_values_list_parameter_map_instate_Y,
-# 								                                      data_type_input_list = data_type_input_list_parameter_map_instate_Y,
-# 								                                      data_type_output_list = data_type_output_list_parameter_map_instate_Y, field = 'Instate')
-#
-# 		data_model_map_Instate_out.to_csv('./workflow_datasets/data_model_map_instate_out.csv')
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_stringToNumber_in=pd.read_csv('./workflow_datasets/data_model_map_instate_out.csv')
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_impute_outlier_closest_in=pd.read_csv('./workflow_datasets/data_model_stringToNumber_out.csv')
-# 		data_model_impute_outlier_closest_in_transformed=data_model_impute_outlier_closest_in.copy()
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_outlier_closest_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_outlier_closest_in_transformed,
-# 																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'avg_income')
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_outlier_closest_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_outlier_closest_in_transformed,
-# 																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'distance')
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_outlier_closest_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_outlier_closest_in_transformed,
-# 																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'premiere')
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_outlier_closest_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_outlier_closest_in_transformed,
-# 																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'sex')
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_outlier_closest_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_outlier_closest_in_transformed,
-# 																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'Enroll')
-# 		missing_values_list_parameter_num_op_impute_mean=[]
-# 		data_model_impute_outlier_closest_in_transformed=transformations.transform_special_value_num_op(data_dictionary=data_model_impute_outlier_closest_in_transformed,
-# 																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
-# 																	  missing_values=missing_values_list_parameter_num_op_impute_mean,
-# 																	  axis_param=0, field = 'Instate')
-#
-# 		data_model_impute_outlier_closest_out=data_model_impute_outlier_closest_in_transformed
-# 		data_model_impute_outlier_closest_out.to_csv('./workflow_datasets/data_model_imputeOutliers_out.csv')
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_binner_in=pd.read_csv('./workflow_datasets/data_model_imputeOutliers_out.csv')
-# 		data_model_binner_in_transformed=data_model_binner_in.copy()
-# 		data_model_binner_in_transformed=transformations.transform_derived_field(data_dictionary=data_model_binner_in_transformed,
-# 																	  data_type_output = DataType(0),
-# 																	  field_in = 'TOTAL_CONTACTS', field_out = 'TOTAL_CONTACTS_binned')
-# 		data_model_binner_in_transformed=transformations.transform_derived_field(data_dictionary=data_model_binner_in_transformed,
-# 																	  data_type_output = DataType(0),
-# 																	  field_in = 'SELF_INIT_CNTCTS', field_out = 'SELF_INIT_CNTCTS_binned')
-# 		data_model_binner_in_transformed=transformations.transform_derived_field(data_dictionary=data_model_binner_in_transformed,
-# 																	  data_type_output = DataType(0),
-# 																	  field_in = 'SOLICITED_CNTCTS', field_out = 'SOLICITED_CNTCTS_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=-1000.0, right_margin=1.0,
-# 																	  closure_type=Closure(0),
-# 																	  fix_value_output='low',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TOTAL_CONTACTS',
-# 																	  field_out = 'TOTAL_CONTACTS_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=-1000.0, right_margin=1.0,
-# 																	  closure_type=Closure(0),
-# 																	  fix_value_output='low',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'SELF_INIT_CNTCTS',
-# 																	  field_out = 'SELF_INIT_CNTCTS_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=-1000.0, right_margin=1.0,
-# 																	  closure_type=Closure(0),
-# 																	  fix_value_output='low',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'SOLICITED_CNTCTS',
-# 																	  field_out = 'SOLICITED_CNTCTS_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner1_out.csv')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=1.0, right_margin=4.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='Moderate',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TOTAL_CONTACTS',
-# 																	  field_out = 'TOTAL_CONTACTS_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=1.0, right_margin=4.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='Moderate',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'SELF_INIT_CNTCTS',
-# 																	  field_out = 'SELF_INIT_CNTCTS_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=1.0, right_margin=4.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='Moderate',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'SOLICITED_CNTCTS',
-# 																	  field_out = 'SOLICITED_CNTCTS_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner1_out.csv')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=4.0, right_margin=1000.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='High',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TOTAL_CONTACTS',
-# 																	  field_out = 'TOTAL_CONTACTS_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=4.0, right_margin=1000.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='High',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'SELF_INIT_CNTCTS',
-# 																	  field_out = 'SELF_INIT_CNTCTS_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=4.0, right_margin=1000.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='High',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'SOLICITED_CNTCTS',
-# 																	  field_out = 'SOLICITED_CNTCTS_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner1_out.csv')
-#
-# #-----------------New DataProcessing-----------------
-# 		data_model_binner_in=pd.read_csv('./workflow_datasets/data_model_binner1_out.csv')
-# 		data_model_binner_in_transformed=data_model_binner_in.copy()
-# 		data_model_binner_in_transformed=transformations.transform_derived_field(data_dictionary=data_model_binner_in_transformed,
-# 																	  data_type_output = DataType(0),
-# 																	  field_in = 'TERRITORY', field_out = 'TERRITORY_binned')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=-1000.0, right_margin=1.0,
-# 																	  closure_type=Closure(0),
-# 																	  fix_value_output='Unknown',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TERRITORY',
-# 																	  field_out = 'TERRITORY_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=1.0, right_margin=3.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='Zone 1',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TERRITORY',
-# 																	  field_out = 'TERRITORY_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=3.0, right_margin=5.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='Zone 2',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TERRITORY',
-# 																	  field_out = 'TERRITORY_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=5.0, right_margin=7.0,
-# 																	  closure_type=Closure(2),
-# 																	  fix_value_output='Zone 3',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TERRITORY',
-# 																	  field_out = 'TERRITORY_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
-#
-# 		data_model_binner_in_transformed=transformations.transform_interval_fix_value(data_dictionary=data_model_binner_in_transformed,
-# 																	  left_margin=7.0, right_margin=1000.0,
-# 																	  closure_type=Closure(3),
-# 																	  fix_value_output='Zone 4',
-# 								                                      data_type_output = DataType(0),
-# 																	  field_in = 'TERRITORY',
-# 																	  field_out = 'TERRITORY_binned')
-# 		data_model_binner_out=data_model_binner_in_transformed
-# 		data_model_binner_out.to_csv('./workflow_datasets/data_model_binner2_out.csv')
-		
+    def generateDataProcessing(self):
+        transformations = data_transformations.DataTransformations()
+        # -----------------New DataProcessing-----------------
+        imputeByDerivedValue_input_dataDictionary = pd.read_csv(
+            './knime_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
+        imputeByDerivedValue_input_dataDictionary_transformed = imputeByDerivedValue_input_dataDictionary.copy()
+
+        missing_values_list = []
+
+        print('Special a Derived')
+        imputeByDerivedValue_input_dataDictionary_transformed = transformations.transform_special_value_derived_value(
+            data_dictionary=imputeByDerivedValue_input_dataDictionary_transformed,
+            special_type_input=SpecialType(0), derived_type_output=DerivedType(0),
+            missing_values=missing_values_list,
+            axis_param=0, field_in='sex', field_out='sex')
+
+        missing_values_list = []
+
+        print('Special a Derived')
+        imputeByDerivedValue_input_dataDictionary_transformed = transformations.transform_special_value_derived_value(
+            data_dictionary=imputeByDerivedValue_input_dataDictionary_transformed,
+            special_type_input=SpecialType(0), derived_type_output=DerivedType(0),
+            missing_values=missing_values_list,
+            axis_param=0, field_in='IRSCHOOL', field_out='IRSCHOOL')
+
+        missing_values_list = []
+
+        print('Special a Derived')
+        imputeByDerivedValue_input_dataDictionary_transformed = transformations.transform_special_value_derived_value(
+            data_dictionary=imputeByDerivedValue_input_dataDictionary_transformed,
+            special_type_input=SpecialType(0), derived_type_output=DerivedType(0),
+            missing_values=missing_values_list,
+            axis_param=0, field_in='ETHNICITY', field_out='ETHNICITY')
+
+        imputeByDerivedValue_output_dataDictionary = imputeByDerivedValue_input_dataDictionary_transformed
+        imputeByDerivedValue_output_dataDictionary.to_csv(
+            './knime_dataDictionaries/imputeMissingByMostFrequent(sex, IRISCHOOL, ETHNICITY)_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        imputeByFixValue_input_dataDictionary = imputeByDerivedValue_output_dataDictionary
+        imputeByFixValue_input_dataDictionary_transformed = imputeByFixValue_input_dataDictionary.copy()
+
+        missing_values_list = []
+
+        print('Special a Fix')
+        imputeByFixValue_input_dataDictionary_transformed = transformations.transform_special_value_fix_value(
+            data_dictionary=imputeByFixValue_input_dataDictionary_transformed,
+            special_type_input=SpecialType(0), fix_value_output='Unknown',
+            missing_values=missing_values_list,
+            data_type_output=DataType(0),
+            axis_param=0, field_in='ACADEMIC_INTEREST_2', field_out='ACADEMIC_INTEREST_2')
+
+        missing_values_list = []
+
+        print('Special a Fix')
+        imputeByFixValue_input_dataDictionary_transformed = transformations.transform_special_value_fix_value(
+            data_dictionary=imputeByFixValue_input_dataDictionary_transformed,
+            special_type_input=SpecialType(0), fix_value_output='Unknown',
+            missing_values=missing_values_list,
+            data_type_output=DataType(0),
+            axis_param=0, field_in='ACADEMIC_INTEREST_1', field_out='ACADEMIC_INTEREST_1')
+
+        imputeByFixValue_output_dataDictionary = imputeByFixValue_input_dataDictionary_transformed
+        imputeByFixValue_output_dataDictionary.to_csv(
+            './knime_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        imputeByNumericOp_input_dataDictionary = imputeByFixValue_output_dataDictionary
+        imputeByNumericOp_input_dataDictionary_transformed = imputeByNumericOp_input_dataDictionary.copy()
+
+        missing_values_list = []
+
+        missing_values_list = []
+
+        imputeByNumericOp_output_dataDictionary = imputeByNumericOp_input_dataDictionary_transformed
+        imputeByNumericOp_output_dataDictionary.to_csv(
+            './knime_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        imputeByNumericOp_input_dataDictionary = imputeByNumericOp_output_dataDictionary
+        imputeByNumericOp_input_dataDictionary_transformed = imputeByNumericOp_input_dataDictionary.copy()
+
+        missing_values_list = []
+
+        imputeByNumericOp_output_dataDictionary = imputeByNumericOp_input_dataDictionary_transformed
+        imputeByNumericOp_output_dataDictionary.to_csv(
+            './knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        rowFilter_input_DataDictionary = imputeByNumericOp_output_dataDictionary
+        rowFilter_input_DataDictionary_transformed = rowFilter_input_DataDictionary.copy()
+
+        rowFilter_output_DataDictionary = rowFilter_input_DataDictionary
+
+        # -----------------New DataProcessing-----------------
+        columnFilter_input_DataDictionary = rowFilter_output_DataDictionary
+        columnFilter_input_DataDictionary_transformed = columnFilter_input_DataDictionary.copy()
+
+        columnFilter_output_DataDictionary = columnFilter_input_DataDictionary
+
+        # -----------------New DataProcessing-----------------
+        mapping_input_dataDictionary = columnFilter_output_DataDictionary
+        print('MAPPING')
+        input_values_list = ['A', 'N']
+        output_values_list = ['0', '0']
+        data_type_input_list = [DataType(0), DataType(0)]
+        data_type_output_list = [DataType(0), DataType(0)]
+
+        mapping_output_dataDictionary = transformations.transform_fix_value_fix_value(
+            data_dictionary=mapping_input_dataDictionary, input_values_list=input_values_list,
+            output_values_list=output_values_list,
+            data_type_input_list=data_type_input_list,
+            data_type_output_list=data_type_output_list, field_in='TERRITORY', field_out='TERRITORY')
+
+        mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        mapping_input_dataDictionary = mapping_output_dataDictionary
+        print('MAPPING')
+        input_values_list = ['Y', 'N']
+        output_values_list = ['1', '0']
+        data_type_input_list = [DataType(0), DataType(0)]
+        data_type_output_list = [DataType(0), DataType(0)]
+
+        mapping_output_dataDictionary = transformations.transform_fix_value_fix_value(
+            data_dictionary=mapping_input_dataDictionary, input_values_list=input_values_list,
+            output_values_list=output_values_list,
+            data_type_input_list=data_type_input_list,
+            data_type_output_list=data_type_output_list, field_in='Instate', field_out='Instate')
+
+        mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        categoricalToContinuous_input_dataDictionary = mapping_output_dataDictionary
+        categoricalToContinuous_input_dataDictionary_transformed = categoricalToContinuous_input_dataDictionary.copy()
+
+        print('CategoricalToContinuous')
+        categoricalToContinuous_input_dataDictionary_transformed = transformations.transform_cast_type(
+            data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
+            data_type_output=DataType(6),
+            field='TERRITORY')
+
+        categoricalToContinuous_input_dataDictionary_transformed = transformations.transform_cast_type(
+            data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
+            data_type_output=DataType(6),
+            field='Instate')
+
+        categoricalToContinuous_output_dataDictionary = categoricalToContinuous_input_dataDictionary_transformed
+        categoricalToContinuous_output_dataDictionary.to_csv(
+            './knime_dataDictionaries/stringToNumber_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        imputeByNumericOp_input_dataDictionary = categoricalToContinuous_output_dataDictionary
+        imputeByNumericOp_input_dataDictionary_transformed = imputeByNumericOp_input_dataDictionary.copy()
+
+        missing_values_list = []
+
+        missing_values_list = []
+
+        missing_values_list = []
+
+        imputeByNumericOp_output_dataDictionary = imputeByNumericOp_input_dataDictionary_transformed
+        imputeByNumericOp_output_dataDictionary.to_csv(
+            './knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        binner_input_dataDictionary = imputeByNumericOp_output_dataDictionary
+        binner_input_dataDictionary_transformed = binner_input_dataDictionary.copy()
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_derived_field(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            data_type_output=DataType(0),
+            field_in='TOTAL_CONTACTS', field_out='TOTAL_CONTACTS_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_derived_field(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            data_type_output=DataType(0),
+            field_in='SELF_INIT_CNTCTS', field_out='SELF_INIT_CNTCTS_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_derived_field(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            data_type_output=DataType(0),
+            field_in='SOLICITED_CNTCTS', field_out='SOLICITED_CNTCTS_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=-1000.0, right_margin=1.0,
+            closure_type=Closure(0),
+            fix_value_output='low',
+            data_type_output=DataType(0),
+            field_in='TOTAL_CONTACTS',
+            field_out='TOTAL_CONTACTS_binned')
+
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=-1000.0, right_margin=1.0,
+            closure_type=Closure(0),
+            fix_value_output='low',
+            data_type_output=DataType(0),
+            field_in='SELF_INIT_CNTCTS',
+            field_out='SELF_INIT_CNTCTS_binned')
+
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=-1000.0, right_margin=1.0,
+            closure_type=Closure(0),
+            fix_value_output='low',
+            data_type_output=DataType(0),
+            field_in='SOLICITED_CNTCTS',
+            field_out='SOLICITED_CNTCTS_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1.0, right_margin=4.0,
+            closure_type=Closure(2),
+            fix_value_output='Moderate',
+            data_type_output=DataType(0),
+            field_in='TOTAL_CONTACTS',
+            field_out='TOTAL_CONTACTS_binned')
+
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1.0, right_margin=4.0,
+            closure_type=Closure(2),
+            fix_value_output='Moderate',
+            data_type_output=DataType(0),
+            field_in='SELF_INIT_CNTCTS',
+            field_out='SELF_INIT_CNTCTS_binned')
+
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1.0, right_margin=4.0,
+            closure_type=Closure(2),
+            fix_value_output='Moderate',
+            data_type_output=DataType(0),
+            field_in='SOLICITED_CNTCTS',
+            field_out='SOLICITED_CNTCTS_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=4.0, right_margin=1000.0,
+            closure_type=Closure(2),
+            fix_value_output='High',
+            data_type_output=DataType(0),
+            field_in='TOTAL_CONTACTS',
+            field_out='TOTAL_CONTACTS_binned')
+
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=4.0, right_margin=1000.0,
+            closure_type=Closure(2),
+            fix_value_output='High',
+            data_type_output=DataType(0),
+            field_in='SELF_INIT_CNTCTS',
+            field_out='SELF_INIT_CNTCTS_binned')
+
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=4.0, right_margin=1000.0,
+            closure_type=Closure(2),
+            fix_value_output='High',
+            data_type_output=DataType(0),
+            field_in='SOLICITED_CNTCTS',
+            field_out='SOLICITED_CNTCTS_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        binner_input_dataDictionary = binner_output_dataDictionary
+        binner_input_dataDictionary_transformed = binner_input_dataDictionary.copy()
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_derived_field(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            data_type_output=DataType(0),
+            field_in='TERRITORY', field_out='TERRITORY_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=-1000.0, right_margin=1.0,
+            closure_type=Closure(0),
+            fix_value_output='Unknown',
+            data_type_output=DataType(0),
+            field_in='TERRITORY',
+            field_out='TERRITORY_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1.0, right_margin=3.0,
+            closure_type=Closure(2),
+            fix_value_output='Zone 1',
+            data_type_output=DataType(0),
+            field_in='TERRITORY',
+            field_out='TERRITORY_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=3.0, right_margin=5.0,
+            closure_type=Closure(2),
+            fix_value_output='Zone 2',
+            data_type_output=DataType(0),
+            field_in='TERRITORY',
+            field_out='TERRITORY_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=5.0, right_margin=7.0,
+            closure_type=Closure(2),
+            fix_value_output='Zone 3',
+            data_type_output=DataType(0),
+            field_in='TERRITORY',
+            field_out='TERRITORY_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=7.0, right_margin=1000.0,
+            closure_type=Closure(3),
+            fix_value_output='Zone 4',
+            data_type_output=DataType(0),
+            field_in='TERRITORY',
+            field_out='TERRITORY_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        binner_input_dataDictionary = binner_output_dataDictionary
+        binner_input_dataDictionary_transformed = binner_input_dataDictionary.copy()
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_derived_field(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            data_type_output=DataType(0),
+            field_in='satscore', field_out='satscore_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=-1000.0, right_margin=1040.0,
+            closure_type=Closure(1),
+            fix_value_output='54 Percentile and Under',
+            data_type_output=DataType(0),
+            field_in='satscore',
+            field_out='satscore_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1040.0, right_margin=1160.0,
+            closure_type=Closure(1),
+            fix_value_output='55-75 Percentile',
+            data_type_output=DataType(0),
+            field_in='satscore',
+            field_out='satscore_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1160.0, right_margin=1340.0,
+            closure_type=Closure(2),
+            fix_value_output='76-93 Percentile',
+            data_type_output=DataType(0),
+            field_in='satscore',
+            field_out='satscore_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1340.0, right_margin=2000.0,
+            closure_type=Closure(2),
+            fix_value_output='94+ percentile',
+            data_type_output=DataType(0),
+            field_in='satscore',
+            field_out='satscore_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        # -----------------New DataProcessing-----------------
+        binner_input_dataDictionary = binner_output_dataDictionary
+        binner_input_dataDictionary_transformed = binner_input_dataDictionary.copy()
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_derived_field(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            data_type_output=DataType(0),
+            field_in='avg_income', field_out='avg_income_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=-1000.0, right_margin=1040.0,
+            closure_type=Closure(1),
+            fix_value_output='Low',
+            data_type_output=DataType(0),
+            field_in='avg_income',
+            field_out='avg_income_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1040.0, right_margin=1160.0,
+            closure_type=Closure(1),
+            fix_value_output='Moderate',
+            data_type_output=DataType(0),
+            field_in='avg_income',
+            field_out='avg_income_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+
+        print('Binner')
+        binner_input_dataDictionary_transformed = transformations.transform_interval_fix_value(
+            data_dictionary=binner_input_dataDictionary_transformed,
+            left_margin=1160.0, right_margin=1340.0,
+            closure_type=Closure(2),
+            fix_value_output='High',
+            data_type_output=DataType(0),
+            field_in='avg_income',
+            field_out='avg_income_binned')
+
+        binner_output_dataDictionary = binner_input_dataDictionary_transformed
+        binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-dp=DataProcessing()
+dp = DataProcessing()
 dp.generateDataProcessing()
