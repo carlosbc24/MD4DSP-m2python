@@ -18,7 +18,7 @@
     cd your-project-directory
     ```
    
-3. Crate a new conda enviroment:
+3. Crate a new conda environment:
    ```bash
    conda create --name md4dsp python=3.11 -y
    ```
@@ -35,8 +35,7 @@
     $ pip cache purge
     ```
    This step will prevent you from retrieving libraries from the conda or pip caches, which may be incompatible with
-   the proyect's requirements. If you are sure that the libraries in the cache are compatible, you can skip this step.
-
+   the project's requirements. If you are sure that the libraries in the cache are compatible, you can skip this step.
 
 6. Install the required libraries:
    ```bash
