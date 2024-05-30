@@ -147,7 +147,7 @@ class ContractsPrePost:
         if left_margin > right_margin:
             raise ValueError("Error: leftMargin should be less than or equal to rightMargin")  # Case 0
 
-        def check_condition(min_val: float, max_val: float) -> bool:
+        def check_condition(min_val: float, max_val: float) -> bool:    #TODO: FIX to check all values in the dataframe, not only the min and max
             if closure_type == Closure.openOpen:
                 return True if (min_val > left_margin) & (max_val < right_margin) else False
             elif closure_type == Closure.openClosed:
