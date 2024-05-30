@@ -245,7 +245,7 @@ class DataProcessing:
                                                      special_type_input=SpecialType(0),
                                                      num_op_output=Operation(1),
                                                      missing_values=missing_values_imputeByNumericOp_INV_condition,
-                                                     axis_param=0, field_in='invalid', field_out='avg_income'):
+                                                     axis_param=0, field_in='avg_income', field_out='avg_income'):
             print('INVARIANT imputeMissingByMean(avg_income)_INV_condition VALIDATED')
         else:
             print('INVARIANT imputeMissingByMean(avg_income)_INV_condition NOT VALIDATED')
@@ -258,7 +258,7 @@ class DataProcessing:
                                                      special_type_input=SpecialType(0),
                                                      num_op_output=Operation(1),
                                                      missing_values=missing_values_imputeByNumericOp_INV_condition,
-                                                     axis_param=0, field_in='invalid', field_out='distance'):
+                                                     axis_param=0, field_in='distance', field_out='distance'):
             print('INVARIANT imputeMissingByMean(distance)_INV_condition VALIDATED')
         else:
             print('INVARIANT imputeMissingByMean(distance)_INV_condition NOT VALIDATED')
@@ -298,7 +298,7 @@ class DataProcessing:
                                                      special_type_input=SpecialType(0),
                                                      num_op_output=Operation(0),
                                                      missing_values=missing_values_imputeByNumericOp_INV_condition,
-                                                     axis_param=0, field_in='invalid', field_out='satscore'):
+                                                     axis_param=0, field_in='satscore', field_out='satscore'):
             print('INVARIANT imputeMissingByLinearInterpolation(satscore)_INV_condition VALIDATED')
         else:
             print('INVARIANT imputeMissingByLinearInterpolation(satscore)_INV_condition NOT VALIDATED')
@@ -333,7 +333,7 @@ class DataProcessing:
             columnFilter_output_DataDictionary = pd.read_csv(
                 './knime_dataDictionaries/columnFilter_output_dataDictionary.csv', sep=',')
 
-        field_list_columnFilter_PRE_field_range = ['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNCTS', 'telecq', 'stuemail',
+        field_list_columnFilter_PRE_field_range = ['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS', 'telecq', 'stuemail',
                                                    'interest']
         if pre_post.check_field_range(fields=field_list_columnFilter_PRE_field_range,
                                       data_dictionary=columnFilter_input_DataDictionary,
@@ -345,7 +345,7 @@ class DataProcessing:
                 'PRECONDITION columnFilter(TRAVEL_INIT_CNTCTS, REFERRAL_CNCTS, telecq, interest, stuemail, CONTACT_CODE1)_PRE_fieldRange NOT VALIDATED')
 
         field_list_columnFilter_POST_field_range = ['stuemail', 'interest', 'telecq', 'TRAVEL_INIT_CNTCTS',
-                                                    'REFERRAL_CNCTS']
+                                                    'REFERRAL_CNTCTS']
         if pre_post.check_field_range(fields=field_list_columnFilter_POST_field_range,
                                       data_dictionary=columnFilter_output_DataDictionary,
                                       belong_op=Belong(1)):
@@ -541,7 +541,7 @@ class DataProcessing:
                                                      belong_op_out=Belong(0),
                                                      special_type_input=SpecialType(2),
                                                      num_op_output=Operation(3),
-                                                     missing_values=None, axis_param=0, field_in='invalid',
+                                                     missing_values=None, axis_param=0, field_in='avg_income',
                                                      field_out='avg_income'):
             print('INVARIANT imputeOutlierByClosest(avg_income)_INV_condition VALIDATED')
         else:
@@ -553,7 +553,7 @@ class DataProcessing:
                                                      belong_op_out=Belong(0),
                                                      special_type_input=SpecialType(2),
                                                      num_op_output=Operation(3),
-                                                     missing_values=None, axis_param=0, field_in='invalid',
+                                                     missing_values=None, axis_param=0, field_in='distance',
                                                      field_out='distance'):
             print('INVARIANT imputeOutlierByClosest(distance)_INV_condition VALIDATED')
         else:
@@ -565,7 +565,7 @@ class DataProcessing:
                                                      belong_op_out=Belong(0),
                                                      special_type_input=SpecialType(2),
                                                      num_op_output=Operation(3),
-                                                     missing_values=None, axis_param=0, field_in='invalid',
+                                                     missing_values=None, axis_param=0, field_in='Instate',
                                                      field_out='Instate'):
             print('INVARIANT imputeOutlierByClosest(Instate)_INV_condition VALIDATED')
         else:

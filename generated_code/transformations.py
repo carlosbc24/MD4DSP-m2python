@@ -1,7 +1,7 @@
 import pandas as pd
 
 import functions.data_transformations as data_transformations
-from helpers.enumerations import SpecialType, DataType, DerivedType, Closure
+from helpers.enumerations import Belong, SpecialType, DataType, DerivedType, Closure
 
 
 class DataProcessing:
@@ -100,6 +100,12 @@ class DataProcessing:
         # -----------------New DataProcessing-----------------
         columnFilter_input_DataDictionary = rowFilter_output_DataDictionary
         columnFilter_input_DataDictionary_transformed = columnFilter_input_DataDictionary.copy()
+
+        field_list_columnFilter_param_field = ['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS']
+
+        columnFilter_input_DataDictionary_transformed = transformations.transform_filter_columns(
+            data_dictionary=columnFilter_input_DataDictionary_transformed,
+            columns=field_list_columnFilter_param_field, belong_op=Belong.BELONG)
 
         columnFilter_output_DataDictionary = columnFilter_input_DataDictionary_transformed
         columnFilter_output_DataDictionary.to_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv')

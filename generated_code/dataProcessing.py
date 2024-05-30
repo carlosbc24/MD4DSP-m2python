@@ -372,7 +372,7 @@ class DataProcessing:
 
         # -----------------New DataProcessing-----------------
         columnFilter_input_DataDictionary = rowFilter_output_DataDictionary
-        field_list_columnFilter_PRE_field_range = ['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNCTS', 'telecq', 'stuemail',
+        field_list_columnFilter_PRE_field_range = ['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS', 'telecq', 'stuemail',
                                                    'interest']
         if pre_post.check_field_range(fields=field_list_columnFilter_PRE_field_range,
                                       data_dictionary=columnFilter_input_DataDictionary,
@@ -385,11 +385,17 @@ class DataProcessing:
 
         columnFilter_input_DataDictionary_transformed = columnFilter_input_DataDictionary.copy()
 
+        field_list_columnFilter_param_field = ['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS']
+
+        columnFilter_input_DataDictionary_transformed = transformations.transform_filter_columns(
+            data_dictionary=columnFilter_input_DataDictionary_transformed,
+            columns=field_list_columnFilter_param_field, belong_op=Belong.BELONG)
+
         columnFilter_output_DataDictionary = columnFilter_input_DataDictionary_transformed
         columnFilter_output_DataDictionary.to_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv')
 
         field_list_columnFilter_POST_field_range = ['stuemail', 'interest', 'telecq', 'TRAVEL_INIT_CNTCTS',
-                                                    'REFERRAL_CNCTS']
+                                                    'REFERRAL_CNTCTS']
         if pre_post.check_field_range(fields=field_list_columnFilter_POST_field_range,
                                       data_dictionary=columnFilter_output_DataDictionary,
                                       belong_op=Belong(1)):
