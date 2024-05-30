@@ -640,7 +640,7 @@ class DataProcessing:
                                                      special_type_input=SpecialType(2),
                                                      num_op_output=Operation(3),
                                                      missing_values=None, axis_param=0, field_in='Instate',
-                                                     field_out='invalid'):
+                                                     field_out='Instate'):
             print('INVARIANT imputeOutlierByClosest(Instate)_INV_condition VALIDATED')
         else:
             print('INVARIANT imputeOutlierByClosest(Instate)_INV_condition NOT VALIDATED')
