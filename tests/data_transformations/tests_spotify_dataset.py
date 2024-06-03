@@ -22,72 +22,91 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         Methods:
         executeAll_ExternalDatasetTests: execute all the data_transformations with external dataset tests
-        execute_transform_FixValue_FixValue_ExternalDatasetTests: execute the data transformation test with external
+        execute_transform_FixValue_FixValue: execute the data transformation test with external
         dataset for the function transform_FixValue_FixValue
-        execute_SmallBatchTests_execute_transform_FixValue_FixValue_ExternalDataset: execute the data transformation
+        execute_SmallBatchTests_execute_transform_FixValue_FixValue: execute the data transformation
         test using a small batch of the dataset for the function transform_FixValue_FixValue
-        execute_WholeDatasetTests_execute_transform_FixValue_FixValue_ExternalDataset: execute the data transformation
+        execute_WholeDatasetTests_execute_transform_FixValue_FixValue: execute the data transformation
         test using the whole dataset for the function transform_FixValue_FixValue
-        execute_transform_FixValue_DerivedValue_ExternalDatasetTests: execute the data transformation test with
+        execute_transform_FixValue_DerivedValue: execute the data transformation test with
         external dataset for the function transform_FixValue_DerivedValue
-        execute_SmallBatchTests_execute_transform_FixValue_DerivedValue_ExternalDataset: execute the data
+        execute_SmallBatchTests_execute_transform_FixValue_DerivedValue: execute the data
         transformation test using a small batch of the dataset for the function transform_FixValue_DerivedValue
-        execute_WholeDatasetTests_execute_transform_FixValue_DerivedValue_ExternalDataset: execute the data
+        execute_WholeDatasetTests_execute_transform_FixValue_DerivedValue: execute the data
         transformation test using the whole dataset for the function transform_FixValue_DerivedValue
-        execute_transform_FixValue_NumOp_ExternalDatasetTests: execute the data transformation test with external
+        execute_transform_FixValue_NumOp: execute the data transformation test with external
         dataset for the function transform_FixValue_NumOp
-        execute_SmallBatchTests_execute_transform_FixValue_NumOp_ExternalDataset: execute the data transformation
+        execute_SmallBatchTests_execute_transform_FixValue_NumOp: execute the data transformation
         test using a small batch of the dataset for the function transform_FixValue_NumOp
-        execute_WholeDatasetTests_execute_transform_FixValue_NumOp_ExternalDataset: execute the data transformation
+        execute_WholeDatasetTests_execute_transform_FixValue_NumOp: execute the data transformation
         test using the whole dataset for the function transform_FixValue_NumOp
-        execute_transform_Interval_FixValue_ExternalDatasetTests: execute the data transformation test with
+        execute_transform_Interval_FixValue: execute the data transformation test with
         external dataset for the function transform_Interval_FixValue
-        execute_SmallBatchTests_execute_transform_Interval_FixValue_ExternalDataset: execute the data transformation
+        execute_SmallBatchTests_execute_transform_Interval_FixValue: execute the data transformation
         test using a small batch of the dataset for the function transform_Interval_FixValue
-        execute_WholeDatasetTests_execute_transform_Interval_FixValue_ExternalDataset: execute the data transformation
+        execute_WholeDatasetTests_execute_transform_Interval_FixValue: execute the data transformation
         test using the whole dataset for the function transform_Interval_FixValue
-        execute_transform_Interval_DerivedValue_ExternalDatasetTests: execute the data transformation test with
+        execute_transform_Interval_DerivedValue: execute the data transformation test with
         external dataset for the function transform_Interval_DerivedValue
-        execute_SmallBatchTests_execute_transform_Interval_DerivedValue_ExternalDataset: execute the data
+        execute_SmallBatchTests_execute_transform_Interval_DerivedValue: execute the data
         transformation test using a small batch of the dataset for the function transform_Interval_DerivedValue
-        execute_WholeDatasetTests_execute_transform_Interval_DerivedValue_ExternalDataset: execute the data
+        execute_WholeDatasetTests_execute_transform_Interval_DerivedValue: execute the data
         transformation test using the whole dataset for the function transform_Interval_DerivedValue
-        execute_transform_Interval_NumOp_ExternalDatasetTests: execute the data transformation test with external
+        execute_transform_Interval_NumOp: execute the data transformation test with external
         dataset for the function transform_Interval_NumOp
-        execute_SmallBatchTests_execute_transform_Interval_NumOp_ExternalDataset: execute the data transformation
+        execute_SmallBatchTests_execute_transform_Interval_NumOp: execute the data transformation
         test using a small batch of the dataset for the function transform_Interval_NumOp
-        execute_WholeDatasetTests_execute_transform_Interval_NumOp_ExternalDataset: execute the data transformation
+        execute_WholeDatasetTests_execute_transform_Interval_NumOp: execute the data transformation
         test using the whole dataset for the function transform_Interval_NumOp
-        execute_transform_SpecialValue_FixValue_ExternalDatasetTests: execute the data transformation test with
+        execute_transform_SpecialValue_FixValue: execute the data transformation test with
         external dataset for the function transform_SpecialValue_FixValue
-        execute_SmallBatchTests_execute_transform_SpecialValue_FixValue_ExternalDataset: execute the data
+        execute_SmallBatchTests_execute_transform_SpecialValue_FixValue: execute the data
         transformation test using a small batch of the dataset for the function transform_SpecialValue_FixValue
-        execute_WholeDatasetTests_execute_transform_SpecialValue_FixValue_ExternalDataset: execute the data
+        execute_WholeDatasetTests_execute_transform_SpecialValue_FixValue: execute the data
         transformation test using the whole dataset for the function transform_SpecialValue_FixValue
-        execute_transform_SpecialValue_DerivedValue_ExternalDatasetTests: execute the data transformation test with
+        execute_transform_SpecialValue_DerivedValue: execute the data transformation test with
         external dataset for the function transform_SpecialValue_DerivedValue
-        execute_SmallBatchTests_execute_transform_SpecialValue_DerivedValue_ExternalDataset: execute the data
+        execute_SmallBatchTests_execute_transform_SpecialValue_DerivedValue: execute the data
         transformation test using a small batch of the dataset for the function transform_SpecialValue_DerivedValue
-        execute_WholeDatasetTests_execute_transform_SpecialValue_DerivedValue_ExternalDataset: execute the
+        execute_WholeDatasetTests_execute_transform_SpecialValue_DerivedValue: execute the
         data transformation test using the whole dataset for the function transform_SpecialValue_DerivedValue
-        execute_transform_SpecialValue_NumOp_ExternalDatasetTests: execute the data transformation test with
+        execute_transform_SpecialValue_NumOp: execute the data transformation test with
         external dataset for the function transform_SpecialValue_NumOp
-        execute_SmallBatchTests_execute_transform_SpecialValue_NumOp_ExternalDataset: execute the data transformation
+        execute_SmallBatchTests_execute_transform_SpecialValue_NumOp: execute the data transformation
         test using a small batch of the dataset for the function transform_SpecialValue_NumOp
-        execute_WholeDatasetTests_execute_transform_SpecialValue_NumOp_ExternalDataset: execute the data
+        execute_WholeDatasetTests_execute_transform_SpecialValue_NumOp: execute the data
         transformation test using the whole dataset for the function transform_SpecialValue_NumOp
-        execute_transform_derived_field_ExternalDatasetTests: execute the data transformation test with external
+        execute_transform_derived_field: execute the data transformation test with external
         dataset for the function transform_derived_field
-        execute_SmallBatchTests_execute_transform_derived_field_ExternalDataset: execute the data transformation
+        execute_SmallBatchTests_execute_transform_derived_field
+        : execute the data transformation
         test using a small batch of the dataset for the function transform_derived_field
-        execute_WholeDatasetTests_execute_transform_derived_field_ExternalDataset: execute the data transformation
+        execute_WholeDatasetTests_execute_transform_derived_field: execute the data transformation
         test using the whole dataset for the function transform_derived_field
-        execute_transform_filter_columns_ExternalDatasetTests: execute the data transformation test with external
+        execute_transform_filter_columns: execute the data transformation test with external
         dataset for the function transform_filter_columns
-        execute_SmallBatchTests_execute_transform_filter_columns_ExternalDataset: execute the data transformation
+        execute_SmallBatchTests_execute_transform_filter_columns: execute the data transformation
         test using a small batch of the dataset for the function transform_filter_columns
-        execute_WholeDatasetTests_execute_transform_filter_columns_ExternalDataset: execute the data transformation
+        execute_WholeDatasetTests_execute_transform_filter_columns: execute the data transformation
         test using the whole dataset for the function transform_filter_columns
+        execute_transform_filter_rows_primitive: execute the data transformation test with
+        external dataset for the function transform_filter_rows_primitive
+        execute_SmallBatchTests_execute_transform_filter_rows_primitive: execute the data
+        transformation test using a small batch of the dataset for the function transform_filter_rows_primitive
+        execute_WholeDatasetTests_execute_transform_filter_rows_primitive: execute the data
+        transformation test using the whole dataset for the function transform_filter_rows_primitive
+        execute_transform_filter_rows_special_values: execute the data transformation test with
+        external dataset for the function transform_filter_rows_special_values
+        execute_SmallBatchTests_execute_transform_filter_rows_special_values: execute the data
+        transformation test using a small batch of the dataset for the function transform_filter_rows_special_values
+        execute_WholeDatasetTests_execute_transform_filter_rows_special_values: execute the data
+        transformation test using the whole dataset for the function transform_filter_rows_special_values
+        execute_transform_filter_rows_range: execute the data transformation test with external
+        dataset for the function transform_filter_rows_range
+        execute_SmallBatchTests_execute_transform_filter_rows_range: execute the data transformation
+        test using a small batch of the dataset for the function transform_filter_rows_range
+        execute_WholeDatasetTests_execute_transform_filter_rows_range: execute the data transformation
+        test using the whole dataset for the function transform_filter_rows_range
     """
 
     def __init__(self):
@@ -113,17 +132,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         Execute all the data_transformations with external dataset tests
         """
         test_methods = [
-            self.execute_transform_FixValue_FixValue_ExternalDatasetTests,
-            self.execute_transform_FixValue_DerivedValue_ExternalDatasetTests,
-            self.execute_transform_FixValue_NumOp_ExternalDatasetTests,
-            self.execute_transform_Interval_FixValue_ExternalDatasetTests,
-            self.execute_transform_Interval_DerivedValue_ExternalDatasetTests,
-            self.execute_transform_Interval_NumOp_ExternalDatasetTests,
-            self.execute_transform_SpecialValue_FixValue_ExternalDatasetTests,
-            self.execute_transform_SpecialValue_DerivedValue_ExternalDatasetTests,
-            self.execute_transform_SpecialValue_NumOp_ExternalDatasetTests,
-            self.execute_transform_derived_field_ExternalDatasetTests,
-            self.execute_transform_filter_columns_ExternalDatasetTests
+            self.execute_transform_FixValue_FixValue,
+            self.execute_transform_FixValue_DerivedValue,
+            self.execute_transform_FixValue_NumOp,
+            self.execute_transform_Interval_FixValue,
+            self.execute_transform_Interval_DerivedValue,
+            self.execute_transform_Interval_NumOp,
+            self.execute_transform_SpecialValue_FixValue,
+            self.execute_transform_SpecialValue_DerivedValue,
+            self.execute_transform_SpecialValue_NumOp,
+            self.execute_transform_derived_field,
+            self.execute_transform_filter_columns,
+            self.execute_transform_filter_rows_primitive,
+            self.execute_transform_filter_rows_special_values,
+            self.execute_transform_filter_rows_range
         ]
 
         print_and_log("")
@@ -141,7 +163,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("------------------------------------------------------------")
         print_and_log("")
 
-    def execute_transform_FixValue_FixValue_ExternalDatasetTests(self):
+    def execute_transform_FixValue_FixValue(self):
         """
         Execute the data transformation test with external dataset for the function transform_FixValue_FixValue
         """
@@ -149,16 +171,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_FixValue_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_FixValue_FixValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_FixValue_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_FixValue_FixValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_FixValue_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_FixValue_FixValue(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function
         transform_FixValue_FixValue
@@ -340,7 +362,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
-    def execute_WholeDatasetTests_execute_transform_FixValue_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_FixValue_FixValue(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_FixValue_FixValue
         """
@@ -535,7 +557,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
 
-    def execute_transform_FixValue_DerivedValue_ExternalDatasetTests(self):
+    def execute_transform_FixValue_DerivedValue(self):
         """
         Execute the data transformation test with external dataset for the function transform_FixValue_DerivedValue
         """
@@ -543,16 +565,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_FixValue_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_FixValue_DerivedValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_FixValue_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_FixValue_DerivedValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_FixValue_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_FixValue_DerivedValue(self):
         """
         Execute the data transformation test using a small batch of the dataset
         for the function transform_FixValue_DerivedValue
@@ -728,7 +750,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                         field_in=field_in, field_out=field_out)
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
-    def execute_WholeDatasetTests_execute_transform_FixValue_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_FixValue_DerivedValue(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_FixValue_DerivedValue
         """
@@ -905,7 +927,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                         field_in=field_in, field_out=field_out)
         print_and_log("Test Case 9 Passed: the function raised the expected exception")
 
-    def execute_transform_FixValue_NumOp_ExternalDatasetTests(self):
+    def execute_transform_FixValue_NumOp(self):
         """
         Execute the data transformation test with external dataset for the function transform_FixValue_NumOp
         """
@@ -913,16 +935,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_FixValue_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_FixValue_NumOp()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_FixValue_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_FixValue_NumOp()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_FixValue_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_FixValue_NumOp(self):
         """
         Execute the data transformation test using a small batch of the
         dataset for the function transform_FixValue_NumOp
@@ -1153,7 +1175,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                  field_out=field_out)
         print_and_log("Test Case 10 Passed: the function raised the expected exception")
 
-    def execute_WholeDatasetTests_execute_transform_FixValue_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_FixValue_NumOp(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_FixValue_NumOp
         """
@@ -1381,7 +1403,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                  field_out=field_out)
         print_and_log("Test Case 10 Passed: the function raised the expected exception")
 
-    def execute_transform_Interval_FixValue_ExternalDatasetTests(self):
+    def execute_transform_Interval_FixValue(self):
         """
         Execute the data transformation test with external dataset for the function transform_Interval_FixValue
         """
@@ -1389,16 +1411,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_Interval_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_Interval_FixValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_Interval_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_Interval_FixValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_Interval_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_Interval_FixValue(self):
         """
         Execute the data transformation test using a small batch of the dataset
         for the function transform_Interval_FixValue
@@ -1474,7 +1496,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 fix_value_output=101, field_in=field_in, field_out=field_out)
         print_and_log("Test Case 5 Passed: expected ValueError, got ValueError")
 
-    def execute_WholeDatasetTests_execute_transform_Interval_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_Interval_FixValue(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_Interval_FixValue
         """
@@ -1539,7 +1561,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 4 Passed: the function returned the expected dataframe")
 
-    def execute_transform_Interval_DerivedValue_ExternalDatasetTests(self):
+    def execute_transform_Interval_DerivedValue(self):
         """
         Execute the data transformation test with external dataset for the function transform_Interval_DerivedValue
         """
@@ -1547,16 +1569,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_Interval_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_Interval_DerivedValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_Interval_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_Interval_DerivedValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_Interval_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_Interval_DerivedValue(self):
         """
         Execute the data transformation test using a small batch of the dataset
         for the function transform_Interval_DerivedValue
@@ -1670,7 +1692,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 derived_type_output=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
-    def execute_WholeDatasetTests_execute_transform_Interval_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_Interval_DerivedValue(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_Interval_DerivedValue
         """
@@ -1792,7 +1814,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 derived_type_output=DerivedType(2), axis_param=None)
         print_and_log("Test Case 7 Passed: expected ValueError, got ValueError")
 
-    def execute_transform_Interval_NumOp_ExternalDatasetTests(self):
+    def execute_transform_Interval_NumOp(self):
         """
         Execute the data transformation test with external dataset for the function transform_Interval_NumOp
         """
@@ -1800,16 +1822,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_Interval_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_Interval_NumOp()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_Interval_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_Interval_NumOp()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_Interval_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_Interval_NumOp(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_Interval_NumOp
         """
@@ -2044,7 +2066,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
-    def execute_WholeDatasetTests_execute_transform_Interval_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_Interval_NumOp(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_Interval_NumOp
         """
@@ -2339,7 +2361,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
-    def execute_transform_SpecialValue_FixValue_ExternalDatasetTests(self):
+    def execute_transform_SpecialValue_FixValue(self):
         """
         Execute the data transformation test with external dataset for the function transform_SpecialValue_FixValue
         """
@@ -2347,16 +2369,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_SpecialValue_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_SpecialValue_FixValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_SpecialValue_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_SpecialValue_FixValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_SpecialValue_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_SpecialValue_FixValue(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_SpecialValue_FixValue
         """
@@ -2541,7 +2563,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 fix_value_output=fix_value_output, field_in=field_in, field_out=field_out)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
-    def execute_WholeDatasetTests_execute_transform_SpecialValue_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_SpecialValue_FixValue(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_SpecialValue_FixValue
         """
@@ -2709,7 +2731,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 fix_value_output=fix_value_output, field_in=field_in, field_out=field_out)
         print_and_log("Test Case 9 Passed: expected ValueError, got ValueError")
 
-    def execute_transform_SpecialValue_DerivedValue_ExternalDatasetTests(self):
+    def execute_transform_SpecialValue_DerivedValue(self):
         """
         Execute the data transformation test with external dataset for the function transform_SpecialValue_DerivedValue
         """
@@ -2717,16 +2739,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_SpecialValue_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_SpecialValue_DerivedValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_SpecialValue_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_SpecialValue_DerivedValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_SpecialValue_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_SpecialValue_DerivedValue(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_SpecialValue_DerivedValue
         """
@@ -3012,7 +3034,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
-    def execute_WholeDatasetTests_execute_transform_SpecialValue_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_SpecialValue_DerivedValue(self):
         """
         Execute the data transformation test using the whole dataset
         for the function transform_SpecialValue_DerivedValue
@@ -3313,7 +3335,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
 
-    def execute_transform_SpecialValue_NumOp_ExternalDatasetTests(self):
+    def execute_transform_SpecialValue_NumOp(self):
         """
         Execute the data transformation test with external dataset for the function transform_SpecialValue_NumOp
         """
@@ -3321,16 +3343,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_SpecialValue_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_SpecialValue_NumOp()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_SpecialValue_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_SpecialValue_NumOp()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_SpecialValue_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_SpecialValue_NumOp(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_SpecialValue_NumOp
         """
@@ -3861,7 +3883,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
 
-    def execute_WholeDatasetTests_execute_transform_SpecialValue_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_SpecialValue_NumOp(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_SpecialValue_NumOp
         """
@@ -4412,7 +4434,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
 
-    def execute_transform_derived_field_ExternalDatasetTests(self):
+    def execute_transform_derived_field(self):
         """
         Execute the data transformation test with external dataset for the function transform_SpecialValue_NumOp
         """
@@ -4420,25 +4442,22 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_derived_field_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_derived_field()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_derived_field_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_derived_field()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_derived_field_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_derived_field(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_derived_field
         """
         print_and_log("Testing transform_derived_field Function")
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
         # Caso 1
@@ -4501,16 +4520,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
-    def execute_WholeDatasetTests_execute_transform_derived_field_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_derived_field(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_derived_field
         """
         print_and_log("Testing transform_derived_field Function")
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
         # Caso 1
@@ -4573,7 +4589,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
-    def execute_transform_filter_columns_ExternalDatasetTests(self):
+    def execute_transform_filter_columns(self):
         """
         Execute the data transformation test with external dataset for the function transform_filter_columns
         """
@@ -4581,25 +4597,22 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_filter_columns_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_filter_columns()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_filter_columns_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_filter_columns()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_filter_columns_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_filter_columns(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_filter_columns
         """
         print_and_log("Testing transform_filter_columns Function")
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
         # Caso 1
@@ -4663,16 +4676,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
-    def execute_WholeDatasetTests_execute_transform_filter_columns_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_filter_columns(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_filter_columns
         """
         print_and_log("Testing transform_filter_columns Function")
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
         # Caso 1
@@ -4736,7 +4746,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
-    def execute_transform_filter_rows_primitive_ExternalDatasetTests(self):
+    def execute_transform_filter_rows_primitive(self):
         """
         Execute the data transformation test with external dataset for the function transform_filter_rows_primitive
         """
@@ -4744,24 +4754,22 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_execute_transform_filter_rows_primitive_ExternalDataset()
+        self.execute_SmallBatchTests_execute_transform_filter_rows_primitive()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_execute_transform_filter_rows_primitive_ExternalDataset()
+        self.execute_WholeDatasetTests_execute_transform_filter_rows_primitive()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_SmallBatchTests_execute_transform_filter_rows_primitive_ExternalDataset(self):
+    def execute_SmallBatchTests_execute_transform_filter_rows_primitive(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_filter_rows_primitive
         """
         print_and_log("Testing transform_filter_rows_primitive Function")
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
         # Caso 1
@@ -4812,7 +4820,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                    '2019-06-14'])
         expected_df = self.small_batch_dataset.copy()
         # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
-        expected_df = expected_df[expected_df['track_album_release_date'].isin(['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
+        expected_df = expected_df[expected_df['track_album_release_date'].isin(
+            ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
         expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
@@ -4828,19 +4837,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                        '2019-06-14'])
         print_and_log("Test Case 5 Passed: ValueError raised when the column name is not in the dataframe")
 
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
-        print_and_log("")
-
-    def execute_WholeDatasetTests_execute_transform_filter_rows_primitive_ExternalDataset(self):
+    def execute_WholeDatasetTests_execute_transform_filter_rows_primitive(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_filter_rows_primitive
         """
         print_and_log("Testing transform_filter_rows_primitive Function")
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
-        print_and_log("")
-        print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
         # Caso 1
@@ -4891,7 +4894,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                    '2019-06-14'])
         expected_df = self.rest_of_dataset.copy()
         # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
-        expected_df = expected_df[expected_df['track_album_release_date'].isin(['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
+        expected_df = expected_df[expected_df['track_album_release_date'].isin(
+            ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
         expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
@@ -4907,6 +4911,358 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                        '2019-06-14'])
         print_and_log("Test Case 5 Passed: ValueError raised when the column name is not in the dataframe")
 
+    def execute_transform_filter_rows_special_values(self):
+        """
+        Execute the data transformation test with external dataset for the function transform_filter_rows_special_values
+        """
+        print_and_log("Testing transform_filter_rows_special_values Data Transformation Function")
+        print_and_log("")
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_execute_transform_filter_rows_special_values()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_execute_transform_filter_rows_special_values()
+
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_execute_transform_filter_rows_special_values(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_filter_rows_special_values
+        """
+        print_and_log("Testing transform_filter_rows_special_values Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+
+        # Case 1 - Filter missing values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['speechiness'],
+            special_type_list=[SpecialType(0)], missing_values=[[0.479, 0.123]])
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
+        expected_df = expected_df.dropna(subset=['speechiness'])
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Case 2 - Filter invalid values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy'],
+            special_type_list=[SpecialType(1)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36]])
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Case 3 - Filter outliers
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy'],
+            special_type_list=[SpecialType(2)])
+        columns_outliers = ['acousticness', 'danceability', 'energy']
+        expected_df = self.small_batch_dataset.copy()
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
+        # expected_df
+        for col in columns_outliers:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Case 4 - Filter missing values and outliers
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy'],
+            special_type_list=[SpecialType(0), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36]])
+        columns_outliers = ['acousticness', 'danceability', 'energy']
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df.dropna(subset=['acousticness', 'danceability', 'energy'], inplace=True)
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
+        # expected_df
+        for col in columns_outliers:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Case 5 - Filter invalid values and outliers
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
+            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0]])
+        columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['speechiness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['mode'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in
+        # expected_df
+        for col in columns_outliers:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        # Case 6 - Filter 2 list of invalid values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
+            special_type_list=[SpecialType(1), SpecialType(1)],
+            missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636, 0.0319, 0.81]])
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[
+            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['speechiness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['mode'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        # Case 7 - Filter 2 list of missing values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
+            special_type_list=[SpecialType(0), SpecialType(0)],
+            missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636, 0.0319, 0.81]])
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[
+            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['speechiness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['mode'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df.dropna(subset=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'], inplace=True)
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Case 8 - Filter column that dont exist - ValueError raised
+        with self.assertRaises(ValueError):
+            result_df = self.data_transformations.transform_filter_rows_special_values(
+                data_dictionary=self.small_batch_dataset.copy(),
+                columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
+                         "noew_column_pepe"], special_type_list=[SpecialType(0), SpecialType(0)],
+                missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636, 0.0319, 0.81]])
+        print_and_log("Test Case 8 Passed: ValueError raised when the column name is not in the dataframe")
+
+    def execute_WholeDatasetTests_execute_transform_filter_rows_special_values(self):
+        """
+        Execute the data transformation test using the whole dataset for the function transform_filter_rows_special_values
+        """
+        print_and_log("Testing transform_filter_rows_special_values Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+
+        # Case 1 - Filter missing values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['speechiness'],
+            special_type_list=[SpecialType(0)], missing_values=[[0.479, 0.123]])
+        expected_df = self.rest_of_dataset.copy()
+        # Eliminar las filas cuyos valores en la columna 'speechiness' sean 0.479 o 0.123
+        expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
+        expected_df.dropna(subset=['speechiness'], inplace=True)
+        expected_df.reset_index(drop=True, inplace=True)
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Case 2 - Filter invalid values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy'],
+            special_type_list=[SpecialType(1)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36]])
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Case 3 - Filter outliers
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy'],
+            special_type_list=[SpecialType(2)])
+        columns_outliers = ['acousticness', 'danceability', 'energy']
+        expected_df = self.rest_of_dataset.copy()
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
+        # expected_df
+        for col in columns_outliers:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Case 4 - Filter missing values and outliers
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy'],
+            special_type_list=[SpecialType(0), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36]])
+        columns_outliers = ['acousticness', 'danceability', 'energy']
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df = expected_df[expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
+        expected_df.dropna(subset=['acousticness', 'danceability', 'energy'], inplace=True)
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
+        # expected_df
+        for col in columns_outliers:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Case 5 - Filter invalid values and outliers
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
+            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0]])
+        columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['speechiness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        expected_df = expected_df[expected_df['mode'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in
+        # expected_df
+        for col in columns_outliers:
+            Q1 = expected_df[col].quantile(0.25)
+            Q3 = expected_df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        # Case 6 - Filter 2 list of invalid values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
+            special_type_list=[SpecialType(1), SpecialType(1)],
+            missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636, 0.0319, 0.81]])
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[
+            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['speechiness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['mode'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        # Case 7 - Filter 2 list of missing values
+        result_df = self.data_transformations.transform_filter_rows_special_values(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
+            special_type_list=[SpecialType(0), SpecialType(0)],
+            missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636, 0.0319, 0.81]])
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[
+            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['energy'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['speechiness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df = expected_df[
+            expected_df['mode'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0, 0.0636, 0.0319, 0.81]) == False]
+        expected_df.dropna(subset=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'], inplace=True)
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Case 8 - Filter column that dont exist - ValueError raised
+        with self.assertRaises(ValueError):
+            result_df = self.data_transformations.transform_filter_rows_special_values(
+                data_dictionary=self.rest_of_dataset.copy(),
+                columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
+                         "noew_column_pepe"], special_type_list=[SpecialType(0), SpecialType(0)],
+                missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636, 0.0319, 0.81]])
+        print_and_log("Test Case 8 Passed: ValueError raised when the column name is not in the dataframe")
+
+    def execute_transform_filter_rows_range(self):
+        """
+        Execute the data transformation test with external dataset for the function transform_filter_rows_range
+        """
+        print_and_log("Testing transform_filter_rows_range Data Transformation Function")
+        print_and_log("")
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_execute_transform_filter_rows_range()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_execute_transform_filter_rows_range()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    # TODO
+    def execute_SmallBatchTests_execute_transform_filter_rows_range(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_filter_rows_range
+        """
+        print_and_log("Testing transform_filter_rows_range Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+
+    # TODO
+    def execute_WholeDatasetTests_execute_transform_filter_rows_range(self):
+        """
+        Execute the data transformation test using the whole dataset for the function transform_filter_rows_range
+        """
+        print_and_log("Testing transform_filter_rows_range Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
         print_and_log("")

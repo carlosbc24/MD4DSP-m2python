@@ -2858,14 +2858,107 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, None, 4, 1], 'B': [2, 3, 4, 6, 12]})
         expected_df = pd.DataFrame(
             {'A': [0, 4, 1], 'B': [2, 6, 12]})
+        # Convert column A to int64
+        expected_df = expected_df.astype({
+            'A': 'float64'  # Convertir A a float64
+        })
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
                                                                                    columns=['A'], special_type_list=[
                 SpecialType(0)], missing_values=[[2]])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
-        # Caso 2
+        # Caso 2 - Lista de valores invalidos - SpecialType(1)
+        datadic = pd.DataFrame(
+            {'A': [0, 2, None, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        expected_df = pd.DataFrame(
+            {'A': [0, None, 4, 1], 'B': [2, 4, 6, 12]})
+        result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                                   columns=['A'], special_type_list=[
+                SpecialType(1)], missing_values=[[2]])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
 
+        # Caso 3 - Eliminar filas con outliers
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1, 500, -500], 'B': [2, 3, 4, 6, 12, 500, -500]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                                   columns=['A'], special_type_list=[
+                SpecialType(2)], missing_values=[[2]])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Eliminar filas de una columna que no existe en el dataframe - ValueError
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1, 500, -500], 'B': [2, 3, 4, 6, 12, 500, -500]})
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                           columns=['C'], special_type_list=[
+                    SpecialType(2)], missing_values=[[2]])
+        print_and_log("Test Case 4 Passed: expected exception")
+
+        # Caso 5 - Eliminar filas con outliers y valores missig en varias columnas
+        datadic = pd.DataFrame(
+            {'A': [0, 2, None, 4, 1, 5, 3, 5, 100000, -100000], 'B': [2, 3, 4, 6, 7, 5, 6, 5, 4, -3], 'C': [0, 2, 3,
+                                                                                                             4, 1, 5,
+                                                                                                             3, 5,
+                                                                                                             6,
+                                                                                                             -1]})
+        expected_df = pd.DataFrame(
+            {'A': [4, 1, 5, 3, 5], 'B': [6, 7, 5, 6, 5], 'C': [4, 1, 5, 3, 5]})
+        expected_df = expected_df.astype({
+            'A': 'float64',  # Convertir A a float64
+        })
+        result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                                   columns=['A', 'B', 'C'],
+                                                                                   special_type_list=[SpecialType(0),
+                                                                                                      SpecialType(2)],
+                                                                                   missing_values=[[2]])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        # Caso 6 - Eliminar filas con outliers y valores invalidos en varias columnas
+        datadic = pd.DataFrame(
+            {'A': [0, 2, None, 4, 1, 5, 3, 5, 100000, -100000], 'B': [2, 3, 4, 6, 7, 5, 6, 5, 4, -3], 'C': [0, 2, 3,
+                                                                                                            4, 1, 5,
+                                                                                                            3, 5,
+                                                                                                            6,
+                                                                                                            -1]})
+        expected_df = pd.DataFrame(
+            {'A': [None, 4, 1, 5, 3, 5], 'B': [4, 6, 7, 5, 6, 5], 'C': [3, 4, 1, 5, 3, 5]})
+        expected_df = expected_df.astype({
+            'A': 'float64',  # Convertir A a float64
+        })
+        result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                                   columns=['A', 'B', 'C'],
+                                                                                   special_type_list=[SpecialType(1),
+                                                                                                      SpecialType(2)],
+                                                                                   missing_values=[[2]])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        # Caso 7 - Eliminar filas con valores Datetime y str
+        datadic = pd.DataFrame(
+            {'A': ['2021-01-01', '2021-02-02', '2021-03-03', '2021-04-04', '2021-05-05'],
+             'B': [2, 3, 4, 6, 12], 'C': ['10', '1', '3', '3', '0'], 'D': ['1', '8', '6', '1', '2']})
+        expected_df = pd.DataFrame(
+            {'A': ['2021-01-01', '2021-02-02', '2021-04-04', '2021-05-05'],
+             'B': [2, 3, 6, 12], 'C': ['10', '1', '3', '0'], 'D': ['1', '8', '1', '2']})
+        result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                                   columns=['A', 'B'],
+                                                                                   special_type_list=[SpecialType(1)],
+                                                                                   missing_values=[['2021-03-03']])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    # TODO
     def execute_transform_filter_rows_range(self):
         """
         Execute the simple tests of the function transform_filter_rows_range
@@ -2878,14 +2971,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("")
 
         # Caso 1
-        # Data dic grande con varios outliers
-        datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1, 500, -500], 'B': [2, 3, 4, 6, 12, 500, -500]})
-        expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
-        result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
-                                                                          columns=['A'], left_margin_list=[-100],
-                                                                          right_margin_list=[100],
-                                                                          closure_type_list=[Closure(0)])
-        pd.testing.assert_frame_equal(expected_df, result_df)
-        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")

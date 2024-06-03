@@ -48,9 +48,7 @@ if __name__ == "__main__":
 
     # Execute all data_transformations tests
     data_transformation_simple_tests = DataTransformationsSimpleTest()
-    data_transformation_simple_tests.execute_transform_filter_rows_primitive()
+    data_transformation_simple_tests.execute_transform_filter_rows_range()
 
     data_transformations_tests_with_external_dataset = DataTransformationsExternalDatasetTests()
-    data_transformations_tests_with_external_dataset.execute_transform_filter_rows_primitive_ExternalDatasetTests()
-    # data_transformation_simple_tests.execute_transform_filter_rows_special_values()
-    # data_transformation_simple_tests.execute_transform_filter_rows_range()
+    data_transformations_tests_with_external_dataset.execute_transform_filter_rows_range()

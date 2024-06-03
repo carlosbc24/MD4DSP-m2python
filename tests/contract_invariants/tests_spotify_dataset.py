@@ -21,54 +21,54 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         Methods:
         executeAll_ExternalDatasetTests: execute all the invariant with external dataset tests
-        execute_checkInv_FixValue_FixValue_ExternalDatasetTests: execute the invariant test with external dataset for
-        the function checkInv_FixValue_FixValue execute_SmallBatchTests_checkInv_FixValue_FixValue_ExternalDataset:
+        execute_checkInv_FixValue_FixValue: execute the invariant test with external dataset for
+        the function checkInv_FixValue_FixValue execute_SmallBatchTests_checkInv_FixValue_FixValue:
         execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_FixValue
-        execute_WholeDatasetTests_checkInv_FixValue_FixValue_ExternalDataset: execute the invariant test using the
+        execute_WholeDatasetTests_checkInv_FixValue_FixValue: execute the invariant test using the
         whole dataset for the function checkInv_FixValue_FixValue
-        execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests: execute the invariant test with external dataset
+        execute_checkInv_FixValue_DerivedValue: execute the invariant test with external dataset
         for the function checkInv_FixValue_DerivedValue
-        execute_SmallBatchTests_checkInv_FixValue_DerivedValue_ExternalDataset: execute the invariant test using a
+        execute_SmallBatchTests_checkInv_FixValue_DerivedValue: execute the invariant test using a
         small batch of the dataset for the function checkInv_FixValue_DerivedValue
-        execute_WholeDatasetTests_checkInv_FixValue_DerivedValue_ExternalDataset: execute the invariant test using
+        execute_WholeDatasetTests_checkInv_FixValue_DerivedValue: execute the invariant test using
         the whole dataset for the function checkInv_FixValue_DerivedValue
-        execute_checkInv_FixValue_NumOp_ExternalDatasetTests: execute the invariant test with external dataset for
-        the function checkInv_FixValue_NumOp execute_SmallBatchTests_checkInv_FixValue_NumOp_ExternalDataset: execute
+        execute_checkInv_FixValue_NumOp: execute the invariant test with external dataset for
+        the function checkInv_FixValue_NumOp execute_SmallBatchTests_checkInv_FixValue_NumOp: execute
         the invariant test using a small batch of the dataset for the function checkInv_FixValue_NumOp
-        execute_WholeDatasetTests_checkInv_FixValue_NumOp_ExternalDataset: execute the invariant test using the whole
-        dataset for the function checkInv_FixValue_NumOp execute_checkInv_Interval_FixValue_ExternalDatasetTests:
+        execute_WholeDatasetTests_checkInv_FixValue_NumOp: execute the invariant test using the whole
+        dataset for the function checkInv_FixValue_NumOp execute_checkInv_Interval_FixValue:
         execute the invariant test with external dataset for the function checkInv_Interval_FixValue
-        execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset: execute the invariant test using a small
+        execute_SmallBatchTests_checkInv_Interval_FixValue: execute the invariant test using a small
         batch of the dataset for the function checkInv_Interval_FixValue
-        execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset: execute the invariant test using the
+        execute_WholeDatasetTests_checkInv_Interval_FixValue: execute the invariant test using the
         whole dataset for the function checkInv_Interval_FixValue
-        execute_checkInv_Interval_DerivedValue_ExternalDatasetTests: execute the invariant test with external dataset
+        execute_checkInv_Interval_DerivedValue: execute the invariant test with external dataset
         for the function checkInv_Interval_DerivedValue
-        execute_SmallBatchTests_checkInv_Interval_DerivedValue_ExternalDataset: execute the invariant test using a
+        execute_SmallBatchTests_checkInv_Interval_DerivedValue: execute the invariant test using a
         small batch of the dataset for the function checkInv_Interval_DerivedValue
-        execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset: execute the invariant test using
+        execute_WholeDatasetTests_checkInv_Interval_DerivedValue: execute the invariant test using
         the whole dataset for the function checkInv_Interval_DerivedValue
-        execute_checkInv_Interval_NumOp_ExternalDatasetTests: execute the invariant test with external dataset for
-        the function checkInv_Interval_NumOp execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset: execute
+        execute_checkInv_Interval_NumOp: execute the invariant test with external dataset for
+        the function checkInv_Interval_NumOp execute_SmallBatchTests_checkInv_Interval_NumOp: execute
         the invariant test using a small batch of the dataset for the function checkInv_Interval_NumOp
-        execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset: execute the invariant test using the whole
-        dataset for the function checkInv_Interval_NumOp execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests:
+        execute_WholeDatasetTests_checkInv_Interval_NumOp: execute the invariant test using the whole
+        dataset for the function checkInv_Interval_NumOp execute_checkInv_SpecialValue_FixValue:
         execute the invariant test with external dataset for the function checkInv_SpecialValue_FixValue
-        execute_SmallBatchTests_checkInv_SpecialValue_FixValue_ExternalDataset: execute the invariant test using a
+        execute_SmallBatchTests_checkInv_SpecialValue_FixValue: execute the invariant test using a
         small batch of the dataset for the function checkInv_SpecialValue_FixValue
-        execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset: execute the invariant test using
+        execute_WholeDatasetTests_checkInv_SpecialValue_FixValue: execute the invariant test using
         the whole dataset for the function checkInv_SpecialValue_FixValue
-        execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests: execute the invariant test with external
+        execute_checkInv_SpecialValue_DerivedValue: execute the invariant test with external
         dataset for the function checkInv_SpecialValue_DerivedValue
-        execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue_ExternalDataset: execute the invariant test using
+        execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue: execute the invariant test using
         a small batch of the dataset for the function checkInv_SpecialValue_DerivedValue
-        execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset: execute the invariant test
+        execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue: execute the invariant test
         using the whole dataset for the function checkInv_SpecialValue_DerivedValue
-        execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests: execute the invariant test with external dataset
+        execute_checkInv_SpecialValue_NumOp: execute the invariant test with external dataset
         for the function checkInv_SpecialValue_NumOp
-        execute_SmallBatchTests_checkInv_SpecialValue_NumOp_ExternalDataset: execute the invariant test using a small
+        execute_SmallBatchTests_checkInv_SpecialValue_NumOp: execute the invariant test using a small
         batch of the dataset for the function checkInv_SpecialValue_NumOp
-        execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset: execute the invariant test using the
+        execute_WholeDatasetTests_checkInv_SpecialValue_NumOp: execute the invariant test using the
         whole dataset for the function checkInv_SpecialValue_NumOp
     """
 
@@ -97,16 +97,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_checkInv_FixValue_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests,
-            self.execute_checkInv_FixValue_NumOp_ExternalDatasetTests,
-            self.execute_checkInv_Interval_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_Interval_DerivedValue_ExternalDatasetTests,
-            self.execute_checkInv_Interval_NumOp_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests,
-            self.execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests,
-            self.execute_checkInv_MissingValue_MissingValue_ExternalDatasetTests
+            self.execute_checkInv_FixValue_FixValue,
+            self.execute_checkInv_FixValue_DerivedValue,
+            self.execute_checkInv_FixValue_NumOp,
+            self.execute_checkInv_Interval_FixValue,
+            self.execute_checkInv_Interval_DerivedValue,
+            self.execute_checkInv_Interval_NumOp,
+            self.execute_checkInv_SpecialValue_FixValue,
+            self.execute_checkInv_SpecialValue_DerivedValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue
         ]
 
         print_and_log("")
@@ -125,7 +125,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
 
-    def execute_checkInv_FixValue_FixValue_ExternalDatasetTests(self):
+    def execute_checkInv_FixValue_FixValue(self):
         """
         Execute the invariant test with external dataset for the function checkInv_FixValue_FixValue
         """
@@ -133,17 +133,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_FixValue_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_FixValue_FixValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_FixValue_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_FixValue_FixValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_FixValue_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_FixValue_FixValue(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_FixValue
         """
@@ -443,7 +443,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
 
-    def execute_WholeDatasetTests_checkInv_FixValue_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_FixValue_FixValue(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_FixValue_FixValue
         """
@@ -753,7 +753,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 15 Passed: Expected True, got True")
 
 
-    def execute_checkInv_FixValue_DerivedValue_ExternalDatasetTests(self):
+    def execute_checkInv_FixValue_DerivedValue(self):
         """
         Execute the invariant test with external dataset for the function checkInv_FixValue_DerivedValue
         """
@@ -761,17 +761,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_FixValue_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_FixValue_DerivedValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_FixValue_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_FixValue_DerivedValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_FixValue_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_FixValue_DerivedValue(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_DerivedValue
         """
@@ -1039,7 +1039,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 12 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_checkInv_FixValue_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_FixValue_DerivedValue(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_FixValue_DerivedValue
         """
@@ -1309,7 +1309,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 12 Passed: Expected False, and got False")
 
 
-    def execute_checkInv_FixValue_NumOp_ExternalDatasetTests(self):
+    def execute_checkInv_FixValue_NumOp(self):
         """
         Execute the invariant test with external dataset for the function checkInv_FixValue_NumOp
         """
@@ -1317,17 +1317,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_FixValue_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_FixValue_NumOp()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_FixValue_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_FixValue_NumOp()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_FixValue_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_FixValue_NumOp(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_FixValue_NumOp
         """
@@ -1635,7 +1635,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_checkInv_FixValue_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_FixValue_NumOp(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_FixValue_NumOp
         """
@@ -1947,7 +1947,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: the function raised the expected exception")
 
 
-    def execute_checkInv_Interval_FixValue_ExternalDatasetTests(self):
+    def execute_checkInv_Interval_FixValue(self):
         """
         Execute the invariant test with external dataset for the function checkInv_Interval_FixValue
         """
@@ -1955,17 +1955,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_Interval_FixValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_Interval_FixValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_Interval_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_Interval_FixValue(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_FixValue
         """
@@ -2093,7 +2093,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 7 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_checkInv_Interval_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_Interval_FixValue(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_FixValue
         """
@@ -2223,7 +2223,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 7 Passed: Expected False, and got False")
 
 
-    def execute_checkInv_Interval_DerivedValue_ExternalDatasetTests(self):
+    def execute_checkInv_Interval_DerivedValue(self):
         """
         Execute the invariant test with external dataset for the function checkInv_Interval_DerivedValue
         """
@@ -2231,17 +2231,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_Interval_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_Interval_DerivedValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_Interval_DerivedValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_Interval_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_Interval_DerivedValue(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_Interval_DerivedValue
         """
@@ -2437,7 +2437,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_checkInv_Interval_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_Interval_DerivedValue(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_Interval_DerivedValue
         """
@@ -2634,7 +2634,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected False, and got False")
 
 
-    def execute_checkInv_Interval_NumOp_ExternalDatasetTests(self):
+    def execute_checkInv_Interval_NumOp(self):
         """
         Execute the invariant test with external dataset for the function checkInv_Interval_NumOp
         """
@@ -2642,17 +2642,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_Interval_NumOp()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_Interval_NumOp()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_Interval_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_Interval_NumOp(self):
         """
         Execute the invariant test using a small batch of the dataset for the function check_inv_interval_num_op
         """
@@ -2893,7 +2893,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        left_margin=2, right_margin=3, closure_type=Closure(2),
                                                                        num_op_output=Operation(1), axis_param=0)
 
-        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0, 
+        result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=0,
                                                            right_margin=3,
                                                            closure_type=Closure(0), num_op_output=Operation(1), axis_param=0,
                                                            belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -3045,7 +3045,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 28 Passed: Expected False, got False")
 
 
-    def execute_WholeDatasetTests_checkInv_Interval_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_Interval_NumOp(self):
         """
         Execute the invariant test using the whole dataset for the function check_inv_interval_num_op
         """
@@ -3439,7 +3439,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 28 Passed: Expected False, got False")
 
 
-    def execute_checkInv_SpecialValue_FixValue_ExternalDatasetTests(self):
+    def execute_checkInv_SpecialValue_FixValue(self):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_FixValue
         """
@@ -3447,17 +3447,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_SpecialValue_FixValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_SpecialValue_FixValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_SpecialValue_FixValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_SpecialValue_FixValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_SpecialValue_FixValue(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_FixValue
         """
@@ -3764,7 +3764,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_checkInv_SpecialValue_FixValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_SpecialValue_FixValue(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_FixValue
         """
@@ -4058,7 +4058,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Expected False, and got False")
 
 
-    def execute_checkInv_SpecialValue_DerivedValue_ExternalDatasetTests(self):
+    def execute_checkInv_SpecialValue_DerivedValue(self):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_DerivedValue
         """
@@ -4066,17 +4066,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_SpecialValue_DerivedValue(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_DerivedValue
         """
@@ -4594,7 +4594,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 24 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_SpecialValue_DerivedValue(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_DerivedValue
         """
@@ -5084,7 +5084,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 24 Passed: Expected False, and got False")
 
 
-    def execute_checkInv_SpecialValue_NumOp_ExternalDatasetTests(self):
+    def execute_checkInv_SpecialValue_NumOp(self):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_NumOp
         """
@@ -5092,17 +5092,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_SpecialValue_NumOp_ExternalDataset()
+        self.execute_SmallBatchTests_checkInv_SpecialValue_NumOp()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset()
+        self.execute_WholeDatasetTests_checkInv_SpecialValue_NumOp()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
+    def execute_SmallBatchTests_checkInv_SpecialValue_NumOp(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_SpecialValue_NumOp
         """
@@ -5794,7 +5794,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 40 Passed: Expected False, and got False")
 
 
-    def execute_WholeDatasetTests_checkInv_SpecialValue_NumOp_ExternalDataset(self):
+    def execute_WholeDatasetTests_checkInv_SpecialValue_NumOp(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_SpecialValue_NumOp
         """
@@ -6428,7 +6428,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 40 Passed: Expected False, and got False")
 
 
-    def execute_checkInv_MissingValue_MissingValue_ExternalDatasetTests(self):
+    def execute_checkInv_MissingValue_MissingValue(self):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_NumOp
         """
@@ -6438,17 +6438,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.options.mode.chained_assignment = None # Suppresses warnings related to modifying copies of dataframes
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_MissingValue_MissingValue_ExternalDatasetTest()
+        self.execute_SmallBatchTests_checkInv_MissingValue_MissingValue()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_MissingValue_MissingValue_ExternalDatasetTest()
+        self.execute_WholeDatasetTests_checkInv_MissingValue_MissingValue()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
 
-    def execute_SmallBatchTests_checkInv_MissingValue_MissingValue_ExternalDatasetTest(self):
+    def execute_SmallBatchTests_checkInv_MissingValue_MissingValue(self):
         """
         Execute the invariant test using a small batch of the dataset for the function checkInv_MissingValue_MissingValue
         """
@@ -6598,7 +6598,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected False, got False")
 
 
-    def execute_WholeDatasetTests_checkInv_MissingValue_MissingValue_ExternalDatasetTest(self):
+    def execute_WholeDatasetTests_checkInv_MissingValue_MissingValue(self):
         """
         Execute the invariant test using the whole dataset for the function checkInv_MissingValue_MissingValue
         """
@@ -6688,7 +6688,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability', 
+                                                                       belong_op_out=Belong(0), field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6742,4 +6742,3 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 10 Failed: Expected False, but got True"'d'
         print_and_log("Test Case 10 Passed: Expected False, got False")
-
