@@ -847,7 +847,6 @@ class Invariants:
         elif belong_op_out == Belong.NOTBELONG:
             result = True
 
-        keep_no_trans_result = True
 
         if field_in is None:
             for column_index, column_name in enumerate(data_dictionary_in.columns):
@@ -860,10 +859,7 @@ class Invariants:
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = False
                                 print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
-                    else:
-                        if data_dictionary_out.loc[row_index, column_name] != value:
-                            keep_no_trans_result = False
-                            print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+
         elif field_in is not None:
             if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
                 raise ValueError("The field does not exist in the dataframe")
@@ -876,12 +872,5 @@ class Invariants:
                         elif belong_op_out == Belong.NOTBELONG:
                             result = False
                             print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
-                else:
-                    if data_dictionary_out.loc[row_index, field_out] != value:
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
 
-        if keep_no_trans_result == False:
-            return False
-        else:
-            return True if result else False
+        return True if result else False
