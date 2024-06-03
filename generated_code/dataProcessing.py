@@ -230,7 +230,17 @@ class DataProcessing:
 		
 		missing_values_list=[]
 		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'avg_income', field_out = 'avg_income')
+		
 		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'distance', field_out = 'distance')
 		
 		imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv')
@@ -290,6 +300,11 @@ class DataProcessing:
 		imputeByNumericOp_input_dataDictionary_transformed=imputeByNumericOp_input_dataDictionary.copy()
 		
 		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(0), num_op_output=Operation(0),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'satscore', field_out = 'satscore')
 		
 		imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv')
@@ -538,9 +553,24 @@ class DataProcessing:
 		
 		missing_values_list=[]
 		
-		missing_values_list=[]
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'avg_income', field_out = 'avg_income')
 		
 		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'distance', field_out = 'distance')
+		
+		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'Instate', field_out = 'Instate')
 		
 		imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
@@ -711,7 +741,7 @@ class DataProcessing:
 								                                      data_type_output = DataType(0),
 																	  field_in = 'SELF_INIT_CNTCTS',
 																	  field_out = 'SELF_INIT_CNTCTS_binned')
-
+		
 		binner_input_dataDictionary_transformed=transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=4.0, right_margin=1000.0,
 																	  closure_type=Closure(2),
@@ -722,9 +752,7 @@ class DataProcessing:
 		
 		binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
-
-		print(binner_output_dataDictionary['TOTAL_CONTACTS_binned'])
-
+		
 		if pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_output_dataDictionary,
 		                                	closure_type=Closure(0), belong_op=Belong(1), field='TOTAL_CONTACTS_binned'):
 			print('POSTCONDITION binner(TOTAL_CONTACTS)_POST_valueRange VALIDATED')

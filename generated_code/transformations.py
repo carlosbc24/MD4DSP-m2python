@@ -61,7 +61,17 @@ class DataProcessing:
 		
 		missing_values_list=[]
 		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'avg_income', field_out = 'avg_income')
+		
 		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(0), num_op_output=Operation(1),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'distance', field_out = 'distance')
 		
 		imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv')
@@ -71,6 +81,11 @@ class DataProcessing:
 		imputeByNumericOp_input_dataDictionary_transformed=imputeByNumericOp_input_dataDictionary.copy()
 		
 		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(0), num_op_output=Operation(0),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'satscore', field_out = 'satscore')
 		
 		imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv')
@@ -148,9 +163,24 @@ class DataProcessing:
 		
 		missing_values_list=[]
 		
-		missing_values_list=[]
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'avg_income', field_out = 'avg_income')
 		
 		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'distance', field_out = 'distance')
+		
+		missing_values_list=[]
+		
+		imputeByNumericOp_input_dataDictionary_transformed=transformations.transform_special_value_num_op(data_dictionary=imputeByNumericOp_input_dataDictionary_transformed,
+																	  special_type_input=SpecialType(2), num_op_output=Operation(3),
+																	  missing_values=missing_values_list,		
+																	  axis_param=0, field_in = 'Instate', field_out = 'Instate')
 		
 		imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
