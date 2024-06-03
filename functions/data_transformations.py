@@ -1052,28 +1052,36 @@ class DataTransformations:
         return data_dictionary_copy
 
     def transform_filter_rows_primitive(self, data_dictionary: pd.DataFrame, columns: list[str],
-                                        filter_fix_value: list = None) -> pd.DataFrame:
+                                        filter_fix_value_list: list = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FilterRows - Primitive relation
 
         Args:
             data_dictionary: dataframe with the data
             columns: list of columns to filter
-            filter_fix_value: value to filter
+            filter_fix_value_list: values to filter
 
         Returns:
             pd.DataFrame: data_dictionary with the rows with the value fix_value_output in the columns of the list columns removed
         """
         data_dictionary_copy = data_dictionary.copy()
 
-        if filter_fix_value is not None:
-            # Remove the rows with the value fix_value_output in the columns of the list columns
-            data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[columns].isin([filter_fix_value]).any(axis=1)]
+        for current_column in columns:
+
+            # If column doesn't exist in the dataframe, raise an error
+            if current_column not in data_dictionary_copy.columns:
+                raise ValueError("The column does not exist in the dataframe")
+
+            if filter_fix_value_list is not None:
+                # Remove the rows with the value fix_value_output in the column
+                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(filter_fix_value_list)]
+                # Reset dataframe indexes
+                data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
 
         return data_dictionary_copy
 
     def transform_filter_rows_special_values(self, data_dictionary: pd.DataFrame, columns: list[str],
-                                             special_type: list[SpecialType] = None,
+                                             special_type_list: list[SpecialType] = None,
                                              missing_values: list[list] = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FilterRows - SpecialValues relation
@@ -1081,7 +1089,7 @@ class DataTransformations:
         Args:
             data_dictionary: dataframe with the data
             columns: list of columns to filter
-            special_type: special type of the input value
+            special_type_list: special type of the input value
             missing_values: list of missing values
 
         Returns:
@@ -1089,49 +1097,74 @@ class DataTransformations:
         """
         data_dictionary_copy = data_dictionary.copy()
 
-        if special_type is not None:
-            if special_type == SpecialType.MISSING:
-                if missing_values is not None:
-                    # Remove the rows with the values in the list missing_values in the columns of the list columns
-                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[columns].isin(missing_values).any(axis=1)]
-                    # Remove null values
-                    data_dictionary_copy = data_dictionary_copy.dropna()
-            elif special_type == SpecialType.INVALID:
-                if missing_values is not None:
-                    # Remove the rows with the values in the list missing_values in the columns of the list columns
-                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[columns].isin(missing_values).any(axis=1)]
-                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy.isin(missing_values).any(axis=1)]
-            elif special_type == SpecialType.OUTLIER:
-                # Obtain the outliers for each column of the dataframe and remove the rows with outliers
-                for column in columns:
-                    # Get the dataframe mask with outliers detected
-                    data_dictionary_copy_mask = get_outliers(data_dictionary_copy, column)
-                    # Remove the rows with the value 1 in the mask dataframe with outliers
-                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy_mask.any(axis=1)]
+        for index in range(len(special_type_list)):
+
+            current_special_type = special_type_list[index]
+            current_missing_values_list = missing_values[index]
+
+            for current_column in columns:
+
+                # If column doesn't exist in the dataframe, raise an error
+                if current_column not in data_dictionary_copy.columns:
+                    raise ValueError("The column does not exist in the dataframe")
+
+                if current_special_type is not None:
+                    if current_special_type == SpecialType.MISSING:
+                        if current_missing_values_list is not None:
+                            # Remove the rows with the values in the list missing_values in the columns of the list columns
+                            data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(current_missing_values_list)]
+                            # Remove null values
+                            data_dictionary_copy = data_dictionary_copy.dropna()
+
+                    elif current_special_type == SpecialType.INVALID:
+                        if current_missing_values_list is not None:
+                            # Remove the rows with the values in the list missing_values in the columns of the list columns
+                            data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(current_missing_values_list)]
+
+                    elif current_special_type == SpecialType.OUTLIER:
+                        # Get the dataframe mask with outliers detected
+                        data_dictionary_copy_mask = get_outliers(data_dictionary_copy, current_column)
+                        # Remove the rows with the value 1 in the mask dataframe with outliers
+                        data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy_mask[current_column].isin([1])]
+
+        # Reset indexes
+        data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
 
         return data_dictionary_copy
 
     def transform_filter_rows_range(self, data_dictionary: pd.DataFrame, columns: list[str],
-                                  left_margin: list[float] = None, right_margin: list[float] = None,
-                                  closure_type: list[Closure] = None) -> pd.DataFrame:
+                                  left_margin_list: list[float] = None, right_margin_list: list[float] = None,
+                                  closure_type_list: list[Closure] = None) -> pd.DataFrame:
         """
         Execute the data transformation of the FilterRows - Range relation
 
         Args:
             data_dictionary: dataframe with the data
             columns: list of columns to filter
-            left_margin: left margin of the interval
-            right_margin: right margin of the interval
-            closure_type: closure type of the interval
+            left_margin_list: left margin list of the interval
+            right_margin_list: right margin list of the interval
+            closure_type_list: closure type list of the interval
 
         Returns:
             pd.DataFrame: data_dictionary with the rows with values within the interval [left_margin, right_margin] in the columns of the list columns removed
         """
         data_dictionary_copy = data_dictionary.copy()
 
-        if left_margin is not None and right_margin is not None and closure_type is not None:
-            # Remove the rows with values within the interval [left_margin, right_margin] in the columns of the list columns
-            for column in columns:
-                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[column].apply(lambda x: check_interval_condition(x, left_margin, right_margin, closure_type))]
+        for index in range(len(closure_type_list)):
+
+            current_left_margin = left_margin_list[index]
+            current_right_margin = right_margin_list[index]
+            current_closure_type = closure_type_list[index]
+
+            for current_column in columns:
+
+                # If column doesn't exist in the dataframe, raise an error
+                if current_column not in data_dictionary_copy.columns:
+                    raise ValueError("The column does not exist in the dataframe")
+
+                if current_left_margin is not None and current_right_margin is not None and current_closure_type is not None:
+                    # Remove the rows with the values within the interval
+                    # [left_margin, right_margin] in the column current_column
+                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].apply(lambda x: check_interval_condition(x, current_left_margin, current_right_margin, current_closure_type))]
 
         return data_dictionary_copy
