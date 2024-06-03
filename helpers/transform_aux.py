@@ -571,7 +571,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
         if special_type_input == SpecialType.MISSING:
             mean = data_dictionary_copy[field_in].mean()
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
-                lambda x: mean if x in missing_values else x)
+                lambda x: mean if (x in missing_values or pd.isnull(x)) else x)
         if special_type_input == SpecialType.INVALID:
             mean = data_dictionary_copy[field_in].mean()
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
