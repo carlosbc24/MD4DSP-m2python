@@ -1070,7 +1070,7 @@ class DataTransformations:
 
             # If column doesn't exist in the dataframe, raise an error
             if current_column not in data_dictionary_copy.columns:
-                raise ValueError("The column does not exist in the dataframe")
+                raise ValueError(f"The column {current_column} does not exist in the dataframe")
 
             if filter_fix_value_list is not None:
                 # Remove the rows with the value fix_value_output in the column
@@ -1109,7 +1109,7 @@ class DataTransformations:
 
                 # If column doesn't exist in the dataframe, raise an error
                 if current_column not in data_dictionary_copy.columns:
-                    raise ValueError("The column does not exist in the dataframe")
+                    raise ValueError(f"The column {current_column} does not exist in the dataframe")
 
                 if current_special_type is not None:
                     if current_special_type == SpecialType.MISSING:
@@ -1164,7 +1164,7 @@ class DataTransformations:
 
                 # If column doesn't exist in the dataframe, raise an error
                 if current_column not in data_dictionary_copy.columns:
-                    raise ValueError("The column does not exist in the dataframe")
+                    raise ValueError(f"The column {current_column} does not exist in the dataframe")
 
                 if current_left_margin is not None and current_right_margin is not None and current_closure_type is not None:
                     # Remove the rows with the values within the interval

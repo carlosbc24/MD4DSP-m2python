@@ -5257,6 +5257,74 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Casos Básicos añadidos:")
         print_and_log("")
 
+        # Case 1
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['speechiness'],
+            right_margin_list=[0.5, 0.7],
+            left_margin_list=[0.2, 0.4],
+            closure_type_list=[Closure(0), Closure(1)])
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[~(((expected_df['speechiness'] > 0.2) & (expected_df['speechiness'] < 0.5)) |
+                                    ((expected_df['speechiness'] > 0.4) & (expected_df['speechiness'] <= 0.7)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Case 2
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['mode', 'track_popularity', 'danceability'],
+            right_margin_list=[0, 11, 0.7],
+            left_margin_list=[0, 10, 0.4],
+            closure_type_list=[Closure(3), Closure(1), Closure(1)])
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[~(((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0)) |
+                                    ((expected_df['mode'] > 10) & (expected_df['mode'] <= 11)) |
+                                    ((expected_df['mode'] > 0.4) & (expected_df['mode'] <= 0.7)) |
+                                    ((expected_df['track_popularity'] >= 0) & (expected_df['track_popularity'] <= 0)) |
+                                    ((expected_df['track_popularity'] > 10) & (expected_df['track_popularity'] <= 11)) |
+                                    ((expected_df['track_popularity'] > 0.4) & (
+                                                expected_df['track_popularity'] <= 0.7)) |
+                                    ((expected_df['danceability'] >= 0) & (expected_df['danceability'] <= 0)) |
+                                    ((expected_df['danceability'] > 10) & (expected_df['danceability'] <= 11)) |
+                                    ((expected_df['danceability'] > 0.4) & (expected_df['danceability'] <= 0.7)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Case 3
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['instrumentalness', 'danceability', 'energy', 'speechiness', 'liveness'],
+            right_margin_list=[0.1, 0.8],
+            left_margin_list=[0.01, 0.7],
+            closure_type_list=[Closure(0), Closure(3)])
+        expected_df = self.small_batch_dataset.copy()
+        expected_df = expected_df[~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
+                                    ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
+                                    ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
+                                    ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
+                                    ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
+                                    ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
+                                    ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
+                                    ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
+                                    ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
+                                    ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Case 4 - COLUMN THAT DOES NOT EXIST - ValueError raised
+        with self.assertRaises(ValueError):
+            result_df = self.data_transformations.transform_filter_rows_range(
+                data_dictionary=self.small_batch_dataset.copy(),
+                columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
+                         "noew_column_pepe"], right_margin_list=[0.5],
+                left_margin_list=[0.2], closure_type_list=[Closure(0)])
+        print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
+
+
     # TODO
     def execute_WholeDatasetTests_execute_transform_filter_rows_range(self):
         """
@@ -5266,3 +5334,69 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
         print_and_log("Casos Básicos añadidos:")
         print_and_log("")
+
+        # Case 1
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['speechiness'],
+            right_margin_list=[0.5, 0.7],
+            left_margin_list=[0.2, 0.4],
+            closure_type_list=[Closure(0), Closure(1)])
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[~(((expected_df['speechiness'] > 0.2) & (expected_df['speechiness'] < 0.5)) |
+                                    ((expected_df['speechiness'] > 0.4) & (expected_df['speechiness'] <= 0.7)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Case 2
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['mode', 'track_popularity', 'danceability'],
+            right_margin_list=[0, 11, 0.7],
+            left_margin_list=[0, 10, 0.4],
+            closure_type_list=[Closure(3), Closure(1), Closure(1)])
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[~(((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0)) |
+                                    ((expected_df['mode'] > 10) & (expected_df['mode'] <= 11)) |
+                                    ((expected_df['mode'] > 0.4) & (expected_df['mode'] <= 0.7)) |
+                                    ((expected_df['track_popularity'] >= 0) & (expected_df['track_popularity'] <= 0)) |
+                                    ((expected_df['track_popularity'] > 10) & (expected_df['track_popularity'] <= 11)) |
+                                    ((expected_df['track_popularity'] > 0.4) & (expected_df['track_popularity'] <= 0.7)) |
+                                    ((expected_df['danceability'] >= 0) & (expected_df['danceability'] <= 0)) |
+                                    ((expected_df['danceability'] > 10) & (expected_df['danceability'] <= 11)) |
+                                    ((expected_df['danceability'] > 0.4) & (expected_df['danceability'] <= 0.7)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Case 3
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['instrumentalness', 'danceability', 'energy', 'speechiness', 'liveness'],
+            right_margin_list=[0.1, 0.8],
+            left_margin_list=[0.01, 0.7],
+            closure_type_list=[Closure(0), Closure(3)])
+        expected_df = self.rest_of_dataset.copy()
+        expected_df = expected_df[~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
+                                    ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
+                                    ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
+                                    ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
+                                    ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
+                                    ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
+                                    ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
+                                    ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
+                                    ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
+                                    ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Case 4 - COLUMN THAT DOES NOT EXIST - ValueError raised
+        with self.assertRaises(ValueError):
+            result_df = self.data_transformations.transform_filter_rows_range(
+                data_dictionary=self.rest_of_dataset.copy(),
+                columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
+                         "noew_column_pepe"], right_margin_list=[0.5],
+                left_margin_list=[0.2], closure_type_list=[Closure(0)])
+        print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
