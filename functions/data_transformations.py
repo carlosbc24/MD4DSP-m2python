@@ -1075,8 +1075,9 @@ class DataTransformations:
             if filter_fix_value_list is not None:
                 # Remove the rows with the value fix_value_output in the column
                 data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(filter_fix_value_list)]
-                # Reset dataframe indexes
-                data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
+
+        # Reset dataframe indexes
+        data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
 
         return data_dictionary_copy
 
@@ -1100,7 +1101,9 @@ class DataTransformations:
         for index in range(len(special_type_list)):
 
             current_special_type = special_type_list[index]
-            current_missing_values_list = missing_values[index]
+
+            if current_special_type != SpecialType.OUTLIER:
+                current_missing_values_list = missing_values[index]
 
             for current_column in columns:
 
@@ -1113,8 +1116,8 @@ class DataTransformations:
                         if current_missing_values_list is not None:
                             # Remove the rows with the values in the list missing_values in the columns of the list columns
                             data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(current_missing_values_list)]
-                            # Remove null values
-                            data_dictionary_copy = data_dictionary_copy.dropna()
+                            # Remove rows which values in the current column are NaN
+                            data_dictionary_copy = data_dictionary_copy.dropna(subset=[current_column])
 
                     elif current_special_type == SpecialType.INVALID:
                         if current_missing_values_list is not None:
@@ -1146,7 +1149,8 @@ class DataTransformations:
             closure_type_list: closure type list of the interval
 
         Returns:
-            pd.DataFrame: data_dictionary with the rows with values within the interval [left_margin, right_margin] in the columns of the list columns removed
+            pd.DataFrame: data_dictionary with the rows with values within the interval [left_margin, right_margin]
+            in the columns of the list columns removed
         """
         data_dictionary_copy = data_dictionary.copy()
 
@@ -1166,5 +1170,8 @@ class DataTransformations:
                     # Remove the rows with the values within the interval
                     # [left_margin, right_margin] in the column current_column
                     data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].apply(lambda x: check_interval_condition(x, current_left_margin, current_right_margin, current_closure_type))]
+
+        # Reset indexes
+        data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
 
         return data_dictionary_copy
