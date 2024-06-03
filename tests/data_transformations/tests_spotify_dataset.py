@@ -1942,8 +1942,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = expected_df.apply(lambda col: col.apply(lambda x:
                                                               find_closest_value(col, x) if np.issubdtype(type(x),
                                                                                                           np.number) and (
-                                                                                                        (23 < x) and (
-                                                                                                            x < 25)) else x),
+                                                                                                    (23 < x) and (
+                                                                                                    x < 25)) else x),
                                         axis=0)
 
         pd.testing.assert_frame_equal(result, expected_df)
@@ -2623,7 +2623,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             IQR = Q3 - Q1
 
             outlier_condition = (
-                        (expected_df[field_in] < Q1 - threshold * IQR) | (expected_df[field_in] > Q3 + threshold * IQR))
+                    (expected_df[field_in] < Q1 - threshold * IQR) | (expected_df[field_in] > Q3 + threshold * IQR))
             expected_df[field_out] = np.where(outlier_condition, fix_value_output, expected_df[field_in])
 
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -3813,10 +3813,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         for idx in range(len(expected_df[field_in])):
             expected_df[field_in].iat[idx] = find_closest_value(expected_df[field_in].tolist(),
                                                                 expected_df[field_in].iat[idx]) if \
-            expected_df[field_in].iat[
-                idx] < Q1 - 1.5 * IQR or \
-            expected_df[field_in].iat[
-                idx] > Q3 + 1.5 * IQR else \
+                expected_df[field_in].iat[
+                    idx] < Q1 - 1.5 * IQR or \
+                expected_df[field_in].iat[
+                    idx] > Q3 + 1.5 * IQR else \
                 expected_df[field_in].iat[idx]
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
@@ -4663,7 +4663,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
-
     def execute_WholeDatasetTests_execute_transform_filter_columns_ExternalDataset(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_filter_columns
@@ -4736,3 +4735,178 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = expected_df[['speechiness']]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+    def execute_transform_filter_rows_primitive_ExternalDatasetTests(self):
+        """
+        Execute the data transformation test with external dataset for the function transform_filter_rows_primitive
+        """
+        print_and_log("Testing transform_filter_rows_primitive Data Transformation Function")
+        print_and_log("")
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_execute_transform_filter_rows_primitive_ExternalDataset()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_execute_transform_filter_rows_primitive_ExternalDataset()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_execute_transform_filter_rows_primitive_ExternalDataset(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_filter_rows_primitive
+        """
+        print_and_log("Testing transform_filter_rows_primitive Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['mode'],
+            filter_fix_value_list=[0])
+        expected_df = self.small_batch_dataset.copy()
+        # Remove from expected_df the rows where the column 'mode' has the value 0
+        expected_df = expected_df[expected_df['mode'] != 0]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['track_popularity'],
+            filter_fix_value_list=[2, 11, 77,
+                                   56])
+        expected_df = self.small_batch_dataset.copy()
+        # Remove from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
+        expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['track_artist'],
+            filter_fix_value_list=['The Beatles',
+                                   'Ed Sheeran', 'Lady Gaga'])
+        expected_df = self.small_batch_dataset.copy()
+        # Remove from expected_df the rows where the column 'track_artist' has the values 'The Beatles', 'Ed Sheeran', 'Lady Gaga'
+        expected_df = expected_df[expected_df['track_artist'].isin(['The Beatles', 'Ed Sheeran', 'Lady Gaga']) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Remove dates from track_album_release_date
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.small_batch_dataset.copy(),
+            columns=['track_album_release_date'],
+            filter_fix_value_list=['2020-01-01',
+                                   '2017-09-28',
+                                   '2012-01-01',
+                                   '2019-06-14'])
+        expected_df = self.small_batch_dataset.copy()
+        # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
+        expected_df = expected_df[expected_df['track_album_release_date'].isin(['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Case 5 - ValueError raised when the column name is not in the dataframe
+        with self.assertRaises(ValueError):
+            self.data_transformations.transform_filter_rows_primitive(
+                data_dictionary=self.small_batch_dataset.copy(),
+                columns=['fechas_salida_album'],
+                filter_fix_value_list=['2020-01-01',
+                                       '2017-09-28',
+                                       '2012-01-01',
+                                       '2019-06-14'])
+        print_and_log("Test Case 5 Passed: ValueError raised when the column name is not in the dataframe")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_WholeDatasetTests_execute_transform_filter_rows_primitive_ExternalDataset(self):
+        """
+        Execute the data transformation test using the whole dataset for the function transform_filter_rows_primitive
+        """
+        print_and_log("Testing transform_filter_rows_primitive Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['mode'],
+            filter_fix_value_list=[0])
+        expected_df = self.rest_of_dataset.copy()
+        # Remove from expected_df the rows where the column 'mode' has the value 0
+        expected_df = expected_df[expected_df['mode'] != 0]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['track_popularity'],
+            filter_fix_value_list=[2, 11, 77,
+                                   56])
+        expected_df = self.rest_of_dataset.copy()
+        # Remove from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
+        expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['track_artist'],
+            filter_fix_value_list=['The Beatles',
+                                   'Ed Sheeran', 'Lady Gaga'])
+        expected_df = self.rest_of_dataset.copy()
+        # Remove from expected_df the rows where the column 'track_artist' has the values 'The Beatles', 'Ed Sheeran', 'Lady Gaga'
+        expected_df = expected_df[expected_df['track_artist'].isin(['The Beatles', 'Ed Sheeran', 'Lady Gaga']) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Remove dates from track_album_release_date
+        result_df = self.data_transformations.transform_filter_rows_primitive(
+            data_dictionary=self.rest_of_dataset.copy(),
+            columns=['track_album_release_date'],
+            filter_fix_value_list=['2020-01-01',
+                                   '2017-09-28',
+                                   '2012-01-01',
+                                   '2019-06-14'])
+        expected_df = self.rest_of_dataset.copy()
+        # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
+        expected_df = expected_df[expected_df['track_album_release_date'].isin(['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
+        expected_df.reset_index(drop=True, inplace=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Case 5 - ValueError raised when the column name is not in the dataframe
+        with self.assertRaises(ValueError):
+            self.data_transformations.transform_filter_rows_primitive(
+                data_dictionary=self.rest_of_dataset.copy(),
+                columns=['fechas_salida_album'],
+                filter_fix_value_list=['2020-01-01',
+                                       '2017-09-28',
+                                       '2012-01-01',
+                                       '2019-06-14'])
+        print_and_log("Test Case 5 Passed: ValueError raised when the column name is not in the dataframe")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")

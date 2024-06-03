@@ -59,7 +59,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             self.execute_transform_SpecialValue_NumOp,
             self.execute_transform_derived_field,
             self.execute_transform_filter_columns,
-            self.execute_transform_cast_type
+            self.execute_transform_cast_type,
+            self.execute_transform_filter_rows_primitive,
+            self.execute_transform_filter_rows_special_values,
+            self.execute_transform_filter_rows_range
         ]
 
         print_and_log("")
@@ -2718,7 +2721,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
              'D': ['1', '8', '6', '1', '2']})
         expected_df = pd.DataFrame(
             {'A': [pd.Timestamp('2021-01-01'), pd.Timestamp('2021-02-02'), pd.Timestamp('2021-03-03'),
-                   pd.Timestamp('2021-04-04'), pd.Timestamp('2021-05-05')], 'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
+                   pd.Timestamp('2021-04-04'), pd.Timestamp('2021-05-05')], 'B': ['2', '3', '4', '6', '12'],
+             'C': ['10', '1', '3', '3', '0'],
              'D': ['1', '8', '6', '1', '2']})
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
@@ -2732,7 +2736,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
              'C': ['10', '1', '3', '3', '0'],
              'D': ['1', '8', '6', '1', '2']})
         expected_df = pd.DataFrame(
-            {'A': [True, False, True, False, True],  'B': ['2', '3', '4', '6', '12'],
+            {'A': [True, False, True, False, True], 'B': ['2', '3', '4', '6', '12'],
              'C': ['10', '1', '3', '3', '0'],
              'D': ['1', '8', '6', '1', '2']})
         expected_exception = ValueError
@@ -2756,3 +2760,132 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
+
+    def execute_transform_filter_rows_primitive(self):
+        """
+        Execute the simple tests of the function transform_filter_rows_primitive
+        """
+        print_and_log("Testing transform_filter_rows_primitive Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 3, 4, 1], 'B': [2, 4, 6, 12]})
+        result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
+                                                                              columns=['A'], filter_fix_value_list=[2])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 3, 1], 'B': [2, 4, 12]})
+        result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
+                                                                              columns=['B'], filter_fix_value_list=[
+                3, 6])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        # Excepción de columna inexistente
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
+                                                                      columns=['C'], filter_fix_value_list=[3])
+        print_and_log("Test Case 3 Passed: expected exception")
+
+        # Caso 4 - Dataframe más grande con más tiposd e datos
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': ['a', 'b', 'c', 'd', 'e'], 'D': [1, 8, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 3, 4, 1], 'B': [2, 4, 6, 12], 'C': ['a', 'c', 'd', 'e'], 'D': [1, 6, 1, 2]})
+        result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
+                                                                              columns=['A'], filter_fix_value_list=[2])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5 - Dataframe más grande con más tiposd e datos, filtrando por valores de cadena str
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': ['a', 'b', 'c', 'd', 'e'], 'D': [1, 8.2, 6, 1, 2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 4, 1], 'B': [2, 3, 6, 12], 'C': ['a', 'b', 'd', 'e'], 'D': [1, 8.2, 1, 2]})
+        result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
+                                                                              columns=['C'],
+                                                                              filter_fix_value_list=['c'])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        # Caso 6 - Dataframe más grande con más tiposd e datos, filtrando por valores de fechas
+        datadic = pd.DataFrame(
+            {'A': ['2021-01-01', '2021-02-02', '2021-03-03', '2021-04-04', '2021-05-05'],
+             'B': [2, 3, 4, 6, 12], 'C': ['10', '1', '3', '3', '0'], 'D': ['1', '8', '6', '1', '2']})
+        expected_df = pd.DataFrame(
+            {'A': ['2021-01-01', '2021-02-02', '2021-04-04', '2021-05-05'],
+             'B': [2, 3, 6, 12], 'C': ['10', '1', '3', '0'], 'D': ['1', '8', '1', '2']})
+        result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
+                                                                              columns=['A'],
+                                                                              filter_fix_value_list=['2021-03-03'])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_transform_filter_rows_special_values(self):
+        """
+        Execute the simple tests of the function transform_filter_rows_special_values
+        """
+        print_and_log("Testing transform_filter_rows_special_values Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        # Data dic con nulos y 2's
+        datadic = pd.DataFrame(
+            {'A': [0, 2, None, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 4, 1], 'B': [2, 6, 12]})
+        result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                                   columns=['A'], special_type_list=[
+                SpecialType(0)], missing_values=[[2]])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2
+
+    def execute_transform_filter_rows_range(self):
+        """
+        Execute the simple tests of the function transform_filter_rows_range
+        """
+        print_and_log("Testing transform_filter_rows_range Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1
+        # Data dic grande con varios outliers
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1, 500, -500], 'B': [2, 3, 4, 6, 12, 500, -500]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
+                                                                          columns=['A'], left_margin_list=[-100],
+                                                                          right_margin_list=[100],
+                                                                          closure_type_list=[Closure(0)])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
