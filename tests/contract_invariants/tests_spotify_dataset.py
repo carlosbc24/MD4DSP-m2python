@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from functions.contract_invariants import Invariants
-from functions.data_transformations import DataTransformations
+import functions.contract_invariants as invariants
+import functions.data_transformations as data_transformations
 from helpers.enumerations import Closure, DataType, SpecialType, Belong
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
@@ -77,8 +77,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Constructor of the class
         """
         super().__init__()
-        self.invariants = Invariants()
-        self.data_transformations = DataTransformations()
+        self.invariants = invariants
+        self.data_transformations = data_transformations
 
         # Get the current directory
         directorio_actual = os.path.dirname(os.path.abspath(__file__))

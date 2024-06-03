@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from functions.data_transformations import DataTransformations
+import functions.data_transformations as data_transformations
 from helpers.auxiliar import find_closest_value
 from helpers.enumerations import Closure, DataType, SpecialType, Belong
 from helpers.enumerations import DerivedType, Operation
@@ -113,7 +113,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         """
         Constructor of the class
         """
-        self.data_transformations = DataTransformations()
+        super().__init__()
+        self.data_transformations = data_transformations
 
         # Get the current directory
         directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -5247,7 +5248,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO
     def execute_SmallBatchTests_execute_transform_filter_rows_range(self):
         """
         Execute the data transformation test using a small batch of the dataset for the function transform_filter_rows_range
@@ -5285,7 +5285,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                     ((expected_df['track_popularity'] >= 0) & (expected_df['track_popularity'] <= 0)) |
                                     ((expected_df['track_popularity'] > 10) & (expected_df['track_popularity'] <= 11)) |
                                     ((expected_df['track_popularity'] > 0.4) & (
-                                                expected_df['track_popularity'] <= 0.7)) |
+                                            expected_df['track_popularity'] <= 0.7)) |
                                     ((expected_df['danceability'] >= 0) & (expected_df['danceability'] <= 0)) |
                                     ((expected_df['danceability'] > 10) & (expected_df['danceability'] <= 11)) |
                                     ((expected_df['danceability'] > 0.4) & (expected_df['danceability'] <= 0.7)))]
@@ -5301,16 +5301,17 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             left_margin_list=[0.01, 0.7],
             closure_type_list=[Closure(0), Closure(3)])
         expected_df = self.small_batch_dataset.copy()
-        expected_df = expected_df[~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
-                                    ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
-                                    ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
-                                    ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
-                                    ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
-                                    ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
-                                    ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
-                                    ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
-                                    ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
-                                    ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
+        expected_df = expected_df[
+            ~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
+              ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
+              ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
+              ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
+              ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
+              ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
+              ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
+              ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
+              ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
+              ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
         expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
@@ -5324,8 +5325,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 left_margin_list=[0.2], closure_type_list=[Closure(0)])
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
 
-
-    # TODO
     def execute_WholeDatasetTests_execute_transform_filter_rows_range(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_filter_rows_range
@@ -5362,7 +5361,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                     ((expected_df['mode'] > 0.4) & (expected_df['mode'] <= 0.7)) |
                                     ((expected_df['track_popularity'] >= 0) & (expected_df['track_popularity'] <= 0)) |
                                     ((expected_df['track_popularity'] > 10) & (expected_df['track_popularity'] <= 11)) |
-                                    ((expected_df['track_popularity'] > 0.4) & (expected_df['track_popularity'] <= 0.7)) |
+                                    ((expected_df['track_popularity'] > 0.4) & (
+                                                expected_df['track_popularity'] <= 0.7)) |
                                     ((expected_df['danceability'] >= 0) & (expected_df['danceability'] <= 0)) |
                                     ((expected_df['danceability'] > 10) & (expected_df['danceability'] <= 11)) |
                                     ((expected_df['danceability'] > 0.4) & (expected_df['danceability'] <= 0.7)))]
@@ -5378,16 +5378,17 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             left_margin_list=[0.01, 0.7],
             closure_type_list=[Closure(0), Closure(3)])
         expected_df = self.rest_of_dataset.copy()
-        expected_df = expected_df[~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
-                                    ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
-                                    ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
-                                    ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
-                                    ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
-                                    ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
-                                    ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
-                                    ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
-                                    ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
-                                    ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
+        expected_df = expected_df[
+            ~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
+              ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
+              ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
+              ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
+              ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
+              ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
+              ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
+              ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
+              ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
+              ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
         expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")

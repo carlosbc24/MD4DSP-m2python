@@ -55,7 +55,7 @@ To run the contract tests, follow the next steps:
 
 1. Run the contract tests:
    ```bash
-    python ./test_contracts.py
+    python3 ./test_contracts.py
     ```
 
 2. Check the results in the logs:
@@ -68,7 +68,7 @@ To run the data transformation tests, follow the next steps:
 
 1. Run the data transformation tests:
    ```bash
-    python ./test_data_transformations.py
+    python3 ./test_data_transformations.py
     ```
 
 2. Check the results in the logs:
@@ -82,17 +82,17 @@ The generated files can be executed by running one of the following commands:
 
 1. Execute just the data transformations script:
    ```bash
-    python -m generated_code.transformations
+    python3 -m generated_code.transformations
     ```
 
 2. Execute just the contracts script:
    ```bash
-    python -m generated_code.contracts
+    python3 -m generated_code.contracts
     ```
 
 3. Execute both, the data transformations and the contracts by running the following command:
    ```bash
-    python -m generated_code.dataProcessing
+    python3 -m generated_code.dataProcessing
     ```
 
 ## Project Structure

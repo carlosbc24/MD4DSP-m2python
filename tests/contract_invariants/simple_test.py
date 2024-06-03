@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # Importing functions and classes from packages
-from functions.contract_invariants import Invariants
+import functions.contract_invariants as invariants
 from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong
 from helpers.logger import print_and_log
 
@@ -40,7 +40,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         Constructor of the class
         """
         super().__init__()
-        self.invariants = Invariants()
+        self.invariants = invariants
 
     def execute_All_SimpleTests(self):
         """

@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # Importing functions and classes from packages
-from functions.contract_pre_post import ContractsPrePost
+import functions.contract_pre_post as pre_post
 from helpers.enumerations import Belong, Operator, Closure
 from helpers.logger import print_and_log
 
@@ -43,7 +43,8 @@ class PrePostSimpleTest(unittest.TestCase):
         execute_CheckInvalidValues_SimpleTests: execute the simple tests of the function checkInvalidValues
         execute_CheckOutliers_SimpleTests: execute the simple tests of the function checkOutliers
         """
-        self.pre_post = ContractsPrePost()
+        super().__init__()
+        self.pre_post = pre_post
 
     def executeAll_SimpleTests(self):
         """
