@@ -147,34 +147,68 @@ class ContractsPrePost:
         if left_margin > right_margin:
             raise ValueError("Error: leftMargin should be less than or equal to rightMargin")  # Case 0
 
-        def check_condition(min_val: float, max_val: float) -> bool:    #TODO: FIX to check all values in the dataframe, not only the min and max
+        result = True
+
+        if belong_op == Belong.BELONG:
+            result = True
+        elif belong_op == Belong.NOTBELONG:
+            result = False
+
+        def check_condition(value, left_margin: float, right_margin: float, belong_op: Belong, result: bool) -> bool:
             if closure_type == Closure.openOpen:
-                return True if (min_val > left_margin) & (max_val < right_margin) else False
+                if not (value > left_margin and value < right_margin):
+                    if belong_op == Belong.BELONG:
+                        result = False
+                    elif belong_op == Belong.NOTBELONG:
+                        result = True
             elif closure_type == Closure.openClosed:
-                return True if (min_val > left_margin) & (max_val <= right_margin) else False
+                if not (value > left_margin and value <= right_margin):
+                    if belong_op == Belong.BELONG:
+                        result = False
+                    elif belong_op == Belong.NOTBELONG:
+                        result = True
             elif closure_type == Closure.closedOpen:
-                return True if (min_val >= left_margin) & (max_val < right_margin) else False
+                if not (value >= left_margin and value < right_margin):
+                    if belong_op == Belong.BELONG:
+                        result = False
+                    elif belong_op == Belong.NOTBELONG:
+                        result = True
             elif closure_type == Closure.closedClosed:
-                return True if (min_val >= left_margin) & (max_val <= right_margin) else False
-            else:
-                raise ValueError("Error: closure_type should be openOpen, openClosed, closedOpen, or closedClosed")
+                if not (value >= left_margin and value <= right_margin):
+                    if belong_op == Belong.BELONG:
+                        result = False
+                    elif belong_op == Belong.NOTBELONG:
+                        result = True
+
+            return result
+
 
         if field is None:
-            data_dictionary = data_dictionary.select_dtypes(
-                include=['int', 'float'])  # It discards the columns that are not of type int or float
-            return check_condition(data_dictionary.min().min(),
-                                   data_dictionary.max().max()) if belong_op == Belong.BELONG else not check_condition(
-                data_dictionary.min().min(), data_dictionary.max().max())  # Cases 1-16
-        else:
+            for column in data_dictionary.select_dtypes(include=[np.number]).columns:
+                for i in range(len(data_dictionary.index)):  # Cases 1-16
+                    if not np.isnan(data_dictionary.at[i, column]):
+                        result = check_condition(data_dictionary.at[i, column], left_margin, right_margin, belong_op, result)
+                        if belong_op == Belong.BELONG and not result:
+                            return False
+                        elif belong_op == Belong.NOTBELONG and result:
+                            return True
+
+        elif field is not None:
             if field not in data_dictionary.columns:  # It checks that the column exists in the dataframe
                 raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 16.5
+
             if np.issubdtype(data_dictionary[field].dtype, np.number):
-                return check_condition(data_dictionary[field].min(),
-                                       data_dictionary[
-                                           field].max()) if belong_op == Belong.BELONG else not check_condition(
-                    data_dictionary[field].min(), data_dictionary[field].max())  # Cases 17-32
+                for i in range(len(data_dictionary[field])):  # Cases 17-32
+                    if not np.isnan(data_dictionary.at[i, field]):
+                        result = check_condition(data_dictionary.at[i, field], left_margin, right_margin, belong_op, result)
+                        if belong_op == Belong.BELONG and not result:
+                            return False
+                        elif belong_op == Belong.NOTBELONG and result:
+                            return True
             else:
-                raise ValueError("Error: field should be a float")  # Case 33
+               raise ValueError("Error: field should be a float")  # Case 33
+
+        return result
 
     def check_missing_range(self, belong_op: Belong, data_dictionary: pd.DataFrame, field: str = None,
                             missing_values: list = None, quant_abs: int = None, quant_rel: float = None,
