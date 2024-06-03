@@ -2958,7 +2958,6 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    # TODO
     def execute_transform_filter_rows_range(self):
         """
         Execute the simple tests of the function transform_filter_rows_range
@@ -2971,7 +2970,70 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("")
 
         # Caso 1
+        datadic = pd.DataFrame(
+            {'A': [0, 2, None, 4, 1], 'B': [2, 3, 4, 6, 12]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, None, 1], 'B': [2, 3, 4, 12]})
+        # Convert column A to int64
+        expected_df = expected_df.astype({
+            'A': 'float64'  # Convertir A a float64
+        })
+        result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
+                                                                          columns=['A'], right_margin_list=[4],
+                                                                          left_margin_list=[2], closure_type_list=[
+                                                                          Closure(1)])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
 
+        # Caso 2
+        # Varios rangos y multiples valores y columnas
+        datadic = pd.DataFrame(
+            {'A': [0, 4, 1, 5, 10, 8], 'B': [2, 6, 7, 5, 6, 5], 'C': [0, 2, 3, 5, 3, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [5, 8], 'B': [5, 5], 'C': [5, 5]})
+        result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
+                                                                          columns=['A', 'B', 'C'],
+                                                                          right_margin_list=[4, 7, 3],
+                                                                          left_margin_list=[2, 5, 1],
+                                                                          closure_type_list=[
+                                                                          Closure(1), Closure(0), Closure(1)])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3
+        # Rango de valores floats
+        datadic = pd.DataFrame(
+            {'A': [0.1, 4.2, 1.3, 5.4, 10.5, 8.6], 'B': [2, 5.2, 7, 5, 6, 5], 'C': [0, 9.4, 3, 5, 3, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [4.2, 5.4, 8.6], 'B': [5.2, 5, 5], 'C': [9.4, 5, 5]})
+        result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
+                                                                          columns=['A', 'B', 'C'],
+                                                                          right_margin_list=[4.2, 7, 3],
+                                                                          left_margin_list=[2, 6, 1],
+                                                                          closure_type_list=[
+                                                                          Closure(2), Closure(3), Closure(1)])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4
+        # Rango de valores floats
+        datadic = pd.DataFrame(
+            {'A': [0.1, 4.2, 1.3, 5.4, 10.5, 8.6], 'B': [2, 5.2, 7, 5, 6, 5], 'C': [0, 9.4, 3, 5, 3, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0.1, 5.4, 8.6], 'B': [2, 5, 5], 'C': [0, 5, 5]})
+        expected_df = expected_df.astype({
+            'A': 'float64',  # Convertir A a float64
+            'B': 'float64',  # Convertir B a float64
+            'C': 'float64'  # Convertir C a float64
+        })
+        result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
+                                                                          columns=['A', 'B', 'C'],
+                                                                          right_margin_list=[4.2, 8, 4],
+                                                                          left_margin_list=[2, 7, 3],
+                                                                          closure_type_list=[
+                                                                          Closure(1), Closure(2), Closure(1)])
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
