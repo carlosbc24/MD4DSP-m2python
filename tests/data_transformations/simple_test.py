@@ -2908,7 +2908,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                                                              6,
                                                                                                              -1]})
         expected_df = pd.DataFrame(
-            {'A': [4, 1, 5, 3, 5], 'B': [6, 7, 5, 6, 5], 'C': [4, 1, 5, 3, 5]})
+            {'A': [4, 1, 3], 'B': [6, 7, 6], 'C': [4, 1, 3]})
         expected_df = expected_df.astype({
             'A': 'float64',  # Convertir A a float64
         })
@@ -2916,7 +2916,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                                    columns=['A', 'B', 'C'],
                                                                                    special_type_list=[SpecialType(0),
                                                                                                       SpecialType(2)],
-                                                                                   missing_values=[[2], None])
+                                                                                   missing_values=[[2], None, [5, 2]])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -2928,7 +2928,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                                                             6,
                                                                                                             -1]})
         expected_df = pd.DataFrame(
-            {'A': [None, 4, 1, 5, 3, 5], 'B': [4, 6, 7, 5, 6, 5], 'C': [3, 4, 1, 5, 3, 5]})
+            {'A': [None, 5, 3, 5], 'B': [4, 5, 6, 5], 'C': [3, 5, 3, 5]})
         expected_df = expected_df.astype({
             'A': 'float64',  # Convertir A a float64
         })
@@ -2936,7 +2936,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                                    columns=['A', 'B', 'C'],
                                                                                    special_type_list=[SpecialType(1),
                                                                                                       SpecialType(2)],
-                                                                                   missing_values=[[2], None])
+                                                                                   missing_values=[[2], None, [4, 1]])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -2945,12 +2945,13 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': ['2021-01-01', '2021-02-02', '2021-03-03', '2021-04-04', '2021-05-05'],
              'B': [2, 3, 4, 6, 12], 'C': ['10', '1', '3', '3', '0'], 'D': ['1', '8', '6', '1', '2']})
         expected_df = pd.DataFrame(
-            {'A': ['2021-01-01', '2021-02-02', '2021-04-04', '2021-05-05'],
-             'B': [2, 3, 6, 12], 'C': ['10', '1', '3', '0'], 'D': ['1', '8', '1', '2']})
+            {'A': ['2021-01-01', '2021-04-04', '2021-05-05'],
+             'B': [2, 6, 12], 'C': ['10', '3', '0'], 'D': ['1', '1', '2']})
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   columns=['A', 'B'],
+                                                                                   columns=['A', 'D'],
                                                                                    special_type_list=[SpecialType(1)],
-                                                                                   missing_values=[['2021-03-03']])
+                                                                                   missing_values=[['2021-03-03'],
+                                                                                                   ['8', 2]])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
 

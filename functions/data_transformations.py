@@ -1105,16 +1105,16 @@ def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, columns:
     """
     data_dictionary_copy = data_dictionary.copy()
 
-    for index in range(len(special_type_list)):
+    for special_type_index in range(len(special_type_list)):
 
-        current_special_type = special_type_list[index]
+        current_special_type = special_type_list[special_type_index]
 
-        if current_special_type != SpecialType.OUTLIER:
-            current_missing_values_list = missing_values[index]
-        else:
-            current_missing_values_list = None
+        for column_index, current_column in enumerate(columns):
 
-        for current_column in columns:
+            if current_special_type != SpecialType.OUTLIER:
+                current_missing_values_list = missing_values[column_index]
+            else:
+                current_missing_values_list = None
 
             # If column doesn't exist in the dataframe, raise an error
             if current_column not in data_dictionary_copy.columns:
