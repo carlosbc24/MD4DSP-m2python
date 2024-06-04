@@ -205,8 +205,12 @@ class ContractsPrePost:
                             return False
                         elif belong_op == Belong.NOTBELONG and result:
                             return True
-            else:
-               raise ValueError("Error: field should be a float")  # Case 33
+            else:   #Si no es de tipo numerico se puede suponer que no se encuentra en el rango de valores
+                if belong_op == Belong.BELONG:
+                    return False
+                elif belong_op == Belong.NOTBELONG:
+                    return True
+               # raise ValueError("Error: field should be a float")  # Case 33
 
         return result
 
