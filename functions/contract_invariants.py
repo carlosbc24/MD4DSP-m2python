@@ -846,18 +846,17 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
     elif belong_op_out == Belong.NOTBELONG:
         result = True
 
-
-    if field_in is None:
-        for column_index, column_name in enumerate(data_dictionary_in.columns):
-            for row_index, value in data_dictionary_in[column_name].items():
-                if pd.isnull(value):
-                    if not pd.isnull(data_dictionary_out.loc[row_index, column_name]):
-                        if belong_op_out == Belong.BELONG:
-                            result = True
-                            print_and_log(f"Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
-                        elif belong_op_out == Belong.NOTBELONG:
-                            result = False
-                            print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+        if field_in is None:
+            for column_index, column_name in enumerate(data_dictionary_in.columns):
+                for row_index, value in data_dictionary_in[column_name].items():
+                    if pd.isnull(value):
+                        if not pd.isnull(data_dictionary_out.loc[row_index, column_name]):
+                            if belong_op_out == Belong.BELONG:
+                                result = True
+                                print_and_log(f"Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                            elif belong_op_out == Belong.NOTBELONG:
+                                result = False
+                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
 
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:

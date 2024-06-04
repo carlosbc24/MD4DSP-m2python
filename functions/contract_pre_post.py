@@ -197,16 +197,20 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
         if field not in data_dictionary.columns:  # It checks that the column exists in the dataframe
             raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 16.5
 
-        if np.issubdtype(data_dictionary[field].dtype, np.number):
-            for i in range(len(data_dictionary[field])):  # Cases 17-32
-                if not np.isnan(data_dictionary.at[i, field]):
-                    result = check_condition(data_dictionary.at[i, field], left_margin, right_margin, belong_op, result)
-                    if belong_op == Belong.BELONG and not result:
-                        return False
-                    elif belong_op == Belong.NOTBELONG and result:
-                        return True
-        else:
-           raise ValueError("Error: field should be a float")  # Case 33
+            if np.issubdtype(data_dictionary[field].dtype, np.number):
+                for i in range(len(data_dictionary[field])):  # Cases 17-32
+                    if not np.isnan(data_dictionary.at[i, field]):
+                        result = check_condition(data_dictionary.at[i, field], left_margin, right_margin, belong_op, result)
+                        if belong_op == Belong.BELONG and not result:
+                            return False
+                        elif belong_op == Belong.NOTBELONG and result:
+                            return True
+            else:   #Si no es de tipo numerico se puede suponer que no se encuentra en el rango de valores
+                if belong_op == Belong.BELONG:
+                    return False
+                elif belong_op == Belong.NOTBELONG:
+                    return True
+               # raise ValueError("Error: field should be a float")  # Case 33
 
     return result
 
