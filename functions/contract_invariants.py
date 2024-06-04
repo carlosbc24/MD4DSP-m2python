@@ -846,7 +846,6 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
     elif belong_op_out == Belong.NOTBELONG:
         result = True
 
-
     if field_in is None:
         for column_index, column_name in enumerate(data_dictionary_in.columns):
             for row_index, value in data_dictionary_in[column_name].items():
