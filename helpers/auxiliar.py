@@ -19,8 +19,8 @@ def format_duration(seconds: float) -> str:
     minutes = int((seconds % 3600) // 60)
     seconds = seconds % 60
     miliseconds = seconds - int(seconds)
-    formated_duration = (f"{hours} hours, {minutes} minutes, {int(seconds)}"
-                         f"seconds and {int(miliseconds * 1000)} milliseconds")
+    formated_duration = (f"{hours} hours, {minutes} minutes, {int(seconds)} seconds and {int(miliseconds * 1000)} "
+                         f"milliseconds")
     return formated_duration
 
 
