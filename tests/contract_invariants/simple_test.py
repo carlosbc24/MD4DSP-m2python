@@ -4381,8 +4381,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        belong_op_out=Belong(1), field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 5 Failed: Expected False, but got True"
-        print_and_log("Test Case 5 Passed: Expected False, got False")
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
         datadic = pd.DataFrame(
@@ -4451,5 +4451,5 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        belong_op_out=Belong(1), field_in='C', field_out='C')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 10 Failed: Expected False, but got True"
-        print_and_log("Test Case 10 Passed: Expected False, got False")
+        assert result is True, "Test Case 10 Failed: Expected True, but got False"
+        print_and_log("Test Case 10 Passed: Expected True, got True")

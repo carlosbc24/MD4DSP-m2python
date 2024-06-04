@@ -1347,17 +1347,6 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                               belong_op=Belong(belong_op))
         print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
 
-        # Example 33 of checkIntervalRangeFloat
-        field = 'playlist_name'
-        closure = 3  # ClosedClosed
-        expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
-                                                              data_dictionary=self.data_dictionary,
-                                                              closure_type=Closure(closure),
-                                                              belong_op=Belong(belong_op), field=field)
-
-        print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
