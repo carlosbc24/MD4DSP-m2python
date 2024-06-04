@@ -2886,7 +2886,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
                                                                                    columns=['A'], special_type_list=[
-                SpecialType(2)], missing_values=[[2]])
+                SpecialType(2)], missing_values=[[]])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -2897,7 +2897,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
                                                                            columns=['C'], special_type_list=[
-                    SpecialType(2)], missing_values=[[2]])
+                    SpecialType(2)], missing_values=[None])
         print_and_log("Test Case 4 Passed: expected exception")
 
         # Caso 5 - Eliminar filas con outliers y valores missig en varias columnas
@@ -2916,7 +2916,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                                    columns=['A', 'B', 'C'],
                                                                                    special_type_list=[SpecialType(0),
                                                                                                       SpecialType(2)],
-                                                                                   missing_values=[[2]])
+                                                                                   missing_values=[[2], None])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -2936,7 +2936,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                                    columns=['A', 'B', 'C'],
                                                                                    special_type_list=[SpecialType(1),
                                                                                                       SpecialType(2)],
-                                                                                   missing_values=[[2]])
+                                                                                   missing_values=[[2], None])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 

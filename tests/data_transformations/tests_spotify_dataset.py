@@ -4986,7 +4986,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(0), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36]])
+            special_type_list=[SpecialType(0), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36],
+                                                                                None])
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
@@ -5008,7 +5009,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0]])
+            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36,
+                                                                                 0], None])
         columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
@@ -5119,7 +5121,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(2)])
+            special_type_list=[SpecialType(2)], missing_values=[None])
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.rest_of_dataset.copy()
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
@@ -5138,7 +5140,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(0), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36]])
+            special_type_list=[SpecialType(0), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36],
+                                                                                None])
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36]) == False]
@@ -5160,7 +5163,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0]])
+            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36,
+                                                                                 0], None])
         columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
