@@ -2104,7 +2104,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckOutliers_SpotifyDatasetTests(self):  # TODO: Implementar
+    def execute_CheckOutliers_SpotifyDatasetTests(self):
         """
         Execute the simple tests of the function CheckOutliers
         """
@@ -2113,6 +2113,206 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("Casos de test con dataset Spotify:")
 
         # Caso 1
-        # result = self.pre_post.checkOutliers(data_dictionary=self.data_dictionary, axis_param=None)
-        # assert result is True, "Test Case 1 Failed: Expected True, but got False"
-        # print_and_log("Test Case 1 Passed: Expected True, got True")
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(0), field=None,
+                                              quant_abs=30000, quant_rel=None, quant_op=Operator(0))
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(0), field=None,
+                                              quant_abs=300000, quant_rel=None, quant_op=Operator(0))
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
+
+        # Caso 3
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(1), field=None,
+                                              quant_abs=None, quant_rel=None, quant_op=None)
+        assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        print_and_log("Test Case 3 Passed: Expected False, got False")
+
+        # Caso 4
+        field = None
+        quant_rel = 0.01
+        quant_op = 1  # greater
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(0), field=field,
+                                              quant_abs=None, quant_rel=quant_rel, quant_op=Operator(quant_op))
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+        # Caso 5
+        quant_rel = 0.05
+        quant_op = 2  # less equal
+        belong_op = 0
+        field = 'acousticness'
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_abs=None, quant_rel=quant_rel, quant_op=Operator(quant_op))
+        assert result is False, "Test Case 5 Failed: Expected False, but got True"
+        print_and_log("Test Case 5 Passed: Expected False, got False")
+
+        # Caso 6
+        quant_abs = 1000
+        # Less
+        quant_op = 3 # lessEqual
+        belong_op = 0
+        field = 'energy'
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
+
+        # Caso 7
+        belong_op = 0
+        field = 'danceability'
+        quant_abs = 100
+        # Greater
+        quant_op = 1
+        self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        print_and_log("Test Case 7 Passed: Expected False, got False")
+
+        # Exception quant_abs and quant_op are not None at the same time (Case 7)
+        belong_op = 0
+        field = 'instrumentalness'
+        quant_abs = 1
+        quant_op = 1  # greater
+        quant_rel = 0.03
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
+                                                  field=field,
+                                                  quant_abs=quant_abs, quant_rel=quant_rel, quant_op=Operator(quant_op))
+        print_and_log("Test Case 8 Passed: Expected ValueError, got ValueError")
+
+        # Exception quant_op is not None and quant_abs/quant_rel are both None (Case 8)
+        field = None
+        quant_op = 1
+        expected_exception = ValueError
+        belong_op = 0
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
+                                                  field=field,
+                                                  quant_op=Operator(quant_op))
+        print_and_log("Test Case 9 Passed: Expected ValueError, got ValueError")
+
+        # Caso 10 # Exception quant_abs, quant_op or quant_rel are not None when belong_op is 1
+        belong_op = 1
+        quant_abs = 1
+        quant_op = 1  # greater
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
+                                                  field='instrumentalness',
+                                                  quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+
+        # Case 11
+        field = 'instrumentalness'
+        belong_op = 0
+        quant_op = None
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_op=quant_op)
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
+
+        # Case 12
+        field = 'liveness'
+        belong_op = 1
+        quant_op = None
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_op=quant_op)
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
+
+        # Case 13
+        field = 'speechiness'
+        belong_op = 0
+        quant_op = 1  # greater
+        quant_rel = 0.01
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_op=Operator(quant_op), quant_rel=quant_rel)
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        # Case 14
+        field = 'speechiness'
+        belong_op = 0
+        quant_op = 2  # less
+        quant_rel = 0.01
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_op=Operator(quant_op), quant_rel=quant_rel)
+        assert result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, got False")
+
+        # Case 15
+        field = 'liveness'
+        belong_op = 0
+        quant_op = 0 # greaterEqual
+        quant_abs = 1
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_op=Operator(quant_op), quant_abs=quant_abs)
+        assert result is True, "Test Case 15 Failed: Expected True, but got False"
+        print_and_log("Test Case 15 Passed: Expected True, got True")
+
+        # Case 16
+        field = 'loudness'
+        belong_op = 0
+        quant_op = 1  # greater
+        quant_abs = 2343
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field,
+                                              quant_op=Operator(quant_op), quant_abs=quant_abs)
+        assert result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, got False")
+
+        # Case 17 # Exception quant_abs and quant_op are not None at the same time
+        field = 'loudness'
+        belong_op = 0
+        quant_op = 1  # greater
+        quant_abs = 1
+        quant_rel = 0.01
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
+                                                  field=field,
+                                                  quant_op=Operator(quant_op), quant_abs=quant_abs, quant_rel=quant_rel)
+        print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
+
+        # Case 18 # Exception quant_op is not None and quant_abs/quant_rel are both None
+        field = 'loudness'
+        belong_op = 0
+        quant_op = 1  # greater
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
+                                                  field=field,
+                                                  quant_op=Operator(quant_op))
+        print_and_log("Test Case 18 Passed: Expected ValueError, got ValueError")
+
+        # Case 19 Not belong
+        field = 'liveness'
+        belong_op = 1
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field)
+        assert result is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, got False")
+
+        # Case 20 Not belong
+        field = 'valence'
+        belong_op = 1
+        result = self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op), field=field)
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Case 21 # Exception quant_abs, quant_op or quant_rel are not None when belong_op is 1
+        field = 'valence'
+        belong_op = 1
+        quant_abs = 1
+        quant_op = 1  # greater
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
+                                                  field=field,
+                                                  quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        print_and_log("Test Case 21 Passed: Expected ValueError, got ValueError")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")

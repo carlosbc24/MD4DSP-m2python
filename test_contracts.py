@@ -78,10 +78,11 @@ if __name__ == "__main__":
     set_logger("test_contracts")
 
     # FINAL TESTS
+
     # Calculate execution time for each test block (pre-post)
     execute_prepost_simple_tests()
     execute_prepost_external_dataset_tests()
 
     # Calculate execution time for each test block (invariants)
-    # execute_invariants_simple_tests()
-    # execute_invariants_external_dataset_tests()
+    execute_invariants_simple_tests()
+    execute_invariants_external_dataset_tests()
