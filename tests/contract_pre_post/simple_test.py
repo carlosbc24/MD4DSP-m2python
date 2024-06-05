@@ -2374,6 +2374,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 1
         result = self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op), field=field,
                                               quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Exception quant_abs and quant_op are not None at the same time (Case 7)
