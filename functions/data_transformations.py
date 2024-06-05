@@ -1088,56 +1088,46 @@ def transform_filter_rows_primitive(data_dictionary: pd.DataFrame, columns: list
     return data_dictionary_copy
 
 
-def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, columns: list[str],
-                                         special_type_list: list[SpecialType] = None,
-                                         missing_values: list[list] = None) -> pd.DataFrame:
+def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_special_type_values: dict) -> pd.DataFrame:
     """
     Execute the data transformation of the FilterRows - SpecialValues relation
 
     Args:
         data_dictionary: dataframe with the data
-        columns: list of columns to filter
-        special_type_list: special type of the input value
-        missing_values: list of missing values
+        cols_special_type_values: dictionary with the columns and the special values to filter
 
     Returns:
         pd.DataFrame: data_dictionary with the rows with the special values in the columns of the list columns removed
     """
     data_dictionary_copy = data_dictionary.copy()
 
-    for special_type_index in range(len(special_type_list)):
+    for column_name in cols_special_type_values.keys():
 
-        current_special_type = special_type_list[special_type_index]
+        # If column doesn't exist in the dataframe, raise an error
+        if column_name not in data_dictionary_copy.columns:
+            raise ValueError(f"The column {column_name} does not exist in the dataframe")
 
-        for column_index, current_column in enumerate(columns):
+        # Check if there is a missing values list for the current column
+        for key in cols_special_type_values[column_name].keys():
+            if key == 'missing':
+                missing_values_list = cols_special_type_values[column_name]['missing']
+                # Remove the rows with the values in the list missing_values in the columns of the list columns
+                data_dictionary_copy = data_dictionary_copy[
+                    ~data_dictionary_copy[column_name].isin(missing_values_list)]
+                # Remove rows which values in the current column are NaN
+                data_dictionary_copy = data_dictionary_copy.dropna(subset=[column_name])
 
-            if current_special_type != SpecialType.OUTLIER:
-                current_missing_values_list = missing_values[column_index]
-            else:
-                current_missing_values_list = None
+            if key == 'invalid':
+                invalid_values_list = cols_special_type_values[column_name]['invalid']
+                # Remove the rows with the values in the list missing_values in the columns of the list columns
+                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[column_name].isin(invalid_values_list)]
 
-            # If column doesn't exist in the dataframe, raise an error
-            if current_column not in data_dictionary_copy.columns:
-                raise ValueError(f"The column {current_column} does not exist in the dataframe")
-
-            if current_special_type is not None:
-                if current_special_type == SpecialType.MISSING:
-                    if current_missing_values_list is not None:
-                        # Remove the rows with the values in the list missing_values in the columns of the list columns
-                        data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(current_missing_values_list)]
-                        # Remove rows which values in the current column are NaN
-                        data_dictionary_copy = data_dictionary_copy.dropna(subset=[current_column])
-
-                elif current_special_type == SpecialType.INVALID:
-                    if current_missing_values_list is not None:
-                        # Remove the rows with the values in the list missing_values in the columns of the list columns
-                        data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(current_missing_values_list)]
-
-                elif current_special_type == SpecialType.OUTLIER:
+            if key == 'outlier':
+                if cols_special_type_values[column_name]['outlier']:
                     # Get the dataframe mask with outliers detected
-                    data_dictionary_copy_mask = get_outliers(data_dictionary_copy, current_column)
+                    data_dictionary_copy_mask = get_outliers(data_dictionary_copy, column_name)
                     # Remove the rows with the value 1 in the mask dataframe with outliers
-                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy_mask[current_column].isin([1])]
+                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy_mask[column_name].isin([1])]
 
     # Reset indexes
     data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
