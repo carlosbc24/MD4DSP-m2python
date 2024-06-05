@@ -2862,9 +2862,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = expected_df.astype({
             'A': 'float64'  # Convertir A a float64
         })
+        dic_cols_special_type_values = {'A': {'missing': [2]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   columns=['A'], special_type_list=[
-                SpecialType(0)], missing_values=[[2]])
+                                                                                   cols_special_type_values=dic_cols_special_type_values)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -2873,9 +2873,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, None, 4, 1], 'B': [2, 3, 4, 6, 12]})
         expected_df = pd.DataFrame(
             {'A': [0, None, 4, 1], 'B': [2, 4, 6, 12]})
+        dic_cols_special_type_values = {'A': {'invalid': [2], 'outliers': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   columns=['A'], special_type_list=[
-                SpecialType(1)], missing_values=[[2]])
+                                                                                   cols_special_type_values=dic_cols_special_type_values)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -2884,9 +2884,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1, 500, -500], 'B': [2, 3, 4, 6, 12, 500, -500]})
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
+
+        dic_cols_special_type_values = {'A': {'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   columns=['A'], special_type_list=[
-                SpecialType(2)], missing_values=[[]])
+                                                                                   cols_special_type_values=dic_cols_special_type_values)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -2894,29 +2895,29 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1, 500, -500], 'B': [2, 3, 4, 6, 12, 500, -500]})
         expected_exception = ValueError
+        dic_cols_special_type_values = {'C': {'outlier': True}}
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                           columns=['C'], special_type_list=[
-                    SpecialType(2)], missing_values=[None])
+                                                                           cols_special_type_values=dic_cols_special_type_values)
         print_and_log("Test Case 4 Passed: expected exception")
 
         # Caso 5 - Eliminar filas con outliers y valores missig en varias columnas
         datadic = pd.DataFrame(
             {'A': [0, 2, None, 4, 1, 5, 3, 5, 100000, -100000], 'B': [2, 3, 4, 6, 7, 5, 6, 5, 4, -3], 'C': [0, 2, 3,
-                                                                                                             4, 1, 5,
-                                                                                                             3, 5,
-                                                                                                             6,
-                                                                                                             -1]})
+                                                                                                            4, 1, 5,
+                                                                                                            3, 5,
+                                                                                                            6,
+                                                                                                            -1]})
         expected_df = pd.DataFrame(
             {'A': [4, 1, 3], 'B': [6, 7, 6], 'C': [4, 1, 3]})
         expected_df = expected_df.astype({
             'A': 'float64',  # Convertir A a float64
         })
+        dic_cols_special_type_values = {'A': {'outlier': True, 'missing': [2]},
+                                        'B': {'outlier': True, 'missing': []},
+                                        'C': {'outlier': True, 'missing': [5, 2]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   columns=['A', 'B', 'C'],
-                                                                                   special_type_list=[SpecialType(0),
-                                                                                                      SpecialType(2)],
-                                                                                   missing_values=[[2], None, [5, 2]])
+                                                                                   cols_special_type_values=dic_cols_special_type_values)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -2932,11 +2933,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = expected_df.astype({
             'A': 'float64',  # Convertir A a float64
         })
+        dic_cols_special_type_values = {'A': {'outlier': True, 'invalid': [2]},
+                                        'B': {'outlier': True, 'invalid': []},
+                                        'C': {'outlier': True, 'invalid': [4, 1]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   columns=['A', 'B', 'C'],
-                                                                                   special_type_list=[SpecialType(1),
-                                                                                                      SpecialType(2)],
-                                                                                   missing_values=[[2], None, [4, 1]])
+                                                                                   cols_special_type_values=dic_cols_special_type_values)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -2947,11 +2948,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': ['2021-01-01', '2021-04-04', '2021-05-05'],
              'B': [2, 6, 12], 'C': ['10', '3', '0'], 'D': ['1', '1', '2']})
+        dic_cols_special_type_values = {'A': {'missing': ['2021-03-03']},
+                                        'D': {'missing': ['8', 2]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   columns=['A', 'D'],
-                                                                                   special_type_list=[SpecialType(1)],
-                                                                                   missing_values=[['2021-03-03'],
-                                                                                                   ['8', 2]])
+                                                                                   cols_special_type_values=dic_cols_special_type_values)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
 
@@ -2982,7 +2982,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
                                                                           columns=['A'], right_margin_list=[4],
                                                                           left_margin_list=[2], closure_type_list=[
-                                                                          Closure(1)])
+                Closure(1)])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -2997,7 +2997,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                           right_margin_list=[4, 7, 3],
                                                                           left_margin_list=[2, 5, 1],
                                                                           closure_type_list=[
-                                                                          Closure(1), Closure(0), Closure(1)])
+                                                                              Closure(1), Closure(0), Closure(1)])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -3012,7 +3012,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                           right_margin_list=[4.2, 7, 3],
                                                                           left_margin_list=[2, 6, 1],
                                                                           closure_type_list=[
-                                                                          Closure(2), Closure(3), Closure(1)])
+                                                                              Closure(2), Closure(3), Closure(1)])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -3032,7 +3032,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                           right_margin_list=[4.2, 8, 4],
                                                                           left_margin_list=[2, 7, 3],
                                                                           closure_type_list=[
-                                                                          Closure(1), Closure(2), Closure(1)])
+                                                                              Closure(1), Closure(2), Closure(1)])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 

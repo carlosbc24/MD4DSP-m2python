@@ -4939,10 +4939,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         # Case 1 - Filter missing values
+        dic_special_type_cols_values = {'speechiness': {'missing': [0.479, 0.123]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['speechiness'],
-            special_type_list=[SpecialType(0)], missing_values=[[0.479, 0.123]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
         expected_df = expected_df.dropna(subset=['speechiness'])
@@ -4951,10 +4951,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
         # Case 2 - Filter invalid values
+        dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456]},
+                                        'danceability': {'invalid': [0.789, 0.0224]},
+                                        'energy': {'invalid': [0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(1)], missing_values=[[0.123, 0.456], [0.789, 0.0224], [0.36]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == False]
         expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == False]
@@ -4964,10 +4966,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
         # Case 3 - Filter outliers
+        dic_special_type_cols_values = {'acousticness': {'outlier': True},
+                                        'danceability': {'outlier': True},
+                                        'energy': {'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(2)])
+            cols_special_type_values=dic_special_type_cols_values)
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.small_batch_dataset.copy()
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
@@ -4983,20 +4987,26 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
         # Case 4 - Filter missing values and outliers
+        dic_special_type_cols_values = {'acousticness': {'missing': [0.123], 'outlier': True},
+                                        'danceability': {'missing': [0.456, 0.789, 0.0224], 'outlier': True},
+                                        'energy': {'missing': [0.36], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(0), SpecialType(2)],
-            missing_values=[[0.123], [0.456, 0.789, 0.0224], [0.36]])
+            cols_special_type_values=dic_special_type_cols_values)
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.small_batch_dataset.copy()
-        expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
-        expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) == False]
-        expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
-        expected_df.dropna(subset=['acousticness', 'danceability', 'energy'], inplace=True)
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
         # expected_df
         for col in columns_outliers:
+            if col == 'acousticness':
+                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
+                expected_df.dropna(subset=['acousticness'], inplace=True)
+            elif col == 'danceability':
+                expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) == False]
+                expected_df.dropna(subset=['danceability'], inplace=True)
+            elif col == 'energy':
+                expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
+                expected_df.dropna(subset=['energy'], inplace=True)
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
@@ -5006,21 +5016,28 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
         # Case 5 - Filter invalid values and outliers
+        dic_special_type_cols_values = {'acousticness': {'invalid': [0.123], 'outlier': True},
+                                        'danceability': {'invalid': [0.789, 0.0224, 0.36], 'outlier': True},
+                                        'energy': {'invalid': [], 'outlier': True},
+                                        'speechiness': {'invalid': [0.456], 'outlier': True},
+                                        'mode': {'invalid': [], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123], [0.789, 0.0224, 0.36], [],
-                                                                                [0.456], None])
+            cols_special_type_values=dic_special_type_cols_values)
         columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
         expected_df = self.small_batch_dataset.copy()
-        expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
-        expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224, 0.36]) == False]
-        expected_df = expected_df[expected_df['energy'].isin([]) == False]
-        expected_df = expected_df[expected_df['speechiness'].isin([0.456]) == False]
-        expected_df = expected_df[expected_df['mode'].isin([None]) == False]
-        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in
-        # expected_df
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in expected_df
         for col in columns_outliers:
+            if col == 'acousticness':
+                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
+            elif col == 'danceability':
+                expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224, 0.36]) == False]
+            elif col == 'energy':
+                expected_df = expected_df[expected_df['energy'].isin([]) == False]
+            elif col == 'speechiness':
+                expected_df = expected_df[expected_df['speechiness'].isin([0.456]) == False]
+            elif col == 'mode':
+                expected_df = expected_df[expected_df['mode'].isin([None]) == False]
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
@@ -5030,14 +5047,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
         # Case 6 - Filter 2 list of invalid values
+        dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
+                                        'danceability': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
+                                        'energy': {'invalid': [0.0636, 0.0319, 0.81]},
+                                        'speechiness': {'invalid': [0.123, 0.456, 0.789]},
+                                        'mode': {'invalid': [0.0224, 0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(1), SpecialType(1)],
-            missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636,
-                                                                                                             0.0319,
-                                                                                                             0.81],
-                            [0.123, 0.456, 0.789], [0.0224, 0.36]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
             expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
@@ -5056,11 +5073,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
         # Case 7 - Filter 2 list of missing values
+        dic_special_type_cols_values = {'acousticness': {'missing': [0.123, 0.456], 'invalid': [0.789]},
+                                        'danceability': {'missing': [0.0636], 'invalid': [0.0319]},
+                                        'energy': {'missing': [0.0224], 'invalid': [0.36, 0]},
+                                        'speechiness': {'missing': [], 'invalid': [0.81]},
+                                        'mode': {'missing': [0], 'invalid': []}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(0), SpecialType(0)],
-            missing_values=[[0.123, 0.456, 0.789], [0.0636, 0.0319], [0.0224, 0.36, 0], [0.81], [0]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
             expected_df['acousticness'].isin([0.123, 0.456, 0.789]) == False]
@@ -5079,11 +5099,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Case 8 - Filter column that dont exist - ValueError raised
         with self.assertRaises(ValueError):
+            dic_special_type_cols_values = {'acousticness': {'missing': [0.123, 0.456], 'invalid': [0.789]},
+                                            'danceability': {'missing': [0.0636], 'invalid': [0.0319]},
+                                            'energy': {'missing': [0.0224], 'invalid': [0.36, 0]},
+                                            'speechiness': {},
+                                            'mode': {'missing': [0.81], 'invalid': []},
+                                            'track_artist': {'missing': [], 'invalid': [0.81]},
+                                            'noew_column_pepe': {'missing': [0.0224]}}
             result_df = self.data_transformations.transform_filter_rows_special_values(
                 data_dictionary=self.small_batch_dataset.copy(),
-                columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
-                         "noew_column_pepe"], special_type_list=[SpecialType(0), SpecialType(0)],
-                missing_values=[[0.123, 0.456, 0.789], [0.0636, 0.0319], [0.0224, 0.36, 0], [], [0.81], [0.81], [0.0224]])
+                cols_special_type_values=dic_special_type_cols_values)
         print_and_log("Test Case 8 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_WholeDatasetTests_execute_transform_filter_rows_special_values(self):
@@ -5096,24 +5121,24 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("")
 
         # Case 1 - Filter missing values
+        dic_special_type_cols_values = {'speechiness': {'missing': [0.479, 0.123]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['speechiness'],
-            special_type_list=[SpecialType(0)], missing_values=[[0.479, 0.123]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.rest_of_dataset.copy()
-        # Eliminar las filas cuyos valores en la columna 'speechiness' sean 0.479 o 0.123
         expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
-        expected_df.dropna(subset=['speechiness'], inplace=True)
+        expected_df = expected_df.dropna(subset=['speechiness'])
         expected_df.reset_index(drop=True, inplace=True)
-
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
         # Case 2 - Filter invalid values
+        dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456]},
+                                        'danceability': {'invalid': [0.789, 0.0224]},
+                                        'energy': {'invalid': [0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(1)], missing_values=[[0.123, 0.456], [0.789, 0.0224], [0.36]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == False]
         expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == False]
@@ -5123,10 +5148,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
         # Case 3 - Filter outliers
+        dic_special_type_cols_values = {'acousticness': {'outlier': True},
+                                        'danceability': {'outlier': True},
+                                        'energy': {'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(2)], missing_values=[None])
+            cols_special_type_values=dic_special_type_cols_values)
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.rest_of_dataset.copy()
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
@@ -5142,20 +5169,26 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
         # Case 4 - Filter missing values and outliers
+        dic_special_type_cols_values = {'acousticness': {'missing': [0.123], 'outlier': True},
+                                        'danceability': {'missing': [0.456, 0.789, 0.0224], 'outlier': True},
+                                        'energy': {'missing': [0.36], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy'],
-            special_type_list=[SpecialType(0), SpecialType(2)],
-            missing_values=[[0.123], [0.456, 0.789, 0.0224], [0.36]])
+            cols_special_type_values=dic_special_type_cols_values)
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.rest_of_dataset.copy()
-        expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
-        expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) == False]
-        expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
-        expected_df.dropna(subset=['acousticness', 'danceability', 'energy'], inplace=True)
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
         # expected_df
         for col in columns_outliers:
+            if col == 'acousticness':
+                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
+                expected_df.dropna(subset=['acousticness'], inplace=True)
+            elif col == 'danceability':
+                expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) == False]
+                expected_df.dropna(subset=['danceability'], inplace=True)
+            elif col == 'energy':
+                expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
+                expected_df.dropna(subset=['energy'], inplace=True)
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
@@ -5165,21 +5198,28 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
         # Case 5 - Filter invalid values and outliers
+        dic_special_type_cols_values = {'acousticness': {'invalid': [0.123], 'outlier': True},
+                                        'danceability': {'invalid': [0.789, 0.0224, 0.36], 'outlier': True},
+                                        'energy': {'invalid': [], 'outlier': True},
+                                        'speechiness': {'invalid': [0.456], 'outlier': True},
+                                        'mode': {'invalid': [], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(1), SpecialType(2)], missing_values=[[0.123], [0.789, 0.0224, 0.36], [],
-                                                                                [0.456], None])
+            cols_special_type_values=dic_special_type_cols_values)
         columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
         expected_df = self.rest_of_dataset.copy()
-        expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
-        expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224, 0.36]) == False]
-        expected_df = expected_df[expected_df['energy'].isin([]) == False]
-        expected_df = expected_df[expected_df['speechiness'].isin([0.456]) == False]
-        expected_df = expected_df[expected_df['mode'].isin([None]) == False]
-        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in
-        # expected_df
+        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in expected_df
         for col in columns_outliers:
+            if col == 'acousticness':
+                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
+            elif col == 'danceability':
+                expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224, 0.36]) == False]
+            elif col == 'energy':
+                expected_df = expected_df[expected_df['energy'].isin([]) == False]
+            elif col == 'speechiness':
+                expected_df = expected_df[expected_df['speechiness'].isin([0.456]) == False]
+            elif col == 'mode':
+                expected_df = expected_df[expected_df['mode'].isin([None]) == False]
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
@@ -5189,14 +5229,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
         # Case 6 - Filter 2 list of invalid values
+        dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
+                                        'danceability': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
+                                        'energy': {'invalid': [0.0636, 0.0319, 0.81]},
+                                        'speechiness': {'invalid': [0.123, 0.456, 0.789]},
+                                        'mode': {'invalid': [0.0224, 0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(1), SpecialType(1)],
-            missing_values=[[0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.123, 0.456, 0.789, 0.0224, 0.36, 0], [0.0636,
-                                                                                                             0.0319,
-                                                                                                             0.81],
-                            [0.123, 0.456, 0.789], [0.0224, 0.36]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[
             expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
@@ -5215,11 +5255,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
         # Case 7 - Filter 2 list of missing values
+        dic_special_type_cols_values = {'acousticness': {'missing': [0.123, 0.456], 'invalid': [0.789]},
+                                        'danceability': {'missing': [0.0636], 'invalid': [0.0319]},
+                                        'energy': {'missing': [0.0224], 'invalid': [0.36, 0]},
+                                        'speechiness': {'missing': [], 'invalid': [0.81]},
+                                        'mode': {'missing': [0], 'invalid': []}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'],
-            special_type_list=[SpecialType(0), SpecialType(0)],
-            missing_values=[[0.123, 0.456, 0.789], [0.0636, 0.0319], [0.0224, 0.36, 0], [0.81], [0]])
+            cols_special_type_values=dic_special_type_cols_values)
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[
             expected_df['acousticness'].isin([0.123, 0.456, 0.789]) == False]
@@ -5238,12 +5281,16 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Case 8 - Filter column that dont exist - ValueError raised
         with self.assertRaises(ValueError):
+            dic_special_type_cols_values = {'acousticness': {'missing': [0.123, 0.456], 'invalid': [0.789]},
+                                            'danceability': {'missing': [0.0636], 'invalid': [0.0319]},
+                                            'energy': {'missing': [0.0224], 'invalid': [0.36, 0]},
+                                            'speechiness': {},
+                                            'mode': {'missing': [0.81], 'invalid': []},
+                                            'track_artist': {'missing': [], 'invalid': [0.81]},
+                                            'noew_column_pepe': {'missing': [0.0224]}}
             result_df = self.data_transformations.transform_filter_rows_special_values(
                 data_dictionary=self.rest_of_dataset.copy(),
-                columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
-                         "noew_column_pepe"], special_type_list=[SpecialType(0), SpecialType(0)],
-                missing_values=[[0.123, 0.456, 0.789], [0.0636, 0.0319], [0.0224, 0.36, 0], [], [0.81], [0.81],
-                                [0.0224]])
+                cols_special_type_values=dic_special_type_cols_values)
         print_and_log("Test Case 8 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_transform_filter_rows_range(self):
