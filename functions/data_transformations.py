@@ -985,27 +985,24 @@ def transform_derived_field(data_dictionary: pd.DataFrame, field_in: str, field_
         """
         Cast the new field to the specified data type
         """
-        if data_type_output is not None:
-            if data_type_output == DataType.STRING:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype(str)
-            elif data_type_output == DataType.TIME:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype(
-                    'datetime64[ns]')
-            elif data_type_output == DataType.INTEGER:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(0).astype(int)
-            elif data_type_output == DataType.DATETIME:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype(
-                    'datetime64[ns]')
-            elif data_type_output == DataType.BOOLEAN:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(False).astype(bool)
-            elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(0).astype(float)
+        if data_type_output == DataType.STRING:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype(str)
+        elif data_type_output == DataType.TIME:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype(
+                'datetime64[ns]')
+        elif data_type_output == DataType.INTEGER:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(0).astype(int)
+        elif data_type_output == DataType.DATETIME:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('').astype(
+                'datetime64[ns]')
+        elif data_type_output == DataType.BOOLEAN:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(False).astype(bool)
+        elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna(0).astype(float)
 
+    data_dictionary_copy[field_out] = data_dictionary_copy[field_in]
     if data_type_output is not None:  # If the type is not None, the new field is initialize to None and then casted
-        data_dictionary_copy[field_out] = None
         cast_type_column()
-    else:  # If the type is None, the new field is a copy of the input field
-        data_dictionary_copy[field_out] = data_dictionary_copy[field_in]
 
     return data_dictionary_copy
 
