@@ -353,17 +353,29 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
     if field_in is None:
         # Apply the lambda function to the entire dataframe
         if closure_type == Closure.openOpen:
-            data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if (
-                    np.issubdtype(type(x), np.number) and left_margin < x < right_margin) else x))
+            for col in data_dictionary_copy.columns:
+                if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                    for idx in data_dictionary_copy.iterrows():
+                        if (left_margin < data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] < right_margin):
+                            data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.openClosed:
-            data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
-            np.issubdtype(type(x), np.number) and (left_margin < x) and (x <= right_margin) else x))
+            for col in data_dictionary_copy.columns:
+                if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                    for idx in data_dictionary_copy.iterrows():
+                        if (left_margin < data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] <= right_margin):
+                            data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.closedOpen:
-            data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
-            np.issubdtype(type(x), np.number) and (left_margin <= x) and (x < right_margin) else x))
+            for col in data_dictionary_copy.columns:
+                if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                    for idx in data_dictionary_copy.iterrows():
+                        if (left_margin <= data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] < right_margin):
+                            data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.closedClosed:
-            data_dictionary_copy = data_dictionary.apply(lambda func: func.apply(lambda x: fix_value_output if
-            np.issubdtype(type(x), np.number) and (left_margin <= x) and (x <= right_margin) else x))
+            for col in data_dictionary_copy.columns:
+                if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                    for idx in data_dictionary_copy.iterrows():
+                        if (left_margin <= data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] <= right_margin):
+                            data_dictionary_copy.at[idx, col] = fix_value_output
 
     elif field_in is not None:
         if field_in not in data_dictionary.columns:
@@ -372,17 +384,29 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
         elif field_in in data_dictionary.columns:
             if np.issubdtype(data_dictionary[field_in].dtype, np.number):
                 if closure_type == Closure.openOpen:
-                    data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
-                        lambda x: fix_value_output if (left_margin < x) and (x < right_margin) else x)
+                    for i in range(len(data_dictionary_copy)):
+                        if (left_margin < data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] < right_margin):
+                            data_dictionary_copy.loc[i, field_out] = fix_value_output
+                        else:
+                            data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.openClosed:
-                    data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
-                        lambda x: fix_value_output if (left_margin < x) and (x <= right_margin) else x)
+                    for i in range(len(data_dictionary_copy)):
+                        if (left_margin < data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] <= right_margin):
+                            data_dictionary_copy.loc[i, field_out] = fix_value_output
+                        else:
+                            data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.closedOpen:
-                    data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
-                        lambda x: fix_value_output if (left_margin <= x) and (x < right_margin) else x)
+                    for i in range(len(data_dictionary_copy)):
+                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] < right_margin):
+                            data_dictionary_copy.loc[i, field_out] = fix_value_output
+                        else:
+                            data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.closedClosed:
-                    data_dictionary_copy[field_out] = data_dictionary[field_in].apply(
-                        lambda x: fix_value_output if (left_margin <= x) and (x <= right_margin) else x)
+                    for i in range(len(data_dictionary_copy)):
+                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] <= right_margin):
+                            data_dictionary_copy.loc[i, field_out] = fix_value_output
+                        else:
+                            data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
             else:
                 raise ValueError("The field is not numeric")
 
