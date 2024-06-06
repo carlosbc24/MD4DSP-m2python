@@ -390,8 +390,15 @@ class DataProcessing:
 
         rowFilter_input_DataDictionary_transformed = rowFilter_input_DataDictionary.copy()
 
-        # REVISAR OPCIONES (1 FUNCIÓN CON TODO, 3 FUNCIONES CON LISTAS O 1 FUNCIÓN POR ELEMENTO)
-        # GENERAR LISTA DE PRIMITIVAS (fixValues)
+        columns_rowFilter_param_filter = ['init_span']
+
+        filter_fix_value_list_rowFilter_param_filter = [0]
+
+        rowFilter_input_DataDictionary_transformed = data_transformations.transform_filter_rows_primitive(
+            data_dictionary=rowFilter_input_DataDictionary_transformed,
+            columns=columns_rowFilter_param_filter,
+            filter_fix_value_list=filter_fix_value_list_rowFilter_param_filter)
+
         rowFilter_output_DataDictionary = rowFilter_input_DataDictionary_transformed
         rowFilter_output_DataDictionary.to_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv')
 
