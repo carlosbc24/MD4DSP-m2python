@@ -2519,7 +2519,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2],
-             'A_binned': ['', '', '', '', '']})
+             'A_binned': ['0', '2', '3', '4', '1']})
 
         result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
                                                                       data_type_output=DataType(0),
@@ -2545,7 +2545,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': ['0', '2', '3', '4', '1'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
             {'A': ['0', '2', '3', '4', '1'], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2],
-             'A_binned': [0, 0, 0, 0, 0]})
+             'A_binned': [0, 2, 3, 4, 1]})
 
         result_df = self.data_transformations.transform_derived_field(data_dictionary=datadic.copy(),
                                                                       data_type_output=DataType(2),
@@ -2558,7 +2558,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2],
-             'A_binned': [0, 0, 0, 0, 0]})
+             'A_binned': [0, 2, 3, 4, 1]})
         expected_df = expected_df.astype({
             'A_binned': 'float64'  # Convertir A_binned a float64
         })
@@ -2576,7 +2576,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df = pd.DataFrame(
             {'A': ['21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024'], 'B': [2, 3, 4, 6, 12],
              'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2],
-             'A_binned': ['', '', '', '', '']})
+             'A_binned': ['21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024', '21/07/2024']})
         expected_df = expected_df.astype({
             'A_binned': 'datetime64[ns]'  # Convertir A_binned a object
         })
