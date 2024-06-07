@@ -102,26 +102,8 @@ class DataProcessing:
 											columns=columns_rowFilter_param_filter,
 		                                    filter_fix_value_list=filter_fix_value_list_rowFilter_param_filter)
 		
-		# dicc_rowFilter_param_filter={'init_span':{'missing': [14, 73], 'invalid': [32, 2] , 'outlier': True}}
-		#
-		# rowFilter_input_DataDictionary_transformed=data_transformations.transform_filter_rows_special_values(data_dictionary=rowFilter_input_DataDictionary_transformed,
-		# 																										cols_special_type_values=dicc_rowFilter_param_filter)
-		#
-		# filter_range_left_values_list_rowFilter_param_filter=[0.0, -5.0]
-		# filter_range_right_values_list_rowFilter_param_filter=[34.0, -1.0]
-		#
-		# rowFilter_input_DataDictionary_transformed=data_transformations.transform_filter_rows_range(data_dictionary=rowFilter_input_DataDictionary_transformed,
-		# 																									columns=columns_rowFilter_param_filter,
-		# 																									left_margin_list=filter_range_left_values_list_rowFilter_param_filter,
-		# 																									right_margin_list=filter_range_right_values_list_rowFilter_param_filter,
-		# 																									closure_type_list='PREGUNTAR FRAN')
 		rowFilter_output_DataDictionary=rowFilter_input_DataDictionary_transformed
 		rowFilter_output_DataDictionary.to_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv')
-		
-		
-		
-		
-		
 		
 		
 #-----------------New DataProcessing-----------------
@@ -237,7 +219,7 @@ class DataProcessing:
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=-1000.0, right_margin=1.0,
 																	  closure_type=Closure(0),
-																	  fix_value_output='low',
+																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'TOTAL_CONTACTS',
 																	  field_out = 'TOTAL_CONTACTS_binned')
@@ -245,7 +227,7 @@ class DataProcessing:
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=-1000.0, right_margin=1.0,
 																	  closure_type=Closure(0),
-																	  fix_value_output='low',
+																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'SELF_INIT_CNTCTS',
 																	  field_out = 'SELF_INIT_CNTCTS_binned')
@@ -253,7 +235,7 @@ class DataProcessing:
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=-1000.0, right_margin=1.0,
 																	  closure_type=Closure(0),
-																	  fix_value_output='low',
+																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'SOLICITED_CNTCTS',
 																	  field_out = 'SOLICITED_CNTCTS_binned')
@@ -416,7 +398,7 @@ class DataProcessing:
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=1160.0, right_margin=1340.0,
-																	  closure_type=Closure(2),
+																	  closure_type=Closure(1),
 																	  fix_value_output='76-93 Percentile',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'satscore',
@@ -427,7 +409,7 @@ class DataProcessing:
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=1340.0, right_margin=2000.0,
-																	  closure_type=Closure(2),
+																	  closure_type=Closure(1),
 																	  fix_value_output='94+ percentile',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'satscore',
@@ -448,7 +430,7 @@ class DataProcessing:
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
-																	  left_margin=-1000.0, right_margin=1040.0,
+																	  left_margin=9.0, right_margin=42830.0,
 																	  closure_type=Closure(1),
 																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
@@ -459,7 +441,7 @@ class DataProcessing:
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
-																	  left_margin=1040.0, right_margin=1160.0,
+																	  left_margin=42830.0, right_margin=55590.0,
 																	  closure_type=Closure(1),
 																	  fix_value_output='Moderate',
 								                                      data_type_output = DataType(0),
@@ -470,7 +452,7 @@ class DataProcessing:
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
-																	  left_margin=1160.0, right_margin=1340.0,
+																	  left_margin=55590.0, right_margin=100000.0,
 																	  closure_type=Closure(2),
 																	  fix_value_output='High',
 								                                      data_type_output = DataType(0),

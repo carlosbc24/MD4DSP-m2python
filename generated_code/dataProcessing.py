@@ -3,9 +3,7 @@ import functions.contract_invariants as contract_invariants
 import functions.contract_pre_post as contract_pre_post
 import functions.data_transformations as data_transformations
 from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataType, DerivedType, Closure
-from helpers.logger import set_logger, print_and_log
-
-
+from helpers.logger import set_logger
 class DataProcessing:
 	def generateDataProcessing(self):
 #-----------------New DataProcessing-----------------
@@ -348,26 +346,8 @@ class DataProcessing:
 											columns=columns_rowFilter_param_filter,
 		                                    filter_fix_value_list=filter_fix_value_list_rowFilter_param_filter)
 		
-		# dicc_rowFilter_param_filter={'init_span':{'missing': [14, 73], 'invalid': [32, 2] , 'outlier': True}}
-		#
-		# rowFilter_input_DataDictionary_transformed=data_transformations.transform_filter_rows_special_values(data_dictionary=rowFilter_input_DataDictionary_transformed,
-		# 																										cols_special_type_values=dicc_rowFilter_param_filter)
-		#
-		# filter_range_left_values_list_rowFilter_param_filter=[0.0, -5.0]
-		# filter_range_right_values_list_rowFilter_param_filter=[34.0, -1.0]
-		#
-		# rowFilter_input_DataDictionary_transformed=data_transformations.transform_filter_rows_range(data_dictionary=rowFilter_input_DataDictionary_transformed,
-		# 																									columns=columns_rowFilter_param_filter,
-		# 																									left_margin_list=filter_range_left_values_list_rowFilter_param_filter,
-		# 																									right_margin_list=filter_range_right_values_list_rowFilter_param_filter,
-		# 																									closure_type_list='PREGUNTAR FRAN')
 		rowFilter_output_DataDictionary=rowFilter_input_DataDictionary_transformed
 		rowFilter_output_DataDictionary.to_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv')
-		
-		
-		
-		
-		
 		
 		
 		if contract_pre_post.check_fix_value_range(value='0', data_dictionary=rowFilter_output_DataDictionary, belong_op=Belong(1), field='init_span',
@@ -699,27 +679,27 @@ class DataProcessing:
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=-1000.0, right_margin=1.0,
 																	  closure_type=Closure(0),
-																	  fix_value_output='low',
+																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'TOTAL_CONTACTS',
 																	  field_out = 'TOTAL_CONTACTS_binned')
-
+		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=-1000.0, right_margin=1.0,
 																	  closure_type=Closure(0),
-																	  fix_value_output='low',
+																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'SELF_INIT_CNTCTS',
 																	  field_out = 'SELF_INIT_CNTCTS_binned')
-
+		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=-1000.0, right_margin=1.0,
 																	  closure_type=Closure(0),
-																	  fix_value_output='low',
+																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'SOLICITED_CNTCTS',
 																	  field_out = 'SOLICITED_CNTCTS_binned')
-
+		
 		binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 		
@@ -1076,7 +1056,7 @@ class DataProcessing:
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=1160.0, right_margin=1340.0,
-																	  closure_type=Closure(2),
+																	  closure_type=Closure(1),
 																	  fix_value_output='76-93 Percentile',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'satscore',
@@ -1087,7 +1067,7 @@ class DataProcessing:
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																	  left_margin=1340.0, right_margin=2000.0,
-																	  closure_type=Closure(2),
+																	  closure_type=Closure(1),
 																	  fix_value_output='94+ percentile',
 								                                      data_type_output = DataType(0),
 																	  field_in = 'satscore',
@@ -1127,7 +1107,7 @@ class DataProcessing:
 		if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_input_dataDictionary,
 												data_dictionary_out=binner_output_dataDictionary,
 												left_margin=1160.0, right_margin=1340.0,
-												closure_type=Closure(2),
+												closure_type=Closure(1),
 												fix_value_output='76-93 Percentile',
 												belong_op_in=Belong(0), belong_op_out=Belong(0),
 												data_type_output=DataType(0),
@@ -1138,7 +1118,7 @@ class DataProcessing:
 		if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_input_dataDictionary,
 												data_dictionary_out=binner_output_dataDictionary,
 												left_margin=1340.0, right_margin=2000.0,
-												closure_type=Closure(2),
+												closure_type=Closure(1),
 												fix_value_output='94+ percentile',
 												belong_op_in=Belong(0), belong_op_out=Belong(0),
 												data_type_output=DataType(0),
@@ -1166,7 +1146,7 @@ class DataProcessing:
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
-																	  left_margin=-1000.0, right_margin=1040.0,
+																	  left_margin=9.0, right_margin=42830.0,
 																	  closure_type=Closure(1),
 																	  fix_value_output='Low',
 								                                      data_type_output = DataType(0),
@@ -1177,7 +1157,7 @@ class DataProcessing:
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
-																	  left_margin=1040.0, right_margin=1160.0,
+																	  left_margin=42830.0, right_margin=55590.0,
 																	  closure_type=Closure(1),
 																	  fix_value_output='Moderate',
 								                                      data_type_output = DataType(0),
@@ -1188,7 +1168,7 @@ class DataProcessing:
 		binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
 		
 		binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
-																	  left_margin=1160.0, right_margin=1340.0,
+																	  left_margin=55590.0, right_margin=100000.0,
 																	  closure_type=Closure(2),
 																	  fix_value_output='High',
 								                                      data_type_output = DataType(0),
@@ -1217,7 +1197,7 @@ class DataProcessing:
 			print('INVARIANT binner(avg_income)_INV_condition NOT VALIDATED')
 		if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_input_dataDictionary,
 												data_dictionary_out=binner_output_dataDictionary,
-												left_margin=42830.0, right_margin=5559.0,
+												left_margin=42830.0, right_margin=55590.0,
 												closure_type=Closure(2),
 												fix_value_output='Moderate',
 												belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -1228,7 +1208,7 @@ class DataProcessing:
 			print('INVARIANT binner(avg_income)_INV_condition NOT VALIDATED')
 		if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_input_dataDictionary,
 												data_dictionary_out=binner_output_dataDictionary,
-												left_margin=5559.0, right_margin=100000.0,
+												left_margin=55590.0, right_margin=100000.0,
 												closure_type=Closure(2),
 												fix_value_output='High',
 												belong_op_in=Belong(0), belong_op_out=Belong(0),
