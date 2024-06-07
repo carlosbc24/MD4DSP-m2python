@@ -133,20 +133,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         Execute all the data_transformations with external dataset tests
         """
         test_methods = [
-            # self.execute_transform_FixValue_FixValue,
-            # self.execute_transform_FixValue_DerivedValue,
-            # self.execute_transform_FixValue_NumOp,
-            # self.execute_transform_Interval_FixValue,
-            # self.execute_transform_Interval_DerivedValue,
-            # self.execute_transform_Interval_NumOp,
-            # self.execute_transform_SpecialValue_FixValue,
-            # self.execute_transform_SpecialValue_DerivedValue,
-            # self.execute_transform_SpecialValue_NumOp,
-            self.execute_transform_derived_field#,
-            # self.execute_transform_filter_columns,
-            # self.execute_transform_filter_rows_primitive,
-            # self.execute_transform_filter_rows_special_values,
-            # self.execute_transform_filter_rows_range
+            self.execute_transform_FixValue_FixValue,
+            self.execute_transform_FixValue_DerivedValue,
+            self.execute_transform_FixValue_NumOp,
+            self.execute_transform_Interval_FixValue,
+            self.execute_transform_Interval_DerivedValue,
+            self.execute_transform_Interval_NumOp,
+            self.execute_transform_SpecialValue_FixValue,
+            self.execute_transform_SpecialValue_DerivedValue,
+            self.execute_transform_SpecialValue_NumOp,
+            self.execute_transform_derived_field,
+            self.execute_transform_filter_columns,
+            self.execute_transform_filter_rows_primitive,
+            self.execute_transform_filter_rows_special_values,
+            self.execute_transform_filter_rows_range
         ]
 
         print_and_log("")
@@ -1455,7 +1455,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         expected_df = expected_df.apply(lambda col: col.apply(lambda x: 2 if (np.issubdtype(type(x), np.number) and
                                                                               ((x > 0.5) and (x < 1))) else x))
-
+        expected_df['energy'] = expected_df['energy'].astype(float)
         pd.testing.assert_frame_equal(result, expected_df)
         print_and_log("Test Case 2 Passed: the function returned the expected dataframe")
 
