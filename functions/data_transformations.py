@@ -355,25 +355,25 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
         if closure_type == Closure.openOpen:
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
-                    for idx in data_dictionary_copy.iterrows():
+                    for idx in data_dictionary_copy.index:
                         if (left_margin < data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] < right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.openClosed:
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
-                    for idx in data_dictionary_copy.iterrows():
+                    for idx in data_dictionary_copy.index:
                         if (left_margin < data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] <= right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.closedOpen:
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
-                    for idx in data_dictionary_copy.iterrows():
+                    for idx in data_dictionary_copy.index:
                         if (left_margin <= data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] < right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.closedClosed:
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
-                    for idx in data_dictionary_copy.iterrows():
+                    for idx in data_dictionary_copy.index:
                         if (left_margin <= data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] <= right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
 
