@@ -122,10 +122,11 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByFixValue_input_dataDictionary=imputeByDerivedValue_output_dataDictionary
+
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByFixValue_input_dataDictionary, field='ACADEMIC_INTEREST_2', 
 									missing_values=missing_values_imputeByFixValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=30.0/100):
+									quant_op=Operator(2), quant_rel=70.0/100):
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_2)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_2)_PRE_valueRange NOT VALIDATED')
@@ -133,7 +134,7 @@ def generateDataProcessing():
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByFixValue_input_dataDictionary, field='ACADEMIC_INTEREST_1', 
 									missing_values=missing_values_imputeByFixValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=30.0/100):
+									quant_op=Operator(2), quant_rel=70.0/100):
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_1)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_1)_PRE_valueRange NOT VALIDATED')
@@ -206,6 +207,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=imputeByFixValue_output_dataDictionary
+
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
 									missing_values=missing_values_imputeByNumericOp_PRE_valueRange,
@@ -284,6 +286,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=imputeByNumericOp_output_dataDictionary
+
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='satscore', 
 									missing_values=missing_values_imputeByNumericOp_PRE_valueRange,
@@ -326,7 +329,8 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	rowFilter_input_DataDictionary=imputeByNumericOp_output_dataDictionary
-	if contract_pre_post.check_fix_value_range(value=0, data_dictionary=rowFilter_input_DataDictionary, belong_op=Belong(0), field='init_span',
+
+	if contract_pre_post.check_fix_value_range(value=-216, data_dictionary=rowFilter_input_DataDictionary, belong_op=Belong(0), field='init_span',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange VALIDATED')
 	else:
@@ -352,6 +356,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	columnFilter_input_DataDictionary=rowFilter_output_DataDictionary
+
 	field_list_columnFilter_PRE_field_range=['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS', 'telecq', 'stuemail', 'interest']
 	if contract_pre_post.check_field_range(fields=field_list_columnFilter_PRE_field_range,
 								data_dictionary=columnFilter_input_DataDictionary,
@@ -381,6 +386,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=columnFilter_output_DataDictionary
+
 	if contract_pre_post.check_fix_value_range(value='A', data_dictionary=mapping_input_dataDictionary, belong_op=Belong(0), field='TERRITORY',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('PRECONDITION mapping(TERRITORY)_PRE_valueRange VALIDATED')
@@ -405,12 +411,12 @@ def generateDataProcessing():
 	
 	mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv')
 	
-	if contract_pre_post.check_fix_value_range(value='A', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(0), field='TERRITORY',
+	if contract_pre_post.check_fix_value_range(value='A', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(1), field='TERRITORY',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('POSTCONDITION mapping(TERRITORY)_POST_valueRange VALIDATED')
 	else:
 		print('POSTCONDITION mapping(TERRITORY)_POST_valueRange NOT VALIDATED')
-	if contract_pre_post.check_fix_value_range(value='N', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(0), field='TERRITORY',
+	if contract_pre_post.check_fix_value_range(value='N', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(1), field='TERRITORY',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('POSTCONDITION mapping(TERRITORY)_POST_valueRange VALIDATED')
 	else:
@@ -439,6 +445,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=mapping_output_dataDictionary
+
 	if contract_pre_post.check_fix_value_range(value='Y', data_dictionary=mapping_input_dataDictionary, belong_op=Belong(0), field='Instate',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('PRECONDITION mapping(Instate)_PRE_valueRange VALIDATED')
@@ -463,12 +470,12 @@ def generateDataProcessing():
 	
 	mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv')
 	
-	if contract_pre_post.check_fix_value_range(value='Y', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(0), field='Instate',
+	if contract_pre_post.check_fix_value_range(value='Y', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(1), field='Instate',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('POSTCONDITION mapping(Instate)_POST_valueRange VALIDATED')
 	else:
 		print('POSTCONDITION mapping(Instate)_POST_valueRange NOT VALIDATED')
-	if contract_pre_post.check_fix_value_range(value='N', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(0), field='Instate',
+	if contract_pre_post.check_fix_value_range(value='N', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(1), field='Instate',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('POSTCONDITION mapping(Instate)_POST_valueRange VALIDATED')
 	else:
@@ -497,6 +504,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	categoricalToContinuous_input_dataDictionary=mapping_output_dataDictionary
+
 	categoricalToContinuous_input_dataDictionary_transformed=categoricalToContinuous_input_dataDictionary.copy()
 	categoricalToContinuous_input_dataDictionary_transformed=data_transformations.transform_cast_type(data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
 																	data_type_output= DataType(6),
@@ -527,6 +535,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=categoricalToContinuous_output_dataDictionary
+
 	if contract_pre_post.check_outliers(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('PRECONDITION imputeOutlierByClosest(avg_income)_PRE_valueRange VALIDATED')
@@ -626,6 +635,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=imputeByNumericOp_output_dataDictionary
+
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(0), field='TOTAL_CONTACTS'):
 		print('PRECONDITION binner(TOTAL_CONTACTS)_PRE_valueRange VALIDATED')
@@ -867,6 +877,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=binner_output_dataDictionary
+
 	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='TERRITORY'):
 		print('PRECONDITION binner(TERRITORY)_PRE_valueRange VALIDATED')
@@ -996,6 +1007,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=binner_output_dataDictionary
+
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=2000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='satscore'):
 		print('PRECONDITION binner(satscore)_PRE_valueRange VALIDATED')
@@ -1104,6 +1116,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=binner_output_dataDictionary
+
 	if contract_pre_post.check_interval_range_float(left_margin=9.0, right_margin=100000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='avg_income'):
 		print('PRECONDITION binner(avg_income)_PRE_valueRange VALIDATED')

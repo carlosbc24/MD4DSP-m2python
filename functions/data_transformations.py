@@ -1157,8 +1157,8 @@ def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_spe
 
 
 def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str],
-                              left_margin_list: list[float] = None, right_margin_list: list[float] = None,
-                              closure_type_list: list[Closure] = None) -> pd.DataFrame:
+                                left_margin_list: list[float] = None, right_margin_list: list[float] = None,
+                                closure_type_list: list[Closure] = None) -> pd.DataFrame:
     """
     Execute the data transformation of the FilterRows - Range relation
 
