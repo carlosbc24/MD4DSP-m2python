@@ -179,6 +179,7 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             # Define los límites para los outliers
             lower_bound = Q1 - threshold * IQR
             upper_bound = Q3 + threshold * IQR
+
             # Crea una lista con todos los valores que no sean outliers
             non_outliers = data_dictionary_numeric[(data_dictionary_numeric >= lower_bound) & (data_dictionary_numeric <= upper_bound)].values.flatten().tolist()
             # Encuentra el valor mínimo y máximo en la lista de no outliers
@@ -196,6 +197,7 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             # Define los límites para los outliers
             lower_bound = Q1 - threshold * IQR
             upper_bound = Q3 + threshold * IQR
+
             # Crea una lista con todos los valores que no sean outliers
             non_outliers = data_dictionary_copy[field][(data_dictionary_copy[field] >= lower_bound) & (data_dictionary_copy[field] <= upper_bound)].values.flatten().tolist()
             # Encuentra el valor mínimo y máximo en la lista de no outliers
