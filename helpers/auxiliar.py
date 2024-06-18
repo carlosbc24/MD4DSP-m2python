@@ -156,3 +156,51 @@ def find_closest_value(numeric_values: list, value: Union[int, float]) -> Union[
                 min_distance = distance
 
     return closest_value
+
+
+def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field: str = None):
+    """
+    Args:
+        numeric_values: list of numeric values
+
+    Returns: the biggest and smallest values in the list that are not outliers
+    """
+
+    data_dictionary_copy = data_dictionary.copy()
+
+    threshold = 1.5
+    if field is None:
+        if axis_param is None:
+            data_dictionary_numeric = data_dictionary.select_dtypes(include=[np.number])
+            Q1 = data_dictionary_numeric.quantile(0.25)
+            Q3 = data_dictionary_numeric.quantile(0.75)
+            # Calcula el rango intercuartil
+            IQR = Q3 - Q1
+            # Define los límites para los outliers
+            lower_bound = Q1 - threshold * IQR
+            upper_bound = Q3 + threshold * IQR
+            # Crea una lista con todos los valores que no sean outliers
+            non_outliers = data_dictionary_numeric[(data_dictionary_numeric >= lower_bound) & (data_dictionary_numeric <= upper_bound)].values.flatten().tolist()
+            # Encuentra el valor mínimo y máximo en la lista de no outliers
+            min_value = min(non_outliers)
+            max_value = max(non_outliers)
+
+            return min_value, max_value
+
+    elif field is not None:
+        if axis_param is None or axis_param == 0:
+            Q1 = data_dictionary_copy[field].quantile(0.25)
+            Q3 = data_dictionary_copy[field].quantile(0.75)
+            # Calcula el rango intercuartil
+            IQR = Q3 - Q1
+            # Define los límites para los outliers
+            lower_bound = Q1 - threshold * IQR
+            upper_bound = Q3 + threshold * IQR
+            # Crea una lista con todos los valores que no sean outliers
+            non_outliers = data_dictionary_copy[field][(data_dictionary_copy[field] >= lower_bound) & (data_dictionary_copy[field] <= upper_bound)].values.flatten().tolist()
+            # Encuentra el valor mínimo y máximo en la lista de no outliers
+            min_value = min(non_outliers)
+            max_value = max(non_outliers)
+
+            return min_value, max_value
+
