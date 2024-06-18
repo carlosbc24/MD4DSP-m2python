@@ -33,6 +33,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByFixValue_input_dataDictionary=imputeByDerivedValue_output_dataDictionary
+
 	imputeByFixValue_input_dataDictionary_transformed=imputeByFixValue_input_dataDictionary.copy()
 	missing_values_list=[]
 	
@@ -55,6 +56,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=imputeByFixValue_output_dataDictionary
+
 	imputeByNumericOp_input_dataDictionary_transformed=imputeByNumericOp_input_dataDictionary.copy()
 	missing_values_list=[]
 	
@@ -75,6 +77,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=imputeByNumericOp_output_dataDictionary
+
 	imputeByNumericOp_input_dataDictionary_transformed=imputeByNumericOp_input_dataDictionary.copy()
 	missing_values_list=[]
 	
@@ -88,6 +91,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	rowFilter_input_DataDictionary=imputeByNumericOp_output_dataDictionary
+
 	rowFilter_input_DataDictionary_transformed=rowFilter_input_DataDictionary.copy()
 	columns_rowFilter_param_filter=['init_span']
 	
@@ -102,6 +106,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	columnFilter_input_DataDictionary=rowFilter_output_DataDictionary
+
 	columnFilter_input_DataDictionary_transformed=columnFilter_input_DataDictionary.copy()
 	field_list_columnFilter_param_field=['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS']
 	
@@ -113,6 +118,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=columnFilter_output_DataDictionary
+
 	input_values_list=['A', 'N']
 	output_values_list=['0', '0']
 	data_type_input_list=[DataType(0), DataType(0)]
@@ -128,6 +134,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=mapping_output_dataDictionary
+
 	input_values_list=['Y', 'N']
 	output_values_list=['1', '0']
 	data_type_input_list=[DataType(0), DataType(0)]
@@ -143,6 +150,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	categoricalToContinuous_input_dataDictionary=mapping_output_dataDictionary
+
 	categoricalToContinuous_input_dataDictionary_transformed=categoricalToContinuous_input_dataDictionary.copy()
 	categoricalToContinuous_input_dataDictionary_transformed=data_transformations.transform_cast_type(data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
 																	data_type_output= DataType(6),
@@ -157,6 +165,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=categoricalToContinuous_output_dataDictionary
+
 	imputeByNumericOp_input_dataDictionary_transformed=imputeByNumericOp_input_dataDictionary.copy()
 	missing_values_list=[]
 	
@@ -184,6 +193,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=imputeByNumericOp_output_dataDictionary
+
 	binner_input_dataDictionary_transformed=binner_input_dataDictionary.copy()
 	binner_input_dataDictionary_transformed=data_transformations.transform_derived_field(data_dictionary=binner_input_dataDictionary_transformed,
 																  data_type_output = DataType(0),
@@ -284,6 +294,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=binner_output_dataDictionary
+
 	binner_input_dataDictionary_transformed=binner_input_dataDictionary.copy()
 	binner_input_dataDictionary_transformed=data_transformations.transform_derived_field(data_dictionary=binner_input_dataDictionary_transformed,
 																  data_type_output = DataType(0),
@@ -344,6 +355,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=binner_output_dataDictionary
+
 	binner_input_dataDictionary_transformed=binner_input_dataDictionary.copy()
 	binner_input_dataDictionary_transformed=data_transformations.transform_derived_field(data_dictionary=binner_input_dataDictionary_transformed,
 																  data_type_output = DataType(0),
@@ -394,6 +406,7 @@ def generateDataProcessing():
 	
 #-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=binner_output_dataDictionary
+
 	binner_input_dataDictionary_transformed=binner_input_dataDictionary.copy()
 	binner_input_dataDictionary_transformed=data_transformations.transform_derived_field(data_dictionary=binner_input_dataDictionary_transformed,
 																  data_type_output = DataType(0),

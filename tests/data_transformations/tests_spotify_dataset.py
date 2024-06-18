@@ -6,7 +6,7 @@ import pandas as pd
 from tqdm import tqdm
 
 import functions.data_transformations as data_transformations
-from helpers.auxiliar import find_closest_value
+from helpers.auxiliar import find_closest_value, outlier_closest
 from helpers.enumerations import Closure, DataType, SpecialType, Belong
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
@@ -126,7 +126,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Select a small batch of the dataset (first 10 rows)
         self.small_batch_dataset = self.data_dictionary.head(10)
         # Select the rest of the dataset (from row 11 to the end)
-        self.rest_of_dataset = self.data_dictionary.iloc[10:].reset_index(drop=True)
+        self.rest_of_dataset = self.data_dictionary.iloc[10:]
 
     def executeAll_ExternalDatasetTests(self):
         """
@@ -3823,24 +3823,24 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         num_op_output = Operation(3)
         field_in = 'danceability'
         field_out = 'danceability'
-        result_df = self.data_transformations.transform_special_value_num_op(
-            data_dictionary=self.small_batch_dataset.copy(),
-            special_type_input=special_type_input,
-            num_op_output=num_op_output,
-            field_in=field_in, field_out=field_out, axis_param=0)
-        # Sustituir los valores outliers por el valor más cercano en el dataframe
-        Q1 = expected_df[field_in].quantile(0.25)
-        Q3 = expected_df[field_in].quantile(0.75)
-        IQR = Q3 - Q1
-        numeric_columns = expected_df.select_dtypes(include=np.number).columns
-        for idx in range(len(expected_df[field_in])):
-            expected_df[field_in].iat[idx] = find_closest_value(expected_df[field_in].tolist(),
-                                                                expected_df[field_in].iat[idx]) if \
-                expected_df[field_in].iat[
-                    idx] < Q1 - 1.5 * IQR or \
-                expected_df[field_in].iat[
-                    idx] > Q3 + 1.5 * IQR else \
-                expected_df[field_in].iat[idx]
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output,
+                                                                             field_in=field_in, field_out=field_out, axis_param=0)
+
+        data_dictionary_copy_mask = get_outliers(self.small_batch_dataset.copy(), field_in, 0)
+
+        minimum_valid, maximum_valid = outlier_closest(data_dictionary=self.small_batch_dataset.copy(),
+                                                       axis_param=None, field=field_in)
+
+        # Replace the outlier values with the closest numeric values
+        for i in range(len(self.small_batch_dataset.copy().index)):
+            if data_dictionary_copy_mask.at[i, field_in] == 1:
+                if expected_df.at[i, field_in] > maximum_valid:
+                    expected_df.at[i, field_out] = maximum_valid
+                elif expected_df.at[i, field_in] < minimum_valid:
+                    expected_df.at[i, field_out] = minimum_valid
+
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
 
@@ -3851,36 +3851,24 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_special_value_num_op(
-            data_dictionary=self.small_batch_dataset.copy(),
-            special_type_input=special_type_input,
-            num_op_output=num_op_output, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
 
-        data_dictionary_copy_mask = get_outliers(expected_df, None, 0)
-        for col_name in expected_df.select_dtypes(include=[np.number]).columns:
-            # Get the outlier values in the current column
-            outlier_values_in_col = [expected_df.at[i, col_name] for i in
-                                     range(len(expected_df.index))
-                                     if data_dictionary_copy_mask.at[i, col_name] == 1]
+        for col_name in expected_df.select_dtypes(include=np.number).columns:
+            data_dictionary_copy_mask = get_outliers(self.small_batch_dataset.copy(), col_name, 0)
 
-            # If there are no outlier values in the column, skip the rest of the loop
-            if not outlier_values_in_col:
-                continue
-            # Flatten the column into a list of values
-            flattened_values = expected_df[col_name].values.flatten().tolist()
+            minimum_valid, maximum_valid = outlier_closest(data_dictionary=self.small_batch_dataset.copy(),
+                                                           axis_param=0, field=col_name)
 
-            # Create a dictionary to store the closest value for each outlier value
-            closest_values = {}
-
-            for outlier_value in outlier_values_in_col:
-                if outlier_value not in closest_values:
-                    closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-
-            # Replace the outlier values with the closest numeric values in the column
-            for i in range(len(expected_df.index)):
-                current_value = expected_df.at[i, col_name]
+            # Replace the outlier values with the closest numeric values
+            for i in range(len(self.small_batch_dataset.copy().index)):
                 if data_dictionary_copy_mask.at[i, col_name] == 1:
-                    expected_df.at[i, col_name] = closest_values[current_value]
+                    if expected_df.at[i, col_name] > maximum_valid:
+                        expected_df.at[i, col_name] = maximum_valid
+                    elif expected_df.at[i, col_name] < minimum_valid:
+                        expected_df.at[i, col_name] = minimum_valid
+
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
 
@@ -4366,33 +4354,23 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         num_op_output = Operation(3)
         field_in = 'danceability'
         field_out = 'danceability'
-        result_df = self.data_transformations.transform_special_value_num_op(
-            data_dictionary=self.rest_of_dataset.copy(),
-            special_type_input=special_type_input,
-            num_op_output=num_op_output, field_in=field_in,
-            field_out=field_out, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, field_in=field_in,
+                                                                             field_out=field_out, axis_param=0)
 
-        expected_df_mask = get_outliers(expected_df, field_in, 0)
-        outlier_values_in_col = [expected_df.at[i, field_in] for i in range(len(expected_df.index))
-                                 if expected_df_mask.at[i, field_in] == 1]
+        data_dictionary_copy_mask = get_outliers(self.rest_of_dataset.copy(), None, 0)
 
-        # If there are no outlier values in the column, skip the rest of the loop
-        if outlier_values_in_col:
-            # Flatten the column into a list of values
-            flattened_values = expected_df[field_in].values.flatten().tolist()
+        minimum_valid, maximum_valid = outlier_closest(data_dictionary=self.rest_of_dataset.copy(),
+                                                       axis_param=0, field=field_in)
 
-            # Create a dictionary to store the closest value for each outlier value
-            closest_values = {}
-
-            for outlier_value in outlier_values_in_col:
-                if outlier_value not in closest_values:
-                    closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-
-            # Replace the outlier values with the closest numeric values in the column
-            for i in range(len(expected_df.index)):
-                current_value = expected_df.at[i, field_in]
-                if expected_df_mask.at[i, field_in] == 1:
-                    expected_df.at[i, field_in] = closest_values[current_value]
+        # Replace the outlier values with the closest numeric values
+        for i in range(len(self.rest_of_dataset.copy().index)):
+            if data_dictionary_copy_mask.at[i, field_in] == 1:
+                if expected_df.at[i, field_in] > maximum_valid:
+                    expected_df.at[i, field_out] = maximum_valid
+                elif expected_df.at[i, field_in] < minimum_valid:
+                    expected_df.at[i, field_out] = minimum_valid
 
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: the function returned the expected dataframe")
@@ -4404,33 +4382,23 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_special_value_num_op(
-            data_dictionary=self.rest_of_dataset.copy(),
-            special_type_input=special_type_input,
-            num_op_output=num_op_output, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, axis_param=0)
 
-        expected_df_mask = get_outliers(expected_df, None, 0)
-        # Iterate over each column
-        for col_name in expected_df.select_dtypes(include=[np.number]).columns:
-            # Get the outlier values in the current column
-            outlier_values_in_col = [expected_df.at[i, col_name] for i in
-                                     range(len(expected_df.index))
-                                     if expected_df_mask.at[i, col_name] == 1]
-            # If there are no outlier values in the column, skip the rest of the loop
-            if not outlier_values_in_col:
-                continue
-            # Flatten the column into a list of values
-            flattened_values = expected_df[col_name].values.flatten().tolist()
-            # Create a dictionary to store the closest value for each outlier value
-            closest_values = {}
-            for outlier_value in outlier_values_in_col:
-                if outlier_value not in closest_values:
-                    closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-            # Replace the outlier values with the closest numeric values in the column
-            for i in range(len(expected_df.index)):
-                current_value = expected_df.at[i, col_name]
-                if expected_df_mask.at[i, col_name] == 1:
-                    expected_df.at[i, col_name] = closest_values[current_value]
+        for col_name in expected_df.select_dtypes(include=np.number).columns:
+            data_dictionary_copy_mask = get_outliers(self.rest_of_dataset.copy(), None, 0)
+
+            minimum_valid, maximum_valid = outlier_closest(data_dictionary=self.rest_of_dataset.copy(),
+                                                           axis_param=0, field=col_name)
+
+            # Replace the outlier values with the closest numeric values
+            for i in range(len(self.rest_of_dataset.copy().index)):
+                if data_dictionary_copy_mask.at[i, col_name] == 1:
+                    if expected_df.at[i, col_name] > maximum_valid:
+                        expected_df.at[i, col_name] = maximum_valid
+                    elif expected_df.at[i, col_name] < minimum_valid:
+                        expected_df.at[i, col_name] = minimum_valid
 
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 20 Passed: the function returned the expected dataframe")
@@ -4781,7 +4749,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         # Remove from expected_df the rows where the column 'mode' has the value 0
         expected_df = expected_df[expected_df['mode'] != 0]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -4794,7 +4761,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         # Remove from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
         expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -4807,7 +4773,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         # Remove from expected_df the rows where the column 'track_artist' has the values 'The Beatles', 'Ed Sheeran', 'Lady Gaga'
         expected_df = expected_df[expected_df['track_artist'].isin(['The Beatles', 'Ed Sheeran', 'Lady Gaga']) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -4823,7 +4788,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
         expected_df = expected_df[expected_df['track_album_release_date'].isin(
             ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -4855,7 +4819,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         # Remove from expected_df the rows where the column 'mode' has the value 0
         expected_df = expected_df[expected_df['mode'] != 0]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -4868,7 +4831,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         # Remove from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
         expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -4881,7 +4843,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         # Remove from expected_df the rows where the column 'track_artist' has the values 'The Beatles', 'Ed Sheeran', 'Lady Gaga'
         expected_df = expected_df[expected_df['track_artist'].isin(['The Beatles', 'Ed Sheeran', 'Lady Gaga']) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -4897,7 +4858,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
         expected_df = expected_df[expected_df['track_album_release_date'].isin(
             ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -4946,7 +4906,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
         expected_df = expected_df.dropna(subset=['speechiness'])
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -4961,7 +4920,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == False]
         expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == False]
         expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -4982,7 +4940,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             IQR = Q3 - Q1
             expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
 
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -5011,7 +4968,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -5042,7 +4998,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -5068,7 +5023,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             expected_df['speechiness'].isin([0.123, 0.456, 0.789]) == False]
         expected_df = expected_df[
             expected_df['mode'].isin([0.0224, 0.36]) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -5093,7 +5047,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = expected_df[
             expected_df['mode'].isin([0]) == False]
         expected_df.dropna(subset=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'], inplace=True)
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
 
@@ -5128,7 +5081,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
         expected_df = expected_df.dropna(subset=['speechiness'])
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -5143,7 +5095,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == False]
         expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == False]
         expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -5164,7 +5115,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             IQR = Q3 - Q1
             expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
 
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -5193,7 +5143,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -5224,7 +5173,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
             expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -5250,7 +5198,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             expected_df['speechiness'].isin([0.123, 0.456, 0.789]) == False]
         expected_df = expected_df[
             expected_df['mode'].isin([0.0224, 0.36]) == False]
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -5275,7 +5222,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = expected_df[
             expected_df['mode'].isin([0]) == False]
         expected_df.dropna(subset=['acousticness', 'danceability', 'energy', 'speechiness', 'mode'], inplace=True)
-        expected_df.reset_index(drop=True, inplace=True)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
 
@@ -5323,58 +5269,57 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['speechiness'],
-            right_margin_list=[0.5, 0.7],
-            left_margin_list=[0.2, 0.4],
-            closure_type_list=[Closure(0), Closure(1)])
+            right_margin_list=[0.1, 0.7],
+            left_margin_list=[0, 0.05],
+            include_range_list=[True, False])
         expected_df = self.small_batch_dataset.copy()
-        expected_df = expected_df[~(((expected_df['speechiness'] > 0.2) & (expected_df['speechiness'] < 0.5)) |
-                                    ((expected_df['speechiness'] > 0.4) & (expected_df['speechiness'] <= 0.7)))]
-        expected_df.reset_index(drop=True, inplace=True)
+        expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= 0.1)) &
+                                  (~((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
         # Case 2
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['mode', 'track_popularity', 'danceability'],
-            right_margin_list=[0, 11, 0.7],
-            left_margin_list=[0, 10, 0.4],
-            closure_type_list=[Closure(3), Closure(1), Closure(1)])
+            columns=['mode'],
+            right_margin_list=[0],
+            left_margin_list=[0],
+            include_range_list=[True])
         expected_df = self.small_batch_dataset.copy()
-        expected_df = expected_df[~(((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0)) |
-                                    ((expected_df['mode'] > 10) & (expected_df['mode'] <= 11)) |
-                                    ((expected_df['mode'] > 0.4) & (expected_df['mode'] <= 0.7)) |
-                                    ((expected_df['track_popularity'] >= 0) & (expected_df['track_popularity'] <= 0)) |
-                                    ((expected_df['track_popularity'] > 10) & (expected_df['track_popularity'] <= 11)) |
-                                    ((expected_df['track_popularity'] > 0.4) & (
-                                            expected_df['track_popularity'] <= 0.7)) |
-                                    ((expected_df['danceability'] >= 0) & (expected_df['danceability'] <= 0)) |
-                                    ((expected_df['danceability'] > 10) & (expected_df['danceability'] <= 11)) |
-                                    ((expected_df['danceability'] > 0.4) & (expected_df['danceability'] <= 0.7)))]
-        expected_df.reset_index(drop=True, inplace=True)
+        expected_df = expected_df[((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0))]
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=result_df,
+            columns=['track_popularity', 'danceability'],
+            right_margin_list=[68],
+            left_margin_list=[None],
+            include_range_list=[True])
+        expected_df = expected_df[(((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity']
+                                                                                      <=
+        68)) &
+                                   (((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity'] <=
+                                                                               68))) &
+                                   ((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <=
+                                                                                      68)) &
+                                   (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability']
+                                                                                        <= 68))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
         # Case 3
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.small_batch_dataset.copy(),
-            columns=['instrumentalness', 'danceability', 'energy', 'speechiness', 'liveness'],
-            right_margin_list=[0.1, 0.8],
-            left_margin_list=[0.01, 0.7],
-            closure_type_list=[Closure(0), Closure(3)])
+            columns=['danceability', 'energy', 'speechiness'],
+            right_margin_list=[0.89, None],
+            left_margin_list=[None, 0.9],
+            include_range_list=[True, False])
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
-            ~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
-              ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
-              ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
-              ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
-              ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
-              ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
-              ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
-              ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
-              ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
-              ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
-        expected_df.reset_index(drop=True, inplace=True)
+            (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <= 0.89)) &
+              (~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
+              ((expected_df['energy'] >= float('-inf')) & (expected_df['energy'] <= 0.89)) &
+              (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
+              ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)) &
+              (~((expected_df['speechiness'] >= 0.9) & (expected_df['speechiness'] <= float('inf')))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -5384,7 +5329,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 data_dictionary=self.small_batch_dataset.copy(),
                 columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
                          "noew_column_pepe"], right_margin_list=[0.5],
-                left_margin_list=[0.2], closure_type_list=[Closure(0)])
+                left_margin_list=[0.2], include_range_list=[True])
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_WholeDatasetTests_execute_transform_filter_rows_range(self):
@@ -5400,58 +5345,58 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['speechiness'],
-            right_margin_list=[0.5, 0.7],
-            left_margin_list=[0.2, 0.4],
-            closure_type_list=[Closure(0), Closure(1)])
+            right_margin_list=[0.1, 0.7],
+            left_margin_list=[0, 0.05],
+            include_range_list=[True, False])
         expected_df = self.rest_of_dataset.copy()
-        expected_df = expected_df[~(((expected_df['speechiness'] > 0.2) & (expected_df['speechiness'] < 0.5)) |
-                                    ((expected_df['speechiness'] > 0.4) & (expected_df['speechiness'] <= 0.7)))]
-        expected_df.reset_index(drop=True, inplace=True)
+        expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= 0.1)) &
+                                  (~((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
         # Case 2
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['mode', 'track_popularity', 'danceability'],
-            right_margin_list=[0, 11, 0.7],
-            left_margin_list=[0, 10, 0.4],
-            closure_type_list=[Closure(3), Closure(1), Closure(1)])
+            columns=['mode'],
+            right_margin_list=[0],
+            left_margin_list=[0],
+            include_range_list=[True])
         expected_df = self.rest_of_dataset.copy()
-        expected_df = expected_df[~(((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0)) |
-                                    ((expected_df['mode'] > 10) & (expected_df['mode'] <= 11)) |
-                                    ((expected_df['mode'] > 0.4) & (expected_df['mode'] <= 0.7)) |
-                                    ((expected_df['track_popularity'] >= 0) & (expected_df['track_popularity'] <= 0)) |
-                                    ((expected_df['track_popularity'] > 10) & (expected_df['track_popularity'] <= 11)) |
-                                    ((expected_df['track_popularity'] > 0.4) & (
-                                            expected_df['track_popularity'] <= 0.7)) |
-                                    ((expected_df['danceability'] >= 0) & (expected_df['danceability'] <= 0)) |
-                                    ((expected_df['danceability'] > 10) & (expected_df['danceability'] <= 11)) |
-                                    ((expected_df['danceability'] > 0.4) & (expected_df['danceability'] <= 0.7)))]
-        expected_df.reset_index(drop=True, inplace=True)
+        expected_df = expected_df[((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0))]
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=result_df,
+            columns=['track_popularity', 'danceability'],
+            right_margin_list=[68],
+            left_margin_list=[None],
+            include_range_list=[True])
+        expected_df = expected_df[
+            (((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity']
+                                                                    <=
+                                                                    68)) &
+             (((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity'] <=
+                                                                     68))) &
+             ((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <=
+                                                                68)) &
+             (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability']
+                                                                 <= 68))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
         # Case 3
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.rest_of_dataset.copy(),
-            columns=['instrumentalness', 'danceability', 'energy', 'speechiness', 'liveness'],
-            right_margin_list=[0.1, 0.8],
-            left_margin_list=[0.01, 0.7],
-            closure_type_list=[Closure(0), Closure(3)])
+            columns=['danceability', 'energy', 'speechiness'],
+            right_margin_list=[0.89, None],
+            left_margin_list=[None, 0.9],
+            include_range_list=[True, False])
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[
-            ~(((expected_df['instrumentalness'] > 0.01) & (expected_df['instrumentalness'] < 0.1)) |
-              ((expected_df['instrumentalness'] >= 0.7) & (expected_df['instrumentalness'] <= 0.8)) |
-              ((expected_df['danceability'] > 0.01) & (expected_df['danceability'] < 0.1)) |
-              ((expected_df['danceability'] >= 0.7) & (expected_df['danceability'] <= 0.8)) |
-              ((expected_df['energy'] > 0.01) & (expected_df['energy'] < 0.1)) |
-              ((expected_df['energy'] >= 0.7) & (expected_df['energy'] <= 0.8)) |
-              ((expected_df['speechiness'] > 0.01) & (expected_df['speechiness'] < 0.1)) |
-              ((expected_df['speechiness'] >= 0.7) & (expected_df['speechiness'] <= 0.8)) |
-              ((expected_df['liveness'] > 0.01) & (expected_df['liveness'] < 0.1)) |
-              ((expected_df['liveness'] >= 0.7) & (expected_df['liveness'] <= 0.8)))]
-        expected_df.reset_index(drop=True, inplace=True)
+            (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <= 0.89)) &
+             (~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
+             ((expected_df['energy'] >= float('-inf')) & (expected_df['energy'] <= 0.89)) &
+             (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
+             ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)) &
+             (~((expected_df['speechiness'] >= 0.9) & (expected_df['speechiness'] <= float('inf')))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -5461,5 +5406,5 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 data_dictionary=self.rest_of_dataset.copy(),
                 columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
                          "noew_column_pepe"], right_margin_list=[0.5],
-                left_margin_list=[0.2], closure_type_list=[Closure(0)])
+                left_margin_list=[0.2], include_range_list=[True])
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
