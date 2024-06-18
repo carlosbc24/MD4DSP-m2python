@@ -958,7 +958,7 @@ def transform_special_value_num_op(data_dictionary: pd.DataFrame, special_type_i
     data_dictionary_copy_mask = None
 
     if special_type_input == SpecialType.OUTLIER:
-        data_dictionary_copy_mask = get_outliers(data_dictionary_copy, field_in, axis_param)
+        data_dictionary_copy_mask = get_outliers(data_dictionary=data_dictionary_copy, field=field_in, axis_param=axis_param)
 
     if num_op_output == Operation.INTERPOLATION:
         data_dictionary_copy = special_type_interpolation(data_dictionary_copy=data_dictionary_copy,

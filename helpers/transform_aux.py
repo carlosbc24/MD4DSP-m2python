@@ -807,7 +807,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                 # Replace the outlier values with the closest numeric values
                 for i in range(len(data_dictionary_copy.index)):
                     for j in range(len(data_dictionary_copy.columns)):
-                        if data_dictionary_copy_mask.iloc[i, j] == 1:
+                        if data_dictionary_copy_mask.at[i, j] == 1:
                             if data_dictionary_copy.at[i, j] > maximum_valid:
                                 data_dictionary_copy.at[i, j] = maximum_valid
                             elif data_dictionary_copy.at[i, j] < minimum_valid:
@@ -820,7 +820,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
 
                     # Replace the outlier values with the closest numeric values
                     for i in range(len(data_dictionary_copy.index)):
-                        if data_dictionary_copy_mask.iloc[i, col_name] == 1:
+                        if data_dictionary_copy_mask.at[i, col_name] == 1:
                             if data_dictionary_copy.at[i, col_name] > maximum_valid:
                                 data_dictionary_copy.at[i, col_name] = maximum_valid
                             elif data_dictionary_copy.at[i, col_name] < minimum_valid:
@@ -860,7 +860,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
 
             # Replace the outlier values with the closest numeric values
             for i in range(len(data_dictionary_copy.index)):
-                if data_dictionary_copy_mask.iloc[i, field_in] == 1:
+                if data_dictionary_copy_mask.at[i, field_in] == 1:
                     if data_dictionary_copy.at[i, field_in] > maximum_valid:
                         data_dictionary_copy.at[i, field_out] = maximum_valid
                     elif data_dictionary_copy.at[i, field_in] < minimum_valid:
