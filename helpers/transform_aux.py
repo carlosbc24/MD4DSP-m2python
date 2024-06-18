@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from helpers.auxiliar import find_closest_value
+from helpers.auxiliar import find_closest_value, outlier_closest
 from helpers.enumerations import DerivedType, SpecialType
 
 
@@ -801,71 +801,30 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
 
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
-                # Flatten the DataFrame into a single series of values
-                flattened_values = only_numbers_df.values.flatten().tolist()
-                # Create a dictionary to store the closest value for each outlier value
-                closest_values = {}
-                # For each outlier value, find the closest numeric value in the flattened series
-                for i in range(len(data_dictionary_copy.index)):
-                    for j in range(len(data_dictionary_copy.columns)):
-                        if data_dictionary_copy_mask.iloc[i, j] == 1:
-                            current_value = data_dictionary_copy.iloc[i, j]
-                            if current_value not in closest_values:
-                                closest_values[current_value] = find_closest_value(flattened_values, current_value)
+                minimum_valid, maximum_valid=outlier_closest(data_dictionary=data_dictionary_copy,
+                                                             axis_param=None, field=None)
+
                 # Replace the outlier values with the closest numeric values
                 for i in range(len(data_dictionary_copy.index)):
                     for j in range(len(data_dictionary_copy.columns)):
-                        if data_dictionary_copy_mask.iloc[i, j] == 1:
-                            current_value = data_dictionary_copy.iloc[i, j]
-                            data_dictionary_copy.at[i, j] = closest_values[current_value]
+                        if data_dictionary_copy_mask.at[i, j] == 1:
+                            if data_dictionary_copy.at[i, j] > maximum_valid:
+                                data_dictionary_copy.at[i, j] = maximum_valid
+                            elif data_dictionary_copy.at[i, j] < minimum_valid:
+                                data_dictionary_copy.at[i, j] = minimum_valid
             elif axis_param == 0:
                 # Iterate over each column
                 for col_name in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
-                    # Get the outlier values in the current column
-                    outlier_values_in_col = [data_dictionary_copy.at[i, col_name] for i in
-                                             range(len(data_dictionary_copy.index))
-                                             if data_dictionary_copy_mask.at[i, col_name] == 1]
+                    minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_copy,
+                                                                   axis_param=0, field=col_name)
 
-                    # If there are no outlier values in the column, skip the rest of the loop
-                    if not outlier_values_in_col:
-                        continue
-                    # Flatten the column into a list of values
-                    flattened_values = data_dictionary_copy[col_name].values.flatten().tolist()
-                    # Create a dictionary to store the closest value for each outlier value
-                    closest_values = {}
-                    for outlier_value in outlier_values_in_col:
-                        if outlier_value not in closest_values:
-                            closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-                    # Replace the outlier values with the closest numeric values in the column
+                    # Replace the outlier values with the closest numeric values
                     for i in range(len(data_dictionary_copy.index)):
-                        current_value = data_dictionary_copy.at[i, col_name]
                         if data_dictionary_copy_mask.at[i, col_name] == 1:
-                            data_dictionary_copy.at[i, col_name] = closest_values[current_value]
-            elif axis_param == 1:
-                # Iterate over each row
-                for row_idx in range(len(data_dictionary_copy.index)):
-                    # Get the numeric values in the current row
-                    numeric_values_in_row = data_dictionary_copy.iloc[row_idx].select_dtypes(
-                        include=[np.number]).values.tolist()
-                    # Get the outlier values in the current row
-                    outlier_values_in_row = [data_dictionary_copy.at[row_idx, col_name] for col_name in
-                                             data_dictionary_copy.columns
-                                             if data_dictionary_copy_mask.at[row_idx, col_name] == 1]
-                    # If there are no outlier values in the row, skip the rest of the loop
-                    if not outlier_values_in_row:
-                        continue
-                    # Create a dictionary to store the closest value for each outlier value
-                    closest_values = {}
-                    # For each outlier value IN the row (more efficient), find the closest numeric value in the numeric values
-                    for outlier_value in outlier_values_in_row:
-                        if outlier_value not in closest_values:
-                            closest_values[outlier_value] = find_closest_value(numeric_values_in_row, outlier_value)
-                    # Replace the outlier values with the closest numeric values in the row
-                    for col_name in data_dictionary_copy.columns:
-                        current_value = data_dictionary_copy.at[row_idx, col_name]
-                        if data_dictionary_copy_mask.at[row_idx, col_name] == 1:
-                            data_dictionary_copy.at[row_idx, col_name] = closest_values[current_value]
+                            if data_dictionary_copy.at[i, col_name] > maximum_valid:
+                                data_dictionary_copy.at[i, col_name] = maximum_valid
+                            elif data_dictionary_copy.at[i, col_name] < minimum_valid:
+                                data_dictionary_copy.at[i, col_name] = minimum_valid
 
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
@@ -896,25 +855,15 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                             raise ValueError("Error: it's not possible to apply the closest operation to the null values")
 
         if special_type_input == SpecialType.OUTLIER:
-            # Get the outlier values in the current column
-            outlier_values_in_col = [data_dictionary_copy.at[i, field_in] for i in range(len(data_dictionary_copy.index))
-                                     if data_dictionary_copy_mask.at[i, field_in] == 1]
-            # If there are no outlier values in the column, skip the rest of the loop
-            if outlier_values_in_col:
-                # Flatten the column into a list of values
-                flattened_values = data_dictionary_copy[field_in].values.flatten().tolist()
-                # Create a dictionary to store the closest value for each outlier value
-                closest_values = {}
-                # For each outlier value IN the column (more efficient), find the closest numeric value in the flattened series
-                for outlier_value in outlier_values_in_col:
-                    if outlier_value not in closest_values:
-                        closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-                # Replace the outlier values with the closest numeric values in the column
-                for i in range(len(data_dictionary_copy.index)):
-                    current_value = data_dictionary_copy.at[i, field_in]
-                    if data_dictionary_copy_mask.at[i, field_in] == 1:
-                        data_dictionary_copy.at[i, field_out] = closest_values[current_value]
-                    else:
-                        data_dictionary_copy.at[i, field_out] = data_dictionary_copy.at[i, field_in]
+            minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_copy,
+                                                           axis_param=None, field=field_in)
+
+            # Replace the outlier values with the closest numeric values
+            for i in range(len(data_dictionary_copy.index)):
+                if data_dictionary_copy_mask.at[i, field_in] == 1:
+                    if data_dictionary_copy.at[i, field_in] > maximum_valid:
+                        data_dictionary_copy.at[i, field_out] = maximum_valid
+                    elif data_dictionary_copy.at[i, field_in] < minimum_valid:
+                        data_dictionary_copy.at[i, field_out] = minimum_valid
 
     return data_dictionary_copy
