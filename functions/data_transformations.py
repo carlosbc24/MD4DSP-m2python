@@ -1088,8 +1088,8 @@ def transform_filter_rows_primitive(data_dictionary: pd.DataFrame, columns: list
         columns: list of columns to filter
         filter_fix_value_list: values to filter
 
-    Returns:
-        pd.DataFrame: data_dictionary with the rows with the value fix_value_output in the columns of the list columns removed
+    Returns: pd.DataFrame: data_dictionary with the rows with the value fix_value_output in the columns of the list
+    columns removed
     """
     data_dictionary_copy = data_dictionary.copy()
 
@@ -1102,9 +1102,6 @@ def transform_filter_rows_primitive(data_dictionary: pd.DataFrame, columns: list
         if filter_fix_value_list is not None:
             # Remove the rows with the value fix_value_output in the column
             data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(filter_fix_value_list)]
-
-    # Reset dataframe indexes
-    data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
 
     return data_dictionary_copy
 
@@ -1150,15 +1147,12 @@ def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_spe
                     # Remove the rows with the value 1 in the mask dataframe with outliers
                     data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy_mask[column_name].isin([1])]
 
-    # Reset indexes
-    data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
-
     return data_dictionary_copy
 
 
 def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str],
                                 left_margin_list: list[float] = None, right_margin_list: list[float] = None,
-                                closure_type_list: list[Closure] = None) -> pd.DataFrame:
+                                include_range_list: list[bool] = None) -> pd.DataFrame:
     """
     Execute the data transformation of the FilterRows - Range relation
 
@@ -1167,19 +1161,27 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
         columns: list of columns to filter
         left_margin_list: left margin list of the interval
         right_margin_list: right margin list of the interval
-        closure_type_list: closure type list of the interval
+        include_range_list: list of boolean values to include the range
 
     Returns:
-        pd.DataFrame: data_dictionary with the rows with values within the interval [left_margin, right_margin]
+        pd.DataFrame: data_dictionary including/excluding the rows with values within the interval
+        [left_margin, right_margin]
         in the columns of the list columns removed
     """
     data_dictionary_copy = data_dictionary.copy()
 
-    for index in range(len(closure_type_list)):
+    for index in range(len(include_range_list)):
 
+        # If the left margin is None, substitute it with -inf and
+        # if the right margin is None, substitute it with inf
         current_left_margin = left_margin_list[index]
         current_right_margin = right_margin_list[index]
-        current_closure_type = closure_type_list[index]
+        if current_left_margin is None and current_right_margin is not None:
+            current_left_margin = float('-inf')
+        elif current_right_margin is None and current_left_margin is not None:
+            current_right_margin = float('inf')
+        elif current_left_margin is None and current_right_margin is None:
+            raise ValueError("The left and right margins cannot be None at the same time")
 
         for current_column in columns:
 
@@ -1187,12 +1189,10 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
             if current_column not in data_dictionary_copy.columns:
                 raise ValueError(f"The column {current_column} does not exist in the dataframe")
 
-            if current_left_margin is not None and current_right_margin is not None and current_closure_type is not None:
-                # Remove the rows with the values within the interval
-                # [left_margin, right_margin] in the column current_column
-                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].apply(lambda x: check_interval_condition(x, current_left_margin, current_right_margin, current_closure_type))]
-
-    # Reset indexes
-    data_dictionary_copy = data_dictionary_copy.reset_index(drop=True)
+            # Exclude or include the values within the interval [left_margin, right_margin] in the column
+            if include_range_list[index]:
+                data_dictionary_copy = data_dictionary_copy[data_dictionary_copy[current_column].apply(lambda x: check_interval_condition(x, current_left_margin, current_right_margin, Closure.closedClosed))]
+            elif not include_range_list[index]:
+                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].apply(lambda x: check_interval_condition(x, current_left_margin, current_right_margin, Closure.closedClosed))]
 
     return data_dictionary_copy
