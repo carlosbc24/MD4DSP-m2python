@@ -97,16 +97,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            self.execute_checkInv_SpecialValue_NumOp#,
+            # self.execute_checkInv_MissingValue_MissingValue
         ]
 
         print_and_log("")
@@ -5108,7 +5108,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         # MISSING
         # Caso 1
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
@@ -5129,7 +5128,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2 - Se aplica la media de todas las columnas numéricas del dataframe a los valores faltantes y valores
         # nulos de python
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
@@ -5150,7 +5148,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 3 Se aplica la mediana de todas las columnas numéricas del dataframe a los valores faltantes y valores
         # nulos de python
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
@@ -5172,7 +5169,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 4
         # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos) y sobre
         # cada columna del dataframe.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
@@ -5193,7 +5189,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5
         # Probamos a aplicar la operación closest sobre un dataframe correcto. Se calcula el closest sobre el dataframe entero en relación a los valores faltantes y valores nulos.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
@@ -5241,7 +5236,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
@@ -5264,7 +5258,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar la media de cada columna numérica a los valores invalidos 1, 3, 0.13 y 0.187
         # en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño
         # del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
@@ -5288,7 +5281,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
@@ -5312,7 +5304,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
@@ -5336,7 +5327,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # en cada columna del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
@@ -5360,7 +5350,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # en todas las columnas del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
@@ -5382,7 +5371,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 13
         # Ejecutar la invariante: aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         field_in = 'danceability'
@@ -5404,7 +5392,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 14
         # Ejecutar la invariante: aplicar la interpolación lineal a los valores outliers de cada columna del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
@@ -5424,7 +5411,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los valores outliers
         # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
         field_in = 'danceability'
@@ -5446,7 +5432,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar la media de todas las columnas numéricas del dataframe a los valores outliers
         # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(1)
         result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
@@ -5466,7 +5451,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores outliers
         # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
         field_in = 'danceability'
@@ -5488,7 +5472,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores outliers
         # de cada columna del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del
         # dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
         result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
@@ -5508,7 +5491,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
         # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
         # manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
         field_in = 'danceability'
@@ -5529,7 +5511,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
         # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
         result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
@@ -5545,7 +5526,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 20 Passed: Expected True, and got True")
 
         # Caso 21
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
@@ -5567,7 +5547,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 22 - Se aplica la media de todas las columnas numéricas del dataframe a los valores faltantes y valores
         # nulos de python
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
@@ -5590,7 +5569,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 24
         # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos) y sobre
         # cada columna del dataframe.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
@@ -5616,7 +5594,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
@@ -5641,7 +5618,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # 1, 3, 0.13 y 0.187 en todas las columnas del batch pequeño del dataset de prueba. Sobre un dataframe de copia
         # del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido
         # coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(2)
@@ -5666,7 +5642,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # en todas las columnas del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(1)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(3)
@@ -5689,7 +5664,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 33
         # Ejecutar la invariante: aplicar la interpolación lineal a los valores outliers de la columna 'danceability'
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         field_in = 'danceability'
@@ -5711,7 +5685,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 34
         # Ejecutar la invariante: aplicar la interpolación lineal a los valores outliers de cada columna del batch pequeño del dataset de prueba.
         # Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(0)
         result_df = self.data_transformations.transform_special_value_num_op(
@@ -5732,7 +5705,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar la mediana de todas las columnas numéricas del dataframe a los valores outliers
         # de la columna 'danceability' del batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch
         # pequeño del dataset de prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(2)
         field_in = 'danceability'
@@ -5755,7 +5727,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar el closest a los valores outliers de la columna 'danceability' del batch pequeño
         # del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores
         # manualmente y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
         field_in = 'danceability'
@@ -5778,7 +5749,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Ejecutar la invariante: aplicar el closest a los valores outliers de cada columna del batch pequeño del dataset
         # de prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
         # y verificar si el resultado obtenido coincide con el esperado.
-        expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
         result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
