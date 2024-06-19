@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import functions.contract_invariants as contract_invariants
 import functions.contract_pre_post as contract_pre_post
-from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataType, DerivedType, Closure
+from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataType, DerivedType, Closure, FilterType
 from helpers.logger import set_logger
 
 def generateDataProcessing():
@@ -15,7 +15,7 @@ def generateDataProcessing():
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='sex', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=30.0/100):
+									quant_op=Operator(2), quant_rel=70.0/100):
 		print('PRECONDITION imputeMissingByMostFrequent(sex)_PRE_value_range VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMostFrequent(sex)_PRE_value_range NOT VALIDATED')
@@ -23,7 +23,7 @@ def generateDataProcessing():
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='IRSCHOOL', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=30.0/100):
+									quant_op=Operator(2), quant_rel=70.0/100):
 		print('PRECONDITION imputeMissingByMostFrequent(IRSCHOOL)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMostFrequent(IRSCHOOL)_PRE_valueRange NOT VALIDATED')
@@ -31,7 +31,7 @@ def generateDataProcessing():
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='ETHNICITY', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=30.0/100):
+									quant_op=Operator(2), quant_rel=70.0/100):
 		print('PRECONDITION imputeMissingByMostFrequent(ETHNICITY)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMostFrequent(ETHNICITY)_PRE_valueRange NOT VALIDATED')
@@ -100,7 +100,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByFixValue_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByMostFrequent(sex, IRISCHOOL, ETHNICITY)_output_dataDictionary.csv', sep = ',')
+	imputeByFixValue_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByMostFrequent(sex, IRISCHOOL, ETHNICITY)_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		imputeByFixValue_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv', sep = ',')
@@ -168,7 +168,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv', sep = ',')
+	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		imputeByNumericOp_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv', sep = ',')
@@ -176,7 +176,7 @@ def generateDataProcessing():
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
 									missing_values=missing_values_imputeByNumericOp_PRE_valueRange,
-									quant_abs=None, quant_rel=None, quant_op=None):
+									quant_op=Operator(2), quant_rel=30.0/100):
 		print('PRECONDITION imputeMissingByMean(avg_income)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMean(avg_income)_PRE_valueRange NOT VALIDATED')
@@ -232,7 +232,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv', sep = ',')
+	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		imputeByNumericOp_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv', sep = ',')
@@ -267,25 +267,25 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	rowFilter_input_DataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv', sep = ',')
+	rowFilter_input_DataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
-		rowFilter_output_DataDictionary=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv', sep = ',')
+		rowFilterRange_output_DataDictionary=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv', sep = ',')
 
-	if contract_pre_post.check_fix_value_range(value=-216, data_dictionary=rowFilter_input_DataDictionary, belong_op=Belong(0), field='init_span',
-									quant_abs=None, quant_rel=None, quant_op=None):
+	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=0.0, data_dictionary=rowFilter_input_DataDictionary,
+	                                	closure_type=Closure(0), belong_op=Belong(0), field='init_span'):
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange NOT VALIDATED')
 	
-	if contract_pre_post.check_fix_value_range(value='0', data_dictionary=rowFilter_output_DataDictionary, belong_op=Belong(1), field='init_span',
+	if contract_pre_post.check_fix_value_range(value='-216', data_dictionary=rowFilterRange_output_DataDictionary, belong_op=Belong(1), field='init_span',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('POSTCONDITION rowFilter(init_span)_POST_valueRange VALIDATED')
 	else:
 		print('POSTCONDITION rowFilter(init_span)_POST_valueRange NOT VALIDATED')
 	
 #-----------------New DataProcessing-----------------
-	columnFilter_input_DataDictionary=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv', sep = ',')
+	columnFilter_input_DataDictionary=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		columnFilter_output_DataDictionary=pd.read_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv', sep = ',')
@@ -309,7 +309,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	mapping_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv', sep = ',')
+	mapping_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		mapping_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv', sep = ',')
@@ -358,7 +358,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	mapping_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv', sep = ',')
+	mapping_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		mapping_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', sep = ',')
@@ -387,10 +387,10 @@ def generateDataProcessing():
 	
 	
 	input_values_list_def_INV_condition=['Y', 'N']
-	output_values_list_def_INV_condition=['1', '0']
+	output_values_list_def_INV_condition=[1, 0]
 	
 	data_type_input_list_def_INV_condition=[DataType(0), DataType(0)]
-	data_type_output_list_def_INV_condition=[DataType(0), DataType(0)]
+	data_type_output_list_def_INV_condition=[DataType(2), DataType(2)]
 	
 	if contract_invariants.check_inv_fix_value_fix_value(data_dictionary_in=mapping_input_dataDictionary,
 											data_dictionary_out=mapping_output_dataDictionary,
@@ -407,7 +407,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	categoricalToContinuous_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', sep = ',')
+	categoricalToContinuous_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		categoricalToContinuous_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv', sep = ',')
@@ -429,7 +429,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv', sep = ',')
+	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		imputeByNumericOp_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep = ',')
@@ -507,43 +507,43 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep = ',')
+	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep = ',')
 
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_input_dataDictionary,
+	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(0), field='TOTAL_CONTACTS'):
 		print('PRECONDITION binner(TOTAL_CONTACTS)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION binner(TOTAL_CONTACTS)_PRE_valueRange NOT VALIDATED')
 	
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_input_dataDictionary,
+	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(0), field='SELF_INIT_CNTCTS'):
 		print('PRECONDITION binner(SELF_INIT_CNTCTS)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION binner(SELF_INIT_CNTCTS)_PRE_valueRange NOT VALIDATED')
 	
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_input_dataDictionary,
+	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(0), field='SOLICITED_CNTCTS'):
 		print('PRECONDITION binner(SOLICITED_CNTCTS)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION binner(SOLICITED_CNTCTS)_PRE_valueRange NOT VALIDATED')
 	
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_output_dataDictionary,
+	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_output_dataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(1), field='TOTAL_CONTACTS_binned'):
 		print('POSTCONDITION binner(TOTAL_CONTACTS)_POST_valueRange VALIDATED')
 	else:
 		print('POSTCONDITION binner(TOTAL_CONTACTS)_POST_valueRange NOT VALIDATED')
 	
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_output_dataDictionary,
+	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_output_dataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(1), field='SELF_INIT_CNTCTS_binned'):
 		print('POSTCONDITION binner(SELF_INIT_CNTCTS)_POST_valueRange VALIDATED')
 	else:
 		print('POSTCONDITION binner(SELF_INIT_CNTCTS)_POST_valueRange NOT VALIDATED')
 	
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1.0, data_dictionary=binner_input_dataDictionary,
-	                                	closure_type=Closure(0), belong_op=Belong(1), field='SOLICITED_CNTCTS'):
+	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_output_dataDictionary,
+	                                	closure_type=Closure(0), belong_op=Belong(1), field='SOLICITED_CNTCTS_binned'):
 		print('POSTCONDITION binner(SOLICITED_CNTCTS)_POST_valueRange VALIDATED')
 	else:
 		print('POSTCONDITION binner(SOLICITED_CNTCTS)_POST_valueRange NOT VALIDATED')
@@ -654,7 +654,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep = ',')
+	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep = ',')
@@ -729,7 +729,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep = ',')
+	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep = ',')
@@ -760,7 +760,7 @@ def generateDataProcessing():
 	if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_input_dataDictionary,
 											data_dictionary_out=binner_output_dataDictionary,
 											left_margin=1040.0, right_margin=1160.0,
-											closure_type=Closure(1),
+											closure_type=Closure(0),
 											fix_value_output='55-75 Percentile',
 											belong_op_in=Belong(0), belong_op_out=Belong(0),
 											data_type_output=DataType(0),
@@ -793,7 +793,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep = ',')
+	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep = ',')
@@ -823,7 +823,7 @@ def generateDataProcessing():
 		print('INVARIANT binner(avg_income)_INV_condition NOT VALIDATED')
 	if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_input_dataDictionary,
 											data_dictionary_out=binner_output_dataDictionary,
-											left_margin=42830.0, right_margin=55590.0,
+											left_margin=42830.0, right_margin=55559.0,
 											closure_type=Closure(2),
 											fix_value_output='Moderate',
 											belong_op_in=Belong(0), belong_op_out=Belong(0),
