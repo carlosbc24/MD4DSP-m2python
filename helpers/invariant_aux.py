@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 # Importing enumerations from packages
-from helpers.auxiliar import find_closest_value, check_interval_condition
+from helpers.auxiliar import find_closest_value, check_interval_condition, outlier_closest
 from helpers.enumerations import DerivedType, Belong, SpecialType, Closure
 from helpers.logger import print_and_log
 
@@ -2846,111 +2846,54 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
 
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
-                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
-                # Flatten the DataFrame into a single series of values
-                flattened_values = only_numbers_df.values.flatten().tolist()
+                minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
+                                                               axis_param=None, field=None)
 
-                # Create a dictionary to store the closest value for each outlier value
-                closest_values = {}
-
-                # For each outlier value, find the closest numeric value in the flattened series
-                for i in range(len(data_dictionary_in.index)):
-                    for j in range(len(data_dictionary_in.columns)):
-                        if data_dictionary_outliers_mask.iloc[i, j] == 1:
-                            current_value = data_dictionary_in.iloc[i, j]
-                            if current_value not in closest_values:
-                                closest_values[current_value] = find_closest_value(flattened_values, current_value)
-
-                # Replace the outlier values with the closest numeric values
-                for i in range(len(data_dictionary_in.index)):
-                    for j in range(len(data_dictionary_in.columns)):
-                        if data_dictionary_outliers_mask.iloc[i, j] == 1:
-                            current_value = data_dictionary_in.iloc[i, j]
-                            if data_dictionary_out.iloc[i, j] != closest_values[current_value]:
-                                if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    result = False
-                                    print_and_log(f"Error in row: {i} and column: {j} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, j]}")
-                                elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    result = True
-                                    print_and_log(f"Row: {i} and column: {j} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, j]}")
-                        else:
-                            if (data_dictionary_out.loc[i, j] != data_dictionary_in.loc[i, j]) and not(pd.isnull(data_dictionary_in.loc[i, j]) or pd.isnull(data_dictionary_out.loc[i, j])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {i} and column: {j} value should be: {data_dictionary_in.at[i, j]} but is: {data_dictionary_out.loc[i, j]}")
-            elif axis_param == 0:
-                # Iterate over each column
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    # Get the outlier values in the current column
-                    outlier_values_in_col = [data_dictionary_in.at[i, col_name] for i in range(len(data_dictionary_in.index))
-                                             if data_dictionary_outliers_mask.at[i, col_name] == 1]
-
-                    # If there are no outlier values in the column, skip the rest of the loop
-                    if not outlier_values_in_col:
-                        continue
-
-                    # Flatten the column into a list of values
-                    flattened_values = data_dictionary_in[col_name].values.flatten().tolist()
-
-                    # Create a dictionary to store the closest value for each outlier value
-                    closest_values = {}
-
-                    # For each outlier value IN the column (more efficient), find the closest numeric value in the flattened series
-                    for outlier_value in outlier_values_in_col:
-                        if outlier_value not in closest_values:
-                            closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-
-                    # Replace the outlier values with the closest numeric values in the column
                     for i in range(len(data_dictionary_in.index)):
-                        current_value = data_dictionary_in.at[i, col_name]
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
-                            if data_dictionary_out.at[i, col_name] != closest_values[current_value]:
-                                if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    result = False
-                                    print_and_log(f"Error in row: {i} and column: {col_name} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, col_name]}")
-                                elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    result = True
-                                    print_and_log(f"Row: {i} and column: {col_name} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, col_name]}")
-                        else:
-                            if (data_dictionary_out.loc[i, col_name] != data_dictionary_in.loc[i, col_name]) and not(pd.isnull(data_dictionary_in.loc[i, col_name]) or pd.isnull(data_dictionary_out.loc[i, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {i} and column: {col_name} value should be: {data_dictionary_in.at[i, col_name]} but is: {data_dictionary_out.loc[i, col_name]}")
-            elif axis_param == 1:
-                # Iterate over each row
-                for row_idx in range(len(data_dictionary_in.index)):
-                    # Get the numeric values in the current row
-                    numeric_values_in_row = data_dictionary_in.iloc[row_idx].select_dtypes(include=[np.number]).values.tolist()
+                            if data_dictionary_in.at[i, col_name] > maximum_valid:
+                                if data_dictionary_out.at[i, col_name] != maximum_valid:
+                                    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
+                                        result = False
+                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+                                        result = True
+                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                            elif data_dictionary_in.at[i, col_name] < minimum_valid:
+                                if data_dictionary_out.at[i, col_name] != minimum_valid:
+                                    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
+                                        result = False
+                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+                                        result = True
+                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
 
-                    # Get the outlier values in the current row
-                    outlier_values_in_row = [data_dictionary_in.at[row_idx, col_name] for col_name in data_dictionary_in.columns
-                                             if data_dictionary_outliers_mask.at[row_idx, col_name] == 1]
 
-                    # If there are no outlier values in the row, skip the rest of the loop
-                    if not outlier_values_in_row:
-                        continue
 
-                    # Create a dictionary to store the closest value for each outlier value
-                    closest_values = {}
-
-                    # For each outlier value IN the row (more efficient), find the closest numeric value in the numeric values
-                    for outlier_value in outlier_values_in_row:
-                        if outlier_value not in closest_values:
-                            closest_values[outlier_value] = find_closest_value(numeric_values_in_row, outlier_value)
-
-                    # Replace the outlier values with the closest numeric values in the row
-                    for col_name in data_dictionary_in.columns:
-                        current_value = data_dictionary_in.at[row_idx, col_name]
-                        if data_dictionary_outliers_mask.at[row_idx, col_name] == 1:
-                            if data_dictionary_out.at[row_idx, col_name] != closest_values[current_value]:
-                                if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                    result = False
-                                    print_and_log(f"Error in row: {row_idx} and column: {col_name} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[row_idx, col_name]}")
-                                elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                    result = True
-                                    print_and_log(f"Row: {row_idx} and column: {col_name} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[row_idx, col_name]}")
-                        else:
-                            if (data_dictionary_out.at[row_idx, col_name] != data_dictionary_in.at[row_idx, col_name]) and not(pd.isnull(data_dictionary_in.loc[row_idx, col_name]) or pd.isnull(data_dictionary_out.loc[row_idx, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {row_idx} and column: {col_name} value should be: {data_dictionary_in.at[row_idx, col_name]} but is: {data_dictionary_out.loc[row_idx, col_name]}")
+            elif axis_param == 0:
+                # Checks the outlier values in the input with the closest numeric values in the output
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                    minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
+                                                                   axis_param=0, field=col_name)
+                    for i in range(len(data_dictionary_in.index)):
+                        if data_dictionary_outliers_mask.at[i, col_name] == 1:
+                            if data_dictionary_in.at[i, col_name] > maximum_valid:
+                                if data_dictionary_out.at[i, col_name] != maximum_valid:
+                                    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
+                                        result = False
+                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+                                        result = True
+                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                            elif data_dictionary_in.at[i, col_name] < minimum_valid:
+                                if data_dictionary_out.at[i, col_name] != minimum_valid:
+                                    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
+                                        result = False
+                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+                                        result = True
+                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
 
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
@@ -2990,38 +2933,28 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                             print_and_log(f"Error in row: {i} and column: {field_out} value should be: {data_dictionary_in.at[i, field_in]} but is: {data_dictionary_out.loc[i, field_out]}")
 
         if special_type_input == SpecialType.OUTLIER:
-            # Get the outlier values in the current column
-            outlier_values_in_col = [data_dictionary_in.at[i, field_in] for i in range(len(data_dictionary_in.index))
-                                     if data_dictionary_outliers_mask.at[i, field_in] == 1]
+            minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
+                                                           axis_param=None, field=field_in)
 
-            # If there are no outlier values in the column, skip the rest of the loop
-            if outlier_values_in_col:
-                # Flatten the column into a list of values
-                flattened_values = data_dictionary_in[field_in].values.flatten().tolist()
-
-                # Create a dictionary to store the closest value for each outlier value
-                closest_values = {}
-
-                # For each outlier value IN the column (more efficient), find the closest numeric value in the flattened series
-                for outlier_value in outlier_values_in_col:
-                    if outlier_value not in closest_values:
-                        closest_values[outlier_value] = find_closest_value(flattened_values, outlier_value)
-
-                # Replace the outlier values with the closest numeric values in the column
-                for i in range(len(data_dictionary_in.index)):
-                    current_value = data_dictionary_in.at[i, field_in]
-                    if data_dictionary_outliers_mask.at[i, field_in] == 1:
-                        if data_dictionary_out.at[i, field_out] != closest_values[current_value]:
+            # Checks the outlier values in the input with the closest numeric values in the output
+            for i in range(len(data_dictionary_in.index)):
+                if data_dictionary_outliers_mask.at[i, field_in] == 1:
+                    if data_dictionary_in.at[i, field_in] > maximum_valid:
+                        if data_dictionary_out.at[i, field_out] != maximum_valid:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
+                                print_and_log(f"Error in row: {i} and column: {field_out} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, field_out]}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
-                    else:
-                        if (data_dictionary_out.at[i, field_out] != data_dictionary_in.at[i, field_in]) and not(pd.isnull(data_dictionary_in.loc[i, field_in]) or pd.isnull(data_dictionary_out.loc[i, field_out])):
-                            keep_no_trans_result = False
-                            print_and_log(f"Error in row: {i} and column: {field_out} value should be: {data_dictionary_in.at[i, field_in]} but is: {data_dictionary_out.loc[i, field_out]}")
+                                print_and_log(f"Row: {i} and column: {field_out} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, field_out]}")
+                    elif data_dictionary_in.at[i, field_in] < minimum_valid:
+                        if data_dictionary_out.at[i, field_out] != minimum_valid:
+                            if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
+                                result = False
+                                print_and_log(f"Error in row: {i} and column: {field_out} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, field_out]}")
+                            elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+                                result = True
+                                print_and_log(f"Row: {i} and column: {field_out} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, field_out]}")
 
     if keep_no_trans_result == False:
         return False
