@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 import functions.data_transformations as data_transformations
 from helpers.auxiliar import find_closest_value, outlier_closest
-from helpers.enumerations import Closure, DataType, SpecialType, Belong
+from helpers.enumerations import Closure, DataType, SpecialType, Belong, FilterType
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers
@@ -4745,7 +4745,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_primitive(
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['mode'],
-            filter_fix_value_list=[0])
+            filter_fix_value_list=[0],
+            filter_type=FilterType(0))
         expected_df = self.small_batch_dataset.copy()
         # Remove from expected_df the rows where the column 'mode' has the value 0
         expected_df = expected_df[expected_df['mode'] != 0]
@@ -4757,10 +4758,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['track_popularity'],
             filter_fix_value_list=[2, 11, 77,
-                                   56])
+                                   56], filter_type=FilterType(1))
         expected_df = self.small_batch_dataset.copy()
-        # Remove from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
-        expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == False]
+        # Include from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
+        expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -4769,25 +4770,25 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['track_artist'],
             filter_fix_value_list=['The Beatles',
-                                   'Ed Sheeran', 'Lady Gaga'])
+                                   'Ed Sheeran', 'Lady Gaga'], filter_type=FilterType(0))
         expected_df = self.small_batch_dataset.copy()
         # Remove from expected_df the rows where the column 'track_artist' has the values 'The Beatles', 'Ed Sheeran', 'Lady Gaga'
         expected_df = expected_df[expected_df['track_artist'].isin(['The Beatles', 'Ed Sheeran', 'Lady Gaga']) == False]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
-        # Caso 4 - Remove dates from track_album_release_date
+        # Caso 4 - Include dates from track_album_release_date
         result_df = self.data_transformations.transform_filter_rows_primitive(
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['track_album_release_date'],
             filter_fix_value_list=['2020-01-01',
                                    '2017-09-28',
                                    '2012-01-01',
-                                   '2019-06-14'])
+                                   '2019-06-14'], filter_type=FilterType(1))
         expected_df = self.small_batch_dataset.copy()
-        # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
+        # Include from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
         expected_df = expected_df[expected_df['track_album_release_date'].isin(
-            ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
+            ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -4799,7 +4800,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 filter_fix_value_list=['2020-01-01',
                                        '2017-09-28',
                                        '2012-01-01',
-                                       '2019-06-14'])
+                                       '2019-06-14'], filter_type=FilterType(0))
         print_and_log("Test Case 5 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_WholeDatasetTests_execute_transform_filter_rows_primitive(self):
@@ -4815,7 +4816,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_primitive(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['mode'],
-            filter_fix_value_list=[0])
+            filter_fix_value_list=[0],
+            filter_type=FilterType(0))
         expected_df = self.rest_of_dataset.copy()
         # Remove from expected_df the rows where the column 'mode' has the value 0
         expected_df = expected_df[expected_df['mode'] != 0]
@@ -4827,10 +4829,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['track_popularity'],
             filter_fix_value_list=[2, 11, 77,
-                                   56])
+                                   56], filter_type=FilterType(1))
         expected_df = self.rest_of_dataset.copy()
-        # Remove from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
-        expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == False]
+        # Include from expected_df the rows where the column 'track_popularity' has the values 2, 11, 77, 56
+        expected_df = expected_df[expected_df['track_popularity'].isin([2, 11, 77, 56]) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -4839,25 +4841,25 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['track_artist'],
             filter_fix_value_list=['The Beatles',
-                                   'Ed Sheeran', 'Lady Gaga'])
+                                   'Ed Sheeran', 'Lady Gaga'], filter_type=FilterType(0))
         expected_df = self.rest_of_dataset.copy()
         # Remove from expected_df the rows where the column 'track_artist' has the values 'The Beatles', 'Ed Sheeran', 'Lady Gaga'
         expected_df = expected_df[expected_df['track_artist'].isin(['The Beatles', 'Ed Sheeran', 'Lady Gaga']) == False]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
-        # Caso 4 - Remove dates from track_album_release_date
+        # Caso 4 - Include dates from track_album_release_date
         result_df = self.data_transformations.transform_filter_rows_primitive(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['track_album_release_date'],
             filter_fix_value_list=['2020-01-01',
                                    '2017-09-28',
                                    '2012-01-01',
-                                   '2019-06-14'])
+                                   '2019-06-14'], filter_type=FilterType(1))
         expected_df = self.rest_of_dataset.copy()
-        # Remove from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
+        # Include from expected_df the rows where the column 'track_album_release_date' has the values '2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14'
         expected_df = expected_df[expected_df['track_album_release_date'].isin(
-            ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == False]
+            ['2020-01-01', '2017-09-28', '2012-01-01', '2019-06-14']) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -4869,7 +4871,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 filter_fix_value_list=['2020-01-01',
                                        '2017-09-28',
                                        '2012-01-01',
-                                       '2019-06-14'])
+                                       '2019-06-14'], filter_type=FilterType(0))
         print_and_log("Test Case 5 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_transform_filter_rows_special_values(self):
@@ -4902,34 +4904,34 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         dic_special_type_cols_values = {'speechiness': {'missing': [0.479, 0.123]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
         expected_df = expected_df.dropna(subset=['speechiness'])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
-        # Case 2 - Filter invalid values
+        # Case 2 - Include invalid values
         dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456]},
                                         'danceability': {'invalid': [0.789, 0.0224]},
                                         'energy': {'invalid': [0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         expected_df = self.small_batch_dataset.copy()
-        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == False]
-        expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == False]
-        expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == True]
+        expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == True]
+        expected_df = expected_df[expected_df['energy'].isin([0.36]) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
-        # Case 3 - Filter outliers
+        # Case 3 - Remove outliers
         dic_special_type_cols_values = {'acousticness': {'outlier': True},
                                         'danceability': {'outlier': True},
                                         'energy': {'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.small_batch_dataset.copy()
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
@@ -4949,25 +4951,24 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'energy': {'missing': [0.36], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.small_batch_dataset.copy()
-        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
+        # Include the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
         # expected_df
         for col in columns_outliers:
             if col == 'acousticness':
-                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
-                expected_df.dropna(subset=['acousticness'], inplace=True)
+                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) | expected_df[
+                            'acousticness'].isnull() == True]
             elif col == 'danceability':
-                expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) == False]
-                expected_df.dropna(subset=['danceability'], inplace=True)
+                expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) | expected_df[
+                            'danceability'].isnull() == True]
             elif col == 'energy':
-                expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
-                expected_df.dropna(subset=['energy'], inplace=True)
+                expected_df = expected_df[expected_df['energy'].isin([0.36]) | expected_df['energy'].isnull() == True]
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
-            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+            expected_df = expected_df[((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -4979,7 +4980,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'mode': {'invalid': [], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
         expected_df = self.small_batch_dataset.copy()
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in expected_df
@@ -5001,7 +5002,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
-        # Case 6 - Filter 2 list of invalid values
+        # Case 6 - Filter including 2 list of invalid values
         dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
                                         'danceability': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
                                         'energy': {'invalid': [0.0636, 0.0319, 0.81]},
@@ -5009,20 +5010,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'mode': {'invalid': [0.0224, 0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
-            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == True]
         expected_df = expected_df[
-            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == True]
         expected_df = expected_df[
             expected_df['energy'].isin([0.0636,
                                         0.0319,
-                                        0.81]) == False]
+                                        0.81]) == True]
         expected_df = expected_df[
-            expected_df['speechiness'].isin([0.123, 0.456, 0.789]) == False]
+            expected_df['speechiness'].isin([0.123, 0.456, 0.789]) == True]
         expected_df = expected_df[
-            expected_df['mode'].isin([0.0224, 0.36]) == False]
+            expected_df['mode'].isin([0.0224, 0.36]) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -5034,7 +5035,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'mode': {'missing': [0], 'invalid': []}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.small_batch_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
             expected_df['acousticness'].isin([0.123, 0.456, 0.789]) == False]
@@ -5050,7 +5051,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
 
-        # Case 8 - Filter column that dont exist - ValueError raised
+        # Case 8 - Filter including column that dont exist - ValueError raised
         with self.assertRaises(ValueError):
             dic_special_type_cols_values = {'acousticness': {'missing': [0.123, 0.456], 'invalid': [0.789]},
                                             'danceability': {'missing': [0.0636], 'invalid': [0.0319]},
@@ -5061,7 +5062,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                             'noew_column_pepe': {'missing': [0.0224]}}
             result_df = self.data_transformations.transform_filter_rows_special_values(
                 data_dictionary=self.small_batch_dataset.copy(),
-                cols_special_type_values=dic_special_type_cols_values)
+                cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         print_and_log("Test Case 8 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_WholeDatasetTests_execute_transform_filter_rows_special_values(self):
@@ -5077,34 +5078,34 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         dic_special_type_cols_values = {'speechiness': {'missing': [0.479, 0.123]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[expected_df['speechiness'].isin([0.479, 0.123]) == False]
         expected_df = expected_df.dropna(subset=['speechiness'])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
-        # Case 2 - Filter invalid values
+        # Case 2 - Include invalid values
         dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456]},
                                         'danceability': {'invalid': [0.789, 0.0224]},
                                         'energy': {'invalid': [0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         expected_df = self.rest_of_dataset.copy()
-        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == False]
-        expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == False]
-        expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
+        expected_df = expected_df[expected_df['acousticness'].isin([0.123, 0.456]) == True]
+        expected_df = expected_df[expected_df['danceability'].isin([0.789, 0.0224]) == True]
+        expected_df = expected_df[expected_df['energy'].isin([0.36]) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
-        # Case 3 - Filter outliers
+        # Case 3 - Remove outliers
         dic_special_type_cols_values = {'acousticness': {'outlier': True},
                                         'danceability': {'outlier': True},
                                         'energy': {'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.rest_of_dataset.copy()
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
@@ -5124,25 +5125,24 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'energy': {'missing': [0.36], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         columns_outliers = ['acousticness', 'danceability', 'energy']
         expected_df = self.rest_of_dataset.copy()
-        # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
+        # Include the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy' in
         # expected_df
         for col in columns_outliers:
             if col == 'acousticness':
-                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) == False]
-                expected_df.dropna(subset=['acousticness'], inplace=True)
+                expected_df = expected_df[expected_df['acousticness'].isin([0.123]) | expected_df[
+                    'acousticness'].isnull() == True]
             elif col == 'danceability':
-                expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) == False]
-                expected_df.dropna(subset=['danceability'], inplace=True)
+                expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) | expected_df[
+                    'danceability'].isnull() == True]
             elif col == 'energy':
-                expected_df = expected_df[expected_df['energy'].isin([0.36]) == False]
-                expected_df.dropna(subset=['energy'], inplace=True)
+                expected_df = expected_df[expected_df['energy'].isin([0.36]) | expected_df['energy'].isnull() == True]
             Q1 = expected_df[col].quantile(0.25)
             Q3 = expected_df[col].quantile(0.75)
             IQR = Q3 - Q1
-            expected_df = expected_df[~((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
+            expected_df = expected_df[((expected_df[col] < (Q1 - 1.5 * IQR)) | (expected_df[col] > (Q3 + 1.5 * IQR)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -5154,7 +5154,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'mode': {'invalid': [], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         columns_outliers = ['acousticness', 'danceability', 'energy', 'speechiness', 'mode']
         expected_df = self.rest_of_dataset.copy()
         # Remove the rows if an outlier is found in the columns 'acousticness', 'danceability', 'energy', 'speechiness', 'mode' in expected_df
@@ -5176,7 +5176,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
-        # Case 6 - Filter 2 list of invalid values
+        # Case 6 - Filter including 2 list of invalid values
         dic_special_type_cols_values = {'acousticness': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
                                         'danceability': {'invalid': [0.123, 0.456, 0.789, 0.0224, 0.36, 0]},
                                         'energy': {'invalid': [0.0636, 0.0319, 0.81]},
@@ -5184,20 +5184,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'mode': {'invalid': [0.0224, 0.36]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[
-            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+            expected_df['acousticness'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == True]
         expected_df = expected_df[
-            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == False]
+            expected_df['danceability'].isin([0.123, 0.456, 0.789, 0.0224, 0.36, 0]) == True]
         expected_df = expected_df[
             expected_df['energy'].isin([0.0636,
                                         0.0319,
-                                        0.81]) == False]
+                                        0.81]) == True]
         expected_df = expected_df[
-            expected_df['speechiness'].isin([0.123, 0.456, 0.789]) == False]
+            expected_df['speechiness'].isin([0.123, 0.456, 0.789]) == True]
         expected_df = expected_df[
-            expected_df['mode'].isin([0.0224, 0.36]) == False]
+            expected_df['mode'].isin([0.0224, 0.36]) == True]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -5209,7 +5209,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                         'mode': {'missing': [0], 'invalid': []}}
         result_df = self.data_transformations.transform_filter_rows_special_values(
             data_dictionary=self.rest_of_dataset.copy(),
-            cols_special_type_values=dic_special_type_cols_values)
+            cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(0))
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[
             expected_df['acousticness'].isin([0.123, 0.456, 0.789]) == False]
@@ -5225,7 +5225,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
 
-        # Case 8 - Filter column that dont exist - ValueError raised
+        # Case 8 - Filter including column that dont exist - ValueError raised
         with self.assertRaises(ValueError):
             dic_special_type_cols_values = {'acousticness': {'missing': [0.123, 0.456], 'invalid': [0.789]},
                                             'danceability': {'missing': [0.0636], 'invalid': [0.0319]},
@@ -5236,7 +5236,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                             'noew_column_pepe': {'missing': [0.0224]}}
             result_df = self.data_transformations.transform_filter_rows_special_values(
                 data_dictionary=self.rest_of_dataset.copy(),
-                cols_special_type_values=dic_special_type_cols_values)
+                cols_special_type_values=dic_special_type_cols_values, filter_type=FilterType(1))
         print_and_log("Test Case 8 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_transform_filter_rows_range(self):
@@ -5271,10 +5271,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['speechiness'],
             right_margin_list=[0.1, 0.7],
             left_margin_list=[0, 0.05],
-            include_range_list=[True, False])
+            filter_type=FilterType(1))
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= 0.1)) &
-                                  (~((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
+                                  (((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -5284,7 +5284,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['mode'],
             right_margin_list=[0],
             left_margin_list=[0],
-            include_range_list=[True])
+            filter_type=FilterType(1))
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0))]
         result_df = self.data_transformations.transform_filter_rows_range(
@@ -5292,7 +5292,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['track_popularity', 'danceability'],
             right_margin_list=[68],
             left_margin_list=[None],
-            include_range_list=[True])
+            filter_type=FilterType(1))
         expected_df = expected_df[(((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity']
                                                                                       <=
         68)) &
@@ -5309,17 +5309,24 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['danceability', 'energy', 'speechiness'],
-            right_margin_list=[0.89, None],
-            left_margin_list=[None, 0.9],
-            include_range_list=[True, False])
+            right_margin_list=[0.89],
+            left_margin_list=[None],
+            filter_type=FilterType(1))
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=result_df,
+            columns=['danceability', 'energy', 'speechiness'],
+            right_margin_list=[None],
+            left_margin_list=[0.9],
+            filter_type=FilterType(0))
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
             (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <= 0.89)) &
-              (~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
               ((expected_df['energy'] >= float('-inf')) & (expected_df['energy'] <= 0.89)) &
-              (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
-              ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)) &
-              (~((expected_df['speechiness'] >= 0.9) & (expected_df['speechiness'] <= float('inf')))))]
+              ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)))]
+        expected_df = expected_df[
+            ((~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
+             (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
+             (~((expected_df['speechiness'] >= 0.9) & (expected_df['speechiness'] <= float('inf')))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -5329,7 +5336,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 data_dictionary=self.small_batch_dataset.copy(),
                 columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
                          "noew_column_pepe"], right_margin_list=[0.5],
-                left_margin_list=[0.2], include_range_list=[True])
+                left_margin_list=[0.2], filter_type=FilterType(1))
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_WholeDatasetTests_execute_transform_filter_rows_range(self):
@@ -5347,10 +5354,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['speechiness'],
             right_margin_list=[0.1, 0.7],
             left_margin_list=[0, 0.05],
-            include_range_list=[True, False])
+            filter_type=FilterType(1))
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= 0.1)) &
-                                  (~((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
+                                  (((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -5360,7 +5367,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['mode'],
             right_margin_list=[0],
             left_margin_list=[0],
-            include_range_list=[True])
+            filter_type=FilterType(1))
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0))]
         result_df = self.data_transformations.transform_filter_rows_range(
@@ -5368,7 +5375,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['track_popularity', 'danceability'],
             right_margin_list=[68],
             left_margin_list=[None],
-            include_range_list=[True])
+            filter_type=FilterType(1))
         expected_df = expected_df[
             (((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity']
                                                                     <=
@@ -5386,16 +5393,23 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['danceability', 'energy', 'speechiness'],
-            right_margin_list=[0.89, None],
-            left_margin_list=[None, 0.9],
-            include_range_list=[True, False])
+            right_margin_list=[0.89],
+            left_margin_list=[None],
+            filter_type=FilterType(1))
+        result_df = self.data_transformations.transform_filter_rows_range(
+            data_dictionary=result_df,
+            columns=['danceability', 'energy', 'speechiness'],
+            right_margin_list=[None],
+            left_margin_list=[0.9],
+            filter_type=FilterType(0))
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[
             (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <= 0.89)) &
-             (~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
              ((expected_df['energy'] >= float('-inf')) & (expected_df['energy'] <= 0.89)) &
+             ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)))]
+        expected_df = expected_df[
+            ((~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
              (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
-             ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)) &
              (~((expected_df['speechiness'] >= 0.9) & (expected_df['speechiness'] <= float('inf')))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
@@ -5406,5 +5420,5 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 data_dictionary=self.rest_of_dataset.copy(),
                 columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
                          "noew_column_pepe"], right_margin_list=[0.5],
-                left_margin_list=[0.2], include_range_list=[True])
+                left_margin_list=[0.2], filter_type=FilterType(1))
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")

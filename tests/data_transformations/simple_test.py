@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 # Importing functions and classes from packages
 import functions.data_transformations as data_transformations
-from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong
+from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong, FilterType
 from helpers.logger import print_and_log
 
 
@@ -2780,7 +2780,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Change index values in expected_df to match the index values in result_df
         expected_df.index = [0, 2, 3, 4]
         result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
-                                                                              columns=['A'], filter_fix_value_list=[2])
+                                                                              columns=['A'], filter_fix_value_list=[2],
+                                                                              filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -2788,12 +2789,12 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
         expected_df = pd.DataFrame(
-            {'A': [0, 3, 1], 'B': [2, 4, 12]})
+            {'A': [2, 4], 'B': [3, 6]})
         # Change index values in expected_df to match the index values in result_df
-        expected_df.index = [0, 2, 4]
+        expected_df.index = [1, 3]
         result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
                                                                               columns=['B'], filter_fix_value_list=[
-                3, 6])
+                3, 6], filter_type=FilterType(1))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -2804,10 +2805,11 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
-                                                                      columns=['C'], filter_fix_value_list=[3])
+                                                                      columns=['C'], filter_fix_value_list=[3],
+                                                                      filter_type=FilterType(0))
         print_and_log("Test Case 3 Passed: expected exception")
 
-        # Caso 4 - Dataframe más grande con más tiposd e datos
+        # Caso 4 - Dataframe más grande con más tipos de datos
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': ['a', 'b', 'c', 'd', 'e'], 'D': [1, 8, 6, 1, 2]})
         expected_df = pd.DataFrame(
@@ -2815,20 +2817,25 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Change index values in expected_df to match the index values in result_df
         expected_df.index = [0, 2, 3, 4]
         result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
-                                                                              columns=['A'], filter_fix_value_list=[2])
+                                                                              columns=['A'], filter_fix_value_list=[2],
+                                                                              filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
         # Caso 5 - Dataframe más grande con más tiposd e datos, filtrando por valores de cadena str
         datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': ['a', 'b', 'c', 'd', 'e'], 'D': [1, 8.2, 6, 1, 2]})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': ['a', 'b', 'c', 'd', 'c'], 'D': [1, 8.2, 6, 1, 2]})
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 4, 1], 'B': [2, 3, 6, 12], 'C': ['a', 'b', 'd', 'e'], 'D': [1, 8.2, 1, 2]})
+            {'A': [3, 1], 'B': [4, 12], 'C': ['c', 'c'], 'D': [6, 2]})
+        expected_df = expected_df.astype({
+            'D': 'float64'  # Convertir D a float64
+        })
         # Change index values in expected_df to match the index values in result_df
-        expected_df.index = [0, 1, 3, 4]
+        expected_df.index = [2, 4]
         result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
                                                                               columns=['C'],
-                                                                              filter_fix_value_list=['c'])
+                                                                              filter_fix_value_list=['c'],
+                                                                              filter_type=FilterType(1))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -2843,7 +2850,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df.index = [0, 1, 3, 4]
         result_df = self.data_transformations.transform_filter_rows_primitive(data_dictionary=datadic.copy(),
                                                                               columns=['A'],
-                                                                              filter_fix_value_list=['2021-03-03'])
+                                                                              filter_fix_value_list=['2021-03-03'],
+                                                                              filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -2876,7 +2884,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df.index = [0, 3, 4]
         dic_cols_special_type_values = {'A': {'missing': [2]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   cols_special_type_values=dic_cols_special_type_values)
+                                                                                   cols_special_type_values=dic_cols_special_type_values,
+                                                                                   filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -2887,9 +2896,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': [0, None, 4, 1], 'B': [2, 4, 6, 12]})
         # Change index values in expected_df to match the index values in result_df
         expected_df.index = [0, 2, 3, 4]
-        dic_cols_special_type_values = {'A': {'invalid': [2], 'outliers': True}}
+        dic_cols_special_type_values = {'A': {'invalid': [2], 'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   cols_special_type_values=dic_cols_special_type_values)
+                                                                                   cols_special_type_values=dic_cols_special_type_values,
+                                                                                   filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -2897,12 +2907,13 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1, 500, -500], 'B': [2, 3, 4, 6, 12, 500, -500]})
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12]})
+            {'A': [500, -500], 'B': [500, -500]})
         # Change index values in expected_df to match the index values in result_df
-        expected_df.index = [0, 1, 2, 3, 4]
+        expected_df.index = [5, 6]
         dic_cols_special_type_values = {'A': {'outlier': True}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   cols_special_type_values=dic_cols_special_type_values)
+                                                                                   cols_special_type_values=dic_cols_special_type_values,
+                                                                                   filter_type=FilterType(1))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -2913,7 +2924,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         dic_cols_special_type_values = {'C': {'outlier': True}}
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                           cols_special_type_values=dic_cols_special_type_values)
+                                                                           cols_special_type_values=dic_cols_special_type_values,
+                                                                           filter_type=FilterType(1))
         print_and_log("Test Case 4 Passed: expected exception")
 
         # Caso 5 - Eliminar filas con outliers y valores missig en varias columnas
@@ -2934,7 +2946,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                         'B': {'outlier': True, 'missing': []},
                                         'C': {'outlier': True, 'missing': [5, 2]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   cols_special_type_values=dic_cols_special_type_values)
+                                                                                   cols_special_type_values=dic_cols_special_type_values,
+                                                                                   filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 
@@ -2956,7 +2969,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                         'B': {'outlier': True, 'invalid': []},
                                         'C': {'outlier': True, 'invalid': [4, 1]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   cols_special_type_values=dic_cols_special_type_values)
+                                                                                   cols_special_type_values=dic_cols_special_type_values,
+                                                                                   filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the dataframe expected")
 
@@ -2972,9 +2986,27 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         dic_cols_special_type_values = {'A': {'missing': ['2021-03-03']},
                                         'D': {'missing': ['8', 2]}}
         result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
-                                                                                   cols_special_type_values=dic_cols_special_type_values)
+                                                                                   cols_special_type_values=dic_cols_special_type_values,
+                                                                                   filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Caso 8 - Incluir filas con valores Datetime y str
+        datadic = pd.DataFrame(
+            {'A': ['2021-01-01', '2021-02-02', '2021-03-03', '2021-04-04', '2021-05-05'],
+             'B': [2, 3, 4, 6, 12], 'C': ['10', '1', '3', '3', '0'], 'D': ['1', '8', '6', '1', '2']})
+        expected_df = pd.DataFrame(
+            {'A': ['2021-02-02'],
+             'B': [3], 'C': ['1'], 'D': ['8']})
+        # Change index values in expected_df to match the index values in result_df
+        expected_df.index = [1]
+        dic_cols_special_type_values = {'A': {'missing': ['2021-01-01', '2021-02-02', '2021-03-03']},
+                                        'D': {'missing': ['8', 2]}}
+        result_df = self.data_transformations.transform_filter_rows_special_values(data_dictionary=datadic.copy(),
+                                                                                   cols_special_type_values=dic_cols_special_type_values,
+                                                                                   filter_type=FilterType(1))
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 8 Passed: got the dataframe expected")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -3000,8 +3032,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df.index = [0, 2, 4]
         result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
                                                                           columns=['A'], right_margin_list=[4],
-                                                                          left_margin_list=[2], include_range_list=[
-                False])
+                                                                          left_margin_list=[2], filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -3010,14 +3041,14 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0, 4, 1, 5, 10, 8], 'B': [2, 6, 7, 5, 6, 5], 'C': [0, 2, 3, 5, 3, 5]})
         expected_df = pd.DataFrame(
-            {'A': [0], 'B': [2], 'C': [0]})
+            {'A': [4, 5], 'B': [6, 5], 'C': [2, 5]})
         # Change index values in expected_df to match the index values in result_df
-        expected_df.index = [0]
+        expected_df.index = [1, 3]
         result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
                                                                           columns=['A', 'B', 'C'],
-                                                                          right_margin_list=[4, 7],
-                                                                          left_margin_list=[0, 5],
-                                                                          include_range_list=[True, False])
+                                                                          right_margin_list=[6, 7],
+                                                                          left_margin_list=[0, 2],
+                                                                          filter_type=FilterType(1))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -3031,9 +3062,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df.index = [1, 3]
         result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
                                                                           columns=['A', 'B'],
-                                                                          right_margin_list=[4.2, 7, 5],
-                                                                          left_margin_list=[2, 6, 1],
-                                                                          include_range_list=[True, False, True])
+                                                                          right_margin_list=[4.2, 5],
+                                                                          left_margin_list=[2, 1],
+                                                                          filter_type=FilterType(1))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
 
@@ -3042,20 +3073,19 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         datadic = pd.DataFrame(
             {'A': [0.1, 4, 1.3, 5.4, 10.5, 8.6], 'B': [2, 5.2, 7, 5, 6, 5], 'C': [0, 9.4, 3, 5, 3, 5]})
         expected_df = pd.DataFrame(
-            {'A': [0.1], 'B': [2], 'C': [0]})
+            {'A': [0.1, 5.4], 'B': [2, 5], 'C': [0, 5]})
         expected_df = expected_df.astype({
             'A': 'float64',  # Convertir A a float64
             'B': 'float64',  # Convertir B a float64
             'C': 'float64'  # Convertir C a float64
         })
         # Change index values in expected_df to match the index values in result_df
-        expected_df.index = [0]
+        expected_df.index = [0, 3]
         result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
                                                                           columns=['A', 'C'],
-                                                                          right_margin_list=[4.2, 10, 1.5],
-                                                                          left_margin_list=[2, 7, 0],
-                                                                          include_range_list=[
-                                                                              False, False, True])
+                                                                          right_margin_list=[4.2, 10],
+                                                                          left_margin_list=[2, 7],
+                                                                          filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 4 Passed: got the dataframe expected")
 
@@ -3073,10 +3103,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df.index = [2]
         result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
                                                                           columns=['A', 'C'],
-                                                                          right_margin_list=[4.2, 10, None],
-                                                                          left_margin_list=[None, 7, 0],
-                                                                          include_range_list=[
-                                                                              False, False, True])
+                                                                          right_margin_list=[4.2, 10],
+                                                                          left_margin_list=[None, 7],
+                                                                          filter_type=FilterType(0))
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 5 Passed: got the dataframe expected")
 

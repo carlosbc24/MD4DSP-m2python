@@ -106,3 +106,14 @@ class SpecialType(Enum):
     MISSING = 0
     INVALID = 1
     OUTLIER = 2
+
+
+class FilterType(Enum):
+    """
+    Enumeration for the filter type
+
+    EXCLUDE: Exclude the values
+    INCLUDE: Include the values
+    """
+    EXCLUDE = 0
+    INCLUDE = 1

@@ -1,10 +1,9 @@
-
 # Importing functions and classes from packages
 import numpy as np
 import pandas as pd
 
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
-from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
+from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, FilterType
 from helpers.transform_aux import get_outliers, special_type_mean, special_type_median, special_type_closest, \
     special_type_interpolation, apply_derived_type_col_row_outliers, apply_derived_type
 
@@ -356,25 +355,29 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                     for idx in data_dictionary_copy.index:
-                        if (left_margin < data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] < right_margin):
+                        if (left_margin < data_dictionary_copy.at[idx, col]) and (
+                                data_dictionary_copy.at[idx, col] < right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.openClosed:
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                     for idx in data_dictionary_copy.index:
-                        if (left_margin < data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] <= right_margin):
+                        if (left_margin < data_dictionary_copy.at[idx, col]) and (
+                                data_dictionary_copy.at[idx, col] <= right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.closedOpen:
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                     for idx in data_dictionary_copy.index:
-                        if (left_margin <= data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] < right_margin):
+                        if (left_margin <= data_dictionary_copy.at[idx, col]) and (
+                                data_dictionary_copy.at[idx, col] < right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
         elif closure_type == Closure.closedClosed:
             for col in data_dictionary_copy.columns:
                 if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                     for idx in data_dictionary_copy.index:
-                        if (left_margin <= data_dictionary_copy.at[idx, col]) and (data_dictionary_copy.at[idx, col] <= right_margin):
+                        if (left_margin <= data_dictionary_copy.at[idx, col]) and (
+                                data_dictionary_copy.at[idx, col] <= right_margin):
                             data_dictionary_copy.at[idx, col] = fix_value_output
 
     elif field_in is not None:
@@ -385,25 +388,29 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
             if np.issubdtype(data_dictionary[field_in].dtype, np.number):
                 if closure_type == Closure.openOpen:
                     for i in range(len(data_dictionary_copy)):
-                        if (left_margin < data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] < right_margin):
+                        if (left_margin < data_dictionary_copy.loc[i, field_in]) and (
+                                data_dictionary_copy.loc[i, field_in] < right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
                         else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.openClosed:
                     for i in range(len(data_dictionary_copy)):
-                        if (left_margin < data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] <= right_margin):
+                        if (left_margin < data_dictionary_copy.loc[i, field_in]) and (
+                                data_dictionary_copy.loc[i, field_in] <= right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
                         else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.closedOpen:
                     for i in range(len(data_dictionary_copy)):
-                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] < right_margin):
+                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (
+                                data_dictionary_copy.loc[i, field_in] < right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
                         else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.closedClosed:
                     for i in range(len(data_dictionary_copy)):
-                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (data_dictionary_copy.loc[i, field_in] <= right_margin):
+                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (
+                                data_dictionary_copy.loc[i, field_in] <= right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
                         else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
@@ -958,7 +965,8 @@ def transform_special_value_num_op(data_dictionary: pd.DataFrame, special_type_i
     data_dictionary_copy_mask = None
 
     if special_type_input == SpecialType.OUTLIER:
-        data_dictionary_copy_mask = get_outliers(data_dictionary=data_dictionary_copy, field=field_in, axis_param=axis_param)
+        data_dictionary_copy_mask = get_outliers(data_dictionary=data_dictionary_copy, field=field_in,
+                                                 axis_param=axis_param)
 
     if num_op_output == Operation.INTERPOLATION:
         data_dictionary_copy = special_type_interpolation(data_dictionary_copy=data_dictionary_copy,
@@ -1079,7 +1087,8 @@ def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataTyp
 
 
 def transform_filter_rows_primitive(data_dictionary: pd.DataFrame, columns: list[str],
-                                    filter_fix_value_list: list = None) -> pd.DataFrame:
+                                    filter_fix_value_list: list = None,
+                                    filter_type: FilterType = None) -> pd.DataFrame:
     """
     Execute the data transformation of the FilterRows - Primitive relation
 
@@ -1087,9 +1096,9 @@ def transform_filter_rows_primitive(data_dictionary: pd.DataFrame, columns: list
         data_dictionary: dataframe with the data
         columns: list of columns to filter
         filter_fix_value_list: values to filter
+        filter_type: filter type value to execute/include the values in the columns
 
-    Returns: pd.DataFrame: data_dictionary with the rows with the value fix_value_output in the columns of the list
-    columns removed
+    Returns: pd.DataFrame: data_dictionary including/excluding the rows with the values in the list filter_fix_value_list
     """
     data_dictionary_copy = data_dictionary.copy()
 
@@ -1101,21 +1110,33 @@ def transform_filter_rows_primitive(data_dictionary: pd.DataFrame, columns: list
 
         if filter_fix_value_list is not None:
             # Remove the rows with the value fix_value_output in the column
-            data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].isin(filter_fix_value_list)]
+
+            # Exclude or include the values in the list filter_fix_value_list in the column
+            if filter_type == FilterType.INCLUDE:
+                data_dictionary_copy = data_dictionary_copy[
+                    data_dictionary_copy[current_column].isin(filter_fix_value_list)]
+            elif filter_type == FilterType.EXCLUDE:
+                data_dictionary_copy = data_dictionary_copy[
+                    ~data_dictionary_copy[current_column].isin(filter_fix_value_list)]
+            else:
+                raise ValueError("The filter type is not valid")
 
     return data_dictionary_copy
 
 
-def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_special_type_values: dict) -> pd.DataFrame:
+def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_special_type_values: dict,
+                                        filter_type: FilterType) -> pd.DataFrame:
     """
     Execute the data transformation of the FilterRows - SpecialValues relation
 
     Args:
         data_dictionary: dataframe with the data
         cols_special_type_values: dictionary with the columns and the special values to filter
+        filter_type: filter type value to execute/include the values in the columns
 
     Returns:
-        pd.DataFrame: data_dictionary with the rows with the special values in the columns of the list columns removed
+        pd.DataFrame: data_dictionary including/excluding the rows with the values in the cols_special_type_values
+        dictionary
     """
     data_dictionary_copy = data_dictionary.copy()
 
@@ -1129,39 +1150,54 @@ def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_spe
         for key in cols_special_type_values[column_name].keys():
             if key == 'missing':
                 missing_values_list = cols_special_type_values[column_name]['missing']
-                # Remove the rows with the values in the list missing_values in the columns of the list columns
-                data_dictionary_copy = data_dictionary_copy[
-                    ~data_dictionary_copy[column_name].isin(missing_values_list)]
-                # Remove rows which values in the current column are NaN
-                data_dictionary_copy = data_dictionary_copy.dropna(subset=[column_name])
+                if filter_type == FilterType.INCLUDE:
+                    # Include the rows with the values in the list missing_values or NaN in the column
+                    data_dictionary_copy = data_dictionary_copy[
+                        data_dictionary_copy[column_name].isin(missing_values_list) | data_dictionary_copy[
+                            column_name].isnull()]
+                elif filter_type == FilterType.EXCLUDE:
+                    # Remove the rows with the values in the list missing_values or NaN in the column
+                    data_dictionary_copy = data_dictionary_copy[
+                        ~data_dictionary_copy[column_name].isin(missing_values_list)]
+                    data_dictionary_copy = data_dictionary_copy.dropna(subset=[column_name])
 
             if key == 'invalid':
                 invalid_values_list = cols_special_type_values[column_name]['invalid']
-                # Remove the rows with the values in the list missing_values in the columns of the list columns
-                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[column_name].isin(invalid_values_list)]
+                if filter_type == FilterType.INCLUDE:
+                    # Include the rows with the values in the list missing_values in the column
+                    data_dictionary_copy = data_dictionary_copy[
+                        data_dictionary_copy[column_name].isin(invalid_values_list)]
+                elif filter_type == FilterType.EXCLUDE:
+                    # Remove the rows with the values in the list missing_values in the columns of the list columns
+                    data_dictionary_copy = data_dictionary_copy[
+                        ~data_dictionary_copy[column_name].isin(invalid_values_list)]
 
             if key == 'outlier':
                 if cols_special_type_values[column_name]['outlier']:
                     # Get the dataframe mask with outliers detected
                     data_dictionary_copy_mask = get_outliers(data_dictionary_copy, column_name)
-                    # Remove the rows with the value 1 in the mask dataframe with outliers
-                    data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy_mask[column_name].isin([1])]
+                    if filter_type == FilterType.INCLUDE:
+                        # Include the rows with the value 1 in the mask dataframe with outliers
+                        data_dictionary_copy = data_dictionary_copy[data_dictionary_copy_mask[column_name].isin([1])]
+                    elif filter_type == FilterType.EXCLUDE:
+                        # Remove the rows with the value 1 in the mask dataframe with outliers
+                        data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy_mask[column_name].isin([1])]
 
     return data_dictionary_copy
 
 
 def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str],
                                 left_margin_list: list[float] = None, right_margin_list: list[float] = None,
-                                include_range_list: list[bool] = None) -> pd.DataFrame:
+                                filter_type: FilterType = None) -> pd.DataFrame:
     """
     Execute the data transformation of the FilterRows - Range relation
 
     Args:
         data_dictionary: dataframe with the data
         columns: list of columns to filter
-        left_margin_list: left margin list of the interval
-        right_margin_list: right margin list of the interval
-        include_range_list: list of boolean values to include the range
+        left_margin_list: left margin list of the interval to filter (closure type is closed)
+        right_margin_list: right margin list of the interval to filter (closure type is closed)
+        filter_type: filter type value to execute/include the values in the columns
 
     Returns:
         pd.DataFrame: data_dictionary including/excluding the rows with values within the interval
@@ -1170,7 +1206,7 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
     """
     data_dictionary_copy = data_dictionary.copy()
 
-    for index in range(len(include_range_list)):
+    for index in range(len(left_margin_list)):  # Iterate over the list of ranges
 
         # If the left margin is None, substitute it with -inf and
         # if the right margin is None, substitute it with inf
@@ -1190,9 +1226,15 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
                 raise ValueError(f"The column {current_column} does not exist in the dataframe")
 
             # Exclude or include the values within the interval [left_margin, right_margin] in the column
-            if include_range_list[index]:
-                data_dictionary_copy = data_dictionary_copy[data_dictionary_copy[current_column].apply(lambda x: check_interval_condition(x, current_left_margin, current_right_margin, Closure.closedClosed))]
-            elif not include_range_list[index]:
-                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].apply(lambda x: check_interval_condition(x, current_left_margin, current_right_margin, Closure.closedClosed))]
+            if filter_type == FilterType.INCLUDE:
+                data_dictionary_copy = data_dictionary_copy[data_dictionary_copy[current_column].apply(
+                    lambda x: check_interval_condition(x, current_left_margin, current_right_margin,
+                                                       Closure.closedClosed))]
+            elif filter_type == FilterType.EXCLUDE:
+                data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].apply(
+                    lambda x: check_interval_condition(x, current_left_margin, current_right_margin,
+                                                       Closure.closedClosed))]
+            else:
+                raise ValueError("The filter type is not valid")
 
     return data_dictionary_copy
