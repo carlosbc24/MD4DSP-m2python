@@ -77,8 +77,10 @@ Once the tests have finished, one log will be created for each execution of the 
 
 # Generated contract calls via Acceleo (Code Generation)
 
-The contract calls are generated in a Python script via Acceleo. Once the generated is generated, it must be moved to the `generated_code` directory. The script to test the code generation is named `dataProcessing.py`. You'll just need to run the script to call the contracts. The dataset used to test this generated script must be named 'data_model.csv' and must be located in a parent directory to the generated script.
+The contract calls are generated in a Python script via Acceleo. Once the generated is generated, it must be moved to the `generated_code` directory. The script to test the generated code from the model 'model/wf_validation_modified.xmi' is located in `generated_code/dataProcessing.py` and the generated code from the model 'model/bbk/wf_validation.xmi' is located in `generated_code/bbk/dataProcessing.py`. You'll just need to run the corresponding script to call the contracts. The dataset used to test this generated script must be named 'missing_input_dataDictionary.csv' and must be located in the folder named `knime_dataDictionaries`.
 The generated files can be executed by running one of the following commands:
+
+## A) Generated code from the model 'model/wf_validation_modified.xmi'
 
 1. Execute just the data transformations script:
    ```bash
@@ -94,6 +96,23 @@ The generated files can be executed by running one of the following commands:
    ```bash
     python3 -m generated_code.dataProcessing
     ```
+   
+## B) Generated code from the model 'model/bbk/wf_validation.xmi'
+
+1. Execute just the data transformations script:
+   ```bash
+    python3 -m generated_code.bbk.transformations
+    ```
+   
+2. Execute just the contracts script:
+    ```bash
+     python3 -m generated_code.bbk.contracts
+     ```
+   
+3. Execute both, the data transformations and the contracts by running the following command:
+    ```bash
+     python3 -m generated_code.bbk.dataProcessing
+     ```
 
 ## Project Structure
 
@@ -108,6 +127,10 @@ MD4DSP-m2python/
 │ └── data_transformations.py
 │
 ├── generated_code/
+│ ├── bbk/
+│   ├── contracts.py
+│   ├── dataProcessing.py
+│   └── transformations.py
 │ ├── contracts.py
 │ ├── dataProcessing.py
 │ └── transformations.py
@@ -157,7 +180,8 @@ MD4DSP-m2python/
 - **`functions/`**: contains the main functions of the project. The functions are divided into three files: `contract_invariants.py`, `contract_pre_post.py` and `data_transformations.py`. The first file contains the functions of the invariants, the second file contains the functions of the contracts, and the third file contains the functions of the data transformations.
 
 
-- **`generated_code/`**: contains the generated code via Acceleo. The generated code must be located in this directory.
+- **`generated_code/`**: contains the generated code via Acceleo from the model 'model/wf_validation_modified.xmi'. The generated code must be located in this directory.
+- **`generated_code/bbk/`**: contains the generated code via Acceleo from the model 'model/bbk/wf_validation.xmi'. The generated code must be located in this directory.
 
 
 - **`helpers/`**: contains auxiliary functions that are used in the main functions. The file `auxiliar.py` contains the auxiliary functions, `enumerations.py` contains the enumerations used in the project, `invariant_aux.py` contains the auxiliary functions of the invariants, `logger.py` contains the logger functions, and `transform_aux.py` contains the auxiliary functions of the data transformations.
