@@ -146,9 +146,21 @@ MD4DSP-m2python/
 │ └── missing_input_dataDictionary.csv
 │
 ├── logs/
-│ └── test/
+│ └── transformations/
 │   ├── ...
-│   └── testLog_<number>.log
+│   └── transformations_log_<number>.log
+│ └── contracts/
+│   ├── ...
+│   └── contracts_log_<number>.log
+│ └── dataProcessing/
+│   ├── ...
+│   └── dataProcessing_log_<number>.log
+│ └── test_contracts/
+│   ├── ...
+│   └── test_contracts_log_<number>.log
+│ └── test_data_transformations/
+│   ├── ...
+│   └── test_data_transformations_log_<number>.log
 │
 ├── test_datasets/
 │ ├── spotify_songs/
@@ -197,7 +209,7 @@ MD4DSP-m2python/
 - **`test_datasets/`**: contains the external datasets used in the tests. The datasets are divided into directories, and each directory contains the dataset and a readme file with the description of the dataset.
 
 
-- **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into two directories: `contract_pre_post`, `contract_invariants` and `data_transformations`. Each directory contains the tests of the functions of the contracts, the invariants, and the data transformations, respectively.
+- **`test/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into 5 directories: `transformations`, `contracts`, `dataProcessing`, `test_contracts` and `test_data_transformations`. The first directory contains the execution logs of the transformations generated file, the second directory contains the execution logs of the contracts generated file, the third directory contains the execution logs of the dataProcessing generated file, the fourth directory contains the execution logs of the contract tests, and the fifth directory contains the execution logs of the data transformation tests.
 
 
 - **`README.md`**: file that contains the documentation of the project.
