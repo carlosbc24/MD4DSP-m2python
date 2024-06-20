@@ -4,6 +4,7 @@ import pandas as pd
 
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, FilterType
+from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers, special_type_mean, special_type_median, special_type_closest, \
     special_type_interpolation, apply_derived_type_col_row_outliers, apply_derived_type
 
@@ -1073,15 +1074,17 @@ def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataTyp
     if field not in data_dictionary.columns:
         raise ValueError("The field does not exist in the dataframe")
 
-    if data_dictionary[field].dtype != 'object' and data_dictionary[field].dtype != 'string':
-        raise ValueError("The field is not categorical")
-
-    if data_type_output == DataType.INTEGER:
-        data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(int)
-    elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
-        data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(float)
+    if data_dictionary[field].dtype == 'object' or data_dictionary[field].dtype == 'string':
+        if data_type_output == DataType.INTEGER:
+            data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(int)
+        elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
+            data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(float)
+        else:
+            raise ValueError("The data type is not numeric")
+    elif data_dictionary[field].dtype == int or data_dictionary[field].dtype == float:
+        print_and_log("The field is already a numeric type")
     else:
-        raise ValueError("The data type is not numeric")
+        print_and_log("The field is not a string or object")
 
     return data_dictionary_copy
 

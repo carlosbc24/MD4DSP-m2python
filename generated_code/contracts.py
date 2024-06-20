@@ -278,7 +278,7 @@ def generateDataProcessing():
 	else:
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange NOT VALIDATED')
 	
-	if contract_pre_post.check_fix_value_range(value='-216', data_dictionary=rowFilterRange_output_DataDictionary, belong_op=Belong(1), field='init_span',
+	if contract_pre_post.check_fix_value_range(value=-216, data_dictionary=rowFilterRange_output_DataDictionary, belong_op=Belong(1), field='init_span',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('POSTCONDITION rowFilter(init_span)_POST_valueRange VALIDATED')
 	else:

@@ -63,8 +63,7 @@ def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: p
                                             # str or datetime(Timestamp), so that only the int are casted
                                             # Before casting, it is checked that value is not None,
                                             # str or datetime(Timestamp), so that only the int are casted
-        value = float(
-            value)  # Cast the float to avoid errors when comparing the value with the values of the dataframe
+        value = float(value)  # Cast the float to avoid errors when comparing the value with the values of the dataframe
 
     if field is None:
         if belong_op == Belong.BELONG:
@@ -519,7 +518,6 @@ def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, fiel
     below Q1 - 1.5 * IQR or above Q3 + 1.5 * IQR
 
     :param data_dictionary: dataframe with the data
-    :param axis_param: axis to get the outliers. If axis_param is None, the outliers are calculated for the whole dataframe.
     If axis_param is 0, the outliers are calculated for each column. If axis_param is 1, the outliers are calculated for each row (although it is not recommended as it is not a common use case)
     :param belong_op: enum operator which can be Belong.BELONG or Belong.NOTBELONG
     :param field: dataset column in which value will be checked

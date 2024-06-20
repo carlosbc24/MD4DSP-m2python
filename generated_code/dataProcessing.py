@@ -330,7 +330,7 @@ def generateDataProcessing():
 #-----------------New DataProcessing-----------------
 	rowFilter_input_DataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv', sep=',')
 
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=0.0, data_dictionary=rowFilter_input_DataDictionary,
+	if contract_pre_post.check_interval_range_float(left_margin=1000.0, right_margin=0.0, data_dictionary=rowFilter_input_DataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(0), field='init_span'):
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange VALIDATED')
 	else:
@@ -350,7 +350,7 @@ def generateDataProcessing():
 	rowFilterRange_output_DataDictionary=rowFilter_input_DataDictionary_transformed
 	rowFilterRange_output_DataDictionary.to_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv')
 	
-	if contract_pre_post.check_fix_value_range(value='-216', data_dictionary=rowFilterRange_output_DataDictionary, belong_op=Belong(1), field='init_span',
+	if contract_pre_post.check_fix_value_range(value=-216, data_dictionary=rowFilterRange_output_DataDictionary, belong_op=Belong(1), field='init_span',
 									quant_abs=None, quant_rel=None, quant_op=None):
 		print('POSTCONDITION rowFilter(init_span)_POST_valueRange VALIDATED')
 	else:
@@ -508,31 +508,31 @@ def generateDataProcessing():
 	categoricalToContinuous_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', sep=',')
 
 	categoricalToContinuous_input_dataDictionary_transformed=categoricalToContinuous_input_dataDictionary.copy()
-	# categoricalToContinuous_input_dataDictionary_transformed=data_transformations.transform_cast_type(data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
-	# 																data_type_output= DataType(6),
-	# 																field='TERRITORY')
-	#
-	# categoricalToContinuous_input_dataDictionary_transformed=data_transformations.transform_cast_type(data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
-	# 																data_type_output= DataType(6),
-	# 																field='Instate')
+	categoricalToContinuous_input_dataDictionary_transformed=data_transformations.transform_cast_type(data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
+																	data_type_output= DataType(6),
+																	field='TERRITORY')
+	
+	categoricalToContinuous_input_dataDictionary_transformed=data_transformations.transform_cast_type(data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
+																	data_type_output= DataType(6),
+																	field='Instate')
 	
 	categoricalToContinuous_output_dataDictionary=categoricalToContinuous_input_dataDictionary_transformed
 	categoricalToContinuous_output_dataDictionary.to_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv')
 	
-	# if contract_invariants.check_inv_missing_value_missing_value(data_dictionary_in=categoricalToContinuous_input_dataDictionary,
-	# 										data_dictionary_out=categoricalToContinuous_output_dataDictionary,
-	# 										belong_op_out=Belong(1), field_in='TERRITORY', field_out='TERRITORY'):
-	# 	print('INVARIANT INV_condition_TERRITORY VALIDATED')
-	# else:
-	# 	print('INVARIANT INV_condition_TERRITORY NOT VALIDATED')
-	#
-	#
-	# if contract_invariants.check_inv_missing_value_missing_value(data_dictionary_in=categoricalToContinuous_input_dataDictionary,
-	# 										data_dictionary_out=categoricalToContinuous_output_dataDictionary,
-	# 										belong_op_out=Belong(1), field_in='Instate', field_out='Instate'):
-	# 	print('INVARIANT INV_condition_Instate VALIDATED')
-	# else:
-	# 	print('INVARIANT INV_condition_Instate NOT VALIDATED')
+	if contract_invariants.check_inv_missing_value_missing_value(data_dictionary_in=categoricalToContinuous_input_dataDictionary,
+											data_dictionary_out=categoricalToContinuous_output_dataDictionary,
+											belong_op_out=Belong(1), field_in='TERRITORY', field_out='TERRITORY'):
+		print('INVARIANT INV_condition_TERRITORY VALIDATED')
+	else:
+		print('INVARIANT INV_condition_TERRITORY NOT VALIDATED')
+	
+	
+	if contract_invariants.check_inv_missing_value_missing_value(data_dictionary_in=categoricalToContinuous_input_dataDictionary,
+											data_dictionary_out=categoricalToContinuous_output_dataDictionary,
+											belong_op_out=Belong(1), field_in='Instate', field_out='Instate'):
+		print('INVARIANT INV_condition_Instate VALIDATED')
+	else:
+		print('INVARIANT INV_condition_Instate NOT VALIDATED')
 	
 	
 #-----------------New DataProcessing-----------------
