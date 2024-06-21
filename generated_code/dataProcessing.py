@@ -330,8 +330,8 @@ def generateDataProcessing():
 #-----------------New DataProcessing-----------------
 	rowFilter_input_DataDictionary=pd.read_csv('./knime_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv', sep=',')
 
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=0.0, data_dictionary=rowFilter_input_DataDictionary,
-	                                	closure_type=Closure(0), belong_op=Belong(0), field='init_span'):
+	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=rowFilter_input_DataDictionary,
+	                                	closure_type=Closure(2), belong_op=Belong(1), field='init_span'):
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange NOT VALIDATED')

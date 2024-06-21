@@ -272,8 +272,8 @@ def generateDataProcessing():
 	if os.path.exists('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		rowFilterRange_output_DataDictionary=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv', sep = ',')
 
-	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=0.0, data_dictionary=rowFilter_input_DataDictionary,
-	                                	closure_type=Closure(0), belong_op=Belong(0), field='init_span'):
+	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=rowFilter_input_DataDictionary,
+	                                	closure_type=Closure(2), belong_op=Belong(1), field='init_span'):
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION rowFilter(init_span)_PRE_valueRange NOT VALIDATED')
@@ -342,7 +342,7 @@ def generateDataProcessing():
 	
 	data_type_input_list_def_INV_condition=[DataType(0), DataType(0)]
 	data_type_output_list_def_INV_condition=[DataType(0), DataType(0)]
-	
+
 	if contract_invariants.check_inv_fix_value_fix_value(data_dictionary_in=mapping_input_dataDictionary,
 											data_dictionary_out=mapping_output_dataDictionary,
 											input_values_list=input_values_list_def_INV_condition, 
