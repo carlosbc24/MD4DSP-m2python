@@ -47,6 +47,19 @@
    conda deactivate
    conda remove --name md4dsp --all -y
    ```
+
+## Data transformation tests execution
+
+To run the data transformation tests, follow the next steps:
+
+1. Run the data transformation tests:
+   ```bash
+    python3 ./test_data_transformations.py
+    ```
+
+2. Check the results in the logs:
+
+Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
    
 ## Contract tests execution
 
@@ -56,19 +69,6 @@ To run the contract tests, follow the next steps:
 1. Run the contract tests:
    ```bash
     python3 ./test_contracts.py
-    ```
-
-2. Check the results in the logs:
-
-Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
-
-## Data transformation tests execution
-
-To run the data transformation tests, follow the next steps:
-
-1. Run the data transformation tests:
-   ```bash
-    python3 ./test_data_transformations.py
     ```
 
 2. Check the results in the logs:
