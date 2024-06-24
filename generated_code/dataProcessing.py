@@ -426,10 +426,10 @@ def generateDataProcessing():
 	
 	
 	input_values_list_def_INV_condition=['A', 'N']
-	output_values_list_def_INV_condition=['0', '0']
+	output_values_list_def_INV_condition=[0, 0]
 	
 	data_type_input_list_def_INV_condition=[DataType(0), DataType(0)]
-	data_type_output_list_def_INV_condition=[DataType(0), DataType(0)]
+	data_type_output_list_def_INV_condition=[DataType(2), DataType(2)]
 	
 	if contract_invariants.check_inv_fix_value_fix_value(data_dictionary_in=mapping_input_dataDictionary,
 											data_dictionary_out=mapping_output_dataDictionary,
