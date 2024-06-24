@@ -1889,6 +1889,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy[col_name] = (
                         data_dictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x).
                         interpolate(method='linear', limit_direction='both'))
+                    # Truncar los decimales a 4
+                    data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].round(4)
 
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
@@ -1909,7 +1911,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     data_dictionary_in_copy[row] = (
                         numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
-                        interpolate(method='linear', limit_direction='both'))
+                        interpolate(method='linear', limit_direction='both')).round(4)
                 for col_name in data_dictionary_in.columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(data_dictionary_in.at[idx, col_name]):
@@ -1931,6 +1933,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy[col] = (
                         data_dictionary_in[col].apply(lambda x: np.nan if x in missing_values else x).
                         interpolate(method='linear', limit_direction='both'))
+                    # Truncar los decimales a 4
+                    data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(4)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -1960,7 +1964,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     data_dictionary_in_copy[row] = (
                         numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
-                        interpolate(method='linear', limit_direction='both'))
+                        interpolate(method='linear', limit_direction='both')).round(4)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -1993,6 +1997,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             data_dictionary_in_copy.at[idx, col] = np.NaN
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].interpolate(method='linear', limit_direction='both')
+                    # Truncar los decimales a 4
+                    data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(4)
 
                 # Iterate over each column
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2023,7 +2029,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             data_dictionary_in_copy.at[idx, col] = np.NaN
                     # Interpolate the row
-                    data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].interpolate(method='linear', limit_direction='both')
+                    data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].interpolate(method='linear', limit_direction='both').round(4)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -2058,6 +2064,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
         if special_type_input == SpecialType.MISSING:
             data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x in missing_values else x).
                                              interpolate(method='linear', limit_direction='both'))
+            # Truncar los decimales a 4
+            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(4)
 
             for idx in data_dictionary_in.index:
                 if data_dictionary_in.at[idx, field_in] in missing_values or pd.isnull(
@@ -2077,6 +2085,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
         elif special_type_input == SpecialType.INVALID:
             data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x in missing_values
                 else x).interpolate(method='linear', limit_direction='both'))
+            # Truncar los decimales a 4
+            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(4)
 
             # For each index in the column
             for idx in data_dictionary_in.index:
@@ -2104,6 +2114,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
                     data_dictionary_in_copy.at[idx, field_in] = np.NaN
             data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].interpolate(method='linear', limit_direction='both')
+            # Truncar los decimales a 4
+            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(4)
 
             # For each index in the column
             for idx in data_dictionary_in.index:

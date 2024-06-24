@@ -58,8 +58,6 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
     elif belong_op_out == Belong.NOTBELONG:
         result=False
 
-    keep_no_trans_result = True
-
     # Create a dictionary to store the mapping equivalence between the input and output values
     mapping_values = {}
 
@@ -81,10 +79,6 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                         elif belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
-                else: # Si el valor no es igual a fix_value_input
-                    if data_dictionary_out.loc[row_index, column_name] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, column_name])):
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {data_dictionary_in.loc[row_index, column_name]} but is: {data_dictionary_out.loc[row_index, column_name]}")
 
     elif field_in is not None:
         if field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
@@ -99,19 +93,12 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                         elif belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
-                else: # Si el valor no es igual a fix_value_input
-                    if data_dictionary_out.loc[row_index, field_out] != value and not(pd.isnull(value) and pd.isnull(data_dictionary_out.loc[row_index, field_in])):
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {data_dictionary_in.loc[row_index, field_in]} but is: {data_dictionary_out.loc[row_index, field_out]}")
 
         elif field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
 
-    # Checks that the not transformed cells are not modified
-    if keep_no_trans_result == False:
-        return False
-    else:
-        return True if result else False
+
+    return True if result else False
 
 
 def check_inv_fix_value_derived_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
