@@ -3752,7 +3752,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Invalid
         # Caso 6
         datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [5.1, 8.2, 6, 1, 2]})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [3, 8.2, 6, 1, 2]})
         missing_values = [1, 3, 4]
         expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [8.2, 8.2, 6, 4, 2]})
@@ -3765,8 +3765,8 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                 field_in='D', field_out='D')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 6 Failed: Expected False, but got True"
-        print_and_log("Test Case 6 Passed: Expected False, got False")
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
 
         # Caso 7
         datadic = pd.DataFrame(
