@@ -5773,19 +5773,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(0)
-        result_df = self.data_transformations.transform_special_value_num_op(
-            data_dictionary= self.rest_of_dataset.copy(),
-            special_type_input=special_type_input,
-            num_op_output=num_op_output, missing_values=missing_values,
-            axis_param=0)
-        invariant_result = self.invariants.check_inv_special_value_num_op(
-            data_dictionary_in= self.rest_of_dataset.copy(),
-            data_dictionary_out=result_df,
-            special_type_input=special_type_input,
-            num_op_output=num_op_output,
-            missing_values=missing_values,
-            belong_op_in=Belong(0), belong_op_out=Belong(0),
-            axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary= self.rest_of_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=0)
+        invariant_result = self.invariants.check_inv_special_value_num_op(data_dictionary_in= self.rest_of_dataset.copy(),
+                                                                          data_dictionary_out=result_df,
+                                                                          special_type_input=special_type_input,
+                                                                          num_op_output=num_op_output,
+                                                                          missing_values=missing_values,
+                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                                          axis_param=0)
         assert invariant_result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, and got True")
 
@@ -5794,19 +5792,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         special_type_input = SpecialType(0)
         missing_values = [1, 3, 0.13, 0.187]
         num_op_output = Operation(1)
-        result_df = self.data_transformations.transform_special_value_num_op(
-            data_dictionary= self.rest_of_dataset.copy(),
-            special_type_input=special_type_input,
-            num_op_output=num_op_output, missing_values=missing_values,
-            axis_param=None)
-        invariant_result = self.invariants.check_inv_special_value_num_op(
-            data_dictionary_in= self.rest_of_dataset.copy(),
-            data_dictionary_out=result_df,
-            special_type_input=special_type_input,
-            num_op_output=num_op_output,
-            missing_values=missing_values,
-            belong_op_in=Belong(0), belong_op_out=Belong(0),
-            axis_param=None)
+        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary= self.rest_of_dataset.copy(),
+                                                                             special_type_input=special_type_input,
+                                                                             num_op_output=num_op_output, missing_values=missing_values,
+                                                                             axis_param=None)
+        invariant_result = self.invariants.check_inv_special_value_num_op(data_dictionary_in= self.rest_of_dataset.copy(),
+                                                                          data_dictionary_out=result_df,
+                                                                          special_type_input=special_type_input,
+                                                                          num_op_output=num_op_output,
+                                                                          missing_values=missing_values,
+                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                                          axis_param=None)
         assert invariant_result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, and got True")
 

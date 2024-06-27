@@ -5269,12 +5269,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['speechiness'],
-            right_margin_list=[0.1, 0.7],
+            right_margin_list=[np.inf, 0.7],
             left_margin_list=[0, 0.05],
-            filter_type=FilterType(1))
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(3), Closure(2)])
         expected_df = self.small_batch_dataset.copy()
-        expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= 0.1)) &
-                                  (((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
+        expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= np.inf)) &
+                                  (((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] < 0.7)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -5284,23 +5285,25 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['mode'],
             right_margin_list=[0],
             left_margin_list=[0],
-            filter_type=FilterType(1))
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(3)])
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0))]
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=result_df,
             columns=['track_popularity', 'danceability'],
             right_margin_list=[68],
-            left_margin_list=[None],
-            filter_type=FilterType(1))
-        expected_df = expected_df[(((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity']
+            left_margin_list=[-np.inf],
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(1)])
+        expected_df = expected_df[(((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity']
                                                                                       <=
         68)) &
-                                   (((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity'] <=
+                                   (((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity'] <=
                                                                                68))) &
-                                   ((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <=
+                                   ((expected_df['danceability'] > float('-inf')) & (expected_df['danceability'] <=
                                                                                       68)) &
-                                   (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability']
+                                   (((expected_df['danceability'] > float('-inf')) & (expected_df['danceability']
                                                                                         <= 68))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
@@ -5310,19 +5313,21 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             data_dictionary=self.small_batch_dataset.copy(),
             columns=['danceability', 'energy', 'speechiness'],
             right_margin_list=[0.89],
-            left_margin_list=[None],
-            filter_type=FilterType(1))
+            left_margin_list=[-np.inf],
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(0)])
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=result_df,
             columns=['danceability', 'energy', 'speechiness'],
-            right_margin_list=[None],
+            right_margin_list=[-np.inf],
             left_margin_list=[0.9],
-            filter_type=FilterType(0))
+            filter_type=FilterType(0),
+            closure_type_list=[Closure(3)])
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
-            (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <= 0.89)) &
-              ((expected_df['energy'] >= float('-inf')) & (expected_df['energy'] <= 0.89)) &
-              ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)))]
+            (((expected_df['danceability'] > float('-inf')) & (expected_df['danceability'] < 0.89)) &
+              ((expected_df['energy'] > float('-inf')) & (expected_df['energy'] < 0.89)) &
+              ((expected_df['speechiness'] > float('-inf')) & (expected_df['speechiness'] < 0.89)))]
         expected_df = expected_df[
             ((~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
              (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
@@ -5336,7 +5341,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 data_dictionary=self.small_batch_dataset.copy(),
                 columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
                          "noew_column_pepe"], right_margin_list=[0.5],
-                left_margin_list=[0.2], filter_type=FilterType(1))
+                left_margin_list=[0.2], filter_type=FilterType(1),
+                closure_type_list=[Closure(3), Closure(3)])
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
 
     def execute_WholeDatasetTests_execute_transform_filter_rows_range(self):
@@ -5352,12 +5358,13 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['speechiness'],
-            right_margin_list=[0.1, 0.7],
+            right_margin_list=[np.inf, 0.7],
             left_margin_list=[0, 0.05],
-            filter_type=FilterType(1))
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(3), Closure(2)])
         expected_df = self.rest_of_dataset.copy()
-        expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= 0.1)) &
-                                  (((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] <= 0.7)))]
+        expected_df = expected_df[((expected_df['speechiness'] >= 0) & (expected_df['speechiness'] <= np.inf)) &
+                                  (((expected_df['speechiness'] >= 0.05) & (expected_df['speechiness'] < 0.7)))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
 
@@ -5367,24 +5374,26 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             columns=['mode'],
             right_margin_list=[0],
             left_margin_list=[0],
-            filter_type=FilterType(1))
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(3)])
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[((expected_df['mode'] >= 0) & (expected_df['mode'] <= 0))]
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=result_df,
             columns=['track_popularity', 'danceability'],
             right_margin_list=[68],
-            left_margin_list=[None],
-            filter_type=FilterType(1))
+            left_margin_list=[-np.inf],
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(1)])
         expected_df = expected_df[
-            (((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity']
+            (((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity']
                                                                     <=
                                                                     68)) &
-             (((expected_df['track_popularity'] >= float('-inf')) & (expected_df['track_popularity'] <=
+             (((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity'] <=
                                                                      68))) &
-             ((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <=
+             ((expected_df['danceability'] > float('-inf')) & (expected_df['danceability'] <=
                                                                 68)) &
-             (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability']
+             (((expected_df['danceability'] > float('-inf')) & (expected_df['danceability']
                                                                  <= 68))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
@@ -5394,19 +5403,21 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             data_dictionary=self.rest_of_dataset.copy(),
             columns=['danceability', 'energy', 'speechiness'],
             right_margin_list=[0.89],
-            left_margin_list=[None],
-            filter_type=FilterType(1))
+            left_margin_list=[-np.inf],
+            filter_type=FilterType(1),
+            closure_type_list=[Closure(0)])
         result_df = self.data_transformations.transform_filter_rows_range(
             data_dictionary=result_df,
             columns=['danceability', 'energy', 'speechiness'],
-            right_margin_list=[None],
+            right_margin_list=[-np.inf],
             left_margin_list=[0.9],
-            filter_type=FilterType(0))
+            filter_type=FilterType(0),
+            closure_type_list=[Closure(3), Closure(3)])
         expected_df = self.rest_of_dataset.copy()
         expected_df = expected_df[
-            (((expected_df['danceability'] >= float('-inf')) & (expected_df['danceability'] <= 0.89)) &
-             ((expected_df['energy'] >= float('-inf')) & (expected_df['energy'] <= 0.89)) &
-             ((expected_df['speechiness'] >= float('-inf')) & (expected_df['speechiness'] <= 0.89)))]
+            (((expected_df['danceability'] > float('-inf')) & (expected_df['danceability'] < 0.89)) &
+             ((expected_df['energy'] > float('-inf')) & (expected_df['energy'] < 0.89)) &
+             ((expected_df['speechiness'] > float('-inf')) & (expected_df['speechiness'] < 0.89)))]
         expected_df = expected_df[
             ((~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
              (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
@@ -5420,5 +5431,6 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 data_dictionary=self.rest_of_dataset.copy(),
                 columns=['acousticness', 'danceability', 'energy', 'speechiness', 'mode', 'track_artist',
                          "noew_column_pepe"], right_margin_list=[0.5],
-                left_margin_list=[0.2], filter_type=FilterType(1))
+                left_margin_list=[0.2], filter_type=FilterType(1),
+                closure_type_list=[Closure(3), Closure(3)])
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")

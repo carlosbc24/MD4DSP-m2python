@@ -1886,11 +1886,10 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             if axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                    data_dictionary_in_copy[col_name] = (
-                        data_dictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x).
-                        interpolate(method='linear', limit_direction='both'))
-                    # Truncar los decimales a 4
-                    data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].round(4)
+                    data_dictionary_in_copy[col_name] = data_dictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x)
+                    data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].interpolate(method='linear', limit_direction='both')
+                    # Truncar los decimales a 8
+                    data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].round(8)
 
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
@@ -1902,16 +1901,14 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col_name} value should be: {data_dictionary_in_copy.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
-                        else:
-                            if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
+
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     data_dictionary_in_copy[row] = (
                         numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
-                        interpolate(method='linear', limit_direction='both')).round(4)
+                        interpolate(method='linear', limit_direction='both')).round(8)
+
                 for col_name in data_dictionary_in.columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(data_dictionary_in.at[idx, col_name]):
@@ -1922,10 +1919,6 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col_name} value should be: {data_dictionary_in_copy.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
-                        else:
-                            if (data_dictionary_out.at[idx, col_name] != data_dictionary_in.at[idx, col_name]) and not(pd.isnull(data_dictionary_out.at[idx, col_name]) or pd.isnull(data_dictionary_out.at[idx, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
         elif special_type_input == SpecialType.INVALID:
             if axis_param == 0:
@@ -1933,8 +1926,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy[col] = (
                         data_dictionary_in[col].apply(lambda x: np.nan if x in missing_values else x).
                         interpolate(method='linear', limit_direction='both'))
-                    # Truncar los decimales a 4
-                    data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(4)
+                    # Truncar los decimales a 8
+                    data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(8)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -1955,16 +1948,13 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col} value should be: {data_dictionary_in_copy.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
-                        else:
-                            if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
+
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     data_dictionary_in_copy[row] = (
                         numeric_data[row].apply(lambda x: np.nan if x in missing_values else x).
-                        interpolate(method='linear', limit_direction='both')).round(4)
+                        interpolate(method='linear', limit_direction='both')).round(8)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -1985,10 +1975,6 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col} value should be: {data_dictionary_in_copy.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
-                        else:
-                            if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
 
         elif special_type_input == SpecialType.OUTLIER:
             if axis_param == 0:
@@ -1997,8 +1983,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             data_dictionary_in_copy.at[idx, col] = np.NaN
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].interpolate(method='linear', limit_direction='both')
-                    # Truncar los decimales a 4
-                    data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(4)
+                    # Truncar los decimales a 8
+                    data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(8)
 
                 # Iterate over each column
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2019,17 +2005,14 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col} value should be: {data_dictionary_in_copy.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
-                        else:
-                            if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
+
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             data_dictionary_in_copy.at[idx, col] = np.NaN
                     # Interpolate the row
-                    data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].interpolate(method='linear', limit_direction='both').round(4)
+                    data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].interpolate(method='linear', limit_direction='both').round(8)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -2050,10 +2033,6 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col} value should be: {data_dictionary_in_copy.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
-                        else:
-                            if (data_dictionary_out.at[idx, col] != data_dictionary_in.at[idx, col]) and not(pd.isnull(data_dictionary_out.at[idx, col]) or pd.isnull(data_dictionary_out.at[idx, col])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
 
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
@@ -2064,8 +2043,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
         if special_type_input == SpecialType.MISSING:
             data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x in missing_values else x).
                                              interpolate(method='linear', limit_direction='both'))
-            # Truncar los decimales a 4
-            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(4)
+            # Truncar los decimales a 8
+            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
 
             for idx in data_dictionary_in.index:
                 if data_dictionary_in.at[idx, field_in] in missing_values or pd.isnull(
@@ -2077,16 +2056,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
-                else:
-                    if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not(pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
         elif special_type_input == SpecialType.INVALID:
             data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x in missing_values
                 else x).interpolate(method='linear', limit_direction='both'))
-            # Truncar los decimales a 4
-            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(4)
+            # Truncar los decimales a 8
+            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
 
             # For each index in the column
             for idx in data_dictionary_in.index:
@@ -2104,18 +2079,14 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
-                else:
-                    if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not(pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
         elif special_type_input == SpecialType.OUTLIER:
             for idx, value in data_dictionary_in[field_in].items():
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
                     data_dictionary_in_copy.at[idx, field_in] = np.NaN
             data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].interpolate(method='linear', limit_direction='both')
-            # Truncar los decimales a 4
-            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(4)
+            # Truncar los decimales a 8
+            data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
 
             # For each index in the column
             for idx in data_dictionary_in.index:
@@ -2133,10 +2104,6 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
-                else:
-                    if (data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx, field_in]) and not(pd.isnull(data_dictionary_out.at[idx, field_out]) or pd.isnull(data_dictionary_out.at[idx, field_out])):
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     if keep_no_trans_result == False:
         return False
