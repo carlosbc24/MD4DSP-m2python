@@ -1191,7 +1191,8 @@ def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_spe
 
 def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str],
                                 left_margin_list: list[float] = None, right_margin_list: list[float] = None,
-                                filter_type: FilterType = None) -> pd.DataFrame:
+                                filter_type: FilterType = None,
+                                closure_type_list: list[Closure] = None) -> pd.DataFrame:
     """
     Execute the data transformation of the FilterRows - Range relation
 
@@ -1201,6 +1202,7 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
         left_margin_list: left margin list of the interval to filter (closure type is closed)
         right_margin_list: right margin list of the interval to filter (closure type is closed)
         filter_type: filter type value to execute/include the values in the columns
+        closure_type_list: closure type list of the interval to filter
 
     Returns:
         pd.DataFrame: data_dictionary including/excluding the rows with values within the interval
@@ -1211,17 +1213,6 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
 
     for index in range(len(left_margin_list)):  # Iterate over the list of ranges
 
-        # If the left margin is None, substitute it with -inf and
-        # if the right margin is None, substitute it with inf
-        current_left_margin = left_margin_list[index]
-        current_right_margin = right_margin_list[index]
-        if current_left_margin is None and current_right_margin is not None:
-            current_left_margin = float('-inf')
-        elif current_right_margin is None and current_left_margin is not None:
-            current_right_margin = float('inf')
-        elif current_left_margin is None and current_right_margin is None:
-            raise ValueError("The left and right margins cannot be None at the same time")
-
         for current_column in columns:
 
             # If column doesn't exist in the dataframe, raise an error
@@ -1231,12 +1222,12 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
             # Exclude or include the values within the interval [left_margin, right_margin] in the column
             if filter_type == FilterType.INCLUDE:
                 data_dictionary_copy = data_dictionary_copy[data_dictionary_copy[current_column].apply(
-                    lambda x: check_interval_condition(x, current_left_margin, current_right_margin,
-                                                       Closure.closedClosed))]
+                    lambda x: check_interval_condition(x, left_margin_list[index], right_margin_list[index],
+                                                       closure_type_list[index]))]
             elif filter_type == FilterType.EXCLUDE:
                 data_dictionary_copy = data_dictionary_copy[~data_dictionary_copy[current_column].apply(
-                    lambda x: check_interval_condition(x, current_left_margin, current_right_margin,
-                                                       Closure.closedClosed))]
+                    lambda x: check_interval_condition(x, left_margin_list[index], right_margin_list[index],
+                                                       closure_type_list[index]))]
             else:
                 raise ValueError("The filter type is not valid")
 
