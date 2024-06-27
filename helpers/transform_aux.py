@@ -381,7 +381,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                 for col in data_dictionary_copy.columns:
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
-                        data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
+                        data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                         # Truncar los decimales a 8
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
                     # Iterate over each column
