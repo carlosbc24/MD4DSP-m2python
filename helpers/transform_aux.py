@@ -342,8 +342,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy[col]=data_dictionary_copy[col].interpolate(method='linear', limit_direction='both')
-                        # Truncar los decimales a 4
-                        data_dictionary_copy[col] = data_dictionary_copy[col].round(4)
+                        # Truncar los decimales a 8
+                        data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
 
             elif axis_param == 1:
                 data_dictionary_copy= data_dictionary_copy.T
@@ -351,8 +351,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy[col]=data_dictionary_copy[col].interpolate(method='linear', limit_direction='both')
-                        # Truncar los decimales a 4
-                        data_dictionary_copy[col] = data_dictionary_copy[col].round(4)
+                        # Truncar los decimales a 8
+                        data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
                 data_dictionary_copy = data_dictionary_copy.T
 
 
@@ -363,8 +363,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
-                        # Truncar los decimales a 4
-                        data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(4)
+                        # Truncar los decimales a 8
+                        data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
                 # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -382,8 +382,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
-                        # Truncar los decimales a 4
-                        data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(4)
+                        # Truncar los decimales a 8
+                        data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
                     # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -403,8 +403,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy_copy.at[idx, col] = np.NaN
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
-                        # Truncar los decimales a 4
-                        data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(4)
+                        # Truncar los decimales a 8
+                        data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
                 for col in data_dictionary_copy.columns:
                     # For each índex in the column
                     for idx in data_dictionary_copy.index:
@@ -422,8 +422,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = np.NaN
                         data_dictionary_copy[col] = data_dictionary_copy[col].interpolate(method='linear', limit_direction='both')
-                        # Truncar los decimales a 4
-                        data_dictionary_copy[col] = data_dictionary_copy[col].round(4)
+                        # Truncar los decimales a 8
+                        data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
                 for col in data_dictionary_copy.columns:
                     # For each índex in the column
                     for idx in data_dictionary_copy.index:
@@ -443,14 +443,14 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
         if special_type_input == SpecialType.MISSING:
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
             data_dictionary_copy[field_out]=data_dictionary_copy[field_in].interpolate(method='linear', limit_direction='both')
-            # Truncar los decimales a 4
-            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].round(4)
+            # Truncar los decimales a 8
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_in].round(8)
 
         if special_type_input == SpecialType.INVALID:
             data_dictionary_copy_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
-            # Truncar los decimales a 4
-            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].round(4)
+            # Truncar los decimales a 8
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].round(8)
 
             # For each índex in the column
             for idx in data_dictionary_copy.index:
@@ -468,8 +468,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
 
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
-            # Truncar los decimales a 4
-            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].round(4)
+            # Truncar los decimales a 8
+            data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].round(8)
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
