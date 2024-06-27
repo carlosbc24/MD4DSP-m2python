@@ -44,8 +44,5 @@ if __name__ == "__main__":
 
     # FINAL TESTS
     # Calculate execution time for each test block (data_transformations)
-    # execute_data_transformations_simple_tests()
-    # execute_data_transformations_external_dataset_tests()
-
-    data_transformations_tests_with_external_dataset = DataTransformationsExternalDatasetTests()
-    data_transformations_tests_with_external_dataset.execute_transform_filter_rows_range()
+    execute_data_transformations_simple_tests()
+    execute_data_transformations_external_dataset_tests()
