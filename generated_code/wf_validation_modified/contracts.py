@@ -16,7 +16,7 @@ def generateDataProcessing():
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='sex', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=70.0/100):
+									quant_op=Operator(3), quant_rel=60.0/100):
 		print('PRECONDITION imputeMissingByMostFrequent(sex)_PRE_value_range VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMostFrequent(sex)_PRE_value_range NOT VALIDATED')
@@ -24,7 +24,7 @@ def generateDataProcessing():
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='IRSCHOOL', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=70.0/100):
+									quant_op=Operator(3), quant_rel=60.0/100):
 		print('PRECONDITION imputeMissingByMostFrequent(IRSCHOOL)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMostFrequent(IRSCHOOL)_PRE_valueRange NOT VALIDATED')
@@ -32,7 +32,7 @@ def generateDataProcessing():
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='ETHNICITY', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=70.0/100):
+									quant_op=Operator(3), quant_rel=60.0/100):
 		print('PRECONDITION imputeMissingByMostFrequent(ETHNICITY)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMostFrequent(ETHNICITY)_PRE_valueRange NOT VALIDATED')
@@ -109,7 +109,7 @@ def generateDataProcessing():
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByFixValue_input_dataDictionary, field='ACADEMIC_INTEREST_2', 
 									missing_values=missing_values_imputeByFixValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=70.0/100):
+									quant_op=Operator(3), quant_rel=70.0/100):
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_2)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_2)_PRE_valueRange NOT VALIDATED')
@@ -117,7 +117,7 @@ def generateDataProcessing():
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByFixValue_input_dataDictionary, field='ACADEMIC_INTEREST_1', 
 									missing_values=missing_values_imputeByFixValue_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=70.0/100):
+									quant_op=Operator(3), quant_rel=60.0/100):
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_1)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_1)_PRE_valueRange NOT VALIDATED')
@@ -177,7 +177,7 @@ def generateDataProcessing():
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
 									missing_values=missing_values_imputeByNumericOp_PRE_valueRange,
-									quant_op=Operator(2), quant_rel=30.0/100):
+									quant_op=Operator(3), quant_rel=60.0/100):
 		print('PRECONDITION imputeMissingByMean(avg_income)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByMean(avg_income)_PRE_valueRange NOT VALIDATED')
