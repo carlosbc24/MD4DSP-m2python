@@ -54,7 +54,7 @@ To run the data transformation tests, follow the next steps:
 
 1. Run the data transformation tests:
    ```bash
-    python3 ./test_data_transformations.py
+    python3 test_data_transformations.py
     ```
 
 2. Check the results in the logs:
@@ -68,7 +68,7 @@ To run the contract tests, follow the next steps:
 
 1. Run the contract tests:
    ```bash
-    python3 ./test_contracts.py
+    python3 test_contracts.py
     ```
 
 2. Check the results in the logs:
