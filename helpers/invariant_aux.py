@@ -1878,8 +1878,6 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
-    keep_no_trans_result = True
-
     data_dictionary_in_copy = data_dictionary_in.copy()
     if field_in is None:
         if special_type_input == SpecialType.MISSING:
@@ -2105,10 +2103,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                             result = True
                             print_and_log(f"Row: {idx} and column: {field_out} value should be: {data_dictionary_in_copy.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
-    if keep_no_trans_result == False:
-        return False
-    else:
-        return True if result else False
+    return True if result else False
 
 
 def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
