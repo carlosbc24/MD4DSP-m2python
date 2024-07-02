@@ -10,8 +10,8 @@ from helpers.logger import set_logger
 def generateDataProcessing():
 #-----------------New DataProcessing-----------------
 	imputeByDerivedValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep = ',')
-	if os.path.exists('./python_dataDictionaries/imputeMissingByMostFrequent(sex, IRISCHOOL, ETHNICITY)_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
-		imputeByDerivedValue_output_dataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByMostFrequent(sex, IRISCHOOL, ETHNICITY)_output_dataDictionary.csv', sep = ',')
+	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
+		imputeByDerivedValue_output_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep = ',')
 
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='sex', 
@@ -101,15 +101,15 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByFixValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByMostFrequent(sex, IRISCHOOL, ETHNICITY)_output_dataDictionary.csv', sep=',')
+	imputeByFixValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
 
-	if os.path.exists('./python_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
-		imputeByFixValue_output_dataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv', sep = ',')
+	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
+		imputeByFixValue_output_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep = ',')
 
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByFixValue_input_dataDictionary, field='ACADEMIC_INTEREST_2', 
 									missing_values=missing_values_imputeByFixValue_PRE_valueRange,
-									quant_op=Operator(3), quant_rel=70.0/100):
+									quant_op=Operator(3), quant_rel=60.0/100):
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_2)_PRE_valueRange VALIDATED')
 	else:
 		print('PRECONDITION imputeMissingByFixValue(ACADEMIC_INTEREST_2)_PRE_valueRange NOT VALIDATED')
@@ -169,10 +169,10 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByFixValue(ACADEMIC_INTEREST_2, ACADEMIC_INTEREST_1)_output_dataDictionary.csv', sep=',')
+	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
 
-	if os.path.exists('./python_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
-		imputeByNumericOp_output_dataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv', sep = ',')
+	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
+		imputeByNumericOp_output_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep = ',')
 
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
@@ -233,10 +233,10 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByMean(avg_income, distance)_output_dataDictionary.csv', sep=',')
+	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
 
-	if os.path.exists('./python_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
-		imputeByNumericOp_output_dataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv', sep = ',')
+	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
+		imputeByNumericOp_output_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep = ',')
 
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='satscore', 
@@ -268,7 +268,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	rowFilter_input_DataDictionary=pd.read_csv('./python_dataDictionaries/imputeMissingByLinearInterpolation(satscore)_output_dataDictionary.csv', sep=',')
+	rowFilter_input_DataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/rowFilter_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		rowFilterRange_output_DataDictionary=pd.read_csv('./python_dataDictionaries/rowFilter_output_dataDictionary.csv', sep = ',')
@@ -772,7 +772,7 @@ def generateDataProcessing():
 	if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_input_dataDictionary,
 											data_dictionary_out=binner_output_dataDictionary,
 											left_margin=1160.0, right_margin=1340.0,
-											closure_type=Closure(1),
+											closure_type=Closure(2),
 											fix_value_output='76-93 Percentile',
 											belong_op_in=Belong(0), belong_op_out=Belong(0),
 											data_type_output=DataType(0),
@@ -815,7 +815,7 @@ def generateDataProcessing():
 											data_dictionary_out=binner_output_dataDictionary,
 											left_margin=9.0, right_margin=42830.0,
 											closure_type=Closure(0),
-											fix_value_output='Low',
+											fix_value_output='low',
 											belong_op_in=Belong(0), belong_op_out=Belong(0),
 											data_type_output=DataType(0),
 											field_in='avg_income', field_out='avg_income_binned'):
