@@ -42,3 +42,5 @@ logs/
 # Carpeta de archivos generados automáticamente
 
 
+
+.ipynb_checkpoints/Untitled-checkpoint.ipynb
