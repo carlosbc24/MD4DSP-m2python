@@ -372,11 +372,11 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float, to 0 if the column is int
-                        if data_dictionary_copy[col].dtype == float:
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        elif data_dictionary_copy[col].dtype == int:
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
-                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
+                        if data_dictionary_copy_copy[col].dtype == float:
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
+                        elif data_dictionary_copy_copy[col].dtype == int:
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(0)
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].astype(int)
                 # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -395,11 +395,11 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float, to 0 if the column is int
-                        if data_dictionary_copy[col].dtype == float:
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        elif data_dictionary_copy[col].dtype == int:
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
-                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
+                        if data_dictionary_copy_copy[col].dtype == float:
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
+                        elif data_dictionary_copy_copy[col].dtype == int:
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(0)
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].astype(int)
                     # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -420,11 +420,11 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 data_dictionary_copy_copy.at[idx, col] = np.NaN
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float, to 0 if the column is int
-                        if data_dictionary_copy[col].dtype == float:
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        elif data_dictionary_copy[col].dtype == int:
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
-                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
+                        if data_dictionary_copy_copy[col].dtype == float:
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
+                        elif data_dictionary_copy_copy[col].dtype == int:
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(0)
+                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].astype(int)
                 for col in data_dictionary_copy.columns:
                     # For each índex in the column
                     for idx in data_dictionary_copy.index:
@@ -478,11 +478,11 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
             data_dictionary_copy_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
             # Trunk the decimals to 8 if the column is float, to 0 if the column is int
-            if data_dictionary_copy[field_out].dtype == float:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            elif data_dictionary_copy[field_out].dtype == int:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
+            if data_dictionary_copy_copy[field_out].dtype == float:
+                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(8)
+            elif data_dictionary_copy_copy[field_out].dtype == int:
+                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(0)
+                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].astype(int)
 
             # For each índex in the column
             for idx in data_dictionary_copy.index:
@@ -501,11 +501,11 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
 
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
             # Trunk the decimals to 8 if the column is float, to 0 if the column is int
-            if data_dictionary_copy[field_out].dtype == float:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            elif data_dictionary_copy[field_out].dtype == int:
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
+            if data_dictionary_copy_copy[field_out].dtype == float:
+                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(8)
+            elif data_dictionary_copy_copy[field_out].dtype == int:
+                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(0)
+                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].astype(int)
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
