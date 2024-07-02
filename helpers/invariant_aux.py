@@ -2957,6 +2957,9 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 result = True
                                 print_and_log(f"Row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
 
+                    elif pd.isnull(current_value) and special_type_input == SpecialType.MISSING:
+                        raise ValueError("Missing value not found in the closest_values dictionary")
+
         if special_type_input == SpecialType.OUTLIER:
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                            axis_param=None, field=field_in)
