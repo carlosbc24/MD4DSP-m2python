@@ -163,7 +163,7 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
     Args:
         numeric_values: list of numeric values
 
-    Returns: the biggest and smallest values in the list that are not outliers
+    Returns: the lower and upper bounds of the outliers
     """
 
     data_dictionary_copy = data_dictionary.copy()
@@ -181,12 +181,12 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             upper_bound = Q3 + threshold * IQR
 
             # Crea una lista con todos los valores que no sean outliers
-            non_outliers = data_dictionary_numeric[(data_dictionary_numeric >= lower_bound) & (data_dictionary_numeric <= upper_bound)].values.flatten().tolist()
-            # Encuentra el valor mínimo y máximo en la lista de no outliers
-            min_value = min(non_outliers)
-            max_value = max(non_outliers)
+            # non_outliers = data_dictionary_numeric[(data_dictionary_numeric >= lower_bound) & (data_dictionary_numeric <= upper_bound)].values.flatten().tolist()
+            # # Encuentra el valor mínimo y máximo en la lista de no outliers
+            # min_value = min(non_outliers)
+            # max_value = max(non_outliers)
 
-            return min_value, max_value
+            return lower_bound, upper_bound
 
     elif field is not None:
         if axis_param is None or axis_param == 0:
@@ -199,10 +199,9 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             upper_bound = Q3 + threshold * IQR
 
             # Crea una lista con todos los valores que no sean outliers
-            non_outliers = data_dictionary_copy[field][(data_dictionary_copy[field] >= lower_bound) & (data_dictionary_copy[field] <= upper_bound)].values.flatten().tolist()
-            # Encuentra el valor mínimo y máximo en la lista de no outliers
-            min_value = min(non_outliers)
-            max_value = max(non_outliers)
+            # non_outliers = data_dictionary_copy[field][(data_dictionary_copy[field] >= lower_bound) & (data_dictionary_copy[field] <= upper_bound)].values.flatten().tolist()
+            # # Encuentra el valor mínimo y máximo en la lista de no outliers
+            # min_value = min(non_outliers)
+            # max_value = max(non_outliers)
 
-            return min_value, max_value
-
+            return lower_bound, upper_bound

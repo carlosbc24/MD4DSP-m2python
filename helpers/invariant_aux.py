@@ -2202,6 +2202,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                 # Check the data_dictionary_out positions with missing values have been replaced with the mean
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     mean = data_dictionary_in[col_name].mean()
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[col_name].dtype == float:
+                        mean = round(mean, 8)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                    elif data_dictionary_in[col_name].dtype == int:
+                        mean = round(mean, 0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
                             if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
@@ -2253,6 +2262,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                 # Check the data_dictionary_out positions with missing values have been replaced with the mean
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     mean = data_dictionary_in[col_name].mean()
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[col_name].dtype == float:
+                        mean = round(mean, 8)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                    elif data_dictionary_in[col_name].dtype == int:
+                        mean = round(mean, 0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
                             if data_dictionary_in.at[idx, col_name] in missing_values:
@@ -2300,6 +2318,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             if axis_param == 0:  # Iterate over each column
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     mean = data_dictionary_in[col].mean()
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[col].dtype == float:
+                        mean = round(mean, 8)
+                        data_dictionary_in[col] = data_dictionary_in[col].round(8)
+                    elif data_dictionary_in[col].dtype == int:
+                        mean = round(mean, 0)
+                        data_dictionary_in[col] = data_dictionary_in[col].round(0)
+                        data_dictionary_in[col] = data_dictionary_in[col].astype(int)
+
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             if data_dictionary_out.at[idx, col] != mean:
@@ -2314,6 +2341,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     mean = numeric_data.mean()
+
                     for col_name, value in numeric_data.items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
                             if data_dictionary_out.at[idx, col_name] != mean:
@@ -2333,6 +2361,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         if special_type_input == SpecialType.MISSING:
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
             mean = data_dictionary_in[field_in].mean()
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_in[field_in].dtype == float:
+                mean = round(mean, 8)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+            elif data_dictionary_in[field_in].dtype == int:
+                mean = round(mean, 0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
                     if data_dictionary_out.at[idx, field_out] != mean:
@@ -2346,6 +2383,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         if special_type_input == SpecialType.INVALID:
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
             mean = data_dictionary_in[field_in].mean()
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_in[field_in].dtype == float:
+                mean = round(mean, 8)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+            elif data_dictionary_in[field_in].dtype == int:
+                mean = round(mean, 0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
                     if data_dictionary_out.at[idx, field_out] != mean:
@@ -2358,9 +2404,20 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
 
 
         if special_type_input == SpecialType.OUTLIER:
+
+            mean = data_dictionary_in[field_in].mean()
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_in[field_in].dtype == float:
+                mean = round(mean, 8)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+            elif data_dictionary_in[field_in].dtype == int:
+                mean = round(mean, 0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+
             for idx, value in data_dictionary_in[field_in].items():
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
-                    mean = data_dictionary_in[field_in].mean()
+
                     if data_dictionary_out.at[idx, field_out] != mean:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
@@ -2401,8 +2458,6 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
-    keep_no_trans_result = True
-
     if field_in is None:
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
@@ -2410,10 +2465,12 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
                 # Calculate the median of these numeric columns
                 median_value = only_numbers_df.median().median()
+
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+
                     for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number) or pd.isnull(value):
+                        if pd.isnull(value):
                             if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
                                     data_dictionary_in.at[idx, col_name]):
                                 if data_dictionary_out.at[idx, col_name] != median_value:
@@ -2423,15 +2480,22 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                         result = True
                                         print_and_log(f"Row: {idx} and column: {col_name} value should be: {median_value} but is: {data_dictionary_out.loc[idx, col_name]}")
-                            else:
-                                if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                                    keep_no_trans_result = False
-                                    print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
+
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     median = data_dictionary_in[col_name].median()
+
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[col_name].dtype == float:
+                        median = round(median, 8)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                    elif data_dictionary_in[col_name].dtype == int:
+                        median = round(median, 0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
                             if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
@@ -2443,14 +2507,21 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                         result = True
                                         print_and_log(f"Row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
-                            else:
-                                if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                                    keep_no_trans_result = False
-                                    print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
+
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
+
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[row].dtype == float:
+                        median = round(median, 8)
+                        data_dictionary_in[row] = data_dictionary_in[row].round(8)
+                    elif data_dictionary_in[row].dtype == int:
+                        median = round(median, 0)
+                        data_dictionary_in[row] = data_dictionary_in[row].round(0)
+                        data_dictionary_in[row] = data_dictionary_in[row].astype(int)
+
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
@@ -2461,10 +2532,6 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
-                        else:
-                            if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name]:
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
         if special_type_input == SpecialType.INVALID:
             if axis_param is None:
@@ -2473,29 +2540,33 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 # Calculate the median of these numeric columns
                 median_value = only_numbers_df.median().median()
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+
                     for idx, value in data_dictionary_in[col_name].items():
-                        if np.issubdtype(type(value), np.number):
-                            if data_dictionary_in.at[idx, col_name] in missing_values:
-                                if data_dictionary_out.at[idx, col_name] != median_value:
-                                    if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
-                                        result = False
-                                        print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {median_value} but is: {data_dictionary_out.loc[idx, col_name]}")
-                                    elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
-                                        result = True
-                                        print_and_log(f"Row: {idx} and column: {col_name} value should be: {median_value} but is: {data_dictionary_out.loc[idx, col_name]}")
-                            else:
-                                if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
-                                    idx, col_name] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col_name])):
-                                    keep_no_trans_result = False
-                                    print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
+                        if data_dictionary_in.at[idx, col_name] in missing_values:
+                            if data_dictionary_out.at[idx, col_name] != median_value:
+                                if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
+                                    result = False
+                                    print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {median_value} but is: {data_dictionary_out.loc[idx, col_name]}")
+                                elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
+                                    result = True
+                                    print_and_log(f"Row: {idx} and column: {col_name} value should be: {median_value} but is: {data_dictionary_out.loc[idx, col_name]}")
+
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     median = data_dictionary_in[col_name].median()
+
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[col_name].dtype == float:
+                        median = round(median, 8)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                    elif data_dictionary_in[col_name].dtype == int:
+                        median = round(median, 0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
                             if data_dictionary_in.at[idx, col_name] in missing_values:
@@ -2506,17 +2577,21 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                         result = True
                                         print_and_log(f"Row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
-                            else:
-                                if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
-                                    idx, col_name] and not (
-                                        pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
-                                    data_dictionary_out.loc[idx, col_name])):
-                                    keep_no_trans_result = False
-                                    print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
+
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
+
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[row].dtype == float:
+                        median = round(median, 8)
+                        data_dictionary_in[row] = data_dictionary_in[row].round(8)
+                    elif data_dictionary_in[row].dtype == int:
+                        median = round(median, 0)
+                        data_dictionary_in[row] = data_dictionary_in[row].round(0)
+                        data_dictionary_in[row] = data_dictionary_in[row].astype(int)
+
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
@@ -2527,13 +2602,6 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
-                        else:
-                            if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
-                                idx, col_name] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
-                                data_dictionary_out.loc[idx, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
@@ -2552,16 +2620,20 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col_name} value should be: {median_value} but is: {data_dictionary_out.loc[idx, col_name]}")
-                        else:
-                            if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[
-                                idx, col_name] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, col_name]) and pd.isnull(
-                                data_dictionary_out.loc[idx, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
+
             if axis_param == 0:  # Iterate over each column
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     median = data_dictionary_in[col].median()
+
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[col].dtype == float:
+                        median = round(median, 8)
+                        data_dictionary_in[col] = data_dictionary_in[col].round(8)
+                    elif data_dictionary_in[col].dtype == int:
+                        median = round(median, 0)
+                        data_dictionary_in[col] = data_dictionary_in[col].round(0)
+                        data_dictionary_in[col] = data_dictionary_in[col].astype(int)
+
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             if data_dictionary_out.at[idx, col] != median:
@@ -2571,16 +2643,21 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col} value should be: {median} but is: {data_dictionary_out.loc[idx, col]}")
-                        else:
-                            if data_dictionary_out.loc[idx, col] != data_dictionary_in.loc[idx, col] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, col]) and pd.isnull(
-                                data_dictionary_out.loc[idx, col])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col} value should be: {data_dictionary_in.at[idx, col]} but is: {data_dictionary_out.loc[idx, col]}")
+
             elif axis_param == 1:  # Iterate over each row
                 for idx, row in data_dictionary_in.iterrows():
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
+
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[row].dtype == float:
+                        median = round(median, 8)
+                        data_dictionary_in[row] = data_dictionary_in[row].round(8)
+                    elif data_dictionary_in[row].dtype == int:
+                        median = round(median, 0)
+                        data_dictionary_in[row] = data_dictionary_in[row].round(0)
+                        data_dictionary_in[row] = data_dictionary_in[row].astype(int)
+
                     for col_name, value in numeric_data.items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
                             if data_dictionary_out.at[idx, col_name] != median:
@@ -2590,12 +2667,6 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
-                        else:
-                            if data_dictionary_out.loc[idx, col_name] != data_dictionary_in.loc[idx, col_name] and not (
-                                    pd.isnull(data_dictionary_in.loc[idx, col_name]) and
-                                    pd.isnull(data_dictionary_out.loc[idx, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {data_dictionary_in.at[idx, col_name]} but is: {data_dictionary_out.loc[idx, col_name]}")
 
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
@@ -2606,6 +2677,16 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
         if special_type_input == SpecialType.MISSING:
             # Check the data_dictionary_out positions with missing values have been replaced with the median
             median = data_dictionary_in[field_in].median()
+
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_in[field_in].dtype == float:
+                median = round(median, 8)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+            elif data_dictionary_in[field_in].dtype == int:
+                median = round(median, 0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
                     if data_dictionary_out.at[idx, field_out] != median:
@@ -2615,13 +2696,20 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
-                else:
-                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in]:
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
+
         if special_type_input == SpecialType.INVALID:
             # Check the data_dictionary_out positions with missing values have been replaced with the median
             median = data_dictionary_in[field_in].median()
+
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_in[field_in].dtype == float:
+                median = round(median, 8)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+            elif data_dictionary_in[field_in].dtype == int:
+                median = round(median, 0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
                     if data_dictionary_out.at[idx, field_out] != median:
@@ -2631,17 +2719,23 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
-                else:
-                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
-                            pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(
-                        data_dictionary_out.loc[idx, field_out])):
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
         if special_type_input == SpecialType.OUTLIER:
+
+            median = data_dictionary_in[field_in].median()
+
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_in[field_in].dtype == float:
+                median = round(median, 8)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+            elif data_dictionary_in[field_in].dtype == int:
+                median = round(median, 0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+
             for idx, value in data_dictionary_in[field_in].items():
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
-                    median = data_dictionary_in[field_in].median()
+
                     if data_dictionary_out.at[idx, field_out] != median:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
@@ -2649,16 +2743,8 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
                             print_and_log(f"Row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
-                else:
-                    if data_dictionary_out.loc[idx, field_out] != data_dictionary_in.loc[idx, field_in] and not (
-                            pd.isnull(data_dictionary_in.loc[idx, field_in]) and pd.isnull(data_dictionary_out.loc[idx, field_out])):
-                        keep_no_trans_result = False
-                        print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
-    if keep_no_trans_result == False:
-        return False
-    else:
-        return True if result else False
+    return True if result else False
 
 
 def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -2688,8 +2774,6 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
     elif belong_op_out == Belong.NOTBELONG:
         result = False
 
-    keep_no_trans_result = True
-
     if field_in is None:
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             if axis_param is None:
@@ -2714,12 +2798,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {i} and column: {j} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, j]}")
-                        else:
-                            if pd.isnull(data_dictionary_in.iloc[i, j]) and special_type_input == SpecialType.MISSING:
-                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                            if (data_dictionary_out.iloc[i, j] != data_dictionary_in.iloc[i, j])  and not(pd.isnull(data_dictionary_in.iloc[i, j]) or pd.isnull(data_dictionary_out.iloc[i, j])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {i} and column: {j} value should be: {data_dictionary_in.at[i, j]} but is: {data_dictionary_out.loc[i, j]}")
+
             elif axis_param == 0:
                 # Iterate over each column
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2752,12 +2831,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {i} and column: {col_name} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, col_name]}")
-                        else:
-                            if pd.isnull(data_dictionary_in.at[i, col_name]) and special_type_input == SpecialType.MISSING:
-                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                            if (data_dictionary_out.loc[i, col_name] != data_dictionary_in.loc[i, col_name]) and not(pd.isnull(data_dictionary_in.loc[i, col_name]) or pd.isnull(data_dictionary_out.loc[i, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {i} and column: {col_name} value should be: {data_dictionary_in.at[i, col_name]} but is: {data_dictionary_out.loc[i, col_name]}")
+
             elif axis_param == 1:
                 # Iterate over each row
                 for row_idx in range(len(data_dictionary_in.index)):
@@ -2790,12 +2864,6 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                     result = True
                                     print_and_log(f"Row: {row_idx} and column: {col_name} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[row_idx, col_name]}")
-                        else:
-                            if pd.isnull(data_dictionary_in.at[row_idx, col_name]) and special_type_input == SpecialType.MISSING:
-                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                            if (data_dictionary_out.at[row_idx, col_name] != data_dictionary_in.at[row_idx, col_name]) and not(pd.isnull(data_dictionary_in.loc[row_idx, col_name]) or pd.isnull(data_dictionary_out.loc[row_idx, col_name])):
-                                keep_no_trans_result = False
-                                print_and_log(f"Error in row: {row_idx} and column: {col_name} value should be: {data_dictionary_in.at[row_idx, col_name]} but is: {data_dictionary_out.loc[row_idx, col_name]}")
 
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
@@ -2822,13 +2890,23 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                         result = True
                                         print_and_log(f"Row: {i} and column: {col_name} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
 
-
-
             elif axis_param == 0:
                 # Checks the outlier values in the input with the closest numeric values in the output
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                                    axis_param=0, field=col_name)
+
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_in[col_name].dtype == float:
+                        minimum_valid = round(minimum_valid, 8)
+                        maximum_valid = round(maximum_valid, 8)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                    elif data_dictionary_in[col_name].dtype == int:
+                        minimum_valid = round(minimum_valid, 0)
+                        maximum_valid = round(maximum_valid, 0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+
                     for i in range(len(data_dictionary_in.index)):
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
                             if data_dictionary_in.at[i, col_name] > maximum_valid:
@@ -2878,16 +2956,21 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(f"Row: {i} and column: {field_out} value should be: {closest_values[current_value]} but is: {data_dictionary_out.loc[i, field_out]}")
-                    else:
-                        if pd.isnull(data_dictionary_in.at[i, field_in]) and special_type_input == SpecialType.MISSING:
-                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
-                        if (data_dictionary_out.at[i, field_out] != data_dictionary_in.at[i, field_in]) and not(pd.isnull(data_dictionary_in.loc[i, field_in]) or pd.isnull(data_dictionary_out.loc[i, field_out])):
-                            keep_no_trans_result = False
-                            print_and_log(f"Error in row: {i} and column: {field_out} value should be: {data_dictionary_in.at[i, field_in]} but is: {data_dictionary_out.loc[i, field_out]}")
 
         if special_type_input == SpecialType.OUTLIER:
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                            axis_param=None, field=field_in)
+
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_in[field_in].dtype == float:
+                minimum_valid = round(minimum_valid, 8)
+                maximum_valid = round(maximum_valid, 8)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+            elif data_dictionary_in[field_in].dtype == int:
+                minimum_valid = round(minimum_valid, 0)
+                maximum_valid = round(maximum_valid, 0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
+                data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
 
             # Checks the outlier values in the input with the closest numeric values in the output
             for i in range(len(data_dictionary_in.index)):
@@ -2909,10 +2992,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 result = True
                                 print_and_log(f"Row: {i} and column: {field_out} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, field_out]}")
 
-    if keep_no_trans_result == False:
-        return False
-    else:
-        return True if result else False
+    return True if result else False
 
 def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                      special_type_input: SpecialType, belong_op_out: Belong, missing_values: list = None,

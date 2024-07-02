@@ -728,6 +728,12 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         # Replace the values in missing_values, as well as the null values of python, by the median
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: median if x in missing_values or pd.isnull(x) else x)
+                        # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                        if data_dictionary_copy[col].dtype == float:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
+                        elif data_dictionary_copy[col].dtype == int:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
+                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
                 data_dictionary_copy = data_dictionary_copy.T
                 medians = data_dictionary_copy.apply(
@@ -737,6 +743,12 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     if np.issubdtype(data_dictionary_copy[row].dtype, np.number):
                         data_dictionary_copy[row] = data_dictionary_copy[row].apply(
                             lambda x: x if not (x in missing_values or pd.isnull(x)) else medians[row])
+                        # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                        if data_dictionary_copy[row].dtype == float:
+                            data_dictionary_copy[row] = data_dictionary_copy[row].round(8)
+                        elif data_dictionary_copy[row].dtype == int:
+                            data_dictionary_copy[row] = data_dictionary_copy[row].round(0)
+                            data_dictionary_copy[row] = data_dictionary_copy[row].astype(int)
                 data_dictionary_copy = data_dictionary_copy.T
 
         if special_type_input == SpecialType.INVALID:
@@ -756,6 +768,12 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         # Replace the values in missing_values, as well as the null values of python, by the median
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: median if x in missing_values else x)
+                        # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                        if data_dictionary_copy[col].dtype == float:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
+                        elif data_dictionary_copy[col].dtype == int:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
+                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
                 data_dictionary_copy = data_dictionary_copy.T
                 for col in data_dictionary_copy.columns:
@@ -765,6 +783,12 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         # Replace the values in missing_values, as well as the null values of python, by the median
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: median if x in missing_values else x)
+                        # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                        if data_dictionary_copy[col].dtype == float:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
+                        elif data_dictionary_copy[col].dtype == int:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
+                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
                 data_dictionary_copy = data_dictionary_copy.T
 
         if special_type_input == SpecialType.OUTLIER:
@@ -778,6 +802,12 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     for idx, value in data_dictionary_copy[col_name].items():
                         if data_dictionary_copy_mask.at[idx, col_name] == 1:
                             data_dictionary_copy.at[idx, col_name] = median_value
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_copy[col_name].dtype == float:
+                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(8)
+                    elif data_dictionary_copy[col_name].dtype == int:
+                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(0)
+                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].astype(int)
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
@@ -785,12 +815,24 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         for idx, value in data_dictionary_copy[col].items():
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = median
+                        # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                        if data_dictionary_copy[col].dtype == float:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
+                        elif data_dictionary_copy[col].dtype == int:
+                            data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
+                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
                 for idx, row in data_dictionary_copy.iterrows():
                     median=data_dictionary_copy.loc[idx].median()
                     for col in row.index:
                         if data_dictionary_copy_mask.at[idx, col] == 1:
                             data_dictionary_copy.at[idx, col] = median
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_copy.loc[idx].dtype == float:
+                        data_dictionary_copy.loc[idx] = data_dictionary_copy.loc[idx].round(8)
+                    elif data_dictionary_copy.loc[idx].dtype == int:
+                        data_dictionary_copy.loc[idx] = data_dictionary_copy.loc[idx].round(0)
+                        data_dictionary_copy.loc[idx] = data_dictionary_copy.loc[idx].astype(int)
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
@@ -801,10 +843,24 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
             median = data_dictionary_copy[field_in].median()
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
                 lambda x: median if x in missing_values or pd.isnull(x) else x)
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_copy[field_out].dtype == float:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
+            elif data_dictionary_copy[field_out].dtype == int:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
+
         if special_type_input == SpecialType.INVALID:
             median = data_dictionary_copy[field_in].median()
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
                 lambda x: median if x in missing_values else x)
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_copy[field_out].dtype == float:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
+            elif data_dictionary_copy[field_out].dtype == int:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
+
         if special_type_input == SpecialType.OUTLIER:
             median = data_dictionary_copy[field_in].median()
             for idx, value in data_dictionary_copy[field_in].items():
@@ -812,6 +868,12 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     data_dictionary_copy.at[idx, field_out] = median
                 else:
                     data_dictionary_copy.at[idx, field_out] = value
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_copy[field_out].dtype == float:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
+            elif data_dictionary_copy[field_out].dtype == int:
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
     return data_dictionary_copy
 
@@ -926,6 +988,17 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                     minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_copy,
                                                                    axis_param=0, field=col_name)
 
+                    # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+                    if data_dictionary_copy[col_name].dtype == float:
+                        minimum_valid = round(minimum_valid, 8)
+                        maximum_valid = round(maximum_valid, 8)
+                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(8)
+                    elif data_dictionary_copy[col_name].dtype == int:
+                        minimum_valid = round(minimum_valid, 0)
+                        maximum_valid = round(maximum_valid, 0)
+                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(0)
+                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].astype(int)
+
                     # Replace the outlier values with the closest numeric values
                     for i in range(len(data_dictionary_copy.index)):
                         if data_dictionary_copy_mask.at[i, col_name] == 1:
@@ -965,6 +1038,17 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
         if special_type_input == SpecialType.OUTLIER:
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_copy,
                                                            axis_param=None, field=field_in)
+
+            # Trunk the decimals to 8 if the column is float, to 0 if the column is int
+            if data_dictionary_copy[field_out].dtype == float:
+                minimum_valid = round(minimum_valid, 8)
+                maximum_valid = round(maximum_valid, 8)
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
+            elif data_dictionary_copy[field_out].dtype == int:
+                minimum_valid = round(minimum_valid, 0)
+                maximum_valid = round(maximum_valid, 0)
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
+                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
             # Replace the outlier values with the closest numeric values
             for i in range(len(data_dictionary_copy.index)):
