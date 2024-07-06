@@ -1889,9 +1889,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 8 if the column is float, to 0 if the column is int
                     if data_dictionary_in_copy[col_name].dtype == float:
                         data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     elif data_dictionary_in_copy[col_name].dtype == int:
                         data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].round(0)
                         data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].astype(int)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].astype(int)
 
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
@@ -1913,9 +1916,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 8 if the column is float, to 0 if the column is int
                     if data_dictionary_in_copy[row].dtype == float:
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(8)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     elif data_dictionary_in_copy[row].dtype == int:
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(0)
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].astype(int)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                        data_dictionary_out[row] = data_dictionary_out[row].astype(int)
 
                 for col_name in data_dictionary_in.columns:
                     for idx in data_dictionary_in.index:
@@ -1937,9 +1943,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 8 if the column is float, to 0 if the column is int
                     if data_dictionary_in_copy[col].dtype == float:
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(8)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(8)
                     elif data_dictionary_in_copy[col].dtype == int:
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(0)
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].astype(int)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(0)
+                        data_dictionary_out[col] = data_dictionary_out[col].astype(int)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -1970,9 +1979,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 8 if the column is float, to 0 if the column is int
                     if data_dictionary_in_copy[row].dtype == float:
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(8)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     elif data_dictionary_in_copy[row].dtype == int:
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(0)
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].astype(int)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                        data_dictionary_out[row] = data_dictionary_out[row].astype(int)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -2004,9 +2016,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 8 if the column is float, to 0 if the column is int
                     if data_dictionary_in_copy[col].dtype == float:
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(8)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(8)
                     elif data_dictionary_in_copy[col].dtype == int:
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(0)
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].astype(int)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(0)
+                        data_dictionary_out[col] = data_dictionary_out[col].astype(int)
 
                 # Iterate over each column
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2038,9 +2053,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 8 if the column is float, to 0 if the column is int
                     if data_dictionary_in_copy.loc[idx].dtype == float:
                         data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].round(8)
+                        data_dictionary_out.loc[idx] = data_dictionary_out.loc[idx].round(8)
                     elif data_dictionary_in_copy.loc[idx].dtype == int:
                         data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].round(0)
                         data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].astype(int)
+                        data_dictionary_out.loc[idx] = data_dictionary_out.loc[idx].round(0)
+                        data_dictionary_out.loc[idx] = data_dictionary_out.loc[idx].astype(int)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -2074,9 +2092,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             # Trunk the decimals to 8 if the column is float, to 0 if the column is int
             if data_dictionary_in_copy[field_in].dtype == float:
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in_copy[field_in].dtype == int:
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(0)
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             for idx in data_dictionary_in.index:
                 if data_dictionary_in.at[idx, field_in] in missing_values or pd.isnull(
@@ -2095,9 +2116,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             # Trunk the decimals to 8 if the column is float, to 0 if the column is int
             if data_dictionary_in_copy[field_in].dtype == float:
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in_copy[field_in].dtype == int:
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(0)
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             # For each index in the column
             for idx in data_dictionary_in.index:
@@ -2124,9 +2148,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             # Trunk the decimals to 8 if the column is float, to 0 if the column is int
             if data_dictionary_in_copy[field_in].dtype == float:
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in_copy[field_in].dtype == int:
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(0)
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             # For each index in the column
             for idx in data_dictionary_in.index:
@@ -2206,10 +2233,13 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     if data_dictionary_in[col_name].dtype == float:
                         mean = round(mean, 8)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     elif data_dictionary_in[col_name].dtype == int:
                         mean = round(mean, 0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].astype(int)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -2266,10 +2296,13 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     if data_dictionary_in[col_name].dtype == float:
                         mean = round(mean, 8)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     elif data_dictionary_in[col_name].dtype == int:
                         mean = round(mean, 0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].astype(int)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
@@ -2322,10 +2355,13 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     if data_dictionary_in[col].dtype == float:
                         mean = round(mean, 8)
                         data_dictionary_in[col] = data_dictionary_in[col].round(8)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(8)
                     elif data_dictionary_in[col].dtype == int:
                         mean = round(mean, 0)
                         data_dictionary_in[col] = data_dictionary_in[col].round(0)
                         data_dictionary_in[col] = data_dictionary_in[col].astype(int)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(0)
+                        data_dictionary_out[col] = data_dictionary_out[col].astype(int)
 
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
@@ -2365,10 +2401,13 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             if data_dictionary_in[field_in].dtype == float:
                 mean = round(mean, 8)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in[field_in].dtype == int:
                 mean = round(mean, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
@@ -2387,10 +2426,13 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             if data_dictionary_in[field_in].dtype == float:
                 mean = round(mean, 8)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in[field_in].dtype == int:
                 mean = round(mean, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
@@ -2410,10 +2452,13 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             if data_dictionary_in[field_in].dtype == float:
                 mean = round(mean, 8)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in[field_in].dtype == int:
                 mean = round(mean, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
@@ -2491,10 +2536,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     if data_dictionary_in[col_name].dtype == float:
                         median = round(median, 8)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     elif data_dictionary_in[col_name].dtype == int:
                         median = round(median, 0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].astype(int)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -2517,10 +2565,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     if data_dictionary_in[row].dtype == float:
                         median = round(median, 8)
                         data_dictionary_in[row] = data_dictionary_in[row].round(8)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     elif data_dictionary_in[row].dtype == int:
                         median = round(median, 0)
                         data_dictionary_in[row] = data_dictionary_in[row].round(0)
                         data_dictionary_in[row] = data_dictionary_in[row].astype(int)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                        data_dictionary_out[row] = data_dictionary_out[row].astype(int)
 
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
@@ -2562,10 +2613,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     if data_dictionary_in[col_name].dtype == float:
                         median = round(median, 8)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     elif data_dictionary_in[col_name].dtype == int:
                         median = round(median, 0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].astype(int)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
@@ -2587,10 +2641,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     if data_dictionary_in[row].dtype == float:
                         median = round(median, 8)
                         data_dictionary_in[row] = data_dictionary_in[row].round(8)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     elif data_dictionary_in[row].dtype == int:
                         median = round(median, 0)
                         data_dictionary_in[row] = data_dictionary_in[row].round(0)
                         data_dictionary_in[row] = data_dictionary_in[row].astype(int)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                        data_dictionary_out[row] = data_dictionary_out[row].astype(int)
 
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
@@ -2629,10 +2686,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     if data_dictionary_in[col].dtype == float:
                         median = round(median, 8)
                         data_dictionary_in[col] = data_dictionary_in[col].round(8)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(8)
                     elif data_dictionary_in[col].dtype == int:
                         median = round(median, 0)
                         data_dictionary_in[col] = data_dictionary_in[col].round(0)
                         data_dictionary_in[col] = data_dictionary_in[col].astype(int)
+                        data_dictionary_out[col] = data_dictionary_out[col].round(0)
+                        data_dictionary_out[col] = data_dictionary_out[col].astype(int)
 
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
@@ -2653,10 +2713,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     if data_dictionary_in[row].dtype == float:
                         median = round(median, 8)
                         data_dictionary_in[row] = data_dictionary_in[row].round(8)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     elif data_dictionary_in[row].dtype == int:
                         median = round(median, 0)
                         data_dictionary_in[row] = data_dictionary_in[row].round(0)
                         data_dictionary_in[row] = data_dictionary_in[row].astype(int)
+                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                        data_dictionary_out[row] = data_dictionary_out[row].astype(int)
 
                     for col_name, value in numeric_data.items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
@@ -2682,10 +2745,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
             if data_dictionary_in[field_in].dtype == float:
                 median = round(median, 8)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in[field_in].dtype == int:
                 median = round(median, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
@@ -2705,10 +2771,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
             if data_dictionary_in[field_in].dtype == float:
                 median = round(median, 8)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in[field_in].dtype == int:
                 median = round(median, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
@@ -2728,10 +2797,13 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
             if data_dictionary_in[field_in].dtype == float:
                 median = round(median, 8)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in[field_in].dtype == int:
                 median = round(median, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
@@ -2901,11 +2973,14 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         minimum_valid = round(minimum_valid, 8)
                         maximum_valid = round(maximum_valid, 8)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     elif data_dictionary_in[col_name].dtype == int:
                         minimum_valid = round(minimum_valid, 0)
                         maximum_valid = round(maximum_valid, 0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].astype(int)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].astype(int)
 
                     for i in range(len(data_dictionary_in.index)):
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
@@ -2969,11 +3044,14 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                 minimum_valid = round(minimum_valid, 8)
                 maximum_valid = round(maximum_valid, 8)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             elif data_dictionary_in[field_in].dtype == int:
                 minimum_valid = round(minimum_valid, 0)
                 maximum_valid = round(maximum_valid, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].astype(int)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                data_dictionary_out[field_out] = data_dictionary_out[field_out].astype(int)
 
             # Checks the outlier values in the input with the closest numeric values in the output
             for i in range(len(data_dictionary_in.index)):
