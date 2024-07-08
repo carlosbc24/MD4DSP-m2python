@@ -1,4 +1,6 @@
 # Importing libraries
+import math
+
 import numpy as np
 import pandas as pd
 
@@ -1889,11 +1891,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].interpolate(method='linear', limit_direction='both')
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-                    if (data_dictionary_in_copy[col_name].dropna() % 1 != 0).any():
+                    if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].round(8)
                         data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif (data_dictionary_in_copy[col_name].dropna() % 1 == 0).all():
+                    elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].round(0)
                         data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
 
@@ -1917,11 +1919,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         interpolate(method='linear', limit_direction='both'))
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-                    if (data_dictionary_in_copy[row].dropna() % 1 != 0).any():
+                    if (data_dictionary_in[row].dropna() % 1 != 0).any():
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(8)
                         data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif (data_dictionary_in_copy[row].dropna() % 1 == 0).all():
+                    elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(0)
                         data_dictionary_out[row] = data_dictionary_out[row].round(0)
 
@@ -1945,11 +1947,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         interpolate(method='linear', limit_direction='both'))
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-                    if (data_dictionary_in_copy[col].dropna() % 1 != 0).any():
+                    if (data_dictionary_in[col].dropna() % 1 != 0).any():
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(8)
                         data_dictionary_out[col] = data_dictionary_out[col].round(8)
                     # Trunk the decimals to 0 if the column has no decimals and if the column hasn't nan or null values
-                    elif (data_dictionary_in_copy[col].dropna() % 1 == 0).all():
+                    elif (data_dictionary_in[col].dropna() % 1 == 0).all():
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(0)
                         data_dictionary_out[col] = data_dictionary_out[col].round(0)
 
@@ -1982,11 +1984,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         interpolate(method='linear', limit_direction='both'))
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-                    if (data_dictionary_in_copy[row].dropna() % 1 != 0).any():
+                    if (data_dictionary_in[row].dropna() % 1 != 0).any():
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(8)
                         data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif (data_dictionary_in_copy[row].dropna() % 1 == 0).all():
+                    elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         data_dictionary_in_copy[row] = data_dictionary_in_copy[row].round(0)
                         data_dictionary_out[row] = data_dictionary_out[row].round(0)
 
@@ -2020,11 +2022,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].interpolate(method='linear', limit_direction='both')
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-                    if (data_dictionary_in_copy[col].dropna() % 1 != 0).any():
+                    if (data_dictionary_in[col].dropna() % 1 != 0).any():
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(8)
                         data_dictionary_out[col] = data_dictionary_out[col].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif (data_dictionary_in_copy[col].dropna() % 1 == 0).all():
+                    elif (data_dictionary_in[col].dropna() % 1 == 0).all():
                         data_dictionary_in_copy[col] = data_dictionary_in_copy[col].round(0)
                         data_dictionary_out[col] = data_dictionary_out[col].round(0)
 
@@ -2058,11 +2060,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].interpolate(method='linear', limit_direction='both')
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-                    if (data_dictionary_in_copy.loc[idx].dropna() % 1 != 0).any():
+                    if (data_dictionary_in.loc[idx].dropna() % 1 != 0).any():
                         data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].round(8)
                         data_dictionary_out.loc[idx] = data_dictionary_out.loc[idx].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif (data_dictionary_in_copy.loc[idx].dropna() % 1 == 0).all():
+                    elif (data_dictionary_in.loc[idx].dropna() % 1 == 0).all():
                         data_dictionary_in_copy.loc[idx] = data_dictionary_in_copy.loc[idx].round(0)
                         data_dictionary_out.loc[idx] = data_dictionary_out.loc[idx].round(0)
 
@@ -2097,12 +2099,16 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                              interpolate(method='linear', limit_direction='both'))
 
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-            if (data_dictionary_in_copy[field_in].dropna() % 1 != 0).any():
+            if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif (data_dictionary_in_copy[field_in].dropna() % 1 == 0).all():
-                data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(0)
+            elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
+                for idx in data_dictionary_in.index:
+                    if data_dictionary_in_copy.at[idx, field_in] % 1 >= 0.5:
+                        data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
+                    else:
+                        data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in_copy.at[idx, field_in].round(0)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
 
             for idx in data_dictionary_in.index:
@@ -2121,12 +2127,16 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                 else x).interpolate(method='linear', limit_direction='both'))
 
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-            if (data_dictionary_in_copy[field_in].dropna() % 1 != 0).any():
+            if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif (data_dictionary_in_copy[field_in].dropna() % 1 == 0).all():
-                data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(0)
+            elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
+                for idx in data_dictionary_in.index:
+                    if data_dictionary_in_copy.at[idx, field_in] % 1 >= 0.5:
+                        data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
+                    else:
+                        data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in_copy.at[idx, field_in].round(0)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
 
             # For each index in the column
@@ -2154,12 +2164,16 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].interpolate(method='linear', limit_direction='both')
 
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
-            if (data_dictionary_in_copy[field_in].dropna() % 1 != 0).any():
+            if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(8)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif (data_dictionary_in_copy[field_in].dropna() % 1 == 0).all():
-                data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].round(0)
+            elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
+                for idx in data_dictionary_in.index:
+                    if data_dictionary_in_copy.at[idx, field_in] % 1 >= 0.5:
+                        data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
+                    else:
+                        data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in_copy.at[idx, field_in].round(0)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
 
             # For each index in the column
