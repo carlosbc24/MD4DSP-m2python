@@ -3178,7 +3178,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
         if special_type_input == SpecialType.OUTLIER:
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                            axis_param=None, field=field_in)
-
+            #TODO: Check if the rounding is correct
             # Trunk the decimals to 8 if the column is float or if it has decimals
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 minimum_valid = round(minimum_valid, 8)
