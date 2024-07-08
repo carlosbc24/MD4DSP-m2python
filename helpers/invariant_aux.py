@@ -2688,9 +2688,20 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
                 # Calculate the median of these numeric columns
-                median_value = only_numbers_df.median().median()
+                median = only_numbers_df.median().median()
+                median_value = None
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+
+                    if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
+                        median_value = round(median, 8)
+                    # Trunk the decimals to 0 if the column is int or if it has no decimals
+                    elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        median_value = round(median, 0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if data_dictionary_in.at[idx, col_name] in missing_values:
