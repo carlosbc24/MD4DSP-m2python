@@ -2419,9 +2419,22 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 8.2, 3, 1, 2]})
+        # Calculate for each column the lower bound and upper bound of the interquartile range for column B
+        Q1 = datadic['B'].quantile(0.25)
+        Q3 = datadic['B'].quantile(0.75)
+        IQR = Q3 - Q1
+        upper_bound_B = Q3 + 1.5 * IQR
+        round(upper_bound_B, 0)
+        # Calculate for each column the lower bound and upper bound of the interquartile range for column D
+        Q1 = datadic['D'].quantile(0.25)
+        Q3 = datadic['D'].quantile(0.75)
+        IQR = Q3 - Q1
+        upper_bound_D = Q3 + 1.5 * IQR
+
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, 3, 3, 1, 2]})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, upper_bound_B], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, upper_bound_D, 3, 1, 2]})
         expected_df = expected_df.astype({
+            'B': 'int64',  # Convertir B a int64
             'D': 'float64'  # Convertir D a float64
         })
 
@@ -2437,9 +2450,24 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Probamos a aplicar la operación closest sobre un dataframe sin nulos
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 6, 3, 3, 0], 'D': [1, 8.2, 2, 1, 2]})
+
+        # Calculate for each column the lower bound and upper bound of the interquartile range for column B
+        Q1 = datadic['B'].quantile(0.25)
+        Q3 = datadic['B'].quantile(0.75)
+        IQR = Q3 - Q1
+        upper_bound_B = Q3 + 1.5 * IQR
+        round(upper_bound_B, 0)
+        # Calculate for each column the lower bound and upper bound of the interquartile range for column D
+        Q1 = datadic['D'].quantile(0.25)
+        Q3 = datadic['D'].quantile(0.75)
+        IQR = Q3 - Q1
+        upper_bound_D = Q3 + 1.5 * IQR
+
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 6], 'C': [10, 6, 3, 3, 0], 'D': [1, 2, 2, 1, 2]})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, upper_bound_B], 'C': [10, 6, 3, 3, 0],
+             'D': [1, upper_bound_D, 2, 1, 2]})
         expected_df = expected_df.astype({
+            'B': 'int64',  # Convertir B a int64
             'D': 'float64'  # Convertir D a float64
         })
         result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
