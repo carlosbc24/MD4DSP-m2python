@@ -343,12 +343,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy[col]=data_dictionary_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
-                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
 
             elif axis_param == 1:
                 data_dictionary_copy= data_dictionary_copy.T
@@ -357,12 +353,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy[col]=data_dictionary_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
-                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
                 data_dictionary_copy = data_dictionary_copy.T
 
         if special_type_input == SpecialType.INVALID:
@@ -373,12 +365,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy_copy[col]=data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(0)
-                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].astype(int)
                 # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -397,12 +385,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].apply(lambda x: np.nan if x in missing_values else x)
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(0)
-                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].astype(int)
                     # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -423,12 +407,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 data_dictionary_copy_copy.at[idx, col] = np.NaN
                         data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].round(0)
-                            data_dictionary_copy_copy[col] = data_dictionary_copy_copy[col].astype(int)
                 for col in data_dictionary_copy.columns:
                     # For each índex in the column
                     for idx in data_dictionary_copy.index:
@@ -447,12 +427,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 data_dictionary_copy.at[idx, col] = np.NaN
                         data_dictionary_copy[col] = data_dictionary_copy[col].interpolate(method='linear', limit_direction='both')
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
-                            data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
                 for col in data_dictionary_copy.columns:
                     # For each índex in the column
                     for idx in data_dictionary_copy.index:
@@ -473,23 +449,15 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
             data_dictionary_copy[field_out]=data_dictionary_copy[field_in].interpolate(method='linear', limit_direction='both')
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
         if special_type_input == SpecialType.INVALID:
             data_dictionary_copy_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy_copy[field_out].dtype == float or data_dictionary_copy_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy_copy[field_out].dtype == int or data_dictionary_copy_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(0)
-                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].astype(int)
 
             # For each índex in the column
             for idx in data_dictionary_copy.index:
@@ -508,12 +476,8 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
 
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy_copy[field_out].dtype == float or data_dictionary_copy_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy_copy[field_out].dtype == int or data_dictionary_copy_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].round(0)
-                data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_out].astype(int)
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
@@ -561,10 +525,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: x if not (x in missing_values or pd.isnull(x)) else means[col])
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
                             data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
@@ -577,10 +538,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                         data_dictionary_copy[row] = data_dictionary_copy[row].apply(
                             lambda x: x if not (x in missing_values or pd.isnull(x)) else means[row])
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[row].dtype == float or data_dictionary_copy[row].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[row] = data_dictionary_copy[row].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[row].dtype == int or data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[row].dtype == int or data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[row] = data_dictionary_copy[row].round(0)
                             data_dictionary_copy[row] = data_dictionary_copy[row].astype(int)
                 data_dictionary_copy = data_dictionary_copy.T
@@ -601,10 +559,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: x if not (x in missing_values) else means[col])
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
                             data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
@@ -616,10 +571,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                         data_dictionary_copy[row] = data_dictionary_copy[row].apply(
                             lambda x: x if not (x in missing_values) else means[row])
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[row].dtype == float or data_dictionary_copy[row].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[row] = data_dictionary_copy[row].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[row].dtype == int or data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[row] = data_dictionary_copy[row].round(0)
                             data_dictionary_copy[row] = data_dictionary_copy[row].astype(int)
                 data_dictionary_copy = data_dictionary_copy.T
@@ -643,10 +595,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = mean
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
                             data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1: # Iterate over each row
@@ -657,10 +606,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = mean
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[row].dtype == float or data_dictionary_copy[row].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[row] = data_dictionary_copy[row].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[row].dtype == int or data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[row] = data_dictionary_copy[row].round(0)
                             data_dictionary_copy[row] = data_dictionary_copy[row].astype(int)
 
@@ -675,10 +621,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
                 lambda x: mean if (x in missing_values or pd.isnull(x)) else x)
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
@@ -687,10 +630,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
                 lambda x: mean if x in missing_values else x)
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
@@ -702,10 +642,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                 else:
                     data_dictionary_copy.at[idx, field_out] = value
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
@@ -746,10 +683,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: median if x in missing_values or pd.isnull(x) else x)
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
                             data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
@@ -762,9 +696,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         data_dictionary_copy[row] = data_dictionary_copy[row].apply(
                             lambda x: x if not (x in missing_values or pd.isnull(x)) else medians[row])
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[row].dtype == float or data_dictionary_copy[row].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[row] = data_dictionary_copy[row].round(8)
-                        elif data_dictionary_copy[row].dtype == int or data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[row].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[row] = data_dictionary_copy[row].round(0)
                             data_dictionary_copy[row] = data_dictionary_copy[row].astype(int)
                 data_dictionary_copy = data_dictionary_copy.T
@@ -787,10 +719,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: median if x in missing_values else x)
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
                             data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
@@ -803,10 +732,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                             lambda x: median if x in missing_values else x)
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
                             data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
                 data_dictionary_copy = data_dictionary_copy.T
@@ -823,10 +749,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         if data_dictionary_copy_mask.at[idx, col_name] == 1:
                             data_dictionary_copy.at[idx, col_name] = median_value
                     # Trunk the decimals to 8 if the column is float or if it has decimals
-                    if data_dictionary_copy[col_name].apply(lambda x: x % 1 != 0).any():
-                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(8)
-                    # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_copy[col_name].apply(lambda x: x % 1 == 0).all():
+                    if data_dictionary_copy[col_name].apply(lambda x: x % 1 == 0).all():
                         data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(0)
                         data_dictionary_copy[col_name] = data_dictionary_copy[col_name].astype(int)
             if axis_param == 0:
@@ -837,10 +760,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = median
                         # Trunk the decimals to 8 if the column is float or if it has decimals
-                        if data_dictionary_copy[col].apply(lambda x: x % 1 != 0).any():
-                            data_dictionary_copy[col] = data_dictionary_copy[col].round(8)
-                        # Trunk the decimals to 0 if the column is int or if it has no decimals
-                        elif data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
+                        if data_dictionary_copy[col].apply(lambda x: x % 1 == 0).all():
                             data_dictionary_copy[col] = data_dictionary_copy[col].round(0)
                             data_dictionary_copy[col] = data_dictionary_copy[col].astype(int)
             elif axis_param == 1:
@@ -850,10 +770,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         if data_dictionary_copy_mask.at[idx, col] == 1:
                             data_dictionary_copy.at[idx, col] = median
                     # Trunk the decimals to 8 if the column is float or if it has decimals
-                    if data_dictionary_copy.loc[idx].dtype == float or data_dictionary_copy.loc[idx].apply(lambda x: x % 1 != 0).any():
-                        data_dictionary_copy.loc[idx] = data_dictionary_copy.loc[idx].round(8)
-                    # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_copy.loc[idx].dtype == int or data_dictionary_copy.loc[idx].apply(lambda x: x % 1 == 0).all():
+                    if data_dictionary_copy.loc[idx].apply(lambda x: x % 1 == 0).all():
                         data_dictionary_copy.loc[idx] = data_dictionary_copy.loc[idx].round(0)
                         data_dictionary_copy.loc[idx] = data_dictionary_copy.loc[idx].astype(int)
     elif field_in is not None:
@@ -867,10 +784,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
                 lambda x: median if x in missing_values or pd.isnull(x) else x)
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
@@ -879,10 +793,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
                 lambda x: median if x in missing_values else x)
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
@@ -894,10 +805,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                 else:
                     data_dictionary_copy.at[idx, field_out] = value
             # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].astype(int)
 
@@ -1014,13 +922,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                     minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_copy,
                                                                    axis_param=0, field=col_name)
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
-                    if data_dictionary_copy[col_name].apply(lambda x: x % 1 != 0).any():
-                        minimum_valid = round(minimum_valid, 8)
-                        maximum_valid = round(maximum_valid, 8)
-                        data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(8)
-                    # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_copy[col_name].apply(lambda x: x % 1 == 0).all():
+                    if data_dictionary_copy[col_name].apply(lambda x: x % 1 == 0).all():
                         minimum_valid = round(minimum_valid, 0)
                         maximum_valid = round(maximum_valid, 0)
                         data_dictionary_copy[col_name] = data_dictionary_copy[col_name].round(0)
@@ -1066,13 +968,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_copy,
                                                            axis_param=None, field=field_in)
 
-            # Trunk the decimals to 8 if the column is float or if it has decimals
-            if data_dictionary_copy[field_out].dtype == float or data_dictionary_copy[field_out].apply(lambda x: x % 1 != 0).any():
-                minimum_valid = round(minimum_valid, 8)
-                maximum_valid = round(maximum_valid, 8)
-                data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(8)
-            # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_copy[field_out].dtype == int or data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
+            if data_dictionary_copy[field_out].apply(lambda x: x % 1 == 0).all():
                 minimum_valid = round(minimum_valid, 0)
                 maximum_valid = round(maximum_valid, 0)
                 data_dictionary_copy[field_out] = data_dictionary_copy[field_out].round(0)
