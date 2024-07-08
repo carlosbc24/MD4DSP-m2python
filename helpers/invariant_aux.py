@@ -2773,9 +2773,20 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
                 # Calculate the median of these numeric columns
-                median_value = only_numbers_df.median().median()
+                median = only_numbers_df.median().median()
+                median_value = None
                 # Replace the missing values with the median of the entire DataFrame using lambda
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                    if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
+                        median_value = round(median, 8)
+                    # Trunk the decimals to 0 if the column is int or if it has no decimals
+                    elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        median_value = round(median, 0)
+
                     for idx, value in data_dictionary_in[col_name].items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
                             if data_dictionary_out.at[idx, col_name] != median_value:
@@ -2796,7 +2807,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         data_dictionary_in[col] = data_dictionary_in[col].round(8)
                         data_dictionary_out[col] = data_dictionary_out[col].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[col].dtype == int or data_dictionary_in[col].apply(lambda x: x % 1 == 0).all():
+                    elif data_dictionary_in[col].apply(lambda x: x % 1 == 0).all():
                         median = round(median, 0)
                         data_dictionary_in[col] = data_dictionary_in[col].round(0)
                         data_dictionary_out[col] = data_dictionary_out[col].round(0)
@@ -2822,7 +2833,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         data_dictionary_in[row] = data_dictionary_in[row].round(8)
                         data_dictionary_out[row] = data_dictionary_out[row].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[row].dtype == int or data_dictionary_in[row].apply(lambda x: x % 1 == 0).all():
+                    elif data_dictionary_in[row].apply(lambda x: x % 1 == 0).all():
                         median = round(median, 0)
                         data_dictionary_in[row] = data_dictionary_in[row].round(0)
                         data_dictionary_out[row] = data_dictionary_out[row].round(0)
@@ -2853,7 +2864,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_in[field_in].dtype == int or data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
+            elif data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
                 median = round(median, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
@@ -2878,7 +2889,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_in[field_in].dtype == int or data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
+            elif data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
                 median = round(median, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
@@ -2903,7 +2914,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_in[field_in].dtype == int or data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
+            elif data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
                 median = round(median, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
@@ -3044,26 +3055,39 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
             if axis_param is None:
                 minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                                axis_param=None, field=None)
-
+                minimum_valid_rounded = None
+                maximum_valid_rounded = None
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                    if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
+                        minimum_valid_rounded = round(minimum_valid, 8)
+                        maximum_valid_rounded = round(maximum_valid, 8)
+                    # Trunk the decimals to 0 if the column is int or if it has no decimals
+                    elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
+                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
+                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                        minimum_valid_rounded = round(minimum_valid, 0)
+                        maximum_valid_rounded = round(maximum_valid, 0)
+
                     for i in range(len(data_dictionary_in.index)):
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
                             if data_dictionary_in.at[i, col_name] > maximum_valid:
                                 if data_dictionary_out.at[i, col_name] != maximum_valid:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {maximum_valid_rounded} but is: {data_dictionary_out.loc[i, col_name]}")
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {maximum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {maximum_valid_rounded} but is: {data_dictionary_out.loc[i, col_name]}")
                             elif data_dictionary_in.at[i, col_name] < minimum_valid:
                                 if data_dictionary_out.at[i, col_name] != minimum_valid:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                         result = False
-                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                        print_and_log(f"Error in row: {i} and column: {col_name} value should be: {minimum_valid_rounded} but is: {data_dictionary_out.loc[i, col_name]}")
                                     elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                         result = True
-                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {minimum_valid} but is: {data_dictionary_out.loc[i, col_name]}")
+                                        print_and_log(f"Row: {i} and column: {col_name} value should be: {minimum_valid_rounded} but is: {data_dictionary_out.loc[i, col_name]}")
 
             elif axis_param == 0:
                 # Checks the outlier values in the input with the closest numeric values in the output
@@ -3078,7 +3102,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
                         data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif  data_dictionary_in[col_name].apply(lambda x: x % 1 == 0).all():
+                    elif data_dictionary_in[col_name].apply(lambda x: x % 1 == 0).all():
                         minimum_valid = round(minimum_valid, 0)
                         maximum_valid = round(maximum_valid, 0)
                         data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
@@ -3148,7 +3172,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
                 data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_in[field_in].dtype == int or data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
+            elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 minimum_valid = round(minimum_valid, 0)
                 maximum_valid = round(maximum_valid, 0)
                 data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
