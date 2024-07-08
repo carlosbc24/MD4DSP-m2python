@@ -9,9 +9,6 @@ from helpers.logger import set_logger
 def generateDataProcessing():
 #-----------------New DataProcessing-----------------
 	imputeByDerivedValue_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv', sep = ',')
-	print('------------------------------------------------------------------')
-	print(imputeByDerivedValue_input_dataDictionary.dtypes)
-	print('------------------------------------------------------------------')
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='sex', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
