@@ -13,9 +13,6 @@ def generateDataProcessing():
 	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		imputeByDerivedValue_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep = ',')
 
-	print("Print column types:")
-	print(imputeByDerivedValue_input_dataDictionary.dtypes)
-
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='sex', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
