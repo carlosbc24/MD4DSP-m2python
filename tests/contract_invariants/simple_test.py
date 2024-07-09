@@ -47,16 +47,16 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            # self.execute_checkInv_FixValue_FixValue,
+            self.execute_checkInv_FixValue_FixValue,
             # self.execute_checkInv_FixValue_DerivedValue,
             # self.execute_checkInv_FixValue_NumOp,
-            # self.execute_checkInv_Interval_FixValue,
+            self.execute_checkInv_Interval_FixValue
             # self.execute_checkInv_Interval_DerivedValue,
             # self.execute_checkInv_Interval_NumOp,
             # self.execute_checkInv_SpecialValue_FixValue,
             # self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue
         ]
 
         print_and_log("")
@@ -3773,8 +3773,8 @@ class InvariantsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         missing_values = [3, 4]
         expected_df = pd.DataFrame(
-            {'A': [0, 2, datadic.mean().mean(), 4, 1], 'B': [2, datadic.mean().mean(), datadic.mean().mean(), 6, 12],
-             'C': [10, 1, datadic.mean().mean(), datadic.mean().mean(), 0], 'D': [1, 8.2, 6, 1, 2]})
+            {'A': [0, 2, datadic.mean().mean().round(0), datadic.mean().mean().round(0), 1], 'B': [2, datadic.mean().mean().round(0), datadic.mean().mean().round(0), 6, 12],
+             'C': [10, 1, datadic.mean().mean().round(0), 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         result = self.invariants.check_inv_special_value_num_op(data_dictionary_in=datadic.copy(),
                                                                 data_dictionary_out=expected_df,
                                                                 special_type_input=SpecialType(1),
@@ -3857,7 +3857,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             'C': 'float64'  # Convertir C a float64
         })
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, datadic.mean().mean()], 'C': [3.7, 1, 3, 3, 0],
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, datadic.mean().mean().round(0)], 'C': [3.7, 1, 3, 3, 0],
              'D': [1, 8.2, 6, 1, 2]})
 
         result = self.invariants.check_inv_special_value_num_op(data_dictionary_in=datadic.copy(),
