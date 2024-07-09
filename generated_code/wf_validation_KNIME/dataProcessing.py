@@ -123,7 +123,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByFixValue_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
+	imputeByFixValue_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByFixValue_input_dataDictionary, field='ACADEMIC_INTEREST_2', 
@@ -209,7 +209,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
+	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
@@ -289,7 +289,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
+	imputeByNumericOp_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='satscore', 
@@ -897,7 +897,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',')
+	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='TERRITORY'):
@@ -1033,7 +1033,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',')
+	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=2000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='satscore'):
@@ -1147,7 +1147,7 @@ def generateDataProcessing():
 	
 	
 #-----------------New DataProcessing-----------------
-	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',')
+	binner_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if contract_pre_post.check_interval_range_float(left_margin=9.0, right_margin=100000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='avg_income'):
