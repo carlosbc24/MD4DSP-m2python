@@ -2141,7 +2141,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
-                    if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
+                    if data_dictionary_in_copy.at[idx, field_in] % 1 >= 0.5:
                         data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                     else:
@@ -2171,7 +2171,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
-                    if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
+                    if data_dictionary_in_copy.at[idx, field_in] % 1 >= 0.5:
                         data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                     else:
@@ -2186,7 +2186,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in.at[idx, field_in]
 
             for idx in data_dictionary_in_copy.index:
-                if data_dictionary_in.at[idx, field_in] in missing_values:
+                if data_dictionary_in_copy.at[idx, field_in] in missing_values:
                     if data_dictionary_out.at[idx, field_out] != data_dictionary_in_copy.at[idx, field_in]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
@@ -2210,7 +2210,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
-                    if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
+                    if data_dictionary_in_copy.at[idx, field_in] % 1 >= 0.5:
                         data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                     else:
