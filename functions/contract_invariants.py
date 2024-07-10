@@ -71,46 +71,58 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
             for row_index, value in data_dictionary_in[column_name].items():
                 # Comprobar si el valor es igual a fix_value_input
                 if value in mapping_values:
-                    if type(mapping_values[value]) == str or type(mapping_values[value]) == object:
+                    if not pd.isna(data_dictionary_out.loc[row_index, column_name]) and (type(mapping_values[value])
+                                                                                        == str or type(
+                                mapping_values[value]) == object):
                         if data_dictionary_out.loc[row_index, column_name].strip() != mapping_values[value].strip():
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
+                                print_and_log(
+                                    f"Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
+                                print_and_log(
+                                    f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
                     else:
                         # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
                         if data_dictionary_out.loc[row_index, column_name] != mapping_values[value]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                print_and_log(
+                                    f"Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                print_and_log(
+                                    f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
 
     elif field_in is not None:
         if field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
             for row_index, value in data_dictionary_in[field_in].items():
                 # Comprobar si el valor es igual a fix_value_input
                 if value in mapping_values:
-                    if type(mapping_values[value]) == str or type(mapping_values[value]) == object:
+                    if not pd.isna(data_dictionary_out.loc[row_index, field_out]) and (type(mapping_values[value])
+                                                                                          == str or type(
+                                mapping_values[value]) == object):
                         if data_dictionary_out.loc[row_index, field_out].strip() != mapping_values[value].strip():
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
+                                print_and_log(
+                                    f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
+                                print_and_log(
+                                    f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value].strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                     else:
                         # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
                         if data_dictionary_out.loc[row_index, field_in] != mapping_values[value]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                print_and_log(
+                                    f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
-                                print_and_log(f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                print_and_log(
+                                    f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
 
         elif field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
@@ -258,18 +270,21 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
         for column_index, column_name in enumerate(data_dictionary_in.columns):
             for row_index, value in data_dictionary_in[column_name].items():
                 if check_interval_condition(value, left_margin, right_margin, closure_type):
-                    if type(fix_value_output) == str or type(fix_value_output) == object:
+                    if not pd.isna(data_dictionary_out.loc[row_index, field_out]) and (type(fix_value_output) == str
+                                                                                       or type(fix_value_output) == object):
                         if data_dictionary_out.loc[row_index, column_name].strip() != fix_value_output.strip():
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output.strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
+                                print_and_log(
+                                    f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output.strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
                     else:
                         if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                 result = False
-                                print_and_log(f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                print_and_log(
+                                    f"Error in row: {row_index} and column: {column_name} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
 
@@ -281,18 +296,22 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
 
         for row_index, value in data_dictionary_in[field_in].items():
             if check_interval_condition(value, left_margin, right_margin, closure_type):
-                if type(fix_value_output) == str or type(fix_value_output) == object:
+                if not pd.isna(data_dictionary_out.loc[row_index, field_out]) and (type(fix_value_output) == str or
+                        type(
+                        fix_value_output) == object):
                     if data_dictionary_out.loc[row_index, field_out].strip() != fix_value_output.strip():
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output.strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
+                            print_and_log(
+                                f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output.strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
                 else:
                     if data_dictionary_out.loc[row_index, field_out] != fix_value_output:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field_out]}")
+                            print_and_log(
+                                f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
 
