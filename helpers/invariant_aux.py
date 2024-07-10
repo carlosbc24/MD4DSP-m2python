@@ -2680,15 +2680,23 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
 
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
-                        median_value = round(median, 8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
-                        median_value = round(median, 0)
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
+                                median_value = math.floor(median)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if pd.isnull(value):
@@ -2708,22 +2716,30 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     median = data_dictionary_in[col_name].median()
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                        median = round(median, 8)
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[col_name].apply(lambda x: x % 1 == 0).all():
-                        median = round(median, 0)
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                    elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.floor(
+                                    data_dictionary_out.at[idx, col_name])
+                                median_value = math.floor(median)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
                             if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(
                                     data_dictionary_in.at[idx, col_name]):
-                                if data_dictionary_out.at[idx, col_name] != median:
+                                if data_dictionary_out.at[idx, col_name] != median_value:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                         result = False
                                         print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
@@ -2736,21 +2752,29 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
-                        median = round(median, 8)
-                        data_dictionary_in[row] = data_dictionary_in[row].round(8)
-                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, row] = truncate(data_dictionary_in.at[idx, row], 8)
+                            data_dictionary_out.at[idx, row] = truncate(data_dictionary_out.at[idx, row], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[row].apply(lambda x: x % 1 == 0).all():
-                        median = round(median, 0)
-                        data_dictionary_in[row] = data_dictionary_in[row].round(0)
-                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                    elif (data_dictionary_in[row].dropna() % 1 == 0).all():
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, row] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, row] = math.ceil(data_dictionary_in.at[idx, row])
+                                data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, row] = math.floor(data_dictionary_in.at[idx, row])
+                                data_dictionary_out.at[idx, row] = math.floor(
+                                    data_dictionary_out.at[idx, row])
+                                median_value = math.floor(median)
 
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values or pd.isnull(value):
-                            if data_dictionary_out.at[idx, col_name] != median:
+                            if data_dictionary_out.at[idx, col_name] != median_value:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                     result = False
                                     print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
@@ -2768,15 +2792,24 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
 
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
-                        median_value = round(median, 8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
-                        median_value = round(median, 0)
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.floor(
+                                    data_dictionary_out.at[idx, col_name])
+                                median_value = math.floor(median)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if data_dictionary_in.at[idx, col_name] in missing_values:
@@ -2794,21 +2827,29 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     median = data_dictionary_in[col_name].median()
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                        median = round(median, 8)
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif  data_dictionary_in[col_name].apply(lambda x: x % 1 == 0).all():
-                        median = round(median, 0)
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                    elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.floor(
+                                    data_dictionary_out.at[idx, col_name])
+                                median_value = math.floor(median)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
                             if data_dictionary_in.at[idx, col_name] in missing_values:
-                                if data_dictionary_out.at[idx, col_name] != median:
+                                if data_dictionary_out.at[idx, col_name] != median_value:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                         result = False
                                         print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
@@ -2821,21 +2862,29 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
-                        median = round(median, 8)
-                        data_dictionary_in[row] = data_dictionary_in[row].round(8)
-                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, row] = truncate(data_dictionary_in.at[idx, row], 8)
+                            data_dictionary_out.at[idx, row] = truncate(data_dictionary_out.at[idx, row], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[row].dtype == int or data_dictionary_in[row].apply(lambda x: x % 1 == 0).all():
-                        median = round(median, 0)
-                        data_dictionary_in[row] = data_dictionary_in[row].round(0)
-                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                    elif (data_dictionary_in[row].dropna() % 1 == 0).all():
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, row] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, row] = math.ceil(data_dictionary_in.at[idx, row])
+                                data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, row] = math.floor(data_dictionary_in.at[idx, row])
+                                data_dictionary_out.at[idx, row] = math.floor(
+                                    data_dictionary_out.at[idx, row])
+                                median_value = math.floor(median)
 
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
                         if value in missing_values:
-                            if data_dictionary_out.at[idx, col_name] != median:
+                            if data_dictionary_out.at[idx, col_name] != median_value:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                     result = False
                                     print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
@@ -2852,15 +2901,25 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 median_value = None
                 # Replace the missing values with the median of the entire DataFrame using lambda
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
-                        median_value = round(median, 8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
-                        median_value = round(median, 0)
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.floor(
+                                    data_dictionary_out.at[idx, col_name])
+                                median_value = math.floor(median)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
@@ -2876,20 +2935,28 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     median = data_dictionary_in[col].median()
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col].dropna() % 1 != 0).any():
-                        median = round(median, 8)
-                        data_dictionary_in[col] = data_dictionary_in[col].round(8)
-                        data_dictionary_out[col] = data_dictionary_out[col].round(8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col] = truncate(data_dictionary_in.at[idx, col], 8)
+                            data_dictionary_out.at[idx, col] = truncate(data_dictionary_out.at[idx, col], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[col].apply(lambda x: x % 1 == 0).all():
-                        median = round(median, 0)
-                        data_dictionary_in[col] = data_dictionary_in[col].round(0)
-                        data_dictionary_out[col] = data_dictionary_out[col].round(0)
+                    elif (data_dictionary_in[col].dropna() % 1 == 0).all():
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col] = math.ceil(data_dictionary_in.at[idx, col])
+                                data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, col] = math.floor(data_dictionary_in.at[idx, col])
+                                data_dictionary_out.at[idx, col] = math.floor(
+                                    data_dictionary_out.at[idx, col])
+                                median_value = math.floor(median)
 
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
-                            if data_dictionary_out.at[idx, col] != median:
+                            if data_dictionary_out.at[idx, col] != median_value:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                     result = False
                                     print_and_log(f"Error in row: {idx} and column: {col} value should be: {median} but is: {data_dictionary_out.loc[idx, col]}")
@@ -2902,20 +2969,28 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     numeric_data = row[row.apply(lambda x: np.isreal(x))]
                     median = numeric_data.median()
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
-                        median = round(median, 8)
-                        data_dictionary_in[row] = data_dictionary_in[row].round(8)
-                        data_dictionary_out[row] = data_dictionary_out[row].round(8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, row] = truncate(data_dictionary_in.at[idx, row], 8)
+                            data_dictionary_out.at[idx, row] = truncate(data_dictionary_out.at[idx, row], 8)
+                            median_value = truncate(median, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[row].apply(lambda x: x % 1 == 0).all():
-                        median = round(median, 0)
-                        data_dictionary_in[row] = data_dictionary_in[row].round(0)
-                        data_dictionary_out[row] = data_dictionary_out[row].round(0)
+                    elif (data_dictionary_in[row].dropna() % 1 == 0).all():
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, row] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, row] = math.ceil(data_dictionary_in.at[idx, row])
+                                data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
+                                median_value = math.ceil(median)
+                            else:
+                                data_dictionary_in.at[idx, row] = math.floor(data_dictionary_in.at[idx, row])
+                                data_dictionary_out.at[idx, row] = math.floor(
+                                    data_dictionary_out.at[idx, row])
+                                median_value = math.floor(median)
 
                     for col_name, value in numeric_data.items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
-                            if data_dictionary_out.at[idx, col_name] != median:
+                            if data_dictionary_out.at[idx, col_name] != median_value:
                                 if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                     result = False
                                     print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {median} but is: {data_dictionary_out.loc[idx, col_name]}")
@@ -2933,20 +3008,27 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
             # Check the data_dictionary_out positions with missing values have been replaced with the median
             median = data_dictionary_in[field_in].median()
 
-            # Trunk the decimals to 8 if the column is float or if it has decimals
+            # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
-                median = round(median, 8)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
+                for idx in data_dictionary_in.index:
+                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
+                    data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
+                    median_value = truncate(median, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
-                median = round(median, 0)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+            elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
+                for idx in data_dictionary_in.index:
+                    if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
+                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
+                        median_value = math.ceil(median)
+                    else:
+                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
+                        median_value = math.floor(median)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
-                    if data_dictionary_out.at[idx, field_out] != median:
+                    if data_dictionary_out.at[idx, field_out] != median_value:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
                             print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
@@ -2958,20 +3040,28 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
             # Check the data_dictionary_out positions with missing values have been replaced with the median
             median = data_dictionary_in[field_in].median()
 
-            # Trunk the decimals to 8 if the column is float or if it has decimals
+            # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
-                median = round(median, 8)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
+                for idx in data_dictionary_in.index:
+                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
+                    data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
+                    median_value = truncate(median, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
-                median = round(median, 0)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+            elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
+                for idx in data_dictionary_in.index:
+                    if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
+                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
+                        median_value = math.ceil(median)
+                    else:
+                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
+                        median_value = math.floor(median)
+
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
-                    if data_dictionary_out.at[idx, field_out] != median:
+                    if data_dictionary_out.at[idx, field_out] != median_value:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
                             print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
@@ -2983,21 +3073,29 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
             median = data_dictionary_in[field_in].median()
 
-            # Trunk the decimals to 8 if the column is float or if it has decimals
+            # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
-                median = round(median, 8)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
+                for idx in data_dictionary_in.index:
+                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
+                    data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
+                    median_value = truncate(median, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
-            elif data_dictionary_in[field_in].apply(lambda x: x % 1 == 0).all():
-                median = round(median, 0)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+            elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
+                for idx in data_dictionary_in.index:
+                    if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
+                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
+                        median_value = math.ceil(median)
+                    else:
+                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
+                        median_value = math.floor(median)
+
 
             for idx, value in data_dictionary_in[field_in].items():
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
 
-                    if data_dictionary_out.at[idx, field_out] != median:
+                    if data_dictionary_out.at[idx, field_out] != median_value:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
                             print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {median} but is: {data_dictionary_out.loc[idx, field_out]}")
