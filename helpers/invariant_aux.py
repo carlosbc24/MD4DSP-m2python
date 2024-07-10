@@ -3284,17 +3284,26 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                 minimum_valid_rounded = None
                 maximum_valid_rounded = None
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
-                        minimum_valid_rounded = round(minimum_valid, 8)
-                        maximum_valid_rounded = round(maximum_valid, 8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            minimum_valid = truncate(minimum_valid, 8)
+                            maximum_valid = truncate(maximum_valid, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
-                        minimum_valid_rounded = round(minimum_valid, 0)
-                        maximum_valid_rounded = round(maximum_valid, 0)
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                                minimum_valid = math.ceil(minimum_valid)
+                                maximum_valid = math.ceil(maximum_valid)
+                            else:
+                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
+                                minimum_valid = math.floor(minimum_valid)
+                                maximum_valid = math.floor(maximum_valid)
 
                     for i in range(len(data_dictionary_in.index)):
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
@@ -3321,18 +3330,26 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                     minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                                    axis_param=0, field=col_name)
 
-                    # Trunk the decimals to 8 if the column is float or if it has decimals
+                    # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                        minimum_valid = round(minimum_valid, 8)
-                        maximum_valid = round(maximum_valid, 8)
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(8)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(8)
+                        for idx in data_dictionary_in.index:
+                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            minimum_valid = truncate(minimum_valid, 8)
+                            maximum_valid = truncate(maximum_valid, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    elif data_dictionary_in[col_name].apply(lambda x: x % 1 == 0).all():
-                        minimum_valid = round(minimum_valid, 0)
-                        maximum_valid = round(maximum_valid, 0)
-                        data_dictionary_in[col_name] = data_dictionary_in[col_name].round(0)
-                        data_dictionary_out[col_name] = data_dictionary_out[col_name].round(0)
+                    elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
+                        for idx in data_dictionary_in.index:
+                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
+                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                                minimum_valid = math.ceil(minimum_valid)
+                                maximum_valid = math.ceil(maximum_valid)
+                            else:
+                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
+                                minimum_valid = math.floor(minimum_valid)
+                                maximum_valid = math.floor(maximum_valid)
 
                     for i in range(len(data_dictionary_in.index)):
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
@@ -3390,19 +3407,26 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
         if special_type_input == SpecialType.OUTLIER:
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                            axis_param=None, field=field_in)
-            #TODO: Check if the rounding is correct
-            # Trunk the decimals to 8 if the column is float or if it has decimals
+            # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
-                minimum_valid = round(minimum_valid, 8)
-                maximum_valid = round(maximum_valid, 8)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(8)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(8)
+                for idx in data_dictionary_in.index:
+                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
+                    data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
+                    minimum_valid = truncate(minimum_valid, 8)
+                    maximum_valid = truncate(maximum_valid, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
-                minimum_valid = round(minimum_valid, 0)
-                maximum_valid = round(maximum_valid, 0)
-                data_dictionary_in[field_in] = data_dictionary_in[field_in].round(0)
-                data_dictionary_out[field_out] = data_dictionary_out[field_out].round(0)
+                for idx in data_dictionary_in.index:
+                    if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
+                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
+                        minimum_valid = math.ceil(minimum_valid)
+                        maximum_valid = math.ceil(maximum_valid)
+                    else:
+                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
+                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
+                        minimum_valid = math.floor(minimum_valid)
+                        maximum_valid = math.floor(maximum_valid)
 
             # Checks the outlier values in the input with the closest numeric values in the output
             for i in range(len(data_dictionary_in.index)):
