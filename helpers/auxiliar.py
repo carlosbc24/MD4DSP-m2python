@@ -177,11 +177,17 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             data_dictionary_numeric = data_dictionary.select_dtypes(include=[np.number])
             Q1 = data_dictionary_numeric.quantile(0.25)
             Q3 = data_dictionary_numeric.quantile(0.75)
-            # Calcula el rango intercuartil
             IQR = Q3 - Q1
-            # Define los límites para los outliers
             lower_bound = Q1 - threshold * IQR
             upper_bound = Q3 + threshold * IQR
+
+            min_value = data_dictionary_copy[field].min()
+            max_value = data_dictionary_copy[field].max()
+
+            if lower_bound < min_value:
+                lower_bound = min_value
+            if upper_bound > max_value:
+                upper_bound = max_value
 
             return lower_bound, upper_bound
 
@@ -189,11 +195,19 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
         if axis_param is None or axis_param == 0:
             Q1 = data_dictionary_copy[field].quantile(0.25)
             Q3 = data_dictionary_copy[field].quantile(0.75)
-            # Calcula el rango intercuartil
             IQR = Q3 - Q1
-            # Define los límites para los outliers
             lower_bound = Q1 - threshold * IQR
             upper_bound = Q3 + threshold * IQR
+
+            min_value = data_dictionary_copy[field].min()
+            max_value = data_dictionary_copy[field].max()
+
+            if lower_bound < min_value:
+                lower_bound = min_value
+            if upper_bound > max_value:
+                upper_bound = max_value
+
+            print("Field:", field, "Lower bound:", lower_bound, "Upper bound:", upper_bound)
 
             return lower_bound, upper_bound
 
