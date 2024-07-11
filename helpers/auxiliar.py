@@ -198,11 +198,20 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             return lower_bound, upper_bound
 
 
-def truncate(number, decimals=0):
+def truncate(number: Union[int, float], decimals: int = 0) -> Union[int, float]:
     """
-    number: (Union[int, float]) number to truncate
-    decimals: (int) number of decimal places to truncate
-    Returns a value truncated to a specific number of decimal places.
+    Truncates a number to a specified number of decimal places.
+
+    Parameters:
+    number (Union[int, float]): The number to truncate.
+    decimals (int): The number of decimal places to truncate to.
+
+    Returns:
+    Union[int, float]: The truncated number.
+
+    Raises:
+    TypeError: If `decimals` is not an integer.
+    ValueError: If `decimals` is negative.
     """
     if not isinstance(decimals, int):
         raise TypeError("decimal places must be an integer.")
@@ -212,4 +221,6 @@ def truncate(number, decimals=0):
         return math.trunc(number)
 
     factor = 10.0 ** decimals
+    if math.isnan(number):
+        return float('nan')
     return math.trunc(number * factor) / factor
