@@ -1902,8 +1902,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
 
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
@@ -1935,8 +1935,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in.at[row, col_name] = math.ceil(data_dictionary_in.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
                             else:
-                                data_dictionary_in.at[row, col_name] = math.floor(data_dictionary_in.at[row, col_name])
-                                data_dictionary_out.at[row, col_name] = math.floor(data_dictionary_out.at[row, col_name])
+                                data_dictionary_in.at[row, col_name] = data_dictionary_in.at[row, col_name].round(0)
+                                data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
 
                 for col_name in data_dictionary_in.columns:
                     for idx in data_dictionary_in.index:
@@ -1969,8 +1969,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in.at[idx, col] = math.ceil(data_dictionary_in.at[idx, col])
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                             else:
-                                data_dictionary_in.at[idx, col] = math.floor(data_dictionary_in.at[idx, col])
-                                data_dictionary_out.at[idx, col] = math.floor(data_dictionary_out.at[idx, col])
+                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
+                                data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -2012,8 +2012,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in.at[row, col_name] = math.ceil(data_dictionary_in.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
                             else:
-                                data_dictionary_in.at[row, col_name] = math.floor(data_dictionary_in.at[row, col_name])
-                                data_dictionary_out.at[row, col_name] = math.floor(data_dictionary_out.at[row, col_name])
+                                data_dictionary_in.at[row, col_name] = data_dictionary_in.at[row, col_name].round(0)
+                                data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -2056,8 +2056,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in.at[idx, col] = math.ceil(data_dictionary_in.at[idx, col])
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                             else:
-                                data_dictionary_in.at[idx, col] = math.floor(data_dictionary_in.at[idx, col])
-                                data_dictionary_out.at[idx, col] = math.floor(data_dictionary_out.at[idx, col])
+                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
+                                data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
 
                 # Iterate over each column
                 for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -2100,8 +2100,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in.at[row, col_name] = math.ceil(data_dictionary_in.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
                             else:
-                                data_dictionary_in.at[row, col_name] = math.floor(data_dictionary_in.at[row, col_name])
-                                data_dictionary_out.at[row, col_name] = math.floor(data_dictionary_out.at[row, col_name])
+                                data_dictionary_in.at[row, col_name] = data_dictionary_in.at[row, col_name].round(0)
+                                data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
 
                 # Iterate over each column
                 for col in data_dictionary_in.columns:
@@ -2145,8 +2145,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                     else:
-                        data_dictionary_in_copy.at[idx, field_in] = math.floor(data_dictionary_in_copy.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
+                        data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in_copy.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
 
             for idx in data_dictionary_in.index:
                 if data_dictionary_in.at[idx, field_in] in missing_values or pd.isnull(
@@ -2175,8 +2175,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                     else:
-                        data_dictionary_in_copy.at[idx, field_in] = math.floor(data_dictionary_in_copy.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
+                        data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in_copy.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
 
             # For each index in the column
             for idx in data_dictionary_in.index:
@@ -2214,8 +2214,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                     else:
-                        data_dictionary_in_copy.at[idx, field_in] = math.floor(data_dictionary_in_copy.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
+                        data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in_copy.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
 
             # For each index in the column
             for idx in data_dictionary_in.index:
@@ -2292,9 +2292,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -2329,9 +2329,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -2365,9 +2365,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                         if value in missing_values or pd.isnull(value):
                             if data_dictionary_out.at[idx, col_name] != mean_value:
@@ -2401,9 +2401,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
@@ -2437,9 +2437,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
@@ -2471,9 +2471,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                         if value in missing_values:
                             if data_dictionary_out.at[idx, col_name] != mean_value:
@@ -2507,9 +2507,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
@@ -2539,9 +2539,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col] = math.floor(data_dictionary_in.at[idx, col])
-                                data_dictionary_out.at[idx, col] = math.floor(data_dictionary_out.at[idx, col])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
+                                data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
+                                mean_value = mean.round(0)
 
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
@@ -2572,9 +2572,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                mean_value = math.floor(mean)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                mean_value = mean.round(0)
 
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
                             if data_dictionary_out.at[idx, col_name] != mean_value:
@@ -2609,9 +2609,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         mean_value = math.ceil(mean)
                     else:
-                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
-                        mean_value = math.floor(mean)
+                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        mean_value = mean.round(0)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
@@ -2642,9 +2642,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         mean_value = math.ceil(mean)
                     else:
-                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
-                        mean_value = math.floor(mean)
+                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        mean_value = mean.round(0)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values:
@@ -2675,9 +2675,9 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         mean_value = math.ceil(mean)
                     else:
-                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
-                        mean_value = math.floor(mean)
+                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        mean_value = mean.round(0)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if data_dictionary_outliers_mask.at[idx, field_in] == 1:
@@ -2747,9 +2747,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                median_value = median.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if pd.isnull(value):
@@ -2783,10 +2783,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(
-                                    data_dictionary_out.at[idx, col_name])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                median_value = median.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -2819,10 +2818,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, row] = math.floor(data_dictionary_in.at[idx, row])
-                                data_dictionary_out.at[idx, row] = math.floor(
-                                    data_dictionary_out.at[idx, row])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, row] = data_dictionary_in.at[idx, row].round(0)
+                                data_dictionary_out.at[idx, row] = data_dictionary_out.at[idx, row].round(0)
+                                median_value = median.round(0)
 
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
@@ -2859,10 +2857,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(
-                                    data_dictionary_out.at[idx, col_name])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                median_value = median.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if data_dictionary_in.at[idx, col_name] in missing_values:
@@ -2894,10 +2891,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(
-                                    data_dictionary_out.at[idx, col_name])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                median_value = median.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
@@ -2929,10 +2925,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, row] = math.floor(data_dictionary_in.at[idx, row])
-                                data_dictionary_out.at[idx, row] = math.floor(
-                                    data_dictionary_out.at[idx, row])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, row] = data_dictionary_in.at[idx, row].round(0)
+                                data_dictionary_out.at[idx, row] = data_dictionary_out.at[idx, row].round(0)
+                                median_value = median.round(0)
 
                     # Check if the missing values in the row have been replaced with the median in data_dictionary_out
                     for col_name, value in numeric_data.items():
@@ -2969,10 +2964,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(
-                                    data_dictionary_out.at[idx, col_name])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                median_value = median.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
@@ -3002,10 +2996,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col] = math.floor(data_dictionary_in.at[idx, col])
-                                data_dictionary_out.at[idx, col] = math.floor(
-                                    data_dictionary_out.at[idx, col])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
+                                data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
+                                median_value = median.round(0)
 
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
@@ -3036,10 +3029,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                 data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, row] = math.floor(data_dictionary_in.at[idx, row])
-                                data_dictionary_out.at[idx, row] = math.floor(
-                                    data_dictionary_out.at[idx, row])
-                                median_value = math.floor(median)
+                                data_dictionary_in.at[idx, row] = data_dictionary_in.at[idx, row].round(0)
+                                data_dictionary_out.at[idx, row] = data_dictionary_out.at[idx, row].round(0)
+                                median_value = median.round(0)
 
                     for col_name, value in numeric_data.items():
                         if data_dictionary_outliers_mask.at[idx, col_name] == 1:
@@ -3075,9 +3067,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         median_value = math.ceil(median)
                     else:
-                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
-                        median_value = math.floor(median)
+                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        median_value = median.round(0)
 
             for idx, value in data_dictionary_in[field_in].items():
                 if value in missing_values or pd.isnull(value):
@@ -3107,9 +3099,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         median_value = math.ceil(median)
                     else:
-                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
-                        median_value = math.floor(median)
+                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        median_value = median.round(0)
 
 
             for idx, value in data_dictionary_in[field_in].items():
@@ -3140,9 +3132,9 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         median_value = math.ceil(median)
                     else:
-                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
-                        median_value = math.floor(median)
+                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        median_value = median.round(0)
 
 
             for idx, value in data_dictionary_in[field_in].items():
@@ -3300,10 +3292,10 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 minimum_valid = math.ceil(minimum_valid)
                                 maximum_valid = math.ceil(maximum_valid)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                minimum_valid = math.floor(minimum_valid)
-                                maximum_valid = math.floor(maximum_valid)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                minimum_valid = minimum_valid.round(0)
+                                maximum_valid = maximum_valid.round(0)
 
                     for i in range(len(data_dictionary_in.index)):
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
@@ -3346,10 +3338,10 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 minimum_valid = math.ceil(minimum_valid)
                                 maximum_valid = math.ceil(maximum_valid)
                             else:
-                                data_dictionary_in.at[idx, col_name] = math.floor(data_dictionary_in.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.floor(data_dictionary_out.at[idx, col_name])
-                                minimum_valid = math.floor(minimum_valid)
-                                maximum_valid = math.floor(maximum_valid)
+                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                minimum_valid = minimum_valid.round(0)
+                                maximum_valid = maximum_valid.round(0)
 
                     for i in range(len(data_dictionary_in.index)):
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
@@ -3423,10 +3415,10 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         minimum_valid = math.ceil(minimum_valid)
                         maximum_valid = math.ceil(maximum_valid)
                     else:
-                        data_dictionary_in.at[idx, field_in] = math.floor(data_dictionary_in.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.floor(data_dictionary_out.at[idx, field_out])
-                        minimum_valid = math.floor(minimum_valid)
-                        maximum_valid = math.floor(maximum_valid)
+                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
+                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        minimum_valid = minimum_valid.round(0)
+                        maximum_valid = maximum_valid.round(0)
 
             # Checks the outlier values in the input with the closest numeric values in the output
             for i in range(len(data_dictionary_in.index)):

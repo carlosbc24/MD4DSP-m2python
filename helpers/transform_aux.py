@@ -350,7 +350,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
 
             elif axis_param == 1:
                 data_dictionary_copy= data_dictionary_copy.T
@@ -364,7 +364,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
                 data_dictionary_copy = data_dictionary_copy.T
 
         if special_type_input == SpecialType.INVALID:
@@ -380,7 +380,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 if data_dictionary_copy_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy_copy.at[idx, col] = math.ceil(data_dictionary_copy_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy_copy.at[idx, col] = math.floor(data_dictionary_copy_copy.at[idx, col])
+                                    data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy_copy.at[idx, col].round(0)
                 # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -404,7 +404,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 if data_dictionary_copy_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy_copy.at[idx, col] = math.ceil(data_dictionary_copy_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy_copy.at[idx, col] = math.floor(data_dictionary_copy_copy.at[idx, col])
+                                    data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy_copy.at[idx, col].round(0)
                     # Iterate over each column
                 for col in data_dictionary_copy.columns:
                     # For each index in the column
@@ -430,7 +430,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 if data_dictionary_copy_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy_copy.at[idx, col] = math.ceil(data_dictionary_copy_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy_copy.at[idx, col] = math.floor(data_dictionary_copy_copy.at[idx, col])
+                                    data_dictionary_copy_copy.at[idx, col] = data_dictionary_copy_copy.at[idx, col].round(0)
                 for col in data_dictionary_copy.columns:
                     # For each índex in the column
                     for idx in data_dictionary_copy.index:
@@ -454,7 +454,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
                 for col in data_dictionary_copy.columns:
                     # For each índex in the column
                     for idx in data_dictionary_copy.index:
@@ -480,7 +480,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     if data_dictionary_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy.at[idx, field_out] = math.ceil(data_dictionary_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
 
         if special_type_input == SpecialType.INVALID:
             data_dictionary_copy_copy[field_out] = data_dictionary_copy[field_in].apply(lambda x: np.nan if x in missing_values else x)
@@ -491,7 +491,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     if data_dictionary_copy_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy_copy.at[idx, field_out] = math.ceil(data_dictionary_copy_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy_copy.at[idx, field_out] = math.floor(data_dictionary_copy_copy.at[idx, field_out])
+                        data_dictionary_copy_copy.at[idx, field_out] = data_dictionary_copy_copy.at[idx, field_out].round(0)
 
             # For each índex in the column
             for idx in data_dictionary_copy.index:
@@ -515,7 +515,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                     if data_dictionary_copy_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy_copy.at[idx, field_out] = math.ceil(data_dictionary_copy_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy_copy.at[idx, field_out] = math.floor(data_dictionary_copy_copy.at[idx, field_out])
+                        data_dictionary_copy_copy.at[idx, field_out] = data_dictionary_copy_copy.at[idx, field_out].round(0)
             # For each índex in the column
             for idx in data_dictionary_copy.index:
                 # Verify if the value is NaN in the original dataframe
@@ -568,7 +568,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
             elif axis_param == 1:
                 data_dictionary_copy = data_dictionary_copy.T
                 means = data_dictionary_copy.apply(
@@ -584,7 +584,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                                 if data_dictionary_copy.at[idx, row] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, row] = math.ceil(data_dictionary_copy.at[idx, row])
                                 else:
-                                    data_dictionary_copy.at[idx, row] = math.floor(data_dictionary_copy.at[idx, row])
+                                    data_dictionary_copy.at[idx, row] = data_dictionary_copy.at[idx, row].round(0)
                 data_dictionary_copy = data_dictionary_copy.T
         if special_type_input == SpecialType.INVALID:
             if axis_param is None:
@@ -608,7 +608,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
             elif axis_param == 1:
                 data_dictionary_copy = data_dictionary_copy.T
                 means = data_dictionary_copy.apply(lambda row: row[row.apply(lambda x:
@@ -623,7 +623,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                                 if data_dictionary_copy.at[idx, row] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, row] = math.ceil(data_dictionary_copy.at[idx, row])
                                 else:
-                                    data_dictionary_copy.at[idx, row] = math.floor(data_dictionary_copy.at[idx, row])
+                                    data_dictionary_copy.at[idx, row] = data_dictionary_copy.at[idx, row].round(0)
                 data_dictionary_copy = data_dictionary_copy.T
 
         if special_type_input == SpecialType.OUTLIER:
@@ -650,7 +650,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
             elif axis_param == 1: # Iterate over each row
                 for idx, row in data_dictionary_copy.iterrows():
                     if np.issubdtype(data_dictionary_copy[row].dtype, np.number):
@@ -664,7 +664,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                                 if data_dictionary_copy.at[idx, row] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, row] = math.ceil(data_dictionary_copy.at[idx, row])
                                 else:
-                                    data_dictionary_copy.at[idx, row] = math.floor(data_dictionary_copy.at[idx, row])
+                                    data_dictionary_copy.at[idx, row] = data_dictionary_copy.at[idx, row].round(0)
 
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
@@ -682,7 +682,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                     if data_dictionary_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy.at[idx, field_out] = math.ceil(data_dictionary_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
 
         if special_type_input == SpecialType.INVALID:
             mean = data_dictionary_copy[field_in].mean()
@@ -694,7 +694,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                     if data_dictionary_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy.at[idx, field_out] = math.ceil(data_dictionary_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
 
         if special_type_input == SpecialType.OUTLIER:
             mean=data_dictionary_copy[field_in].mean()
@@ -709,7 +709,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
                     if data_dictionary_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy.at[idx, field_out] = math.ceil(data_dictionary_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
 
 
     return data_dictionary_copy
@@ -753,7 +753,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
             elif axis_param == 1:
                 data_dictionary_copy = data_dictionary_copy.T
                 medians = data_dictionary_copy.apply(
@@ -769,7 +769,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                                 if data_dictionary_copy.at[idx, row] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, row] = math.ceil(data_dictionary_copy.at[idx, row])
                                 else:
-                                    data_dictionary_copy.at[idx, row] = math.floor(data_dictionary_copy.at[idx, row])
+                                    data_dictionary_copy.at[idx, row] = data_dictionary_copy.at[idx, row].round(0)
                 data_dictionary_copy = data_dictionary_copy.T
 
         if special_type_input == SpecialType.INVALID:
@@ -795,7 +795,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
             elif axis_param == 1:
                 data_dictionary_copy = data_dictionary_copy.T
                 for col in data_dictionary_copy.columns:
@@ -811,7 +811,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
                 data_dictionary_copy = data_dictionary_copy.T
 
         if special_type_input == SpecialType.OUTLIER:
@@ -831,7 +831,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                             if data_dictionary_copy.at[idx, col_name] % 1 >= 0.5:
                                 data_dictionary_copy.at[idx, col_name] = math.ceil(data_dictionary_copy.at[idx, col_name])
                             else:
-                                data_dictionary_copy.at[idx, col_name] = math.floor(data_dictionary_copy.at[idx, col_name])
+                                data_dictionary_copy.at[idx, col_name] = data_dictionary_copy.at[idx, col_name].round(0)
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
                     if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
@@ -845,7 +845,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                                 if data_dictionary_copy.at[idx, col] % 1 >= 0.5:
                                     data_dictionary_copy.at[idx, col] = math.ceil(data_dictionary_copy.at[idx, col])
                                 else:
-                                    data_dictionary_copy.at[idx, col] = math.floor(data_dictionary_copy.at[idx, col])
+                                    data_dictionary_copy.at[idx, col] = data_dictionary_copy.at[idx, col].round(0)
             elif axis_param == 1:
                 for idx, row in data_dictionary_copy.iterrows():
                     median=data_dictionary_copy.loc[idx].median()
@@ -858,7 +858,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                             if data_dictionary_copy.loc[idx] % 1 >= 0.5:
                                 data_dictionary_copy.loc[idx] = math.ceil(data_dictionary_copy.loc[idx])
                             else:
-                                data_dictionary_copy.loc[idx] = math.floor(data_dictionary_copy.loc[idx])
+                                data_dictionary_copy.loc[idx] = data_dictionary_copy.loc[idx].round(0)
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("The field is not in the dataframe")
@@ -875,7 +875,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     if data_dictionary_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy.at[idx, field_out] = math.ceil(data_dictionary_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
 
         if special_type_input == SpecialType.INVALID:
             median = data_dictionary_copy[field_in].median()
@@ -887,7 +887,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     if data_dictionary_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy.at[idx, field_out] = math.ceil(data_dictionary_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
 
         if special_type_input == SpecialType.OUTLIER:
             median = data_dictionary_copy[field_in].median()
@@ -902,7 +902,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                     if data_dictionary_copy.at[idx, field_out] % 1 >= 0.5:
                         data_dictionary_copy.at[idx, field_out] = math.ceil(data_dictionary_copy.at[idx, field_out])
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
 
     return data_dictionary_copy
 
@@ -1025,9 +1025,9 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                                 minimum_valid = math.ceil(minimum_valid)
                                 maximum_valid = math.ceil(maximum_valid)
                             else:
-                                data_dictionary_copy.at[idx, col_name] = math.floor(data_dictionary_copy.at[idx, col_name])
-                                minimum_valid = math.floor(minimum_valid)
-                                maximum_valid = math.floor(maximum_valid)
+                                data_dictionary_copy.at[idx, col_name] = data_dictionary_copy.at[idx, col_name].round(0)
+                                minimum_valid = minimum_valid.round(0)
+                                maximum_valid = maximum_valid.round(0)
 
                     # Replace the outlier values with the closest numeric values
                     for i in range(len(data_dictionary_copy.index)):
@@ -1077,9 +1077,9 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                         minimum_valid = math.ceil(minimum_valid)
                         maximum_valid = math.ceil(maximum_valid)
                     else:
-                        data_dictionary_copy.at[idx, field_out] = math.floor(data_dictionary_copy.at[idx, field_out])
-                        minimum_valid = math.floor(minimum_valid)
-                        maximum_valid = math.floor(maximum_valid)
+                        data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_out].round(0)
+                        minimum_valid = minimum_valid.round(0)
+                        maximum_valid = maximum_valid.round(0)
 
             # Replace the outlier values with the closest numeric values
             for i in range(len(data_dictionary_copy.index)):
