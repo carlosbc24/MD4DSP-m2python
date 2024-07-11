@@ -207,8 +207,6 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             if upper_bound > max_value:
                 upper_bound = max_value
 
-            print("Field:", field, "Lower bound:", lower_bound, "Upper bound:", upper_bound)
-
             return lower_bound, upper_bound
 
 
