@@ -181,14 +181,6 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             lower_bound = Q1 - threshold * IQR
             upper_bound = Q3 + threshold * IQR
 
-            min_value = data_dictionary_copy[field].min()
-            max_value = data_dictionary_copy[field].max()
-
-            if lower_bound < min_value:
-                lower_bound = min_value
-            if upper_bound > max_value:
-                upper_bound = max_value
-
             return lower_bound, upper_bound
 
     elif field is not None:
@@ -198,14 +190,6 @@ def outlier_closest(data_dictionary: pd.DataFrame, axis_param: int = None, field
             IQR = Q3 - Q1
             lower_bound = Q1 - threshold * IQR
             upper_bound = Q3 + threshold * IQR
-
-            min_value = data_dictionary_copy[field].min()
-            max_value = data_dictionary_copy[field].max()
-
-            if lower_bound < min_value:
-                lower_bound = min_value
-            if upper_bound > max_value:
-                upper_bound = max_value
 
             return lower_bound, upper_bound
 
