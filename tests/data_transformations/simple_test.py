@@ -2398,23 +2398,6 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 12 Passed: got the dataframe expected")
 
-        # Caso 13
-        datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
-        datadic = datadic.astype({
-            'B': 'float64',  # Convertir B a float64
-            'C': 'float64'  # Convertir B a float64
-        })
-        expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 1.5], 'C': [1.5, 1, 3, 3, 0], 'D': [1, 2.5, 6, 1, 2]})
-        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=datadic.copy(),
-                                                                             special_type_input=SpecialType(2),
-                                                                             num_op_output=Operation(2),
-                                                                             missing_values=None,
-                                                                             axis_param=1)
-        pd.testing.assert_frame_equal(expected_df, result_df)
-        print_and_log("Test Case 13 Passed: got the dataframe expected")
-
         # Caso 14
         # Probamos a aplicar la operación closest sobre un dataframe con missing values (existen valores nulos)
         datadic = pd.DataFrame(

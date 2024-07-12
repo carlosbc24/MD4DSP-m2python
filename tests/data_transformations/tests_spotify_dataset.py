@@ -1,3 +1,4 @@
+import math
 import os
 import unittest
 
@@ -3861,6 +3862,18 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=self.small_batch_dataset.copy(),
                                                            axis_param=0, field=col_name)
 
+            # Trunk the decimals to 0 if the column is int or if it has no decimals
+            if (self.small_batch_dataset[col_name].dropna() % 1 == 0).all():
+                for idx in self.small_batch_dataset.index:
+                    if expected_df.at[idx, col_name] % 1 >= 0.5:
+                        expected_df.at[idx, col_name] = math.ceil(expected_df.at[idx, col_name])
+                        minimum_valid = math.ceil(minimum_valid)
+                        maximum_valid = math.ceil(maximum_valid)
+                    else:
+                        expected_df.at[idx, col_name] = expected_df.at[idx, col_name].round(0)
+                        minimum_valid = minimum_valid.round(0)
+                        maximum_valid = maximum_valid.round(0)
+
             # Replace the outlier values with the closest numeric values
             for i in range(len(self.small_batch_dataset.copy().index)):
                 if data_dictionary_copy_mask.at[i, col_name] == 1:
@@ -4391,6 +4404,18 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=self.rest_of_dataset.copy(),
                                                            axis_param=0, field=col_name)
+
+            # Trunk the decimals to 0 if the column is int or if it has no decimals
+            if (self.rest_of_dataset[col_name].dropna() % 1 == 0).all():
+                for idx in self.rest_of_dataset.index:
+                    if expected_df.at[idx, col_name] % 1 >= 0.5:
+                        expected_df.at[idx, col_name] = math.ceil(expected_df.at[idx, col_name])
+                        minimum_valid = math.ceil(minimum_valid)
+                        maximum_valid = math.ceil(maximum_valid)
+                    else:
+                        expected_df.at[idx, col_name] = expected_df.at[idx, col_name].round(0)
+                        minimum_valid = minimum_valid.round(0)
+                        maximum_valid = maximum_valid.round(0)
 
             # Replace the outlier values with the closest numeric values
             for i in range(len(self.rest_of_dataset.copy().index)):

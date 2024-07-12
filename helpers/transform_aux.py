@@ -853,7 +853,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
                         if data_dictionary_copy_mask.at[idx, col] == 1:
                             data_dictionary_copy.at[idx, col] = median
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
-                    if (data_dictionary_copy[idx].dropna() % 1 == 0).all():
+                    if (data_dictionary_copy[row].dropna() % 1 == 0).all():
                         for idx in data_dictionary_copy.index:
                             if data_dictionary_copy.loc[idx] % 1 >= 0.5:
                                 data_dictionary_copy.loc[idx] = math.ceil(data_dictionary_copy.loc[idx])
