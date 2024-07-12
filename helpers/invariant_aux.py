@@ -907,7 +907,7 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
             # Calculate the mean of these numeric columns
             mean_value = only_numbers_df.mean().mean()
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.columns:
+            for col_name in only_numbers_df:
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
                         if data_dictionary_in.at[idx, col_name] == fix_value_input:
@@ -1030,7 +1030,7 @@ def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out
             # Calculate the median of these numeric columns
             median_value = only_numbers_df.median().median()
             # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.columns:
+            for col_name in only_numbers_df:
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
                         if data_dictionary_in.at[idx, col_name] == fix_value_input:
@@ -1303,7 +1303,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
     data_dictionary_in_copy = data_dictionary_in.copy()
     if field_in is None:
         if axis_param == 0:
-            for col in data_dictionary_in.columns:
+            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                 if np.issubdtype(data_dictionary_in[col].dtype, np.number):
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].apply(
                         lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
@@ -1727,7 +1727,7 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
 
             # Check if the closest values have been replaced in the data_dictionary_out
             for idx, row in data_dictionary_in.iterrows():
-                for col_name in data_dictionary_in.columns:
+                for col_name in only_numbers_df:
                     if (np.isreal(row[col_name]) and check_interval_condition(row[col_name], left_margin, right_margin, closure_type)
                                     and not pd.isnull(row[col_name])):
                         if data_dictionary_out.at[idx, col_name] != closest_values[row[col_name]]:
@@ -1895,14 +1895,15 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                         for idx in data_dictionary_in.index:
                             data_dictionary_in_copy.at[idx, col_name] = truncate(data_dictionary_in_copy.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
+                                data_dictionary_in_copy.at[idx, col_name] = math.ceil(data_dictionary_in_copy.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
+                                data_dictionary_in_copy.at[idx, col_name] = data_dictionary_in_copy.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
 
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
@@ -1931,14 +1932,14 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                            if data_dictionary_in.at[row, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[row, col_name] = math.ceil(data_dictionary_in.at[row, col_name])
+                            if data_dictionary_in_copy.at[row, col_name] % 1 >= 0.5:
+                                data_dictionary_in_copy.at[row, col_name] = math.ceil(data_dictionary_in_copy.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
                             else:
-                                data_dictionary_in.at[row, col_name] = data_dictionary_in.at[row, col_name].round(0)
+                                data_dictionary_in_copy.at[row, col_name] = data_dictionary_in_copy.at[row, col_name].round(0)
                                 data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
 
-                for col_name in data_dictionary_in.columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(data_dictionary_in.at[idx, col_name]):
                             if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
@@ -1965,15 +1966,15 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
-                            if data_dictionary_in.at[idx, col] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col] = math.ceil(data_dictionary_in.at[idx, col])
+                            if data_dictionary_in_copy.at[idx, col] % 1 >= 0.5:
+                                data_dictionary_in_copy.at[idx, col] = math.ceil(data_dictionary_in_copy.at[idx, col])
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                             else:
-                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
+                                data_dictionary_in_copy.at[idx, col] = data_dictionary_in_copy.at[idx, col].round(0)
                                 data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
 
                 # Iterate over each column
-                for col in data_dictionary_in.columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     # For each index in the column
                     for idx in data_dictionary_in.index:
                         # Verify if the value is NaN in the original dataframe
@@ -2008,15 +2009,15 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                            if data_dictionary_in.at[row, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[row, col_name] = math.ceil(data_dictionary_in.at[row, col_name])
+                            if data_dictionary_in_copy.at[row, col_name] % 1 >= 0.5:
+                                data_dictionary_in_copy.at[row, col_name] = math.ceil(data_dictionary_in_copy.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
                             else:
-                                data_dictionary_in.at[row, col_name] = data_dictionary_in.at[row, col_name].round(0)
+                                data_dictionary_in_copy.at[row, col_name] = data_dictionary_in_copy.at[row, col_name].round(0)
                                 data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
 
                 # Iterate over each column
-                for col in data_dictionary_in.columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     # For each index in the column
                     for idx in data_dictionary_in.index:
                         # Verify if the value is NaN in the original dataframe
@@ -2024,7 +2025,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             data_dictionary_in_copy.at[idx, col] = data_dictionary_in.at[idx, col]
 
-                for col in data_dictionary_in.columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col] in missing_values:
                             if data_dictionary_out.at[idx, col] != data_dictionary_in_copy.at[idx, col]:
@@ -2052,11 +2053,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
-                            if data_dictionary_in.at[idx, col] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col] = math.ceil(data_dictionary_in.at[idx, col])
+                            if data_dictionary_in_copy.at[idx, col] % 1 >= 0.5:
+                                data_dictionary_in_copy.at[idx, col] = math.ceil(data_dictionary_in_copy.at[idx, col])
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                             else:
-                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
+                                data_dictionary_in_copy.at[idx, col] = data_dictionary_in_copy.at[idx, col].round(0)
                                 data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
 
                 # Iterate over each column
@@ -2096,11 +2097,11 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                            if data_dictionary_in.at[row, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[row, col_name] = math.ceil(data_dictionary_in.at[row, col_name])
+                            if data_dictionary_in_copy.at[row, col_name] % 1 >= 0.5:
+                                data_dictionary_in_copy.at[row, col_name] = math.ceil(data_dictionary_in_copy.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
                             else:
-                                data_dictionary_in.at[row, col_name] = data_dictionary_in.at[row, col_name].round(0)
+                                data_dictionary_in_copy.at[row, col_name] = data_dictionary_in_copy.at[row, col_name].round(0)
                                 data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
 
                 # Iterate over each column
@@ -2168,6 +2169,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                 for idx in data_dictionary_in.index:
                     data_dictionary_in_copy.at[idx, field_in] = truncate(data_dictionary_in_copy.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
+
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
@@ -2276,7 +2278,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                 mean_value = None
 
                 # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
+                for col_name in only_numbers_df:
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
@@ -2386,7 +2388,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                 mean = only_numbers_df.mean().mean()
                 mean_value = None
                 # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.columns:
+                for col_name in only_numbers_df:
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
