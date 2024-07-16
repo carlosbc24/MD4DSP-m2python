@@ -71,7 +71,8 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
             for row_index, value in data_dictionary_in[column_name].items():
                 # Comprobar si el valor es igual a fix_value_input
                 if value in mapping_values:
-                    if not pd.isna(data_dictionary_out.loc[row_index, column_name]) and (type(mapping_values[value])
+                    if not pd.isna(data_dictionary_out.loc[row_index, column_name]) and type(data_dictionary_out.loc[
+                                                                                                 row_index, column_name]) == str and (type(mapping_values[value])
                                                                                         == str or type(
                                 mapping_values[value]) == object):
                         if data_dictionary_out.loc[row_index, column_name].strip() != mapping_values[value].strip():
@@ -100,9 +101,11 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
             for row_index, value in data_dictionary_in[field_in].items():
                 # Comprobar si el valor es igual a fix_value_input
                 if value in mapping_values:
-                    if not pd.isna(data_dictionary_out.loc[row_index, field_out]) and (type(mapping_values[value])
+                    if (not pd.isna(data_dictionary_out.loc[row_index, field_out]) and type(data_dictionary_out.loc[
+                                                                                               row_index, field_out]) == str
+                            and (type(mapping_values[value])
                                                                                           == str or type(
-                                mapping_values[value]) == object):
+                                mapping_values[value]) == object)):
                         if data_dictionary_out.loc[row_index, field_out].strip() != mapping_values[value].strip():
                             if belong_op_out == Belong.BELONG:
                                 result = False
@@ -270,7 +273,7 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
         for column_index, column_name in enumerate(data_dictionary_in.columns):
             for row_index, value in data_dictionary_in[column_name].items():
                 if check_interval_condition(value, left_margin, right_margin, closure_type):
-                    if not pd.isna(data_dictionary_out.loc[row_index, field_out]) and (type(fix_value_output) == str
+                    if not pd.isna(data_dictionary_out.loc[row_index, column_name]) and type(data_dictionary_out.loc[row_index, column_name]) == str and (type(fix_value_output) == str
                                                                                        or type(fix_value_output) == object):
                         if data_dictionary_out.loc[row_index, column_name].strip() != fix_value_output.strip():
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -296,9 +299,12 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
 
         for row_index, value in data_dictionary_in[field_in].items():
             if check_interval_condition(value, left_margin, right_margin, closure_type):
-                if not pd.isna(data_dictionary_out.loc[row_index, field_out]) and (type(fix_value_output) == str or
+                if (not pd.isna(data_dictionary_out.loc[row_index, field_out]) and type(data_dictionary_out.loc[
+                                                                                           row_index, field_out]) == str and
+                        type(data_dictionary_out.loc[row_index, field_out]) == str and (
+                        type(fix_value_output) == str or
                         type(
-                        fix_value_output) == object):
+                        fix_value_output) == object)):
                     if data_dictionary_out.loc[row_index, field_out].strip() != fix_value_output.strip():
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False

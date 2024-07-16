@@ -219,4 +219,5 @@ def truncate(number: Union[int, float], decimals: int = 0) -> Union[int, float]:
     factor = 10.0 ** decimals
     if math.isnan(number):
         return float('nan')
+
     return math.trunc(number * factor) / factor

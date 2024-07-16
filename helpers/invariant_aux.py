@@ -1457,7 +1457,7 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
             # Calculate the mean of these numeric columns
-            mean_value = only_numbers_df.mean()
+            mean_value = only_numbers_df.mean().mean()
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
             for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                 for idx, value in data_dictionary_in[col_name].items():
@@ -2283,18 +2283,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
@@ -2320,18 +2317,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
@@ -2357,17 +2351,14 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     for col_name, value in numeric_data.items():
                         # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                         if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                         # Trunk the decimals to 0 if the column is int or if it has no decimals
                         elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
@@ -2392,18 +2383,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
@@ -2428,25 +2416,22 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
                     for idx, value in data_dictionary_in[col_name].items():
                         if np.issubdtype(type(value), np.number):
                             if data_dictionary_in.at[idx, col_name] in missing_values:
-                                if data_dictionary_out.at[idx, col_name] != mean:
+                                if data_dictionary_out.at[idx, col_name] != mean_value:
                                     if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                                         result = False
                                         print_and_log(f"Error in row: {idx} and column: {col_name} value should be: {mean_value} but is: {data_dictionary_out.loc[idx, col_name]}")
@@ -2463,17 +2448,14 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     for col_name, value in numeric_data.items():
                         # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                         if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                         # Trunk the decimals to 0 if the column is int or if it has no decimals
                         elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
@@ -2498,18 +2480,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
@@ -2530,18 +2509,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col] = truncate(data_dictionary_in.at[idx, col], 8)
                             data_dictionary_out.at[idx, col] = truncate(data_dictionary_out.at[idx, col], 8)
                             mean_value = truncate(mean, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col] = math.ceil(data_dictionary_in.at[idx, col])
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
                                 data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
                                 mean_value = mean.round(0)
 
@@ -2564,17 +2540,14 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     for col_name, value in numeric_data.items():
                         # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                         if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             mean_value = truncate(mean, 8)
                         # Trunk the decimals to 0 if the column is int or if it has no decimals
                         elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 mean_value = math.ceil(mean)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 mean_value = mean.round(0)
 
@@ -2600,18 +2573,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
                     mean_value = truncate(mean, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         mean_value = math.ceil(mean)
                     else:
-                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
                         data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
                         mean_value = mean.round(0)
 
@@ -2633,18 +2603,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
                     mean_value = truncate(mean, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         mean_value = math.ceil(mean)
                     else:
-                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
                         data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
                         mean_value = mean.round(0)
 
@@ -2666,18 +2633,15 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
                     mean_value = truncate(mean, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         mean_value = math.ceil(mean)
                     else:
-                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
                         data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
                         mean_value = mean.round(0)
 
@@ -2737,19 +2701,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 median_value = median.round(0)
 
@@ -2773,19 +2735,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 median_value = median.round(0)
 
@@ -2808,19 +2768,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, row] = truncate(data_dictionary_in.at[idx, row], 8)
                             data_dictionary_out.at[idx, row] = truncate(data_dictionary_out.at[idx, row], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, row] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, row] = math.ceil(data_dictionary_in.at[idx, row])
                                 data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, row] = data_dictionary_in.at[idx, row].round(0)
                                 data_dictionary_out.at[idx, row] = data_dictionary_out.at[idx, row].round(0)
                                 median_value = median.round(0)
 
@@ -2848,18 +2806,16 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
-                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
                             median_value = truncate(median, 8)
+                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 median_value = median.round(0)
 
@@ -2881,19 +2837,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 median_value = median.round(0)
 
@@ -2915,19 +2869,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, row] = truncate(data_dictionary_in.at[idx, row], 8)
                             data_dictionary_out.at[idx, row] = truncate(data_dictionary_out.at[idx, row], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, row] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, row] = math.ceil(data_dictionary_in.at[idx, row])
                                 data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, row] = data_dictionary_in.at[idx, row].round(0)
                                 data_dictionary_out.at[idx, row] = data_dictionary_out.at[idx, row].round(0)
                                 median_value = median.round(0)
 
@@ -2954,19 +2906,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 median_value = median.round(0)
 
@@ -2986,19 +2936,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col] = truncate(data_dictionary_in.at[idx, col], 8)
                             data_dictionary_out.at[idx, col] = truncate(data_dictionary_out.at[idx, col], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col] = math.ceil(data_dictionary_in.at[idx, col])
                                 data_dictionary_out.at[idx, col] = math.ceil(data_dictionary_out.at[idx, col])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, col] = data_dictionary_in.at[idx, col].round(0)
                                 data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
                                 median_value = median.round(0)
 
@@ -3019,19 +2967,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
+                        median_value = truncate(median, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, row] = truncate(data_dictionary_in.at[idx, row], 8)
                             data_dictionary_out.at[idx, row] = truncate(data_dictionary_out.at[idx, row], 8)
-                            median_value = truncate(median, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, row] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, row] = math.ceil(data_dictionary_in.at[idx, row])
                                 data_dictionary_out.at[idx, row] = math.ceil(data_dictionary_out.at[idx, row])
                                 median_value = math.ceil(median)
                             else:
-                                data_dictionary_in.at[idx, row] = data_dictionary_in.at[idx, row].round(0)
                                 data_dictionary_out.at[idx, row] = data_dictionary_out.at[idx, row].round(0)
                                 median_value = median.round(0)
 
@@ -3057,19 +3003,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
+                median_value = truncate(median, 8)
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
-                    median_value = truncate(median, 8)
+
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         median_value = math.ceil(median)
                     else:
-                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
                         data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
                         median_value = median.round(0)
 
@@ -3089,19 +3033,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
+                median_value = truncate(median, 8)
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
-                    median_value = truncate(median, 8)
+
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         median_value = math.ceil(median)
                     else:
-                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
                         data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
                         median_value = median.round(0)
 
@@ -3122,19 +3064,17 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
+                median_value = truncate(median, 8)
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
-                    median_value = truncate(median, 8)
+
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         median_value = math.ceil(median)
                     else:
-                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
                         data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
                         median_value = median.round(0)
 
@@ -3280,21 +3220,19 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        minimum_valid = truncate(minimum_valid, 8)
+                        maximum_valid = truncate(maximum_valid, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
-                            minimum_valid = truncate(minimum_valid, 8)
-                            maximum_valid = truncate(maximum_valid, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 minimum_valid = math.ceil(minimum_valid)
                                 maximum_valid = math.ceil(maximum_valid)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 minimum_valid = minimum_valid.round(0)
                                 maximum_valid = maximum_valid.round(0)
@@ -3323,24 +3261,20 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_in,
                                                                    axis_param=0, field=col_name)
-
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
+                        minimum_valid = truncate(minimum_valid, 8)
+                        maximum_valid = truncate(maximum_valid, 8)
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in.at[idx, col_name] = truncate(data_dictionary_in.at[idx, col_name], 8)
                             data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
-                            minimum_valid = truncate(minimum_valid, 8)
-                            maximum_valid = truncate(maximum_valid, 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
                             if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in.at[idx, col_name] = math.ceil(data_dictionary_in.at[idx, col_name])
                                 data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
                                 minimum_valid = math.ceil(minimum_valid)
                                 maximum_valid = math.ceil(maximum_valid)
                             else:
-                                data_dictionary_in.at[idx, col_name] = data_dictionary_in.at[idx, col_name].round(0)
                                 data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
                                 minimum_valid = minimum_valid.round(0)
                                 maximum_valid = maximum_valid.round(0)
@@ -3403,21 +3337,18 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                                            axis_param=None, field=field_in)
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
+                minimum_valid = truncate(minimum_valid, 8)
+                maximum_valid = truncate(maximum_valid, 8)
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in.at[idx, field_in] = truncate(data_dictionary_in.at[idx, field_in], 8)
                     data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
-                    minimum_valid = truncate(minimum_valid, 8)
-                    maximum_valid = truncate(maximum_valid, 8)
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in.at[idx, field_in] = math.ceil(data_dictionary_in.at[idx, field_in])
                         data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
                         minimum_valid = math.ceil(minimum_valid)
                         maximum_valid = math.ceil(maximum_valid)
                     else:
-                        data_dictionary_in.at[idx, field_in] = data_dictionary_in.at[idx, field_in].round(0)
                         data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
                         minimum_valid = minimum_valid.round(0)
                         maximum_valid = maximum_valid.round(0)

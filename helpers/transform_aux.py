@@ -5,7 +5,7 @@ import math
 import numpy as np
 import pandas as pd
 
-from helpers.auxiliar import find_closest_value, outlier_closest
+from helpers.auxiliar import find_closest_value, outlier_closest, truncate
 from helpers.enumerations import DerivedType, SpecialType
 
 
