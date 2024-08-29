@@ -20,7 +20,7 @@
    
 3. Crate a new conda environment:
    ```bash
-   conda create --name md4dsp python=3.11 -y
+   conda create --name md4dsp python=3.11 --yes
    ```
    
 4. Deactivate any previous environment and activate the new one:
@@ -31,7 +31,7 @@
 
 5. Clean conda and pip caches:
     ```shell
-    $ conda clean --all -y
+    $ conda clean --all --yes
     $ pip cache purge
     ```
    This step will prevent you from retrieving libraries from the conda or pip caches, which may be incompatible with
@@ -45,7 +45,7 @@
 7. (Optional) Remove the environment created previously:
    ```bash
    conda deactivate
-   conda remove --name md4dsp --all -y
+   conda remove --name md4dsp --all --yes
    ```
 
 ## Data transformation tests execution
