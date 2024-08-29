@@ -157,21 +157,24 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
 
         if derived_type_output == DerivedType.MOSTFREQUENT:
             for idx, value in data_dictionary_copy[field_in].items():
-                if data_dictionary_copy_copy.at[idx, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_copy_copy.index and data_dictionary_copy_copy.at[idx, field_in] == 1:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy[field_in].value_counts().idxmax()
-                else:
+                elif idx in data_dictionary_copy_copy.index:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
         elif derived_type_output == DerivedType.PREVIOUS:
             for idx, value in data_dictionary_copy[field_in].items():
-                if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != 0:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_copy_copy.index and data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != 0:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx - 1, field_in]
-                else:
+                elif idx in data_dictionary_copy_copy.index:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
         elif derived_type_output == DerivedType.NEXT:
             for idx, value in data_dictionary_copy[field_in].items():
-                if data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != len(data_dictionary_copy) - 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_copy_copy.index and data_dictionary_copy_copy.at[idx, field_in] == 1 and idx != len(data_dictionary_copy) - 1:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx + 1, field_in]
-                else:
+                elif idx in data_dictionary_copy_copy.index:
                     data_dictionary_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
 
     return data_dictionary_copy
@@ -503,9 +506,10 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
 
         if special_type_input == SpecialType.OUTLIER:
             for idx, value in data_dictionary_copy[field_in].items():
-                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_copy_mask.index and data_dictionary_copy_mask.at[idx, field_in] == 1:
                     data_dictionary_copy_copy.at[idx, field_in] = np.NaN
-                else:
+                elif idx in data_dictionary_copy_mask.index:
                     data_dictionary_copy_copy.at[idx, field_out] = data_dictionary_copy.at[idx, field_in]
 
             data_dictionary_copy_copy[field_out] = data_dictionary_copy_copy[field_in].interpolate(method='linear', limit_direction='both')
@@ -699,9 +703,10 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
         if special_type_input == SpecialType.OUTLIER:
             mean=data_dictionary_copy[field_in].mean()
             for idx, value in data_dictionary_copy[field_in].items():
-                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_copy_mask.index and data_dictionary_copy_mask.at[idx, field_in] == 1:
                     data_dictionary_copy.at[idx, field_out] = mean
-                else:
+                elif idx in data_dictionary_copy_mask.index:
                     data_dictionary_copy.at[idx, field_out] = value
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             if (data_dictionary_copy[field_out].dropna() % 1 == 0).all():
@@ -892,9 +897,10 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
         if special_type_input == SpecialType.OUTLIER:
             median = data_dictionary_copy[field_in].median()
             for idx, value in data_dictionary_copy[field_in].items():
-                if data_dictionary_copy_mask.at[idx, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_copy_mask.index and data_dictionary_copy_mask.at[idx, field_in] == 1:
                     data_dictionary_copy.at[idx, field_out] = median
-                else:
+                elif idx in data_dictionary_copy_mask.index:
                     data_dictionary_copy.at[idx, field_out] = value
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             if (data_dictionary_copy[field_out].dropna() % 1 == 0).all():
@@ -1083,7 +1089,8 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
 
             # Replace the outlier values with the closest numeric values
             for i in range(len(data_dictionary_copy.index)):
-                if data_dictionary_copy_mask.at[i, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if i in data_dictionary_copy_mask.index and data_dictionary_copy_mask.at[i, field_in] == 1:
                     if data_dictionary_copy.at[i, field_in] > maximum_valid:
                         data_dictionary_copy.at[i, field_out] = maximum_valid
                     elif data_dictionary_copy.at[i, field_in] < minimum_valid:

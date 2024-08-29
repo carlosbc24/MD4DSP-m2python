@@ -185,7 +185,8 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
     if field is None:
         for column in data_dictionary.select_dtypes(include=[np.number]).columns:
             for i in range(len(data_dictionary.index)):  # Cases 1-16
-                if not np.isnan(data_dictionary.at[i, column]):
+                # Verify if the index exists in the mask and if the value is an outlier
+                if i in data_dictionary.index and not np.isnan(data_dictionary.at[i, column]):
                     result = check_condition(data_dictionary.at[i, column], left_margin, right_margin, belong_op, result)
                     if belong_op == Belong.BELONG and not result:
                         return False
@@ -198,7 +199,8 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
 
         if np.issubdtype(data_dictionary[field].dtype, np.number):
             for i in range(len(data_dictionary[field])):  # Cases 17-32
-                if not np.isnan(data_dictionary.at[i, field]):
+                # Verify if the index exists in the mask and if the value is an outlier
+                if i in data_dictionary.index and not np.isnan(data_dictionary.at[i, field]):
                     result = check_condition(data_dictionary.at[i, field], left_margin, right_margin, belong_op, result)
                     if belong_op == Belong.BELONG and not result:
                         return False

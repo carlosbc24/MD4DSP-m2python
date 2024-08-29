@@ -2199,7 +2199,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
         elif special_type_input == SpecialType.OUTLIER:
             for idx, value in data_dictionary_in[field_in].items():
-                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_outliers_mask.index and data_dictionary_outliers_mask.at[idx, field_in] == 1:
                     data_dictionary_in_copy.at[idx, field_in] = np.NaN
 
             data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].interpolate(method='linear', limit_direction='both')
@@ -2227,7 +2228,8 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in.at[idx, field_in]
 
             for idx in data_dictionary_outliers_mask.index:
-                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_outliers_mask.index and data_dictionary_outliers_mask.at[idx, field_in] == 1:
                     if data_dictionary_out.at[idx, field_out] != data_dictionary_in_copy.at[idx, field_in]:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
@@ -2646,8 +2648,8 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                         mean_value = mean.round(0)
 
             for idx, value in data_dictionary_in[field_in].items():
-                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
-
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_outliers_mask.index and data_dictionary_outliers_mask.at[idx, field_in] == 1:
                     if data_dictionary_out.at[idx, field_out] != mean_value:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
@@ -3080,7 +3082,8 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
 
 
             for idx, value in data_dictionary_in[field_in].items():
-                if data_dictionary_outliers_mask.at[idx, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if idx in data_dictionary_outliers_mask.index and data_dictionary_outliers_mask.at[idx, field_in] == 1:
 
                     if data_dictionary_out.at[idx, field_out] != median_value:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -3355,7 +3358,8 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
 
             # Checks the outlier values in the input with the closest numeric values in the output
             for i in range(len(data_dictionary_in.index)):
-                if data_dictionary_outliers_mask.at[i, field_in] == 1:
+                # Verify if the index exists in the mask and if the value is an outlier
+                if i in data_dictionary_outliers_mask.index and data_dictionary_outliers_mask.at[i, field_in] == 1:
                     if data_dictionary_in.at[i, field_in] > maximum_valid:
                         if data_dictionary_out.at[i, field_out] != maximum_valid:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -4258,7 +4262,8 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
         elif field_in in outliers_dataframe_mask.columns:
             if derivedTypeOutput == DerivedType.MOSTFREQUENT:
                 for idx, value in data_dictionary_in[field_in].items():
-                    if outliers_dataframe_mask.at[idx, field_in] == 1:
+                    # Verify if the index exists in the mask and if the value is an outlier
+                    if idx in outliers_dataframe_mask.index and outliers_dataframe_mask.at[idx, field_in] == 1:
                         if data_dictionary_out.at[idx, field_out] != data_dictionary_in[field_in].value_counts().idxmax():
                             if belong_op_out == Belong.BELONG:
                                 result = False
@@ -4275,7 +4280,8 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
 
             elif derivedTypeOutput == DerivedType.PREVIOUS:
                 for idx, value in data_dictionary_in[field_in].items():
-                    if outliers_dataframe_mask.at[idx, field_in] == 1 and idx != 0:
+                    # Verify if the index exists in the mask and if the value is an outlier
+                    if idx in outliers_dataframe_mask.index and outliers_dataframe_mask.at[idx, field_in] == 1 and idx != 0:
                         if data_dictionary_out.at[idx, field_out] != data_dictionary_out.at[idx - 1, field_out]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
@@ -4292,7 +4298,8 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
 
             elif derivedTypeOutput == DerivedType.NEXT:
                 for idx, value in data_dictionary_in[field_in].items():
-                    if outliers_dataframe_mask.at[idx, field_in] == 1 and idx != len(data_dictionary_in) - 1:
+                    # Verify if the index exists in the mask and if the value is an outlier
+                    if idx in outliers_dataframe_mask.index and outliers_dataframe_mask.at[idx, field_in] == 1 and idx != len(data_dictionary_in) - 1:
                         if data_dictionary_out.at[idx, field_out] != data_dictionary_in.at[idx + 1, field_in]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
