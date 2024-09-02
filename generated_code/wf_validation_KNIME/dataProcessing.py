@@ -10,7 +10,7 @@ def generateDataProcessing():
 
 	#-----------------New DataProcessing-----------------
 	imputeByDerivedValue_input_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
-	imputeByDerivedValue_input_dataDictionary.to_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv', index=True)
+	imputeByDerivedValue_input_dataDictionary.to_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv')
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByDerivedValue_input_dataDictionary, field='sex', 
 									missing_values=missing_values_imputeByDerivedValue_PRE_valueRange,
@@ -59,7 +59,7 @@ def generateDataProcessing():
 	
 	imputeByDerivedValue_output_dataDictionary=imputeByDerivedValue_input_dataDictionary_transformed
 		
-	imputeByDerivedValue_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', index=True)							
+	imputeByDerivedValue_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')							
 	imputeByDerivedValue_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	missing_values_imputeByDerivedValue_POST_valueRange=[]
@@ -162,7 +162,7 @@ def generateDataProcessing():
 	
 	imputeByFixValue_output_dataDictionary=imputeByFixValue_input_dataDictionary_transformed
 		
-	imputeByFixValue_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', index=True)							
+	imputeByFixValue_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')							
 	imputeByFixValue_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	missing_values_imputeByFixValue_POST_valueRange=[]
@@ -246,7 +246,7 @@ def generateDataProcessing():
 	
 	imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		
-	imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', index=True)							
+	imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')							
 	imputeByNumericOp_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	missing_values_imputeByNumericOp_POST_valueRange=[]
@@ -311,7 +311,7 @@ def generateDataProcessing():
 	
 	imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		
-	imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', index=True)							
+	imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')							
 	imputeByNumericOp_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	missing_values_imputeByNumericOp_POST_valueRange=[]
@@ -358,7 +358,7 @@ def generateDataProcessing():
 																											closure_type_list=closure_type_list_rowFilterRange_param_filter)
 	rowFilterRange_output_DataDictionary=rowFilter_input_DataDictionary_transformed
 	
-	rowFilterRange_output_DataDictionary.to_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv', index=True)							
+	rowFilterRange_output_DataDictionary.to_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv')							
 	rowFilterRange_output_DataDictionary=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	if contract_pre_post.check_fix_value_range(value=-216, data_dictionary=rowFilterRange_output_DataDictionary, belong_op=Belong(1), field='init_span',
@@ -386,7 +386,7 @@ def generateDataProcessing():
 	
 	columnFilter_output_DataDictionary=columnFilter_input_DataDictionary_transformed
 	
-	columnFilter_output_DataDictionary.to_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv', index=True)							
+	columnFilter_output_DataDictionary.to_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv')							
 	columnFilter_output_DataDictionary=pd.read_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	field_list_columnFilter_POST_field_range=['stuemail', 'interest', 'telecq', 'TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS']
@@ -423,7 +423,7 @@ def generateDataProcessing():
 							                                      data_type_output_list = data_type_output_list, field_in = 'TERRITORY', field_out = 'TERRITORY')
 		
 		
-	mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv', index=True)							
+	mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv')							
 	mapping_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv', sep=',', index_col=0)																				
 	
 	if contract_pre_post.check_fix_value_range(value='A', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(1), field='TERRITORY',
@@ -483,7 +483,7 @@ def generateDataProcessing():
 							                                      data_type_output_list = data_type_output_list, field_in = 'Instate', field_out = 'Instate')
 		
 		
-	mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', index=True)							
+	mapping_output_dataDictionary.to_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv')							
 	mapping_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', sep=',', index_col=0)																				
 	
 	if contract_pre_post.check_fix_value_range(value='Y', data_dictionary=mapping_output_dataDictionary, belong_op=Belong(1), field='Instate',
@@ -531,7 +531,7 @@ def generateDataProcessing():
 	
 	categoricalToContinuous_output_dataDictionary=categoricalToContinuous_input_dataDictionary_transformed
 		
-	categoricalToContinuous_output_dataDictionary.to_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv', index=True)							
+	categoricalToContinuous_output_dataDictionary.to_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv')							
 	categoricalToContinuous_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	if contract_invariants.check_inv_missing_value_missing_value(data_dictionary_in=categoricalToContinuous_input_dataDictionary,
@@ -594,7 +594,7 @@ def generateDataProcessing():
 	
 	imputeByNumericOp_output_dataDictionary=imputeByNumericOp_input_dataDictionary_transformed
 		
-	imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', index=True)							
+	imputeByNumericOp_output_dataDictionary.to_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')							
 	imputeByNumericOp_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	if contract_pre_post.check_outliers(belong_op=Belong(1), data_dictionary=imputeByNumericOp_output_dataDictionary, field='avg_income', 
@@ -678,7 +678,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_derived_field(data_dictionary=binner_input_dataDictionary_transformed,
 																  data_type_output = DataType(0),
@@ -686,7 +686,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_derived_field(data_dictionary=binner_input_dataDictionary_transformed,
 																  data_type_output = DataType(0),
@@ -694,7 +694,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=-1000.0, right_margin=1.0,
@@ -722,7 +722,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=1.0, right_margin=4.0,
@@ -750,7 +750,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=4.0, right_margin=1000.0,
@@ -778,7 +778,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_output_dataDictionary,
@@ -919,7 +919,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=-1000.0, right_margin=1.0,
@@ -931,7 +931,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=1.0, right_margin=3.0,
@@ -943,7 +943,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=3.0, right_margin=5.0,
@@ -955,7 +955,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=5.0, right_margin=7.0,
@@ -967,7 +967,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=7.0, right_margin=1000.0,
@@ -979,7 +979,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=binner_output_dataDictionary,
@@ -1060,7 +1060,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=-1000.0, right_margin=1040.0,
@@ -1072,7 +1072,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=1040.0, right_margin=1160.0,
@@ -1084,7 +1084,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=1160.0, right_margin=1340.0,
@@ -1096,7 +1096,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=1340.0, right_margin=2000.0,
@@ -1108,7 +1108,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=2000.0, data_dictionary=binner_output_dataDictionary,
@@ -1178,7 +1178,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=9.0, right_margin=42830.0,
@@ -1190,7 +1190,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=42830.0, right_margin=55590.0,
@@ -1202,7 +1202,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	binner_input_dataDictionary_transformed=data_transformations.transform_interval_fix_value(data_dictionary=binner_input_dataDictionary_transformed,
 																  left_margin=55590.0, right_margin=100000.0,
@@ -1214,7 +1214,7 @@ def generateDataProcessing():
 	
 	binner_output_dataDictionary=binner_input_dataDictionary_transformed
 		
-	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', index=True)							
+	binner_output_dataDictionary.to_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')							
 	binner_output_dataDictionary=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv', sep=',', index_col=0)
 	
 	if contract_pre_post.check_interval_range_float(left_margin=9.0, right_margin=100000.0, data_dictionary=binner_output_dataDictionary,
