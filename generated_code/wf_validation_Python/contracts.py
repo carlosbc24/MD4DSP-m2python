@@ -8,7 +8,6 @@ from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataT
 from helpers.logger import set_logger
 
 def generateDataProcessing():
-
 	#-----------------New DataProcessing-----------------
 	imputeByDerivedValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
