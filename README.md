@@ -86,15 +86,27 @@ The generated files can be executed by running one of the following commands:
    ```bash
     python3 -m generated_code.wf_validation_KNIME.transformations
     ```
+   or using the Job Class Model option:
+   ```bash
+    python3 -m generated_code.wf_validation_KNIME.transformations_Job_Model_data_set_with_metanode_KNIME_
+    ```
 
 2. Execute just the contracts script:
     ```bash
      python3 -m generated_code.wf_validation_KNIME.contracts
      ```
+   or using the Job Class Model option:
+   ```bash
+    python3 -m generated_code.wf_validation_KNIME.contracts_Job_Model_data_set_with_metanode_KNIME_
+    ```
    
 3. Execute both, the data transformations and the contracts by running the following command:
     ```bash
      python3 -m generated_code.wf_validation_KNIME.dataProcessing
+     ```
+   or using the Job Class Model option:
+    ```bash
+     python3 -m generated_code.wf_validation_KNIME.dataProcessing_Job_Model_data_set_with_metanode_KNIME_
      ```
 
 ## B) Generated code from the model 'model/wf_validation_Python.xmi'
@@ -103,15 +115,27 @@ The generated files can be executed by running one of the following commands:
    ```bash
     python3 -m generated_code.wf_validation_Python.transformations
     ```
+   or using the Job Class Model option:
+   ```bash
+    python3 -m generated_code.wf_validation_Python.transformations_Job_Model_data_set_with_metanode_PYTHON
+    ```
 
 2. Execute just the contracts script:
     ```bash
      python3 -m generated_code.wf_validation_Python.contracts
      ```
+    or using the Job Class Model option:
+    ```bash
+     python3 -m generated_code.wf_validation_Python.contracts_Job_Model_data_set_with_metanode_PYTHON
+     ```
    
 3. Execute both, the data transformations and the contracts by running the following command:
     ```bash
      python3 -m generated_code.wf_validation_Python.dataProcessing
+     ```
+    or using the Job Class Model option:
+    ```bash
+     python3 -m generated_code.wf_validation_Python.dataProcessing_Job_Model_data_set_with_metanode_PYTHON
      ```
 
 ## C) Generated code from the model 'model/wf_validation_modified.xmi'
