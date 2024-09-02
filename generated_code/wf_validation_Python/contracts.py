@@ -8,7 +8,8 @@ from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataT
 from helpers.logger import set_logger
 
 def generateDataProcessing():
-#-----------------New DataProcessing-----------------
+
+	#-----------------New DataProcessing-----------------
 	imputeByDerivedValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
 		imputeByDerivedValue_output_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
@@ -100,7 +101,7 @@ def generateDataProcessing():
 		print('INVARIANT INV_condition_impute_ETHNICITY_columns NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByFixValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -168,7 +169,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeMissingByFixValue(ACADEMIC_INTEREST_1)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -232,7 +233,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeMissingByMean(distance)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/missing_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -267,7 +268,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeMissingByLinearInterpolation(satscore)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	rowFilter_input_DataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/rowFilter_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -285,7 +286,7 @@ def generateDataProcessing():
 	else:
 		print('POSTCONDITION rowFilter(init_span)_POST_valueRange NOT VALIDATED')
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	columnFilter_input_DataDictionary=pd.read_csv('./python_dataDictionaries/rowFilter_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/columnFilter_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -309,7 +310,7 @@ def generateDataProcessing():
 		print('POSTCONDITION columnFilter(TRAVEL_INIT_CNTCTS, REFERRAL_CNCTS, telecq, interest, stuemail, CONTACT_CODE1)_POST_fieldRange NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=pd.read_csv('./python_dataDictionaries/columnFilter_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -358,7 +359,7 @@ def generateDataProcessing():
 		print('INVARIANT Mapping(TERRITORY)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=pd.read_csv('./python_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -407,7 +408,7 @@ def generateDataProcessing():
 		print('INVARIANT mapping(Instate)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	categoricalToContinuous_input_dataDictionary=pd.read_csv('./python_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/stringToNumber_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -429,7 +430,7 @@ def generateDataProcessing():
 		print('INVARIANT INV_condition_Instate NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/stringToNumber_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -507,7 +508,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeOutlierByClosest(Instate)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -654,7 +655,7 @@ def generateDataProcessing():
 		print('INVARIANT binner(SOLICITED_CNTCTS)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -729,7 +730,7 @@ def generateDataProcessing():
 		print('INVARIANT binner(TERRITORY)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it
@@ -793,7 +794,7 @@ def generateDataProcessing():
 		print('INVARIANT binner(satscore)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',')
 
 	if os.path.exists('./python_dataDictionaries/numericBinner_output_dataDictionary.csv'):		#If the output DataDictionary exists, we store it

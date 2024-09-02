@@ -7,7 +7,8 @@ from helpers.enumerations import Belong, Operator, Operation, SpecialType, DataT
 from helpers.logger import set_logger
 
 def generateDataProcessing():
-#-----------------New DataProcessing-----------------
+
+	#-----------------New DataProcessing-----------------
 	imputeByDerivedValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',')
 	imputeByDerivedValue_input_dataDictionary.to_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', index=True)
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
@@ -124,7 +125,7 @@ def generateDataProcessing():
 		print('INVARIANT INV_condition_impute_ETHNICITY_columns NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByFixValue_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',', index_col=0)
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByFixValue_input_dataDictionary, field='ACADEMIC_INTEREST_2', 
@@ -210,7 +211,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeMissingByFixValue(ACADEMIC_INTEREST_1)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',', index_col=0)
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
@@ -290,7 +291,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeMissingByMean(distance)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/missing_input_dataDictionary.csv', sep=',', index_col=0)
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='satscore', 
@@ -334,7 +335,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeMissingByLinearInterpolation(satscore)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	rowFilter_input_DataDictionary=pd.read_csv('./python_dataDictionaries/missing_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=rowFilter_input_DataDictionary,
 	                                	closure_type=Closure(2), belong_op=Belong(1), field='init_span'):
@@ -366,7 +367,7 @@ def generateDataProcessing():
 	else:
 		print('POSTCONDITION rowFilter(init_span)_POST_valueRange NOT VALIDATED')
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	columnFilter_input_DataDictionary=pd.read_csv('./python_dataDictionaries/rowFilter_output_dataDictionary.csv', sep=',', index_col=0)
 	field_list_columnFilter_PRE_field_range=['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS', 'telecq', 'stuemail', 'interest']
 	if contract_pre_post.check_field_range(fields=field_list_columnFilter_PRE_field_range,
@@ -397,7 +398,7 @@ def generateDataProcessing():
 		print('POSTCONDITION columnFilter(TRAVEL_INIT_CNTCTS, REFERRAL_CNCTS, telecq, interest, stuemail, CONTACT_CODE1)_POST_fieldRange NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=pd.read_csv('./python_dataDictionaries/columnFilter_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_fix_value_range(value='A', data_dictionary=mapping_input_dataDictionary, belong_op=Belong(0), field='TERRITORY',
 									quant_abs=None, quant_rel=None, quant_op=None):
@@ -457,7 +458,7 @@ def generateDataProcessing():
 		print('INVARIANT Mapping(TERRITORY)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	mapping_input_dataDictionary=pd.read_csv('./python_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_fix_value_range(value='Y', data_dictionary=mapping_input_dataDictionary, belong_op=Belong(0), field='Instate',
 									quant_abs=None, quant_rel=None, quant_op=None):
@@ -517,7 +518,7 @@ def generateDataProcessing():
 		print('INVARIANT mapping(Instate)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	categoricalToContinuous_input_dataDictionary=pd.read_csv('./python_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv', sep=',', index_col=0)
 	categoricalToContinuous_input_dataDictionary_transformed=categoricalToContinuous_input_dataDictionary.copy()
 	categoricalToContinuous_input_dataDictionary_transformed=data_transformations.transform_cast_type(data_dictionary=categoricalToContinuous_input_dataDictionary_transformed,
@@ -549,7 +550,7 @@ def generateDataProcessing():
 		print('INVARIANT INV_condition_Instate NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	imputeByNumericOp_input_dataDictionary=pd.read_csv('./python_dataDictionaries/stringToNumber_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_outliers(belong_op=Belong(0), data_dictionary=imputeByNumericOp_input_dataDictionary, field='avg_income', 
 									quant_abs=None, quant_rel=None, quant_op=None):
@@ -650,7 +651,7 @@ def generateDataProcessing():
 		print('INVARIANT imputeOutlierByClosest(Instate)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(0), belong_op=Belong(0), field='TOTAL_CONTACTS'):
@@ -903,7 +904,7 @@ def generateDataProcessing():
 		print('INVARIANT binner(SOLICITED_CNTCTS)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='TERRITORY'):
@@ -1044,7 +1045,7 @@ def generateDataProcessing():
 		print('INVARIANT binner(TERRITORY)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=2000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='satscore'):
@@ -1162,7 +1163,7 @@ def generateDataProcessing():
 		print('INVARIANT binner(satscore)_INV_condition NOT VALIDATED')
 	
 	
-#-----------------New DataProcessing-----------------
+	#-----------------New DataProcessing-----------------
 	binner_input_dataDictionary=pd.read_csv('./python_dataDictionaries/numericOutliers_output_dataDictionary.csv', sep=',', index_col=0)
 	if contract_pre_post.check_interval_range_float(left_margin=9.0, right_margin=100000.0, data_dictionary=binner_input_dataDictionary,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='avg_income'):
