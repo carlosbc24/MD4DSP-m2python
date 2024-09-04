@@ -117,7 +117,7 @@ The generated files can be executed by running one of the following commands:
     ```
    or using the Job Class Model option:
    ```bash
-    python3 -m generated_code.wf_validation_Python.transformations_Job_Model_data_set_with_metanode_PYTHON
+    python3 -m generated_code.wf_validation_Python.transformations_Job_Model_data_set_with_metanode_PYTHON_
     ```
 
 2. Execute just the contracts script:
@@ -126,7 +126,7 @@ The generated files can be executed by running one of the following commands:
      ```
     or using the Job Class Model option:
     ```bash
-     python3 -m generated_code.wf_validation_Python.contracts_Job_Model_data_set_with_metanode_PYTHON
+     python3 -m generated_code.wf_validation_Python.contracts_Job_Model_data_set_with_metanode_PYTHON_
      ```
    
 3. Execute both, the data transformations and the contracts by running the following command:
@@ -135,7 +135,7 @@ The generated files can be executed by running one of the following commands:
      ```
     or using the Job Class Model option:
     ```bash
-     python3 -m generated_code.wf_validation_Python.dataProcessing_Job_Model_data_set_with_metanode_PYTHON
+     python3 -m generated_code.wf_validation_Python.dataProcessing_Job_Model_data_set_with_metanode_PYTHON_
      ```
 
 ## C) Generated code from the model 'model/wf_validation_modified.xmi'
