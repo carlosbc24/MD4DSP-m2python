@@ -1151,7 +1151,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             # Find the closest numeric value to the fix value
             closest_value = find_closest_value(flattened_values, fix_value_input)
             # Replace the missing values with the closest numeric values
-            for i in range(len(data_dictionary_in.index)):
+            for i in data_dictionary_in.index:
                 for j in range(len(data_dictionary_in.columns)):
                     current_value = data_dictionary_in.iloc[i, j]
                     if current_value == fix_value_input:
@@ -1178,7 +1178,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                 # Find the closest numeric value to the fix value in the column
                 closest_value = find_closest_value(flattened_values, fix_value_input)
                 # Replace the missing values with the closest numeric values in the column
-                for i in range(len(data_dictionary_in.index)):
+                for i in data_dictionary_in.index:
                     current_value = data_dictionary_in[col_name].iloc[i]
                     if current_value == fix_value_input:
                         if data_dictionary_out[col_name].iloc[i] != closest_value:
@@ -1199,7 +1199,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                             print_and_log(f"Error in row: {i} and column: {col_name} value should be: {data_dictionary_in[col_name].iloc[i]} but is: {data_dictionary_out.loc[i, col_name]}")
         elif axis_param == 1:
             # Iterate over each row
-            for row_idx in range(len(data_dictionary_in.index)):
+            for row_idx in data_dictionary_in.index:
                 # Get the numeric values in the current row
                 row_df = pd.DataFrame([data_dictionary_in.iloc[row_idx]])
                 numeric_values_in_row = row_df.select_dtypes(include=[np.number]).values.tolist()
@@ -1241,7 +1241,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         # Find the closest numeric value to the fix value in the column
         closest_value = find_closest_value(flattened_values, fix_value_input)
         # Replace the missing values with the closest numeric values in the column
-        for i in range(len(data_dictionary_in.index)):
+        for i in data_dictionary_in.index:
             current_value = data_dictionary_in[field_in].iloc[i]
             if current_value == fix_value_input:
                 if data_dictionary_out[field_out].iloc[i] != closest_value:
@@ -3136,7 +3136,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
                 # Replace the missing values with the closest numeric values
-                for i in range(len(data_dictionary_in.index)):
+                for i in data_dictionary_in.index:
                     for j in range(len(data_dictionary_in.columns)):
                         current_value = data_dictionary_in.iloc[i, j]
                         if current_value in closest_values:
@@ -3170,7 +3170,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                             closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
 
                     # Replace the missing values with the closest numeric values in the column
-                    for i in range(len(data_dictionary_in.index)):
+                    for i in data_dictionary_in.index:
                         current_value = data_dictionary_in.at[i, col_name]
                         if current_value in closest_values:
                             if data_dictionary_out.at[i, col_name] != closest_values[current_value]:
@@ -3183,7 +3183,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
 
             elif axis_param == 1:
                 # Iterate over each row
-                for row_idx in range(len(data_dictionary_in.index)):
+                for row_idx in data_dictionary_in.index:
                     # Get the numeric values in the current row
                     numeric_values_in_row = data_dictionary_in.iloc[row_idx].select_dtypes(include=[np.number]).values.tolist()
 
@@ -3240,7 +3240,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 minimum_valid = minimum_valid.round(0)
                                 maximum_valid = maximum_valid.round(0)
 
-                    for i in range(len(data_dictionary_in.index)):
+                    for i in data_dictionary_in.index:
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
                             if data_dictionary_in.at[i, col_name] > maximum_valid:
                                 if data_dictionary_out.at[i, col_name] != maximum_valid:
@@ -3282,7 +3282,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                                 minimum_valid = minimum_valid.round(0)
                                 maximum_valid = maximum_valid.round(0)
 
-                    for i in range(len(data_dictionary_in.index)):
+                    for i in data_dictionary_in.index:
                         if data_dictionary_outliers_mask.at[i, col_name] == 1:
                             if data_dictionary_in.at[i, col_name] > maximum_valid:
                                 if data_dictionary_out.at[i, col_name] != maximum_valid:
@@ -3321,7 +3321,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
                 # Replace the missing values with the closest numeric values in the column
-                for i in range(len(data_dictionary_in.index)):
+                for i in data_dictionary_in.index:
                     current_value = data_dictionary_in.at[i, field_in]
                     if current_value in closest_values:
                         if data_dictionary_out.at[i, field_out] != closest_values[current_value]:
@@ -3357,7 +3357,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
                         maximum_valid = maximum_valid.round(0)
 
             # Checks the outlier values in the input with the closest numeric values in the output
-            for i in range(len(data_dictionary_in.index)):
+            for i in data_dictionary_in.index:
                 # Verify if the index exists in the mask and if the value is an outlier
                 if i in data_dictionary_outliers_mask.index and data_dictionary_outliers_mask.at[i, field_in] == 1:
                     if data_dictionary_in.at[i, field_in] > maximum_valid:

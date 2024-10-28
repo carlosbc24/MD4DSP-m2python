@@ -943,7 +943,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
                 # Replace the missing values with the closest numeric values
-                for i in range(len(data_dictionary_copy.index)):
+                for i in data_dictionary_copy.index:
                     for col, value in data_dictionary_copy.iloc[i].items():
                         current_value = data_dictionary_copy.at[i, col]
                         if current_value in closest_values:
@@ -970,7 +970,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                         if missing_value not in closest_values:
                             closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
                     # Replace the missing values with the closest numeric values in the column
-                    for i in range(len(data_dictionary_copy.index)):
+                    for i in data_dictionary_copy.index:
                         current_value = data_dictionary_copy.at[i, col_name]
                         if current_value in closest_values:
                             data_dictionary_copy.at[i, col_name] = closest_values[current_value]
@@ -980,7 +980,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                                     "Error: it's not possible to apply the closest operation to the null values")
             elif axis_param == 1:
                 # Iterate over each row
-                for row_idx in range(len(data_dictionary_copy.index)):
+                for row_idx in data_dictionary_copy.index:
                     # Get the numeric values in the current row
                     numeric_values_in_row = data_dictionary_copy.iloc[row_idx].select_dtypes(
                         include=[np.number]).values.tolist()
@@ -1010,8 +1010,8 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                                                              axis_param=None, field=None)
 
                 # Replace the outlier values with the closest numeric values
-                for i in range(len(data_dictionary_copy.index)):
-                    for j in range(len(data_dictionary_copy.columns)):
+                for i in data_dictionary_copy.index:
+                    for j in data_dictionary_copy.columns:
                         if data_dictionary_copy_mask.at[i, j] == 1:
                             if data_dictionary_copy.at[i, j] > maximum_valid:
                                 data_dictionary_copy.at[i, j] = maximum_valid
@@ -1036,7 +1036,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                                 maximum_valid = maximum_valid.round(0)
 
                     # Replace the outlier values with the closest numeric values
-                    for i in range(len(data_dictionary_copy.index)):
+                    for i in data_dictionary_copy.index:
                         if data_dictionary_copy_mask.at[i, col_name] == 1:
                             if data_dictionary_copy.at[i, col_name] > maximum_valid:
                                 data_dictionary_copy.at[i, col_name] = maximum_valid
@@ -1063,7 +1063,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                     if missing_value not in closest_values:
                         closest_values[missing_value] = find_closest_value(flattened_values, missing_value)
                 # Replace the missing values with the closest numeric values in the column
-                for i in range(len(data_dictionary_copy.index)):
+                for i in data_dictionary_copy.index:
                     current_value = data_dictionary_copy.at[i, field_in]
                     if current_value in closest_values:
                         data_dictionary_copy.at[i, field_out] = closest_values[current_value]
@@ -1088,7 +1088,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                         maximum_valid = maximum_valid.round(0)
 
             # Replace the outlier values with the closest numeric values
-            for i in range(len(data_dictionary_copy.index)):
+            for i in data_dictionary_copy.index:
                 # Verify if the index exists in the mask and if the value is an outlier
                 if i in data_dictionary_copy_mask.index and data_dictionary_copy_mask.at[i, field_in] == 1:
                     if data_dictionary_copy.at[i, field_in] > maximum_valid:
