@@ -388,36 +388,36 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
         elif field_in in data_dictionary.columns:
             if np.issubdtype(data_dictionary[field_in].dtype, np.number):
                 if closure_type == Closure.openOpen:
-                    for i in range(len(data_dictionary_copy)):
+                    for i in data_dictionary_copy.index:
                         # Verify if the index exists in the mask and if the value is an outlier
-                        if i in data_dictionary_copy.index and (left_margin < data_dictionary_copy.loc[i, field_in]) and (
+                        if (left_margin < data_dictionary_copy.loc[i, field_in]) and (
                                 data_dictionary_copy.loc[i, field_in] < right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
-                        elif i in data_dictionary_copy.index:
+                        else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.openClosed:
-                    for i in range(len(data_dictionary_copy)):
+                    for i in data_dictionary_copy.index:
                         # Verify if the index exists in the mask and if the value is an outlier
                         if i in data_dictionary_copy.index and (left_margin < data_dictionary_copy.loc[i, field_in]) and (
                                 data_dictionary_copy.loc[i, field_in] <= right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
-                        elif i in data_dictionary_copy.index:
+                        else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.closedOpen:
-                    for i in range(len(data_dictionary_copy)):
+                    for i in data_dictionary_copy.index:
                         # Verify if the index exists in the mask and if the value is an outlier
-                        if i in data_dictionary_copy.index and (left_margin <= data_dictionary_copy.loc[i, field_in]) and (
+                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (
                                 data_dictionary_copy.loc[i, field_in] < right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
-                        elif i in data_dictionary_copy.index:
+                        else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
                 elif closure_type == Closure.closedClosed:
-                    for i in range(len(data_dictionary_copy)):
+                    for i in data_dictionary_copy.index:
                         # Verify if the index exists in the mask and if the value is an outlier
-                        if i in data_dictionary_copy.index and (left_margin <= data_dictionary_copy.loc[i, field_in]) and (
+                        if (left_margin <= data_dictionary_copy.loc[i, field_in]) and (
                                 data_dictionary_copy.loc[i, field_in] <= right_margin):
                             data_dictionary_copy.loc[i, field_out] = fix_value_output
-                        elif i in data_dictionary_copy.index:
+                        else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
             else:
                 raise ValueError("The field is not numeric")
