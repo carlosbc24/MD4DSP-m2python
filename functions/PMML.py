@@ -390,10 +390,8 @@ class PMMLModel:
 
         if model_validated:
             print(f"{self.modelName.value} model has been VALIDATED\n")
-            print_and_log(f"{self.modelName.value} model has been validated\n")
         else:
             print(f"{self.modelName.value} model has NOT BEEN VALIDATED\n")
-            print_and_log(f"{self.modelName.value} model has NOT BEEN validated\n")
 
     def __str__(self):
         """
