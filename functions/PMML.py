@@ -14,6 +14,9 @@ import xml.etree.ElementTree as ElementTreeXML
 
 from helpers.logger import print_and_log
 
+# Define error tolerance as a constant
+EPSILON = 1e-1
+
 
 class ModelName(Enum):
     NAIVE_BAYES = "naive bayes"
@@ -38,6 +41,8 @@ class PMMLModel:
         PMML model filepath
     inputDataset: pd.DataFrame
         Input dataset
+    inputDatasetTest: pd.DataFrame
+        Input dataset for testing
     predictions: pd.DataFrame
         Predictions made by the model
     validation_predictions: pd.DataFrame
@@ -72,7 +77,8 @@ class PMMLModel:
     pmml_model_filepath: str = None  # PMML model filepath
 
     inputDataset: pd.DataFrame = None  # Input dataset
-    predictions: pd.DataFrame = None  # Predictions made by the model
+    inputDatasetTest: pd.DataFrame = None  # Input dataset for testing
+    predictionsTest: pd.DataFrame = None  # Predictions made by the model
     validation_predictions: pd.DataFrame = None  # Validation predictions
 
     pmmlModelLearner: pypmml.Model = None  # PMML model learner
@@ -112,6 +118,7 @@ class PMMLModel:
         self.pmml_model_filepath = model_learner_pmml_filepath
 
         self.inputDataset = pd.read_csv(self.inputDatasetFilePath)  # Load the input dataset as a dataframe
+        print_and_log(f"{input_dataset_filepath} dataset has been loaded")
         self.pmmlModelLearner = pypmml.Model.load(model_learner_pmml_filepath)  # Load the PMML model
         self.exportOnlyPredictions = export_only_predictions  # Export just the predictions or the whole
         # dataset with predictions
@@ -125,7 +132,7 @@ class PMMLModel:
         self.parser_pmml_model()  # Parse the PMML model
         self.make_and_export_predictions()  # Make and export the predictions
         self.save_test_metrics()  # Save the test metrics
-        print_and_log(f"{self.modelName.value} model has been loaded\n")
+        print_and_log(f"{self.modelName.value.upper()} model has been loaded\n")
 
     def get_model_name(self):
         """
@@ -176,21 +183,39 @@ class PMMLModel:
         """
         Make and export the predictions
         """
-        print_and_log("Making predictions on the dataset...")
-        self.predictions = self.pmmlModelLearner.predict(self.inputDataset)  # Make predictions on the dataset
+        print_and_log(f"Making predictions on the dataset using {self.modelName.value.upper()} model...")
+        # Split the dataset into train and test using train_test_split from sklearn
+        y_test = None
+        y_train = None
+        if self.classColumn is not None:
+            x_train, x_test, y_train, y_test = train_test_split(self.inputDataset[self.inputNames],
+                                                                self.inputDataset[self.classColumn]
+                                                                if self.classColumn is not None else None,
+                                                                train_size=self.train_split,
+                                                                test_size=self.test_split, shuffle=True)
+            # Convert x_test and y_test a DataFrame
+            self.inputDatasetTest = pd.concat([x_test, y_test], axis=1)
+        else:
+            x_train, x_test = train_test_split(self.inputDataset[self.inputNames],
+                                               train_size=self.train_split, test_size=self.test_split,
+                                               shuffle=True)
+
+            self.inputDatasetTest = x_test
+
+        self.predictionsTest = self.pmmlModelLearner.predict(self.inputDatasetTest)  # Make predictions on the dataset
 
         # Create the output directory if it does not exist
         if not os.path.exists(self.outputDatasetFilePath):
             os.makedirs(self.outputDatasetFilePath)
 
         if not self.exportOnlyPredictions:
-            predictions_df = self.inputDataset.copy()
-            predictions_df = pd.concat([predictions_df, self.predictions], axis=1)
+            predictions_df = self.inputDatasetTest.copy()
+            predictions_df = pd.concat([predictions_df, self.predictionsTest], axis=1)
             predictions_df.to_csv(f'{self.outputDatasetFilePath}/{Path(self.inputDatasetFilePath).stem}'
                                   f'_with_predictions_using_{self.modelName.name}.csv', index=False)
             print_and_log("Predictions and dataset saved to a CSV file")
         else:
-            self.predictions.to_csv(f'{self.outputDatasetFilePath}/{Path(self.inputDatasetFilePath).stem}'
+            self.predictionsTest.to_csv(f'{self.outputDatasetFilePath}/{Path(self.inputDatasetFilePath).stem}'
                                     f'_only_predictions_using_{self.modelName.name}.csv', index=False)
             print_and_log("Only predictions saved to a CSV file")
 
@@ -202,8 +227,8 @@ class PMMLModel:
         print_and_log("Testing model and saving metric results...")
         if self.algorithmName == 'classification':
 
-            y_true = self.inputDataset[self.classColumn]
-            y_pred = self.predictions[self.predictedClassColumn]
+            y_true = self.inputDatasetTest[self.classColumn]
+            y_pred = self.predictionsTest[self.predictedClassColumn]
             y_true = pd.Categorical(y_true).codes
             y_pred = pd.Categorical(y_pred).codes
 
@@ -219,11 +244,12 @@ class PMMLModel:
 
         elif self.algorithmName == 'regression':
 
-            y_true = self.inputDataset[self.classColumn]
-            y_pred = self.predictions[self.predictedClassColumn]
+            y_true = self.inputDatasetTest[self.classColumn]
+            y_pred = self.predictionsTest[self.predictedClassColumn]
+
             mse = sklearn_metrics.mean_squared_error(y_true, y_pred)
-            r2 = sklearn_metrics.r2_score(y_true, y_pred)
             mae = sklearn_metrics.mean_absolute_error(y_true, y_pred)
+            r2 = sklearn_metrics.r2_score(y_true, y_pred)
             median_ae = sklearn_metrics.median_absolute_error(y_true, y_pred)
 
             self.metric_scores = pd.DataFrame({
@@ -232,7 +258,7 @@ class PMMLModel:
             })
 
         elif self.algorithmName == 'clustering':
-            cluster_names = self.predictions['cluster_name']
+            cluster_names = self.predictionsTest['cluster_name']
 
             # Count the number of instances in each cluster
             cluster_counts = cluster_names.value_counts()
@@ -243,7 +269,7 @@ class PMMLModel:
             })
 
         else:
-            raise ValueError(f"{self.modelName.value} model not recognized")
+            raise ValueError(f"{self.modelName.value.upper()} model not recognized")
 
         if self.export_test_metrics:
             if not os.path.exists(self.outputDatasetFilePath):
@@ -257,24 +283,31 @@ class PMMLModel:
         """
         Train and validate the model if the attribute 'validate_model' is True
         """
-        print_and_log(f"Training and validating the {self.modelName.value} model...")
+        print(f"Training and validating the {self.modelName.value.upper()} model...")
 
         model_validated = False
 
         # Split the dataset into train and test using train_test_split from sklearn
-        x = self.inputDataset[self.inputNames]
-        y = self.inputDataset[self.classColumn] if self.classColumn is not None else None
         y_test = None
         y_train = None
         if self.classColumn is not None:
-            x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=self.train_split,
+            x_train, x_test, y_train, y_test = train_test_split(self.inputDataset[self.inputNames],
+                                                                self.inputDataset[self.classColumn]
+                                                                if self.classColumn is not None else None,
+                                                                train_size=self.train_split,
                                                                 test_size=self.test_split, shuffle=True)
         else:
-            x_train, x_test = train_test_split(x, train_size=self.train_split, test_size=self.test_split, shuffle=True)
+            x_train, x_test = train_test_split(self.inputDataset[self.inputNames], train_size=self.train_split,
+                                               test_size=self.test_split, shuffle=True)
 
         # Prepare the training data to convert categorical columns to numerical columns
         x_train = x_train.apply(lambda col: pd.Categorical(col).codes)
         x_test = x_test.apply(lambda col: pd.Categorical(col).codes)
+
+        # Parse the PMML model to get the root element
+        tree = ElementTreeXML.parse(self.pmml_model_filepath)
+        root = tree.getroot()  # Get the root element
+        xml_model_specification = root.find('.//{http://www.dmg.org/PMML-4_2}' + self.pmmlModelLearner.modelElement)
 
         validation_model = None
         # Train the model using the training dataset
@@ -288,30 +321,40 @@ class PMMLModel:
             validation_model = DecisionTreeRegressor()
             validation_model.fit(x_train, y_train)
         elif self.modelName == ModelName.NAIVE_BAYES:
-            validation_model = GaussianNB()
-            validation_model.fit(x_train, y_train)
+            if xml_model_specification is not None:
+                threshold = float(xml_model_specification.get('threshold'))
+                validation_model = GaussianNB(var_smoothing=threshold)
+                print("     * Using hiperparameters: threshold =", threshold)
+                validation_model.fit(x_train, y_train)
+            else:
+                print_and_log("XML model specification not found")
         elif self.modelName == ModelName.MLP and self.algorithmName == 'classification':
-            validation_model = MLPClassifier()
-            validation_model.fit(x_train, y_train)
+            if xml_model_specification is not None:
+                activation_function = xml_model_specification.get('activationFunction')
+                validation_model = MLPClassifier(activation=activation_function)
+                print("     * Using hiperparameters: activationFunction =", activation_function)
+                validation_model.fit(x_train, y_train)
+            else:
+                print_and_log("XML model specification not found")
         elif self.modelName == ModelName.MLP and self.algorithmName == 'regression':
-            validation_model = MLPRegressor()
-            validation_model.fit(x_train, y_train)
+            if xml_model_specification is not None:
+                activation_function = xml_model_specification.get('activationFunction')
+                validation_model = MLPRegressor(activation=activation_function)
+                print("     * Using hiperparameters: activationFunction =", activation_function)
+                validation_model.fit(x_train, y_train)
+            else:
+                print_and_log("XML model specification not found")
         elif self.modelName == ModelName.K_MEANS and self.algorithmName == 'clustering':
-            tree = ElementTreeXML.parse(self.pmml_model_filepath)  # Parse the PMML model file
-            root = tree.getroot()  # Get the root element
-
-            # Search for the clustering model in the PMML file
-            clustering_model = root.find('.//{http://www.dmg.org/PMML-4_2}' + self.pmmlModelLearner.modelElement)
-            if clustering_model is not None:
-                number_of_clusters = int(clustering_model.get('numberOfClusters'))
+            if xml_model_specification is not None:
+                number_of_clusters = int(xml_model_specification.get('numberOfClusters'))
                 validation_model = KMeans(n_clusters=number_of_clusters)
                 validation_model.fit(x_train)
             else:
-                print("No se encontró el modelo de clustering.")
+                print("XML model specification not found")
         else:
-            raise ValueError(f"{self.modelName.value} model not recognized")
+            raise ValueError(f"{self.modelName.value.upper()} model not recognized")
 
-        print_and_log(f"{self.modelName.value} model has been TRAINED")
+        print_and_log(f"{self.modelName.value.upper()} model has been TRAINED")
 
         # Make validation predictions
         self.validation_predictions = validation_model.predict(x_test)
@@ -334,65 +377,69 @@ class PMMLModel:
             pretrained_model_recall = self.metric_scores.loc[self.metric_scores['Metric'] == 'Recall', 'Score'].values[0]
             pretrained_model_f1 = self.metric_scores.loc[self.metric_scores['Metric'] == 'F1 Score', 'Score'].values[0]
 
-            print_and_log(f"Pretrained Model Accuracy: {pretrained_model_accuracy} - Validation Model Accuracy: {validated_accuracy}")
-            print_and_log(f"Pretrained Model Precision: {pretrained_model_precision} - Validation Model Precision: {validated_precision}")
+            print_and_log(f"Pretrained Model Accuracy: {pretrained_model_accuracy} - "
+                  f"Validation Model Accuracy: {validated_accuracy}")
+            print_and_log(f"Pretrained Model Precision: {pretrained_model_precision} - "
+                  f"Validation Model Precision: {validated_precision}")
             print_and_log(f"Pretrained Model Recall: {pretrained_model_recall} - Validation Model Recall: {validated_recall}")
             print_and_log(f"Pretrained Model F1 Score: {pretrained_model_f1} - Validation Model F1 Score: {validated_f1}")
 
-            # Check if the metrics are the same considering an epsilon error
-            if ((pretrained_model_accuracy - validated_accuracy) < 1e-5 and
-                    (pretrained_model_precision - validated_precision) < 1e-5 and
-                    (pretrained_model_recall - validated_recall) < 1e-5 and
-                    (pretrained_model_f1 - validated_f1) < 1e-5):
-                print_and_log("Metrics are the same")
+            # Check if the model is validated considering an epsilon error as a proportion
+            if ((abs(pretrained_model_accuracy - validated_accuracy) < EPSILON) and
+                (abs(pretrained_model_precision - validated_precision) < EPSILON) and
+                (abs(pretrained_model_recall - validated_recall) < EPSILON) and
+                (abs(pretrained_model_f1 - validated_f1) < EPSILON)):
                 model_validated = True
 
         elif self.algorithmName == 'regression':
 
             y_true = y_test
             y_pred = self.validation_predictions
+
             validated_mse = sklearn_metrics.mean_squared_error(y_true, y_pred)
-            validated_r2 = sklearn_metrics.r2_score(y_true, y_pred)
             validated_mae = sklearn_metrics.mean_absolute_error(y_true, y_pred)
+            validated_r2 = sklearn_metrics.r2_score(y_true, y_pred)
             validated_median_ae = sklearn_metrics.median_absolute_error(y_true, y_pred)
 
+
             pretrained_model_mse = self.metric_scores.loc[self.metric_scores['Metric'] == 'Mean Squared Error', 'Score'].values[0]
-            pretrained_model_r2 = self.metric_scores.loc[self.metric_scores['Metric'] == 'R2 Score', 'Score'].values[0]
             pretrained_model_mae = self.metric_scores.loc[self.metric_scores['Metric'] == 'Mean Absolute Error', 'Score'].values[0]
+            pretrained_model_r2 = self.metric_scores.loc[self.metric_scores['Metric'] == 'R2 Score', 'Score'].values[0]
             pretrained_model_median_ae = self.metric_scores.loc[self.metric_scores['Metric'] == 'Median Absolute Error', 'Score'].values[0]
 
-            print_and_log(f"Pretrained Model Mean Squared Error: {pretrained_model_mse} - Validation Model Mean Squared Error: {validated_mse}")
+            print_and_log(f"Pretrained Model Mean Squared Error: {pretrained_model_mse} - "
+                  f"Validation Model Mean Squared Error: {validated_mse}")
+            print_and_log(f"Pretrained Model Mean Absolute Error: {pretrained_model_mae} - "
+                  f"Validation Model Mean Absolute Error: {validated_mae}")
             print_and_log(f"Pretrained Model R2 Score: {pretrained_model_r2} - Validation Model R2 Score: {validated_r2}")
-            print_and_log(f"Pretrained Model Mean Absolute Error: {pretrained_model_mae} - Validation Model Mean Absolute Error: {validated_mae}")
-            print_and_log(f"Pretrained Model Median Absolute Error: {pretrained_model_median_ae} - Validation Model Median Absolute Error: {validated_median_ae}")
+            print_and_log(f"Pretrained Model Median Absolute Error: {pretrained_model_median_ae} - "
+                  f"Validation Model Median Absolute Error: {validated_median_ae}")
 
-            # Check if the metrics are the same considering an epsilon error
-            if ((pretrained_model_mse - validated_mse) < 1e-5 and (pretrained_model_r2 - validated_r2) < 1e-5 and
-                    (pretrained_model_mae - validated_mae) < 1e-5 and
-                    (pretrained_model_median_ae - validated_median_ae) < 1e-5):
-                print_and_log("Metrics are the same")
+            # Check if the model is validated considering an epsilon error as a proportion
+            if ((abs(pretrained_model_mse - validated_mse) < EPSILON) and
+                    (abs(pretrained_model_r2 - validated_r2) < EPSILON) and
+                    (abs(pretrained_model_mae - validated_mae) < EPSILON) and
+                    (abs(pretrained_model_median_ae - validated_median_ae) < EPSILON)):
                 model_validated = True
 
         elif self.algorithmName == 'clustering':
 
             # Count the number of instances in each cluster and compare with the original cluster counts
-            validated_cluster_counts = pd.Series(validation_model.labels_).value_counts()
+            validated_cluster_counts = pd.Series(self.validation_predictions).value_counts()
             pretrained_model_cluster_counts = self.metric_scores.loc[self.metric_scores['Metric'] == 'Cluster Counts', 'Score'].values[0]
-            print_and_log(f"Pretrained Model Cluster Counts: {pretrained_model_cluster_counts} - Validation Model Cluster Counts: {validated_cluster_counts}")
+            print_and_log(f"Pretrained Model Cluster Counts: {pretrained_model_cluster_counts} \nValidation Model Cluster "
+                  f"Counts: {validated_cluster_counts}")
 
-            # Check if the cluster counts are the same considering an epsilon error
-            if (pretrained_model_cluster_counts - validated_cluster_counts).abs().max() < 1e-5:
-                print_and_log("Cluster counts are the same")
+            # Check if the model is validated considering an epsilon error
+            if (pretrained_model_cluster_counts - validated_cluster_counts).abs().max() < EPSILON:
                 model_validated = True
-            else:
-                print_and_log("Cluster counts are NOT the same")
         else:
-            raise ValueError(f"{self.modelName.value} model not recognized")
+            raise ValueError(f"{self.modelName.value.upper()} model not recognized")
 
         if model_validated:
-            print(f"{self.modelName.value} model has been VALIDATED\n")
+            print(f"{self.modelName.value.upper()} model has been VALIDATED\n")
         else:
-            print(f"{self.modelName.value} model has NOT BEEN VALIDATED\n")
+            print(f"{self.modelName.value.upper()} model has NOT BEEN VALIDATED\n")
 
     def __str__(self):
         """
@@ -400,6 +447,6 @@ class PMMLModel:
         :return: string representation of the PMML model
         """
         return f"Algorithm type name: {self.algorithmName}\n" \
-               f"Model name: {self.modelName.value}\n" \
+               f"Model name: {self.modelName.value.upper()}\n" \
                f"Input names: {self.inputNames}\n" \
                f"Output names: {self.outputNames}\n"
