@@ -9,7 +9,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier, MLPRegressor
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 import xml.etree.ElementTree as ElementTreeXML
 
 from helpers.logger import print_and_log
@@ -19,8 +19,8 @@ class ModelName(Enum):
     NAIVE_BAYES = "naive bayes"
     DECISION_TREE = "decision tree"
     LINEAR_REGRESSION = "linear regression"
-    K_MEANS = "k-means"
     MLP = "multi-layer perceptron (Neural Network)"
+    K_MEANS = "k-means"
 
 
 class PMMLModel:
@@ -278,25 +278,14 @@ class PMMLModel:
 
         validation_model = None
         # Train the model using the training dataset
-        if self.modelName == ModelName.K_MEANS:
-            # Carga el archivo PMML
-            tree = ElementTreeXML.parse(self.pmml_model_filepath)
-            root = tree.getroot()
-
-            # Encuentra el ClusteringModel y accede a 'numberOfClusters'
-            clustering_model = root.find('.//{http://www.dmg.org/PMML-4_2}'+ self.pmmlModelLearner.modelElement)
-            if clustering_model is not None:
-                number_of_clusters = int(clustering_model.get('numberOfClusters'))
-                validation_model = KMeans(n_clusters=number_of_clusters)
-                validation_model.fit(x_train)
-            else:
-                print_and_log("Clustering model not found")
-
-        elif self.modelName == ModelName.LINEAR_REGRESSION:
+        if self.modelName == ModelName.LINEAR_REGRESSION and self.algorithmName == 'regression':
             validation_model = LinearRegression()
             validation_model.fit(x_train, y_train)
-        elif self.modelName == ModelName.DECISION_TREE:
+        elif self.modelName == ModelName.DECISION_TREE and self.algorithmName == 'classification':
             validation_model = DecisionTreeClassifier()
+            validation_model.fit(x_train, y_train)
+        elif self.modelName == ModelName.DECISION_TREE and self.algorithmName == 'regression':
+            validation_model = DecisionTreeRegressor()
             validation_model.fit(x_train, y_train)
         elif self.modelName == ModelName.NAIVE_BAYES:
             validation_model = GaussianNB()
@@ -307,6 +296,18 @@ class PMMLModel:
         elif self.modelName == ModelName.MLP and self.algorithmName == 'regression':
             validation_model = MLPRegressor()
             validation_model.fit(x_train, y_train)
+        elif self.modelName == ModelName.K_MEANS and self.algorithmName == 'clustering':
+            tree = ElementTreeXML.parse(self.pmml_model_filepath)  # Parse the PMML model file
+            root = tree.getroot()  # Get the root element
+
+            # Search for the clustering model in the PMML file
+            clustering_model = root.find('.//{http://www.dmg.org/PMML-4_2}' + self.pmmlModelLearner.modelElement)
+            if clustering_model is not None:
+                number_of_clusters = int(clustering_model.get('numberOfClusters'))
+                validation_model = KMeans(n_clusters=number_of_clusters)
+                validation_model.fit(x_train)
+            else:
+                print("No se encontró el modelo de clustering.")
         else:
             raise ValueError(f"{self.modelName.value} model not recognized")
 
