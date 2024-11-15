@@ -1,6 +1,5 @@
 import os
 from enum import Enum
-from pathlib import Path
 import pandas as pd
 import pypmml
 import sklearn.metrics as sklearn_metrics
@@ -28,17 +27,16 @@ class ModelName(Enum):
 
 class PMMLModel:
     """
-    PMML model class to make predictions, save the predictions and metrics to a CSV file and train and
-    validate the model
+    PMML model class to make predictions, save the predictions and metrics to a parquet file and validate the model
 
     Attributes:
     ----------
-    inputDatasetFilePath: str
-        Input dataset filepath
     outputDatasetFilePath: str
         Output dataset filepath
     pmml_model_filepath: str
         PMML model filepath
+    export_test_metrics_path: str
+        Export test metrics path
     inputDataset: pd.DataFrame
         Input dataset
     inputDatasetTest: pd.DataFrame
@@ -72,9 +70,9 @@ class PMMLModel:
     test_split: float
         Test split percentage for the dataset
     """
-    inputDatasetFilePath: str = None  # Input dataset filepath
     outputDatasetFilePath: str = None  # Output dataset filepath
     pmml_model_filepath: str = None  # PMML model filepath
+    export_test_metrics_path: str = None  # Export test metrics filepath
 
     inputDataset: pd.DataFrame = None  # Input dataset
     inputDatasetTest: pd.DataFrame = None  # Input dataset for testing
@@ -95,30 +93,31 @@ class PMMLModel:
     classColumn: str = None  # Predicted class column name
 
     metric_scores: pd.DataFrame = None  # Metric scores
+    metric_scores_numeric: pd.DataFrame = None  # Metric scores in numeric format
 
     train_split: float = None  # Train split percentage for the dataset
     test_split: float = None  # Test split percentage for the dataset
 
-    def __init__(self, input_dataset_filepath: str, output_dataset_filepath: str, model_learner_pmml_filepath: str,
+    def __init__(self, input_dataset: pd.DataFrame, output_dataset_filepath: str, model_learner_pmml_filepath: str,
                  export_only_predictions: bool, export_test_metrics: bool, train_split: float = None,
-                 test_split: float = None):
+                 test_split: float = None, export_test_metrics_path: str = None):
         """
         Initialize the PMML model object, parse the PMML model and make and export the predictions
 
-        :param input_dataset_filepath: filepath to the input dataset to use to validate the model and make predictions
+        :param input_dataset: dataframe with the input dataset
         :param output_dataset_filepath: filepath to the output dataset to save the predictions and metrics
         :param model_learner_pmml_filepath: filepath to the PMML model file
         :param export_only_predictions: export just the predictions or the whole dataset with predictions
         :param export_test_metrics: boolean to export the test metrics or not
         :param train_split: train split percentage for the dataset
         :param test_split: test split percentage for the dataset
+        :param export_test_metrics_path: filepath to export the test metrics
         """
-        self.inputDatasetFilePath = input_dataset_filepath
         self.outputDatasetFilePath = output_dataset_filepath
         self.pmml_model_filepath = model_learner_pmml_filepath
+        self.export_test_metrics_path = export_test_metrics_path
 
-        self.inputDataset = pd.read_csv(self.inputDatasetFilePath)  # Load the input dataset as a dataframe
-        print_and_log(f"{input_dataset_filepath} dataset has been loaded")
+        self.inputDataset = input_dataset  # Load the input dataset dataframe
         self.pmmlModelLearner = pypmml.Model.load(model_learner_pmml_filepath)  # Load the PMML model
         self.exportOnlyPredictions = export_only_predictions  # Export just the predictions or the whole
         # dataset with predictions
@@ -211,17 +210,17 @@ class PMMLModel:
         if not self.exportOnlyPredictions:
             predictions_df = self.inputDatasetTest.copy()
             predictions_df = pd.concat([predictions_df, self.predictionsTest], axis=1)
-            predictions_df.to_csv(f'{self.outputDatasetFilePath}/{Path(self.inputDatasetFilePath).stem}'
-                                  f'_with_predictions_using_{self.modelName.name}.csv', index=False)
-            print_and_log("Predictions and dataset saved to a CSV file")
+            predictions_df.to_parquet(f'{self.outputDatasetFilePath}/Predictions_using_{self.modelName.name}.parquet',
+                                      index=False)
+            print_and_log("Predictions and dataset saved to a Parquet file")
         else:
-            self.predictionsTest.to_csv(f'{self.outputDatasetFilePath}/{Path(self.inputDatasetFilePath).stem}'
-                                    f'_only_predictions_using_{self.modelName.name}.csv', index=False)
-            print_and_log("Only predictions saved to a CSV file")
+            self.predictionsTest.to_parquet(f'{self.outputDatasetFilePath}/Only_predictions_using_'
+                                            f'{self.modelName.name}.parquet', index=False)
+            print_and_log("Only predictions saved to a PARQUET file")
 
     def save_test_metrics(self):
         """
-        Save the test metrics to the PMMLModel class instance and export them to a CSV file if the attribute
+        Save the test metrics to the PMMLModel class instance and export them to a PARQUET file if the attribute
         'export_test_metrics' is True
         """
         print_and_log("Testing model and saving metric results...")
@@ -265,6 +264,11 @@ class PMMLModel:
 
             self.metric_scores = pd.DataFrame({
                 'Metric': ['Cluster Counts'],
+                'Score': [cluster_counts.to_string()]
+            })
+
+            self.metric_scores_numeric = pd.DataFrame({
+                'Metric': ['Cluster Counts'],
                 'Score': [cluster_counts]
             })
 
@@ -272,18 +276,18 @@ class PMMLModel:
             raise ValueError(f"{self.modelName.value.upper()} model not recognized")
 
         if self.export_test_metrics:
-            if not os.path.exists(self.outputDatasetFilePath):
-                os.makedirs(self.outputDatasetFilePath)
+            if not os.path.exists(self.export_test_metrics_path):
+                os.makedirs(self.export_test_metrics_path)
 
-            self.metric_scores.to_csv(f'{self.outputDatasetFilePath}/{Path(self.inputDatasetFilePath).stem}'
-                                      f'_metric_scores_using_{self.modelName.name}.csv', index=False)
-            print_and_log("Metric scores saved to a CSV file")
+            self.metric_scores.to_parquet(f'{self.export_test_metrics_path}/Metric_scores_using_'
+                                          f'{self.modelName.name}.parquet', index=False)
+            print_and_log("Metric scores saved to a Parquet file")
 
     def train_and_validate_model(self):
         """
         Train and validate the model if the attribute 'validate_model' is True
         """
-        print(f"Training and validating the {self.modelName.value.upper()} model...")
+        print_and_log(f"Training and validating the {self.modelName.value.upper()} model...")
 
         model_validated = False
 
@@ -350,7 +354,7 @@ class PMMLModel:
                 validation_model = KMeans(n_clusters=number_of_clusters)
                 validation_model.fit(x_train)
             else:
-                print("XML model specification not found")
+                print_and_log("XML model specification not found")
         else:
             raise ValueError(f"{self.modelName.value.upper()} model not recognized")
 
@@ -372,9 +376,12 @@ class PMMLModel:
             validated_recall = sklearn_metrics.recall_score(y_true, y_pred, average='macro')
             validated_f1 = sklearn_metrics.f1_score(y_true, y_pred, average='macro')
 
-            pretrained_model_accuracy = self.metric_scores.loc[self.metric_scores['Metric'] == 'Accuracy', 'Score'].values[0]
-            pretrained_model_precision = self.metric_scores.loc[self.metric_scores['Metric'] == 'Precision', 'Score'].values[0]
-            pretrained_model_recall = self.metric_scores.loc[self.metric_scores['Metric'] == 'Recall', 'Score'].values[0]
+            pretrained_model_accuracy = \
+                self.metric_scores.loc[self.metric_scores['Metric'] == 'Accuracy', 'Score'].values[0]
+            pretrained_model_precision = \
+                self.metric_scores.loc[self.metric_scores['Metric'] == 'Precision', 'Score'].values[0]
+            pretrained_model_recall = self.metric_scores.loc[self.metric_scores['Metric'] == 'Recall', 'Score'].values[
+                0]
             pretrained_model_f1 = self.metric_scores.loc[self.metric_scores['Metric'] == 'F1 Score', 'Score'].values[0]
 
             print_and_log(f"Pretrained Model Accuracy: {pretrained_model_accuracy} - "
@@ -386,9 +393,9 @@ class PMMLModel:
 
             # Check if the model is validated considering an epsilon error as a proportion
             if ((abs(pretrained_model_accuracy - validated_accuracy) < EPSILON) and
-                (abs(pretrained_model_precision - validated_precision) < EPSILON) and
-                (abs(pretrained_model_recall - validated_recall) < EPSILON) and
-                (abs(pretrained_model_f1 - validated_f1) < EPSILON)):
+                    (abs(pretrained_model_precision - validated_precision) < EPSILON) and
+                    (abs(pretrained_model_recall - validated_recall) < EPSILON) and
+                    (abs(pretrained_model_f1 - validated_f1) < EPSILON)):
                 model_validated = True
 
         elif self.algorithmName == 'regression':
@@ -401,11 +408,13 @@ class PMMLModel:
             validated_r2 = sklearn_metrics.r2_score(y_true, y_pred)
             validated_median_ae = sklearn_metrics.median_absolute_error(y_true, y_pred)
 
-
-            pretrained_model_mse = self.metric_scores.loc[self.metric_scores['Metric'] == 'Mean Squared Error', 'Score'].values[0]
-            pretrained_model_mae = self.metric_scores.loc[self.metric_scores['Metric'] == 'Mean Absolute Error', 'Score'].values[0]
+            pretrained_model_mse = \
+                self.metric_scores.loc[self.metric_scores['Metric'] == 'Mean Squared Error', 'Score'].values[0]
+            pretrained_model_mae = \
+                self.metric_scores.loc[self.metric_scores['Metric'] == 'Mean Absolute Error', 'Score'].values[0]
             pretrained_model_r2 = self.metric_scores.loc[self.metric_scores['Metric'] == 'R2 Score', 'Score'].values[0]
-            pretrained_model_median_ae = self.metric_scores.loc[self.metric_scores['Metric'] == 'Median Absolute Error', 'Score'].values[0]
+            pretrained_model_median_ae = \
+                self.metric_scores.loc[self.metric_scores['Metric'] == 'Median Absolute Error', 'Score'].values[0]
 
             print_and_log(f"Pretrained Model Mean Squared Error: {pretrained_model_mse} - "
                   f"Validation Model Mean Squared Error: {validated_mse}")
@@ -426,9 +435,10 @@ class PMMLModel:
 
             # Count the number of instances in each cluster and compare with the original cluster counts
             validated_cluster_counts = pd.Series(self.validation_predictions).value_counts()
-            pretrained_model_cluster_counts = self.metric_scores.loc[self.metric_scores['Metric'] == 'Cluster Counts', 'Score'].values[0]
+            pretrained_model_cluster_counts = \
+                self.metric_scores_numeric.loc[self.metric_scores['Metric'] == 'Cluster Counts', 'Score'].values[0]
             print_and_log(f"Pretrained Model Cluster Counts: {pretrained_model_cluster_counts} \nValidation Model Cluster "
-                  f"Counts: {validated_cluster_counts}")
+                  f"Counts:\n{validated_cluster_counts}")
 
             # Check if the model is validated considering an epsilon error
             if (pretrained_model_cluster_counts - validated_cluster_counts).abs().max() < EPSILON:
