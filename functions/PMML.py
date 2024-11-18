@@ -203,19 +203,13 @@ class PMMLModel:
 
         self.predictionsTest = self.pmmlModelLearner.predict(self.inputDatasetTest)  # Make predictions on the dataset
 
-        # Create the output directory if it does not exist
-        if not os.path.exists(self.outputDatasetFilePath):
-            os.makedirs(self.outputDatasetFilePath)
-
         if not self.exportOnlyPredictions:
             predictions_df = self.inputDatasetTest.copy()
             predictions_df = pd.concat([predictions_df, self.predictionsTest], axis=1)
-            predictions_df.to_parquet(f'{self.outputDatasetFilePath}/Predictions_using_{self.modelName.name}.parquet',
-                                      index=False)
+            predictions_df.to_parquet(f'{self.outputDatasetFilePath}.parquet', index=False)
             print_and_log("Predictions and dataset saved to a Parquet file")
         else:
-            self.predictionsTest.to_parquet(f'{self.outputDatasetFilePath}/Only_predictions_using_'
-                                            f'{self.modelName.name}.parquet', index=False)
+            self.predictionsTest.to_parquet(f'{self.outputDatasetFilePath}.parquet', index=False)
             print_and_log("Only predictions saved to a PARQUET file")
 
     def save_test_metrics(self):
@@ -287,7 +281,7 @@ class PMMLModel:
         """
         Train and validate the model if the attribute 'validate_model' is True
         """
-        print_and_log(f"Training and validating the {self.modelName.value.upper()} model...")
+        print(f"Training and validating the {self.modelName.value.upper()} model with and error tolerance of {EPSILON}...")
 
         model_validated = False
 
@@ -352,6 +346,7 @@ class PMMLModel:
             if xml_model_specification is not None:
                 number_of_clusters = int(xml_model_specification.get('numberOfClusters'))
                 validation_model = KMeans(n_clusters=number_of_clusters)
+                print("     * Using hiperparameters: numberOfClusters =", number_of_clusters)
                 validation_model.fit(x_train)
             else:
                 print_and_log("XML model specification not found")
@@ -437,8 +432,8 @@ class PMMLModel:
             validated_cluster_counts = pd.Series(self.validation_predictions).value_counts()
             pretrained_model_cluster_counts = \
                 self.metric_scores_numeric.loc[self.metric_scores['Metric'] == 'Cluster Counts', 'Score'].values[0]
-            print_and_log(f"Pretrained Model Cluster Counts: {pretrained_model_cluster_counts} \nValidation Model Cluster "
-                  f"Counts:\n{validated_cluster_counts}")
+            print_and_log(f"Pretrained Model Cluster Counts: {pretrained_model_cluster_counts} \n"
+                          f"Validation Model Cluster Counts:\n{validated_cluster_counts}")
 
             # Check if the model is validated considering an epsilon error
             if (pretrained_model_cluster_counts - validated_cluster_counts).abs().max() < EPSILON:
