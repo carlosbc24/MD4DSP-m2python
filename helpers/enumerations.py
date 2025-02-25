@@ -117,3 +117,25 @@ class FilterType(Enum):
     """
     EXCLUDE = 0
     INCLUDE = 1
+
+
+class MathOperator(Enum):
+    """
+    Enumeration for the math operator
+
+    SUM: Addition
+    SUBSTRACT: Substraction
+    """
+    SUM = 0
+    SUBSTRACT = 1
+
+
+class MapOperation(Enum):
+    """
+    Enumeration for the map operation
+
+    VALUE_MAPPING: Value mapping
+    SUBSTRING: Substring
+    """
+    VALUE_MAPPING = 0
+    SUBSTRING = 1
