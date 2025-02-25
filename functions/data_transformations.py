@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
-from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, FilterType
+from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, FilterType, \
+    MathOperator
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers, special_type_mean, special_type_median, special_type_closest, \
     special_type_interpolation, apply_derived_type_col_row_outliers, apply_derived_type
@@ -1234,5 +1235,58 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
                                                        closure_type_list[index]))]
             else:
                 raise ValueError("The filter type is not valid")
+
+    return data_dictionary_copy
+
+
+def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperator,
+                             field_out: str, firstOperand, isFieldFirst: bool, secondOperand, isFieldSecond: bool) -> pd.DataFrame:
+    """
+    Execute the data transformation of the MathOperation relation
+    Args:
+        data_dictionary: dataframe with the data
+        math_op: math operation to execute
+        field_out: field to store the output value
+        firstOperand: first operand of the operation, it can be a value or a field
+        isFieldFirst: boolean to check if the first operand is a field
+        secondOperand: second operand of the operation, it can be a value or a field
+        isFieldSecond: boolean to check if the second operand is a field
+
+    Returns:
+        pd.DataFrame: data_dictionary with the result of the math operation
+    """
+
+    data_dictionary_copy = data_dictionary.copy()
+
+    if field_out is None:
+        raise ValueError("The output field cannot be None")
+    if field_out not in data_dictionary_copy.columns:
+        raise ValueError("The field does not exist in the dataframe")
+    if ((isFieldFirst is True and (not np.issubdtype(data_dictionary_copy[firstOperand].dtype, np.number))) or
+            (isFieldSecond is True and (not np.issubdtype(data_dictionary_copy[secondOperand].dtype, np.number)))):
+        raise ValueError("The field to operate is not numeric")
+    if ((isFieldFirst is False and (not np.issubdtype(type(firstOperand), np.number))) or
+            (isFieldSecond is False and (not np.issubdtype(type(secondOperand), np.number)))):
+        raise ValueError("The value to operate is not numeric")
+
+    if math_op == MathOperator.SUM:
+        if isFieldFirst and isFieldSecond:
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] + data_dictionary_copy[secondOperand]
+        elif isFieldFirst and not isFieldSecond:
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] + secondOperand
+        elif not isFieldFirst and isFieldSecond:
+            data_dictionary_copy[field_out] = firstOperand + data_dictionary_copy[secondOperand]
+        elif not isFieldFirst and not isFieldSecond:
+            data_dictionary_copy[field_out] = firstOperand + secondOperand
+    elif math_op == MathOperator.SUBSTRACT:
+        if isFieldFirst and isFieldSecond:
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] - data_dictionary_copy[secondOperand]
+        elif isFieldFirst and not isFieldSecond:
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] - secondOperand
+        elif not isFieldFirst and isFieldSecond:
+            data_dictionary_copy[field_out] = firstOperand - data_dictionary_copy[secondOperand]
+        elif not isFieldFirst and not isFieldSecond:
+            data_dictionary_copy[field_out] = firstOperand - secondOperand
+
 
     return data_dictionary_copy
