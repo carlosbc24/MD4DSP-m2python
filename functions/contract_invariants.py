@@ -13,7 +13,7 @@ from helpers.invariant_aux import check_special_type_most_frequent, check_specia
     check_interval_closest
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers
-from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong
+from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, MathOperator
 
 
 def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -918,3 +918,26 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                         print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
 
     return True if result else False
+
+
+def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                             belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
+                             field_in: str = None, field_out: str = None, math_op: MathOperator,
+                             firstOperand, isFieldFirst: bool, secondOperand, isFieldSecond: bool): -> bool:
+    """
+    This function checks if the invariant of the MathOperation relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the operation is correctly applied to the
+    input values.
+
+    Parameters:
+
+        data_dictionary_in (pd.DataFrame): The input dataframe.
+        data_dictionary_out (pd.DataFrame): The output dataframe.
+        belong_op_in (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the input values are correctly applied.
+                                If it's Belong.NOTBELONG, the function checks if the input values are not correctly applied.
+
+
+
+
+    """
+
