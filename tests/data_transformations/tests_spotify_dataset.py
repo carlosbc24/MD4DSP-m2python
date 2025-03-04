@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 import functions.data_transformations as data_transformations
 from helpers.auxiliar import find_closest_value, outlier_closest
-from helpers.enumerations import Closure, DataType, SpecialType, Belong, FilterType
+from helpers.enumerations import Closure, DataType, SpecialType, Belong, FilterType, MathOperator
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers
@@ -147,7 +147,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             self.execute_transform_filter_columns,
             self.execute_transform_filter_rows_primitive,
             self.execute_transform_filter_rows_special_values,
-            self.execute_transform_filter_rows_range
+            self.execute_transform_filter_rows_range,
+            self.execute_execute_transform_math_operation
         ]
 
         print_and_log("")
@@ -5459,3 +5460,357 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 left_margin_list=[0.2], filter_type=FilterType(1),
                 closure_type_list=[Closure(3), Closure(3)])
         print_and_log("Test Case 4 Passed: ValueError raised when the column name is not in the dataframe")
+
+    def execute_execute_transform_math_operation(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_math_operation
+        """
+        print_and_log("Testing transform_math_operation Data Transformation Function")
+        print_and_log("")
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_execute_transform_math_operation()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_execute_transform_math_operation()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_execute_transform_math_operation(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_math_operation
+        """
+        print_and_log("Testing transform_math_operation Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+
+        # Caso 1 - Suma de dos columnas
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand='energy', isFieldSecond=True)
+
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] + expected_df['energy']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2 - Resta de dos columnas
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand='energy', isFieldSecond=True)
+
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] - expected_df['energy']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3 - Suma de columna y numero
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand=3, isFieldSecond=False)
+
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] + 3
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Resta de columna y numero
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(1), field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand=1, isFieldSecond=False)
+
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] - 1
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5 - Suma de numero y columna
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       firstOperand=8, isFieldFirst=False,
+                                                                       secondOperand='danceability', isFieldSecond=True)
+
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = 8 + expected_df['danceability']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        # Caso 6 - Resta de numero y columna
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(1), field_out='track_popularity',
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand='danceability', isFieldSecond=True)
+
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = 2 - expected_df['danceability']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        # Caso 7 - Suma de numeros
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand=15, isFieldSecond=False)
+
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = 2 + 15
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Caso 8 - Resta de numeros
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand=8, isFieldFirst=False,
+                                                                       secondOperand=13, isFieldSecond=False)
+
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = 8 - 13
+        print_and_log("Test Case 8 Passed: got the dataframe expected")
+
+        # Caso 9 - No field_out
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                           math_op=MathOperator(1), field_out=None,
+                                                                           firstOperand=2, isFieldFirst=False,
+                                                                           secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 9 Passed: got the expected error")
+
+        # Caso 10 - field_out no existe
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                           math_op=MathOperator(1), field_out='D',
+                                                                           firstOperand=2, isFieldFirst=False,
+                                                                           secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 10 Passed: got the expected error")
+
+        # Caso 11 - Columna no numerica
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                           math_op=MathOperator(0), field_out='track_popularity',
+                                                                           firstOperand='track_artist', isFieldFirst=True,
+                                                                           secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 11 Passed: got the expected error")
+
+        # Caso 12 - Valor no numerico
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
+                                                                           math_op=MathOperator(0), field_out='track_popularity',
+                                                                           firstOperand='danceability', isFieldFirst=True,
+                                                                           secondOperand='Antonio', isFieldSecond=False)
+        print_and_log("Test Case 12 Passed: got the expected error")
+
+    def execute_WholeDatasetTests_execute_transform_math_operation(self):
+        """
+        Execute the data transformation test using the whole dataset for the function transform_math_operation
+        """
+        print_and_log("Testing transform_math_operation Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+
+        # Caso 1 - Suma de dos columnas
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand='energy', isFieldSecond=True)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] + expected_df['energy']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2 - Resta de dos columnas
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand='energy', isFieldSecond=True)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] - expected_df['energy']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3 - Suma de columna y numero
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand=3, isFieldSecond=False)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] + 3
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Resta de columna y numero
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand='danceability', isFieldFirst=True,
+                                                                       secondOperand=1, isFieldSecond=False)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['danceability'] - 1
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5 - Suma de numero y columna
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand=8, isFieldFirst=False,
+                                                                       secondOperand='danceability', isFieldSecond=True)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = 8 + expected_df['danceability']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        # Caso 6 - Resta de numero y columna
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand='danceability', isFieldSecond=True)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = 2 - expected_df['danceability']
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        # Caso 7 - Suma de numeros
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand=15, isFieldSecond=False)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = 2 + 15
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Caso 8 - Resta de numeros
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=self.rest_of_dataset.copy(),
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
+                                                                       firstOperand=8, isFieldFirst=False,
+                                                                       secondOperand=13, isFieldSecond=False)
+
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = 8 - 13
+        print_and_log("Test Case 8 Passed: got the dataframe expected")
+
+        # Caso 9 - No field_out
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.rest_of_dataset.copy(),
+                math_op=MathOperator(1), field_out=None,
+                firstOperand=2, isFieldFirst=False,
+                secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 9 Passed: got the expected error")
+
+        # Caso 10 - field_out no existe
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.rest_of_dataset.copy(),
+                math_op=MathOperator(1), field_out='D',
+                firstOperand=2, isFieldFirst=False,
+                secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 10 Passed: got the expected error")
+
+        # Caso 11 - Columna no numerica
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.rest_of_dataset.copy(),
+                math_op=MathOperator(0), field_out='track_popularity',
+                firstOperand='track_artist', isFieldFirst=True,
+                secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 11 Passed: got the expected error")
+
+        # Caso 12 - Valor no numerico
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.rest_of_dataset.copy(),
+                math_op=MathOperator(0), field_out='track_popularity',
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='Antonio', isFieldSecond=False)
+        print_and_log("Test Case 12 Passed: got the expected error")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
