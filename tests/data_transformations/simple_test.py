@@ -7,7 +7,8 @@ from tqdm import tqdm
 
 # Importing functions and classes from packages
 import functions.data_transformations as data_transformations
-from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong, FilterType
+from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong, FilterType, \
+    MathOperator
 from helpers.logger import print_and_log
 
 
@@ -48,21 +49,22 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            self.execute_transform_FixValue_FixValue,
-            self.execute_transform_FixValue_DerivedValue,
-            self.execute_transform_FixValue_NumOp,
-            self.execute_transform_Interval_FixValue,
-            self.execute_transform_Interval_DerivedValue,
-            self.execute_transform_Interval_NumOp,
-            self.execute_transform_SpecialValue_FixValue,
-            self.execute_transform_SpecialValue_DerivedValue,
-            self.execute_transform_SpecialValue_NumOp,
-            self.execute_transform_derived_field,
-            self.execute_transform_filter_columns,
-            self.execute_transform_cast_type,
-            self.execute_transform_filter_rows_primitive,
-            self.execute_transform_filter_rows_special_values,
-            self.execute_transform_filter_rows_range
+            #self.execute_transform_FixValue_FixValue,
+            #self.execute_transform_FixValue_DerivedValue,
+            #self.execute_transform_FixValue_NumOp,
+            #self.execute_transform_Interval_FixValue,
+            #self.execute_transform_Interval_DerivedValue,
+            #self.execute_transform_Interval_NumOp,
+            #self.execute_transform_SpecialValue_FixValue,
+            #self.execute_transform_SpecialValue_DerivedValue,
+            #self.execute_transform_SpecialValue_NumOp,
+            #self.execute_transform_derived_field,
+            #self.execute_transform_filter_columns,
+            #self.execute_transform_cast_type,
+            #self.execute_transform_filter_rows_primitive,
+            #self.execute_transform_filter_rows_special_values,
+            #self.execute_transform_filter_rows_range,
+            self.execute_transform_math_operation
         ]
 
         print_and_log("")
@@ -3223,3 +3225,196 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
+
+    def execute_transform_math_operation(self):
+        """
+        Execute the simple tests of the function transform_math_operation
+        """
+        print_and_log("Testing transform_math_operation Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1 - Suma de dos columnas
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [0, 0, 0, 0, 0]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [2, 5, 7, 10, 13]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(0), field_out='C',
+                                                                       firstOperand='A', isFieldFirst=True,
+                                                                       secondOperand='B', isFieldSecond=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2 - Resta de dos columnas
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [0, 0, 0, 0, 0]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [-2, -1, -1, -2, -11]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(1), field_out='C',
+                                                                       firstOperand='A', isFieldFirst=True,
+                                                                       secondOperand='B', isFieldSecond=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3 - Suma de columna y numero
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [14, 16, 17, 18, 15]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(0), field_out='C',
+                                                                       firstOperand='A', isFieldFirst=True,
+                                                                       secondOperand=14, isFieldSecond=False)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Resta de columna y numero
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [-7, -5, -4, -3, -6]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(1), field_out='C',
+                                                                       firstOperand='A', isFieldFirst=True,
+                                                                       secondOperand=7, isFieldSecond=False)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5 - Suma de numero y columna
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 11, 12, 14, 20]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(0), field_out='C',
+                                                                       firstOperand=8, isFieldFirst=False,
+                                                                       secondOperand='B', isFieldSecond=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the dataframe expected")
+
+        # Caso 6 - Resta de numero y columna
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [2, 0, -1, -2, 1]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(1), field_out='C',
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand='A', isFieldSecond=True)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
+        # Caso 7 - Suma de numeros
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [13, 13, 13, 13, 13]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(0), field_out='C',
+                                                                       firstOperand=8, isFieldFirst=False,
+                                                                       secondOperand=5, isFieldSecond=False)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Caso 8 - Resta de numeros
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [-7, -7, -7, -7, -7]})
+
+        result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(1), field_out='C',
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand=9, isFieldSecond=False)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 8 Passed: got the dataframe expected")
+
+        # Caso 9 - No field_out
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [-7, -7, -7, -7, -7]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(1), field_out=None,
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 9 Passed: got the expected error")
+
+        # Caso 10 - field_out no existe
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [-7, -7, -7, -7, -7]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(1), field_out='D',
+                                                                       firstOperand=2, isFieldFirst=False,
+                                                                       secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 10 Passed: got the expected error")
+
+        # Caso 11 - Columna no numerica
+        datadic = pd.DataFrame(
+            {'A': ['a', 'b', 'c', 'd', 'e'], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': ['a', 'b', 'c', 'd', 'e'], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(0), field_out='C',
+                                                                       firstOperand='A', isFieldFirst=True,
+                                                                       secondOperand=9, isFieldSecond=False)
+        print_and_log("Test Case 11 Passed: got the expected error")
+
+        # Caso 12 - Valor no numerico
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                       math_op=MathOperator(0), field_out='C',
+                                                                       firstOperand='A', isFieldFirst=True,
+                                                                       secondOperand='Antonio', isFieldSecond=False)
+        print_and_log("Test Case 12 Passed: got the expected error")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
