@@ -921,9 +921,8 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
 
 
 def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                             belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                             field_in: str = None, field_out: str = None, math_op: MathOperator,
-                             firstOperand, isFieldFirst: bool, secondOperand, isFieldSecond: bool): -> bool:
+                             math_op: MathOperator, firstOperand, isFieldFirst: bool, secondOperand, isFieldSecond: bool,
+                             belong_op_out: Belong = Belong.BELONG, field_in: str = None, field_out: str = None) -> bool:
     """
     This function checks if the invariant of the MathOperation relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if the operation is correctly applied to the
@@ -933,11 +932,132 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
 
         data_dictionary_in (pd.DataFrame): The input dataframe.
         data_dictionary_out (pd.DataFrame): The output dataframe.
-        belong_op_in (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the input values are correctly applied.
-                                If it's Belong.NOTBELONG, the function checks if the input values are not correctly applied.
+        belong_op_out (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the output values are correctly applied.
+                                If it's Belong.NOTBELONG, the function checks if the output values are not correctly applied.
+        field_in (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+        field_out (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+        math_op (MathOperator): The math operation to check the invariant.
+        firstOperand: The first operand of the math operation.
+        isFieldFirst (bool): If the first operand is a field (column) of the dataframe.
+        secondOperand: The second operand of the math operation.
+        isFieldSecond (bool): If the second operand is a field (column) of the dataframe.
 
-
-
-
+    Returns:
+        bool: True if the invariant is satisfied, False otherwise.
     """
 
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    if field_in is None:
+        raise ValueError("The field_in parameter is required")
+    elif field_out is None:
+        raise ValueError("The field_out parameter is required")
+    elif field_in is not None and field_in not in data_dictionary_in.columns:
+        raise ValueError("The input field does not exist in the dataframe")
+    elif field_out is not None and field_out not in data_dictionary_out.columns:
+        raise ValueError("The output field does not exist in the dataframe")
+    elif isFieldFirst and firstOperand not in data_dictionary_in.columns:
+        raise ValueError("The first operand does not exist in the dataframe")
+    elif isFieldSecond and secondOperand not in data_dictionary_in.columns:
+        raise ValueError("The second operand does not exist in the dataframe")
+    elif ((isFieldFirst is True and (not np.issubdtype(data_dictionary_in[firstOperand].dtype, np.number))) or
+            (isFieldSecond is True and (not np.issubdtype(data_dictionary_in[secondOperand].dtype, np.number)))):
+        raise ValueError("The field to operate is not numeric")
+    elif ((isFieldFirst is False and (not np.issubdtype(type(firstOperand), np.number))) or
+            (isFieldSecond is False and (not np.issubdtype(type(secondOperand), np.number)))):
+        raise ValueError("The value to operate is not numeric")
+
+
+    if belong_op_out==Belong.BELONG:
+        if math_op == MathOperator.SUM:
+            if isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] + secondOperand:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] == firstOperand + data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] == firstOperand + secondOperand:
+                    result = True
+                else:
+                    result = False
+        elif math_op == MathOperator.SUBSTRACT:
+            if isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] - secondOperand:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] == firstOperand - data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] == firstOperand - secondOperand:
+                    result = True
+                else:
+                    result = False
+    elif belong_op_out==Belong.NOTBELONG:
+        if math_op == MathOperator.SUM:
+            if isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] + secondOperand:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] != firstOperand + data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] != firstOperand + secondOperand:
+                    result = True
+                else:
+                    result = False
+        elif math_op == MathOperator.SUBSTRACT:
+            if isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] - secondOperand:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out] != firstOperand - data_dictionary_in[secondOperand]:
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out] != firstOperand - secondOperand:
+                    result = True
+                else:
+                    result = False
+
+
+    return result
