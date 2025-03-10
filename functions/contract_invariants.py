@@ -990,10 +990,10 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                 else:
                     result = False
             elif not isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out].equals(firstOperand + secondOperand):
-                    result = True
-                else:
-                    result = False
+                result = True
+                for item in data_dictionary_out[field_out]:
+                    if item != (firstOperand + secondOperand):
+                        result = False
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]):
@@ -1011,10 +1011,10 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                 else:
                     result = False
             elif not isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out].equals(firstOperand - secondOperand):
-                    result = True
-                else:
-                    result = False
+                result = True
+                for item in data_dictionary_out[field_out]:
+                    if item != (firstOperand - secondOperand):
+                        result = False
     elif belong_op_out==Belong.NOTBELONG:
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
