@@ -975,86 +975,86 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
     if belong_op_out==Belong.BELONG:
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] + secondOperand:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + secondOperand):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] == firstOperand + data_dictionary_in[secondOperand]:
+                if data_dictionary_out[field_out].equals(firstOperand + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] == firstOperand + secondOperand:
+                if data_dictionary_out[field_out].equals(firstOperand + secondOperand):
                     result = True
                 else:
                     result = False
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] == data_dictionary_in[firstOperand] - secondOperand:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - secondOperand):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] == firstOperand - data_dictionary_in[secondOperand]:
+                if data_dictionary_out[field_out].equals(firstOperand - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] == firstOperand - secondOperand:
+                if data_dictionary_out[field_out].equals(firstOperand - secondOperand):
                     result = True
                 else:
                     result = False
     elif belong_op_out==Belong.NOTBELONG:
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] + secondOperand:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + secondOperand):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] != firstOperand + data_dictionary_in[secondOperand]:
+                if data_dictionary_out[field_out].equals(firstOperand + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] != firstOperand + secondOperand:
+                if data_dictionary_out[field_out].equals(firstOperand + secondOperand):
                     result = True
                 else:
                     result = False
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]:
+                if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] != data_dictionary_in[firstOperand] - secondOperand:
+                if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - secondOperand):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out] != firstOperand - data_dictionary_in[secondOperand]:
+                if not data_dictionary_out[field_out].equals(firstOperand - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
             elif not isFieldFirst and not isFieldSecond:
-                if data_dictionary_out[field_out] != firstOperand - secondOperand:
+                if not data_dictionary_out[field_out].equals(firstOperand - secondOperand):
                     result = True
                 else:
                     result = False
