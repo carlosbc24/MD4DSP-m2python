@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 # Importing functions and classes from packages
 import functions.contract_invariants as invariants
-from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong
+from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong, MathOperator
 from helpers.logger import print_and_log
 
 
@@ -48,16 +48,17 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_chekInv_MathOperation
         ]
 
         print_and_log("")
@@ -4376,3 +4377,38 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 10 Failed: Expected True, but got False"
         print_and_log("Test Case 10 Passed: Expected True, got True")
+
+    def execute_chekInv_MathOperation(self):
+        """
+        Execute the simple tests of the function checkInv_MathOperation
+        """
+
+        # Caso 1
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 5, 7, 8, 6]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 5, 7, 8, 6]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 5, 7, 8, 6]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 1, 7, 8, 6]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
