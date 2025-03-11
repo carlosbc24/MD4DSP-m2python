@@ -48,16 +48,16 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            # self.execute_checkInv_FixValue_FixValue,
-            # self.execute_checkInv_FixValue_DerivedValue,
-            # self.execute_checkInv_FixValue_NumOp,
-            # self.execute_checkInv_Interval_FixValue,
-            # self.execute_checkInv_Interval_DerivedValue,
-            # self.execute_checkInv_Interval_NumOp,
-            # self.execute_checkInv_SpecialValue_FixValue,
-            # self.execute_checkInv_SpecialValue_DerivedValue,
-            # self.execute_checkInv_SpecialValue_NumOp,
-            # self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_FixValue_FixValue,
+            self.execute_checkInv_FixValue_DerivedValue,
+            self.execute_checkInv_FixValue_NumOp,
+            self.execute_checkInv_Interval_FixValue,
+            self.execute_checkInv_Interval_DerivedValue,
+            self.execute_checkInv_Interval_NumOp,
+            self.execute_checkInv_SpecialValue_FixValue,
+            self.execute_checkInv_SpecialValue_DerivedValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue,
             self.execute_chekInv_MathOperation
         ]
 
@@ -4623,3 +4623,394 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 16 Failed: Expected False, but got True"
         print_and_log("Test Case 16 Passed: Expected False, got False")
+
+        # Belong_op=NOTBELONG
+        # Caso 17
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 5, 7, 8, 6]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 5, 7, 8, 6]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, got False")
+
+        # Caso 18
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 5, 7, 8, 6]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 1, 7, 8, 6]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, got True")
+
+        # Caso 19
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [-2, -1, -1, -4, -4]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [-2, -1, -1, -4, -4]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, got False")
+
+        # Caso 20
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [-2, -1, -1, -4, -4]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [2, 1, 7, 8, 6]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Caso 21
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 5, 6, 5, 4]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 5, 6, 5, 4]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 21 Failed: Expected False, but got True"
+        print_and_log("Test Case 21 Passed: Expected False, got False")
+
+        # Caso 22
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 5, 6, 5, 4]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 5, 14, 5, 4]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 22 Failed: Expected True, but got False"
+        print_and_log("Test Case 22 Passed: Expected True, got True")
+
+        # Caso 23
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [-3, -1, 0, -1, -2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [-3, -1, 0, -1, -2]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 23 Failed: Expected False, but got True"
+        print_and_log("Test Case 23 Passed: Expected False, got False")
+
+        # Caso 24
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [-3, -1, 0, -1, -2]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [-3, 2, 0, -1, -2]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 24 Failed: Expected True, but got False"
+        print_and_log("Test Case 24 Passed: Expected True, got True")
+
+        # Caso 25
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 8, 9, 11, 10]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 8, 9, 11, 10]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 25 Failed: Expected False, but got True"
+        print_and_log("Test Case 25 Passed: Expected False, got False")
+
+        # Caso 26
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 8, 9, 11, 10]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 8, 9, 10, 11]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        print_and_log("Test Case 26 Passed: Expected True, got True")
+
+        # Caso 27
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 2, 1, -1, 0]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 2, 1, -1, 0]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 27 Failed: Expected False, but got True"
+        print_and_log("Test Case 27 Passed: Expected False, got False")
+
+        # Caso 28
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 2, 1, -1, 0]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 2, 1, 0, -1]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 28 Failed: Expected True, but got False"
+        print_and_log("Test Case 28 Passed: Expected True, got True")
+
+        # Caso 29
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 7, 7, 7, 7]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 7, 7, 7, 7]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 29 Failed: Expected False, but got True"
+        print_and_log("Test Case 29 Passed: Expected False, got False")
+
+        # Caso 30
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 7, 7, 7, 7]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [7, 5, 7, 7, 7]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 30 Failed: Expected True, but got False"
+        print_and_log("Test Case 30 Passed: Expected True, got True")
+
+        # Caso 31
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 31 Failed: Expected False, but got True"
+        print_and_log("Test Case 31 Passed: Expected False, got False")
+
+        # Caso 32
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='C', field_out='C')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 32 Failed: Expected True, but got False"
+        print_and_log("Test Case 32 Passed: Expected True, got True")
+
+
+        # Exceptions
+        # Caso 33
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in=None, field_out='C')
+        print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
+
+        # Caso 34
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='C', field_out=None)
+        print_and_log("Test Case 34 Passed: Expected ValueError, got ValueError")
+
+        # Caso 35
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='J', field_out='C')
+        print_and_log("Test Case 35 Passed: Expected ValueError, got ValueError")
+
+        # Caso 36
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='J')
+        print_and_log("Test Case 36 Passed: Expected ValueError, got ValueError")
+
+        # Caso 37
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='P', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+        print_and_log("Test Case 37 Passed: Expected ValueError, got ValueError")
+
+        # Caso 38
+        datadic = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [0, 2, 3, 2, 1], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='Y', isFieldSecond=True, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+        print_and_log("Test Case 38 Passed: Expected ValueError, got ValueError")
+
+        # Caso 39
+        datadic = pd.DataFrame(
+            {'A': ['a', 'a', 'a', 'a', 'a'], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': ['a', 'a', 'a', 'a', 'a'], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='A', isFieldFirst=True,
+                                                          secondOperand='B', isFieldSecond=True, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+        print_and_log("Test Case 39 Passed: Expected ValueError, got ValueError")
+
+        # Caso 40
+        datadic = pd.DataFrame(
+            {'A': ['a', 'a', 'a', 'a', 'a'], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': ['a', 'a', 'a', 'a', 'a'], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='B', isFieldFirst=True,
+                                                          secondOperand='A', isFieldSecond=True, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+        print_and_log("Test Case 40 Passed: Expected ValueError, got ValueError")
+
+        # Caso 41
+        datadic = pd.DataFrame(
+            {'A': [2, 3, 4, 6, 5], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [2, 3, 4, 6, 5], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='B', isFieldFirst=False,
+                                                          secondOperand='A', isFieldSecond=True, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+        print_and_log("Test Case 41 Passed: Expected ValueError, got ValueError")
+
+        # Caso 42
+        datadic = pd.DataFrame(
+            {'A': [2, 3, 4, 6, 5], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 3]})
+        expected_df = pd.DataFrame(
+            {'A': [2, 3, 4, 6, 5], 'B': [2, 3, 4, 6, 5], 'C': [3, 3, 3, 3, 1]})
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=datadic.copy(), data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='B', isFieldFirst=True,
+                                                          secondOperand='A', isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='C', field_out='C')
+        print_and_log("Test Case 42 Passed: Expected ValueError, got ValueError")
+
+
+
+
+
+
+
+
