@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 import functions.contract_invariants as invariants
 import functions.data_transformations as data_transformations
-from helpers.enumerations import Closure, DataType, SpecialType, Belong
+from helpers.enumerations import Closure, DataType, SpecialType, Belong, MathOperator
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
 
@@ -6733,7 +6733,633 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_SmallBatchTests_checkInv_MathOperation(self):
-        pass
+        # Belong_op=BELONG
+        # Caso 1
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df, math_op=MathOperator(0),
+                                                          firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
+
+        # Caso 3
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']-self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+        expected_df['loudness'][2]=expected_df['loudness'][2]-1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 4 Failed: Expected False, but got True"
+        print_and_log("Test Case 4 Passed: Expected False, got False")
+
+        # Caso 5
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+3
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+5
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
+
+        # Caso 7
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']-3
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 7 Failed: Expected True, but got False"
+        print_and_log("Test Case 7 Passed: Expected True, got True")
+
+        # Caso 8
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']-3
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, got False")
+
+        # Caso 9
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5+self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
+
+        # Caso 10
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=1+self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, got False")
+
+        # Caso 11
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5-self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
+
+        # Caso 12
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5-self.small_batch_dataset['energy']
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
+
+        # Caso 13
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5+2
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
+
+        # Caso 14
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5+2
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, got False")
+
+        # Caso 15
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5-2
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 15 Failed: Expected True, but got False"
+        print_and_log("Test Case 15 Passed: Expected True, got True")
+
+        # Caso 16
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=4-3
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(0),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, got False")
+
+        # Belong_op=NOTBELONG
+        # Caso 17
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 17 Failed: Expected False, but got True"
+        print_and_log("Test Case 17 Passed: Expected False, got False")
+
+        # Caso 18
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, got True")
+
+        # Caso 19
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']-self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, got False")
+
+        # Caso 20
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']-self.small_batch_dataset['energy']
+        expected_df['loudness'][2]=expected_df['loudness'][2]-1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Caso 21
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+3
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 21 Failed: Expected False, but got True"
+        print_and_log("Test Case 21 Passed: Expected False, got False")
+
+        # Caso 22
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+3
+        expected_df['loudness'][2]=expected_df['loudness'][2]-1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 22 Failed: Expected True, but got False"
+        print_and_log("Test Case 22 Passed: Expected True, got True")
+
+        # Caso 23
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']-3
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 23 Failed: Expected False, but got True"
+        print_and_log("Test Case 23 Passed: Expected False, got False")
+
+        # Caso 24
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']-4
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          secondOperand=3, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 24 Failed: Expected True, but got False"
+        print_and_log("Test Case 24 Passed: Expected True, got True")
+
+        # Caso 25
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5+self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 25 Failed: Expected False, but got True"
+        print_and_log("Test Case 25 Passed: Expected False, got False")
+
+        # Caso 26
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=6+self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        print_and_log("Test Case 26 Passed: Expected True, got True")
+
+        # Caso 27
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5-self.small_batch_dataset['energy']
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 27 Failed: Expected False, but got True"
+        print_and_log("Test Case 27 Passed: Expected False, got False")
+
+        # Caso 28
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5-self.small_batch_dataset['energy']
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand='energy', isFieldSecond=True,
+                                                          belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 28 Failed: Expected True, but got False"
+        print_and_log("Test Case 28 Passed: Expected True, got True")
+
+        # Caso 29
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5+2
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 29 Failed: Expected False, but got True"
+        print_and_log("Test Case 29 Passed: Expected False, got False")
+
+        # Caso 30
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5+2
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(0), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 30 Failed: Expected True, but got False"
+        print_and_log("Test Case 30 Passed: Expected True, got True")
+
+        # Caso 31
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5-2
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 31 Failed: Expected False, but got True"
+        print_and_log("Test Case 31 Passed: Expected False, got False")
+
+        # Caso 32
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=5-2
+        expected_df['loudness'][2]=expected_df['loudness'][2]+1
+
+        result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                          data_dictionary_out=expected_df,
+                                                          math_op=MathOperator(1), firstOperand=5, isFieldFirst=False,
+                                                          secondOperand=2, isFieldSecond=False, belong_op_out=Belong(1),
+                                                          field_in='loudness', field_out='loudness')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 32 Failed: Expected True, but got False"
+        print_and_log("Test Case 32 Passed: Expected True, got True")
+
+        # Exceptions
+        # Caso 33
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(1), firstOperand=5,
+                                                              isFieldFirst=False,
+                                                              secondOperand=2, isFieldSecond=False,
+                                                              belong_op_out=Belong(0),
+                                                              field_in=None, field_out='loudness')
+        print_and_log("Test Case 33 Passed: Expected ValueError, got ValueError")
+
+        # Caso 34
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(1), firstOperand=5,
+                                                              isFieldFirst=False,
+                                                              secondOperand=2, isFieldSecond=False,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out=None)
+        print_and_log("Test Case 34 Passed: Expected ValueError, got ValueError")
+
+        # Caso 35
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(1), firstOperand=5,
+                                                              isFieldFirst=False,
+                                                              secondOperand=2, isFieldSecond=False,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='J', field_out='loudness')
+        print_and_log("Test Case 35 Passed: Expected ValueError, got ValueError")
+
+        # Caso 36
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(1), firstOperand=5,
+                                                              isFieldFirst=False,
+                                                              secondOperand=2, isFieldSecond=False,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out='J')
+        print_and_log("Test Case 36 Passed: Expected ValueError, got ValueError")
+
+        # Caso 37
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(0), firstOperand='P',
+                                                              isFieldFirst=True,
+                                                              secondOperand='energy', isFieldSecond=True,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out='loudness')
+        print_and_log("Test Case 37 Passed: Expected ValueError, got ValueError")
+
+        # Caso 38
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(0), firstOperand='danceability',
+                                                              isFieldFirst=True,
+                                                              secondOperand='Y', isFieldSecond=True,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out='loudness')
+        print_and_log("Test Case 38 Passed: Expected ValueError, got ValueError")
+
+        # Caso 39
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(0), firstOperand='track_name',
+                                                              isFieldFirst=True,
+                                                              secondOperand='energy', isFieldSecond=True,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out='loudness')
+        print_and_log("Test Case 39 Passed: Expected ValueError, got ValueError")
+
+        # Caso 40
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(0), firstOperand='energy',
+                                                              isFieldFirst=True,
+                                                              secondOperand='track_name', isFieldSecond=True,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out='loudness')
+        print_and_log("Test Case 40 Passed: Expected ValueError, got ValueError")
+
+        # Caso 41
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(0), firstOperand='Hola',
+                                                              isFieldFirst=False,
+                                                              secondOperand='danceability', isFieldSecond=True,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out='loudness')
+        print_and_log("Test Case 41 Passed: Expected ValueError, got ValueError")
+
+        # Caso 42
+        expected_df=self.small_batch_dataset.copy()
+        expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                              data_dictionary_out=expected_df,
+                                                              math_op=MathOperator(0), firstOperand='energy',
+                                                              isFieldFirst=True,
+                                                              secondOperand='Carlos', isFieldSecond=False,
+                                                              belong_op_out=Belong(0),
+                                                              field_in='loudness', field_out='loudness')
+        print_and_log("Test Case 42 Passed: Expected ValueError, got ValueError")
 
 
     def execute_WholeDatasetTests_checkInv_MathOperation(self):
