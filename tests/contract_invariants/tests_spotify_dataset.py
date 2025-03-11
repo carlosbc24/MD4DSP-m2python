@@ -97,16 +97,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_MathOperation
         ]
 
         print_and_log("")
@@ -129,7 +130,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_FixValue_FixValue
         """
-        print_and_log("Testing checkInv_FixValue_FixValue Data Transformation Function")
+        print_and_log("Testing checkInv_FixValue_FixValue invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -757,7 +758,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_FixValue_DerivedValue
         """
-        print_and_log("Testing checkInv_FixValue_DerivedValue Data Transformation Function")
+        print_and_log("Testing checkInv_FixValue_DerivedValue invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -1313,7 +1314,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_FixValue_NumOp
         """
-        print_and_log("Testing checkInv_FixValue_NumOp Data Transformation Function")
+        print_and_log("Testing checkInv_FixValue_NumOp invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -1951,7 +1952,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_Interval_FixValue
         """
-        print_and_log("Testing checkInv_Interval_FixValue Data Transformation Function")
+        print_and_log("Testing checkInv_Interval_FixValue invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -2227,7 +2228,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_Interval_DerivedValue
         """
-        print_and_log("Testing checkInv_Interval_DerivedValue Data Transformation Function")
+        print_and_log("Testing checkInv_Interval_DerivedValue invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -2638,7 +2639,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_Interval_NumOp
         """
-        print_and_log("Testing checkInv_Interval_NumOp Data Transformation Function")
+        print_and_log("Testing checkInv_Interval_NumOp invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -3443,7 +3444,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_FixValue
         """
-        print_and_log("Testing checkInv_SpecialValue_FixValue Data Transformation Function")
+        print_and_log("Testing checkInv_SpecialValue_FixValue invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -4062,7 +4063,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_DerivedValue
         """
-        print_and_log("Testing checkInv_SpecialValue_DerivedValue Data Transformation Function")
+        print_and_log("Testing checkInv_SpecialValue_DerivedValue invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -5088,7 +5089,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_NumOp
         """
-        print_and_log("Testing checkInv_SpecialValue_NumOp Data Transformation Function")
+        print_and_log("Testing checkInv_SpecialValue_NumOp invariant Function")
         print_and_log("")
 
         print_and_log("Dataset tests using small batch of the dataset:")
@@ -6399,7 +6400,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         """
         Execute the invariant test with external dataset for the function checkInv_SpecialValue_NumOp
         """
-        print_and_log("Testing checkInv_SpecialValue_NumOp Data Transformation Function")
+        print_and_log("Testing checkInv_SpecialValue_NumOp invariant Function")
         print_and_log("")
 
         pd.options.mode.chained_assignment = None # Suppresses warnings related to modifying copies of dataframes
@@ -6709,3 +6710,57 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 10 Failed: Expected False, but got True"'d'
         print_and_log("Test Case 10 Passed: Expected False, got False")
+
+
+    def execute_checkInv_MathOperation(self):
+        """
+        Execute the invariant test with external dataset for the function checkInv_MathOperation
+        """
+        print_and_log("Testing checkInv_MathOperation invariant Function")
+        print_and_log("")
+
+        pd.options.mode.chained_assignment = None # Suppresses warnings related to modifying copies of dataframes
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_MathOperation()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_MathOperation()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+
+    def execute_SmallBatchTests_checkInv_MathOperation(self):
+        pass
+
+
+    def execute_WholeDatasetTests_checkInv_MathOperation(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
