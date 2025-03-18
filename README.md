@@ -25,14 +25,14 @@
    
 4. Deactivate any previous environment and activate the new one:
     ```bash
-    $ conda deactivate
-    $ conda activate md4dsp
+    conda deactivate
+    conda activate md4dsp
     ```
 
 5. Clean conda and pip caches:
     ```shell
-    $ conda clean --all --yes
-    $ pip cache purge
+    conda clean --all --yes
+    pip cache purge
     ```
    This step will prevent you from retrieving libraries from the conda or pip caches, which may be incompatible with
    the project's requirements. If you are sure that the libraries in the cache are compatible, you can skip this step.
