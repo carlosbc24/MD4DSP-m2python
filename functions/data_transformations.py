@@ -54,13 +54,25 @@ def transform_fix_value_fix_value(data_dictionary: pd.DataFrame, input_values_li
 
     # Define a function to apply mapping based on operation type
     def apply_mapping(cell_value):
+        original_type = type(cell_value)
         for input_val, output_val, op in mapping_list:
             if op.name == "VALUE_MAPPING":
                 if cell_value == input_val:
                     return output_val
             elif op.name == "SUBSTRING":
-                if input_val in cell_value:
-                    return cell_value.replace(input_val, output_val)
+                cell_str = str(cell_value)
+                input_str = str(input_val)
+                if input_str in cell_str:
+                    new_str = cell_str.replace(input_str, str(output_val))
+                    # Attempt to cast back if the original value was numeric.
+                    try:
+                        if original_type is int:
+                            return int(new_str)
+                        elif original_type is float:
+                            return float(new_str)
+                    except Exception:
+                        return new_str
+                    return new_str
 
         return cell_value
 
