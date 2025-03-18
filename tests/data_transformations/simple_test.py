@@ -243,9 +243,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 5.0],
                                                                     output_values_list=fix_value_output,
-                                                                            map_operation_list=[
-                                                                                MapOperation.VALUE_MAPPING,
-                                                                                MapOperation.VALUE_MAPPING])
+                                                                    map_operation_list=[
+                                                                        MapOperation.VALUE_MAPPING,
+                                                                        MapOperation.VALUE_MAPPING])
         print_and_log("Test Case 8 Passed: expected Value Error, got Value Error")
 
         # Caso 9
@@ -264,6 +264,124 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
+
+        # Caso 10
+        # Ejecutar la transformación de datos: cambiar el valor fijo 2 por el valor fijo 999
+        # Crear un DataFrame de prueba
+        df = pd.DataFrame({'A': [0, 1, 124, 3, 4], 'B': [5, 4, 3, 2, 1]})
+        # Definir el valor fijo y la condición para el cambio
+        fix_value_output = [999]
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
+                                                                            input_values_list=[2],
+                                                                            data_type_output_list=None,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.SUBSTRING])
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': [0, 1, 19994, 3, 4], 'B': [5, 4, 3, 999, 1]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        # Ejecutar la transformación de datos: cambiar el valor fijo 'Clara' por el valor fijo de fecha 2021-01-01
+        # Crear un DataFrame de prueba
+        df = pd.DataFrame(
+            {'A': ['Clara', 'Ana', 'Clara Rodríguez', 'Clara', 'Clara'], 'B': ['Clara', 'Doña Clara Alonso', 'Ana',
+                                                                               'Ana', 'Ana']})
+        # Definir el valor fijo y la condición para el cambio
+        fix_value_output = ['Cristina']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
+                                                                            input_values_list=['Clara'],
+                                                                            data_type_output_list=None,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.SUBSTRING])
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame(
+            {'A': ['Cristina', 'Ana', 'Cristina Rodríguez', 'Cristina', 'Cristina'],
+             'B': ['Cristina', 'Doña Cristina Alonso', 'Ana', 'Ana', 'Ana']})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
+
+        # Caso 12
+        # Ejecutar la transformación de datos: cambiar el valor fijo string 'Clara' por el valor fijo de tipo FLOAT 3.0
+        # Crear un DataFrame de prueba
+        df = pd.DataFrame({'A': ['Clara', 'Antonia', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Antonias',
+                                                                                      '8 Antoniaaszzss',
+                                                                                      None]})
+        # Definir el valor fijo y la condición para el cambio
+        fix_value_output = [3.0, 'Roberta']
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
+                                                                            input_values_list=['Clara', 'Antonia'],
+                                                                            data_type_output_list=None,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.SUBSTRING])
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': [3.0, 'Roberta', 3.0, 3.0, np.NaN], 'B': [3.0, 3.0, 'Robertas',
+                                                                                   '8 Robertaaszzss', None]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 12 Passed: the function returned the expected dataframe")
+
+        # Caso 13
+        # Ejecutar la transformación de datos: cambiar el valor
+        # fijo de tipo FLOAT 3.0 por el valor fijo de tipo STRING 'Clara'
+        df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 2.0, 1356.0, 2.0]})
+        # Definir el valor fijo y la condición para el cambio
+        fix_value_output = [9, 38]
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 56],
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.SUBSTRING])
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame(
+            {'A': [9, 2.0, 9, 9, 9], 'B': [9, 9, 2.0, 1338.0, 2.0]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 13 Passed: the function returned the expected dataframe")
+
+        # Caso 14
+        df = pd.DataFrame({'A': [3.0, 2.0, 3.0, 3.0, 3.0], 'B': [3.0, 3.0, 5.0, 2.0, 2.0]})
+        # Definir el valor fijo y la condición para el cambio
+        fix_value_output = ['Clara']
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 5.0],
+                                                                    output_values_list=fix_value_output,
+                                                                    map_operation_list=[
+                                                                        MapOperation.VALUE_MAPPING,
+                                                                        MapOperation.SUBSTRING])
+        print_and_log("Test Case 14 Passed: expected Value Error, got Value Error")
+
+        # Caso 15
+        df = pd.DataFrame({'A': [3.0, "FixdddVal", "dsFixValass", 3.0, "FixVal"], 'B': [3.0, "aaaaaaaaaDeriaaaved", 4,
+                                                                                        "Derived aaaa",
+                                                                                        "Derived"]})
+        # Definir el valor fijo y la condición para el cambio
+        fix_value_output = ["8", "6"]
+        # Aplicar la transformación de datos
+        result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=["FixVal", "Derived"],
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.SUBSTRING,
+                                                                                MapOperation.SUBSTRING])
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': [3.0, "FixdddVal", "ds8ass", 3.0, "8"], 'B': [3.0, "aaaaaaaaaDeriaaaved", 4,
+                                                                                        "6 aaaa",
+                                                                                        "6"]})
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 15 Passed: the function returned the expected dataframe")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
@@ -2439,7 +2557,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         upper_bound_D = Q3 + 1.5 * IQR
 
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, upper_bound_B], 'C': [10, 4, 3, np.NaN, 0], 'D': [1, upper_bound_D, 3, 1, 2]})
+            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, upper_bound_B], 'C': [10, 4, 3, np.NaN, 0],
+             'D': [1, upper_bound_D, 3, 1, 2]})
         expected_df = expected_df.astype({
             'B': 'int64',  # Convertir B a int64
             'D': 'float64'  # Convertir D a float64
@@ -3067,7 +3186,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_df.index = [0, 2, 4]
         result_df = self.data_transformations.transform_filter_rows_range(data_dictionary=datadic.copy(),
                                                                           columns=['A'], right_margin_list=[4],
-                                                                          left_margin_list=[2], filter_type=FilterType(0),
+                                                                          left_margin_list=[2],
+                                                                          filter_type=FilterType(0),
                                                                           closure_type_list=[Closure(3)])
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 1 Passed: got the dataframe expected")
@@ -3372,9 +3492,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
-                                                                       math_op=MathOperator(1), field_out=None,
-                                                                       firstOperand=2, isFieldFirst=False,
-                                                                       secondOperand=9, isFieldSecond=False)
+                                                                           math_op=MathOperator(1), field_out=None,
+                                                                           firstOperand=2, isFieldFirst=False,
+                                                                           secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 9 Passed: got the expected error")
 
         # Caso 10 - field_out no existe
@@ -3386,9 +3506,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
-                                                                       math_op=MathOperator(1), field_out='D',
-                                                                       firstOperand=2, isFieldFirst=False,
-                                                                       secondOperand=9, isFieldSecond=False)
+                                                                           math_op=MathOperator(1), field_out='D',
+                                                                           firstOperand=2, isFieldFirst=False,
+                                                                           secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 10 Passed: got the expected error")
 
         # Caso 11 - Columna no numerica
@@ -3400,9 +3520,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
-                                                                       math_op=MathOperator(0), field_out='C',
-                                                                       firstOperand='A', isFieldFirst=True,
-                                                                       secondOperand=9, isFieldSecond=False)
+                                                                           math_op=MathOperator(0), field_out='C',
+                                                                           firstOperand='A', isFieldFirst=True,
+                                                                           secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 11 Passed: got the expected error")
 
         # Caso 12 - Valor no numerico
@@ -3414,7 +3534,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
-                                                                       math_op=MathOperator(0), field_out='C',
-                                                                       firstOperand='A', isFieldFirst=True,
-                                                                       secondOperand='Antonio', isFieldSecond=False)
+                                                                           math_op=MathOperator(0), field_out='C',
+                                                                           firstOperand='A', isFieldFirst=True,
+                                                                           secondOperand='Antonio', isFieldSecond=False)
         print_and_log("Test Case 12 Passed: got the expected error")

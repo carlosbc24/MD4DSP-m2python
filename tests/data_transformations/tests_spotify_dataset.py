@@ -379,6 +379,74 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 9 Passed: the function returned the expected dataframe")
 
+        def replace_substring(value: str, substring: str, new_value: str) -> str:
+            """
+            Replace a substring in a string by a new value
+
+            :param value: value to replace
+            :param substring: substring to replace
+            :param new_value: new value to replace the substring
+            :return:
+            """
+            if type(value) != str:
+                return value
+            if substring in value:
+                replaced_str = value.replace(substring, str(new_value))
+                return replaced_str
+            return value
+
+        # Caso 10
+        # Ejecutar la transformación de datos: cambiar el valor fijo 'All the Time - Don Diablo Remix'
+        # del dataframe por el valor fijo 'todos los tiempo - Don Diablo Remix' sobre el batch pequeño del dataset de
+        # prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        # En este caso se prueba sobre el dataframe entero independientemente de la columna
+        expected_df = self.small_batch_dataset.copy()
+        fix_value_input = ['Don Diablo Remix']
+        fix_value_output = ['Don Angel Featuring Pitbull']
+        result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.SUBSTRING])
+        expected_df = expected_df.applymap(lambda x: replace_substring(x, fix_value_input[0], fix_value_output[0]))
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        # Ejecutar la transformación de datos: cambiar el valor fijo
+        # string 'Maroon 5' por el valor fijo de tipo FLOAT 3.0
+        # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
+        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
+        expected_df = self.small_batch_dataset.copy()
+        fix_value_input = ['Maroon 5']
+        fix_value_output = ['Maroon 8']
+        result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.SUBSTRING])
+        expected_df = expected_df.applymap(lambda x: replace_substring(x, fix_value_input[0], fix_value_output[0]))
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
+
+        # Caso 12
+        expected_df = self.small_batch_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        fix_value_output = ['Clara']
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_fix_value_fix_value(
+                data_dictionary=self.small_batch_dataset.copy(),
+                input_values_list=input_values_list,
+                output_values_list=fix_value_output,
+                map_operation_list=[MapOperation.VALUE_MAPPING, MapOperation.SUBSTRING])
+        print_and_log("Test Case 12 Passed: expected Value Error, got Value Error")
+
     def execute_WholeDatasetTests_execute_transform_FixValue_FixValue(self):
         """
         Execute the data transformation test using the whole dataset for the function transform_FixValue_FixValue
@@ -597,6 +665,74 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        def replace_substring(value: str, substring: str, new_value: str) -> str:
+            """
+            Replace a substring in a string by a new value
+
+            :param value: value to replace
+            :param substring: substring to replace
+            :param new_value: new value to replace the substring
+            :return:
+            """
+            if type(value) != str:
+                return value
+            if substring in value:
+                replaced_str = value.replace(substring, str(new_value))
+                return replaced_str
+            return value
+
+        # Caso 10
+        # Ejecutar la transformación de datos: cambiar el valor fijo 'All the Time - Don Diablo Remix'
+        # del dataframe por el valor fijo 'todos los tiempo - Don Diablo Remix' sobre el batch pequeño del dataset de
+        # prueba. Sobre un dataframe de copia del batch pequeño del dataset de prueba cambiar los valores manualmente
+        # y verificar si el resultado obtenido coincide con el esperado.
+        # En este caso se prueba sobre el dataframe entero independientemente de la columna
+        expected_df = self.rest_of_dataset.copy()
+        fix_value_input = ['Don Diablo Remix']
+        fix_value_output = ['Don Angel Featuring Pitbull']
+        result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.SUBSTRING])
+        expected_df = expected_df.applymap(lambda x: replace_substring(x, fix_value_input[0], fix_value_output[0]))
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 10 Passed: the function returned the expected dataframe")
+
+        # Caso 11
+        # Ejecutar la transformación de datos: cambiar el valor fijo
+        # string 'Maroon 5' por el valor fijo de tipo FLOAT 3.0
+        # sobre el batch pequeño del dataset de prueba. Sobre un dataframe de copia del batch pequeño del dataset de
+        # prueba cambiar los valores manualmente y verificar si el resultado obtenido coincide con el esperado
+        expected_df = self.rest_of_dataset.copy()
+        fix_value_input = ['Maroon 5']
+        fix_value_output = ['Maroon 8']
+        result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.SUBSTRING])
+        expected_df = expected_df.applymap(lambda x: replace_substring(x, fix_value_input[0], fix_value_output[0]))
+        # Verificar si el resultado obtenido coincide con el esperado
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 11 Passed: the function returned the expected dataframe")
+
+        # Caso 12
+        expected_df = self.rest_of_dataset.copy()
+        # Definir el valor fijo y la condición para el cambio
+        input_values_list = ['Maroon 5', 'Katy Perry']
+        fix_value_output = ['Clara']
+        # Aplicar la transformación de datos
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_fix_value_fix_value(
+                data_dictionary=self.rest_of_dataset.copy(),
+                input_values_list=input_values_list,
+                output_values_list=fix_value_output,
+                map_operation_list=[MapOperation.VALUE_MAPPING, MapOperation.SUBSTRING])
+        print_and_log("Test Case 12 Passed: expected Value Error, got Value Error")
 
     def execute_transform_FixValue_DerivedValue(self):
         """
@@ -3863,10 +3999,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         num_op_output = Operation(3)
         field_in = 'danceability'
         field_out = 'danceability'
-        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
-                                                                             special_type_input=special_type_input,
-                                                                             num_op_output=num_op_output,
-                                                                             field_in=field_in, field_out=field_out, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(
+            data_dictionary=self.small_batch_dataset.copy(),
+            special_type_input=special_type_input,
+            num_op_output=num_op_output,
+            field_in=field_in, field_out=field_out, axis_param=0)
 
         data_dictionary_copy_mask = get_outliers(self.small_batch_dataset.copy(), field_in, 0)
 
@@ -3891,9 +4028,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.small_batch_dataset.copy(),
-                                                                             special_type_input=special_type_input,
-                                                                             num_op_output=num_op_output, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(
+            data_dictionary=self.small_batch_dataset.copy(),
+            special_type_input=special_type_input,
+            num_op_output=num_op_output, axis_param=0)
 
         for col_name in expected_df.select_dtypes(include=np.number).columns:
             data_dictionary_copy_mask = get_outliers(self.small_batch_dataset.copy(), col_name, 0)
@@ -4406,10 +4544,11 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         num_op_output = Operation(3)
         field_in = 'danceability'
         field_out = 'danceability'
-        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
-                                                                             special_type_input=special_type_input,
-                                                                             num_op_output=num_op_output, field_in=field_in,
-                                                                             field_out=field_out, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(
+            data_dictionary=self.rest_of_dataset.copy(),
+            special_type_input=special_type_input,
+            num_op_output=num_op_output, field_in=field_in,
+            field_out=field_out, axis_param=0)
 
         data_dictionary_copy_mask = get_outliers(self.rest_of_dataset.copy(), None, 0)
 
@@ -4434,9 +4573,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         special_type_input = SpecialType(2)
         num_op_output = Operation(3)
-        result_df = self.data_transformations.transform_special_value_num_op(data_dictionary=self.rest_of_dataset.copy(),
-                                                                             special_type_input=special_type_input,
-                                                                             num_op_output=num_op_output, axis_param=0)
+        result_df = self.data_transformations.transform_special_value_num_op(
+            data_dictionary=self.rest_of_dataset.copy(),
+            special_type_input=special_type_input,
+            num_op_output=num_op_output, axis_param=0)
 
         for col_name in expected_df.select_dtypes(include=np.number).columns:
             data_dictionary_copy_mask = get_outliers(self.rest_of_dataset.copy(), None, 0)
@@ -5023,10 +5163,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         for col in columns_outliers:
             if col == 'acousticness':
                 expected_df = expected_df[expected_df['acousticness'].isin([0.123]) | expected_df[
-                            'acousticness'].isnull() == True]
+                    'acousticness'].isnull() == True]
             elif col == 'danceability':
                 expected_df = expected_df[expected_df['danceability'].isin([0.456, 0.789, 0.0224]) | expected_df[
-                            'danceability'].isnull() == True]
+                    'danceability'].isnull() == True]
             elif col == 'energy':
                 expected_df = expected_df[expected_df['energy'].isin([0.36]) | expected_df['energy'].isnull() == True]
             Q1 = expected_df[col].quantile(0.25)
@@ -5361,14 +5501,15 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             filter_type=FilterType(1),
             closure_type_list=[Closure(1)])
         expected_df = expected_df[(((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity']
-                                                                                      <=
-        68)) &
-                                   (((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity'] <=
-                                                                               68))) &
+                                                                                         <=
+                                                                                         68)) &
+                                   (((expected_df['track_popularity'] > float('-inf')) & (
+                                           expected_df['track_popularity'] <=
+                                           68))) &
                                    ((expected_df['danceability'] > float('-inf')) & (expected_df['danceability'] <=
-                                                                                      68)) &
+                                                                                     68)) &
                                    (((expected_df['danceability'] > float('-inf')) & (expected_df['danceability']
-                                                                                        <= 68))))]
+                                                                                      <= 68))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -5390,8 +5531,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         expected_df = expected_df[
             (((expected_df['danceability'] > float('-inf')) & (expected_df['danceability'] < 0.89)) &
-              ((expected_df['energy'] > float('-inf')) & (expected_df['energy'] < 0.89)) &
-              ((expected_df['speechiness'] > float('-inf')) & (expected_df['speechiness'] < 0.89)))]
+             ((expected_df['energy'] > float('-inf')) & (expected_df['energy'] < 0.89)) &
+             ((expected_df['speechiness'] > float('-inf')) & (expected_df['speechiness'] < 0.89)))]
         expected_df = expected_df[
             ((~((expected_df['danceability'] >= 0.9) & (expected_df['danceability'] <= float('inf')))) &
              (~((expected_df['energy'] >= 0.9) & (expected_df['energy'] <= float('inf')))) &
@@ -5451,14 +5592,14 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             closure_type_list=[Closure(1)])
         expected_df = expected_df[
             (((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity']
-                                                                    <=
-                                                                    68)) &
+                                                                   <=
+                                                                   68)) &
              (((expected_df['track_popularity'] > float('-inf')) & (expected_df['track_popularity'] <=
-                                                                     68))) &
+                                                                    68))) &
              ((expected_df['danceability'] > float('-inf')) & (expected_df['danceability'] <=
-                                                                68)) &
+                                                               68)) &
              (((expected_df['danceability'] > float('-inf')) & (expected_df['danceability']
-                                                                 <= 68))))]
+                                                                <= 68))))]
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 2 Passed: got the dataframe expected")
 
@@ -5527,11 +5668,12 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 1 - Suma de dos columnas
         result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
                                                                        firstOperand='danceability', isFieldFirst=True,
                                                                        secondOperand='energy', isFieldSecond=True)
 
-        expected_df=self.small_batch_dataset.copy()
+        expected_df = self.small_batch_dataset.copy()
         expected_df['track_popularity'] = expected_df['danceability'] + expected_df['energy']
 
         pd.testing.assert_frame_equal(expected_df, result_df)
@@ -5552,7 +5694,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 3 - Suma de columna y numero
         result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
                                                                        firstOperand='danceability', isFieldFirst=True,
                                                                        secondOperand=3, isFieldSecond=False)
 
@@ -5564,7 +5707,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 4 - Resta de columna y numero
         result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       math_op=MathOperator(1), field_out='track_popularity',
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
                                                                        firstOperand='danceability', isFieldFirst=True,
                                                                        secondOperand=1, isFieldSecond=False)
 
@@ -5576,7 +5720,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5 - Suma de numero y columna
         result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
                                                                        firstOperand=8, isFieldFirst=False,
                                                                        secondOperand='danceability', isFieldSecond=True)
 
@@ -5588,7 +5733,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 6 - Resta de numero y columna
         result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       math_op=MathOperator(1), field_out='track_popularity',
+                                                                       math_op=MathOperator(1),
+                                                                       field_out='track_popularity',
                                                                        firstOperand=2, isFieldFirst=False,
                                                                        secondOperand='danceability', isFieldSecond=True)
 
@@ -5600,7 +5746,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7 - Suma de numeros
         result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                       math_op=MathOperator(0), field_out='track_popularity',
+                                                                       math_op=MathOperator(0),
+                                                                       field_out='track_popularity',
                                                                        firstOperand=2, isFieldFirst=False,
                                                                        secondOperand=15, isFieldSecond=False)
 
@@ -5625,37 +5772,41 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                           math_op=MathOperator(1), field_out=None,
-                                                                           firstOperand=2, isFieldFirst=False,
-                                                                           secondOperand=9, isFieldSecond=False)
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.small_batch_dataset.copy(),
+                math_op=MathOperator(1), field_out=None,
+                firstOperand=2, isFieldFirst=False,
+                secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 9 Passed: got the expected error")
 
         # Caso 10 - field_out no existe
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                           math_op=MathOperator(1), field_out='D',
-                                                                           firstOperand=2, isFieldFirst=False,
-                                                                           secondOperand=9, isFieldSecond=False)
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.small_batch_dataset.copy(),
+                math_op=MathOperator(1), field_out='D',
+                firstOperand=2, isFieldFirst=False,
+                secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 10 Passed: got the expected error")
 
         # Caso 11 - Columna no numerica
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                           math_op=MathOperator(0), field_out='track_popularity',
-                                                                           firstOperand='track_artist', isFieldFirst=True,
-                                                                           secondOperand=9, isFieldSecond=False)
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.small_batch_dataset.copy(),
+                math_op=MathOperator(0), field_out='track_popularity',
+                firstOperand='track_artist', isFieldFirst=True,
+                secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 11 Passed: got the expected error")
 
         # Caso 12 - Valor no numerico
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=self.small_batch_dataset.copy(),
-                                                                           math_op=MathOperator(0), field_out='track_popularity',
-                                                                           firstOperand='danceability', isFieldFirst=True,
-                                                                           secondOperand='Antonio', isFieldSecond=False)
+            result_df = self.data_transformations.transform_math_operation(
+                data_dictionary=self.small_batch_dataset.copy(),
+                math_op=MathOperator(0), field_out='track_popularity',
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='Antonio', isFieldSecond=False)
         print_and_log("Test Case 12 Passed: got the expected error")
 
     def execute_WholeDatasetTests_execute_transform_math_operation(self):
