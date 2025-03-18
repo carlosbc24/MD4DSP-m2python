@@ -8,7 +8,7 @@ from tqdm import tqdm
 # Importing functions and classes from packages
 import functions.data_transformations as data_transformations
 from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong, FilterType, \
-    MathOperator
+    MathOperator, MapOperation
 from helpers.logger import print_and_log
 
 
@@ -101,7 +101,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
                                                                             input_values_list=[2],
                                                                             data_type_output_list=None,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [0, 1, 999, 3, 4], 'B': [5, 4, 3, 999, 1]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -119,7 +121,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
                                                                             input_values_list=['Clara'],
                                                                             data_type_output_list=None,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': [pd.to_datetime('2021-01-01'), 'Ana', pd.to_datetime('2021-01-01'), pd.to_datetime('2021-01-01'),
@@ -145,7 +149,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                             input_values_list=[
                                                                                 pd.to_datetime('2021-01-01')],
                                                                             data_type_output_list=None,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [pd.to_datetime('2024-06-09'), pd.to_datetime('2021-09-01'),
                                           pd.to_datetime('2024-06-09'), pd.to_datetime('2024-06-09'),
@@ -167,7 +173,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(df, data_type_input_list=None,
                                                                             input_values_list=['Clara'],
                                                                             data_type_output_list=None,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame({'A': [3.0, 'Ana', 3.0, 3.0, np.NaN], 'B': [3.0, 3.0, 'Ana', '8', None]})
         # Verificar si el resultado obtenido coincide con el esperado
@@ -182,7 +190,9 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         fix_value_output = [9]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0],
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': [9, 2.0, 9, 9, 9], 'B': [9, 9, 2.0, 2.0, 2.0]})
@@ -196,7 +206,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         fix_value_output = [9, 5]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 5.0],
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': [9, 2.0, 9, 9, 9], 'B': [9, 9, 5, 2.0, 2.0]})
@@ -210,7 +223,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         fix_value_output = [9, 9]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 5.0],
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': [9, 2.0, 9, 9, 9], 'B': [9, 9, 9, 2.0, 2.0]})
@@ -226,7 +242,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 5.0],
-                                                                    output_values_list=fix_value_output)
+                                                                    output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.VALUE_MAPPING])
         print_and_log("Test Case 8 Passed: expected Value Error, got Value Error")
 
         # Caso 9
@@ -235,7 +254,10 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         fix_value_output = [8, 6]
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(df, input_values_list=[3.0, 4],
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.VALUE_MAPPING])
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': [8, 2.0, 8, 8, 8], 'B': [8, 8, 6, 2.0, 2.0]})
@@ -3396,25 +3418,3 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                        firstOperand='A', isFieldFirst=True,
                                                                        secondOperand='Antonio', isFieldSecond=False)
         print_and_log("Test Case 12 Passed: got the expected error")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

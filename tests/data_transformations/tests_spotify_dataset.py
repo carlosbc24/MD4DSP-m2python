@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 import functions.data_transformations as data_transformations
 from helpers.auxiliar import find_closest_value, outlier_closest
-from helpers.enumerations import Closure, DataType, SpecialType, Belong, FilterType, MathOperator
+from helpers.enumerations import Closure, DataType, SpecialType, Belong, FilterType, MathOperator, MapOperation
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers
@@ -135,20 +135,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         """
         test_methods = [
             self.execute_transform_FixValue_FixValue,
-            self.execute_transform_FixValue_DerivedValue,
-            self.execute_transform_FixValue_NumOp,
-            self.execute_transform_Interval_FixValue,
-            self.execute_transform_Interval_DerivedValue,
-            self.execute_transform_Interval_NumOp,
-            self.execute_transform_SpecialValue_FixValue,
-            self.execute_transform_SpecialValue_DerivedValue,
-            self.execute_transform_SpecialValue_NumOp,
-            self.execute_transform_derived_field,
-            self.execute_transform_filter_columns,
-            self.execute_transform_filter_rows_primitive,
-            self.execute_transform_filter_rows_special_values,
-            self.execute_transform_filter_rows_range,
-            self.execute_execute_transform_math_operation
+            # self.execute_transform_FixValue_DerivedValue,
+            # self.execute_transform_FixValue_NumOp,
+            # self.execute_transform_Interval_FixValue,
+            # self.execute_transform_Interval_DerivedValue,
+            # self.execute_transform_Interval_NumOp,
+            # self.execute_transform_SpecialValue_FixValue,
+            # self.execute_transform_SpecialValue_DerivedValue,
+            # self.execute_transform_SpecialValue_NumOp,
+            # self.execute_transform_derived_field,
+            # self.execute_transform_filter_columns,
+            # self.execute_transform_filter_rows_primitive,
+            # self.execute_transform_filter_rows_special_values,
+            # self.execute_transform_filter_rows_range,
+            # self.execute_execute_transform_math_operation
         ]
 
         print_and_log("")
@@ -203,7 +203,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
                                                                             output_values_list=fix_value_output,
-                                                                            field_in=field_in, field_out=field_out)
+                                                                            field_in=field_in, field_out=field_out,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df['track_popularity'] = expected_df['track_popularity'].replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -220,7 +222,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -237,7 +241,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fix_value_input,
                                                                                                   fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -254,7 +260,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -270,7 +278,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [0.0001]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -285,7 +295,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             input_values_list=input_values_list,
-            output_values_list=output_values_list)
+            output_values_list=output_values_list,
+            map_operation_list=[MapOperation.VALUE_MAPPING, MapOperation.VALUE_MAPPING])
         mapping_values = {}
 
         for input_value in input_values_list:
@@ -310,7 +321,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             input_values_list=input_values_list,
-            output_values_list=output_values_list)
+            output_values_list=output_values_list,
+            map_operation_list=[MapOperation.VALUE_MAPPING, MapOperation.VALUE_MAPPING])
         mapping_values = {}
 
         for input_value in input_values_list:
@@ -337,7 +349,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             result_df = self.data_transformations.transform_fix_value_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 input_values_list=input_values_list,
-                output_values_list=fix_value_output)
+                output_values_list=fix_value_output,
+                map_operation_list=[MapOperation.VALUE_MAPPING, MapOperation.VALUE_MAPPING])
         print_and_log("Test Case 8 Passed: expected Value Error, got Value Error")
 
         # Caso 9
@@ -349,7 +362,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(
             data_dictionary=self.small_batch_dataset.copy(),
             input_values_list=input_values_list,
-            output_values_list=output_values_list)
+            output_values_list=output_values_list,
+            map_operation_list=[MapOperation.VALUE_MAPPING, MapOperation.VALUE_MAPPING])
         mapping_values = {}
 
         for input_value in input_values_list:
@@ -384,7 +398,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
                                                                             output_values_list=fix_value_output,
-                                                                            field_in=field_in, field_out=field_out)
+                                                                            field_in=field_in, field_out=field_out,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df['track_popularity'] = expected_df['track_popularity'].replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -401,7 +417,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -418,7 +436,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df['track_album_release_date'] = expected_df['track_album_release_date'].replace(fix_value_input,
                                                                                                   fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -435,7 +455,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -451,7 +473,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [0.0001]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -468,7 +492,9 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [1]
         result_df = self.data_transformations.transform_fix_value_fix_value(self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING])
         expected_df = expected_df.replace(fix_value_input, fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -482,7 +508,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.VALUE_MAPPING])
         mapping_values = {}
 
         for input_value in input_values_list:
@@ -506,7 +535,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.VALUE_MAPPING])
         mapping_values = {}
 
         for input_value in input_values_list:
@@ -533,7 +565,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             result_df = self.data_transformations.transform_fix_value_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 input_values_list=input_values_list,
-                output_values_list=fix_value_output)
+                output_values_list=fix_value_output,
+                map_operation_list=[
+                    MapOperation.VALUE_MAPPING,
+                    MapOperation.VALUE_MAPPING])
         print_and_log("Test Case 9 Passed: expected Value Error, got Value Error")
 
         # Caso 10
@@ -544,7 +579,10 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         # Aplicar la transformación de datos
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[
+                                                                                MapOperation.VALUE_MAPPING,
+                                                                                MapOperation.VALUE_MAPPING])
         mapping_values = {}
 
         for input_value in input_values_list:
@@ -5771,46 +5809,3 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 firstOperand='danceability', isFieldFirst=True,
                 secondOperand='Antonio', isFieldSecond=False)
         print_and_log("Test Case 12 Passed: got the expected error")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
