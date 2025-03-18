@@ -4,24 +4,25 @@ import pandas as pd
 
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, FilterType, \
-    MathOperator
+    MathOperator, MapOperation
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers, special_type_mean, special_type_median, special_type_closest, \
     special_type_interpolation, apply_derived_type_col_row_outliers, apply_derived_type
 
 
 def transform_fix_value_fix_value(data_dictionary: pd.DataFrame, input_values_list: list = None,
-                                  output_values_list: list = None, data_type_input_list: list = None,
-                                  data_type_output_list: list = None, field_in: str = None,
-                                  field_out: str = None) -> pd.DataFrame:
+                                  output_values_list: list = None, map_operation_list: list[MapOperation] = None,
+                                  data_type_input_list: list = None, data_type_output_list: list = None,
+                                  field_in: str = None, field_out: str = None) -> pd.DataFrame:
     """
     Execute the data transformation of the FixValue - FixValue relation
     params:
         data_dictionary: dataframe with the data
-        data_type_input: data type of the input value
-        fix_value_input: input value to check
-        data_type_output: data type of the output value
-        fix_value_output: output value to check
+        data_type_input_list: data type of the input value
+        input_values_list: input value to check
+        map_operation_list: list with the operations to execute the data transformation
+        data_type_output_list: data type of the output value
+        output_values_list: output value to check
         field_in: field to execute the data transformation
         field_out: field to store the result of the operation
     Returns:
@@ -33,6 +34,10 @@ def transform_fix_value_fix_value(data_dictionary: pd.DataFrame, input_values_li
     if data_type_input_list.__sizeof__() != data_type_output_list.__sizeof__():
         raise ValueError("The input and output data types lists must have the same length")
 
+    if map_operation_list is None or len(map_operation_list) != len(input_values_list):
+        raise ValueError("The mapping operation list must have the same length as input values list")
+
+    # Apply type casting if data types are specified
     for i in range(len(input_values_list)):
         if data_type_input_list is not None and data_type_output_list is not None:  # If the data types are specified, the transformation is performed
             # Auxiliary function that changes the values of fix_value_input and fix_value_output to the data type in data_type_input and data_type_output respectively
@@ -42,25 +47,34 @@ def transform_fix_value_fix_value(data_dictionary: pd.DataFrame, input_values_li
                 data_type_output=data_type_output_list[i],
                 fix_value_output=output_values_list[i])
 
-    # Create a dictionary to store the mapping equivalence between the input and output values
-    mapping_values = {}
+    # Create a list with tuples of mapping: (input, output, map_operation)
+    mapping_list = []
+    for i in range(len(input_values_list)):
+        mapping_list.append((input_values_list[i], output_values_list[i], map_operation_list[i]))
 
-    for input_value in input_values_list:
-        if input_value not in mapping_values:
-            mapping_values[input_value] = output_values_list[input_values_list.index(input_value)]
+    # Define a function to apply mapping based on operation type
+    def apply_mapping(cell_value):
+        for input_val, output_val, op in mapping_list:
+            if op.name == "VALUE_MAPPING":
+                if cell_value == input_val:
+                    return output_val
+            elif op.name == "SUBSTRING":
+                if input_val in cell_value:
+                    return cell_value.replace(input_val, output_val)
 
+        return cell_value
+
+    # Apply mapping either to the whole dataframe or to the specified field
     if field_in is None:
-        for column_index, column_name in enumerate(data_dictionary.columns):
-            for row_index, value in data_dictionary[column_name].items():
-                if value in mapping_values:
-                    data_dictionary.at[row_index, column_name] = mapping_values[value]
+        for col in data_dictionary.columns:
+            data_dictionary[col] = data_dictionary[col].apply(apply_mapping)
     elif field_in is not None:
         if field_in in data_dictionary.columns and field_out in data_dictionary.columns:
-            for row_index in data_dictionary[field_in].index:
-                value = data_dictionary.at[row_index, field_in]
-                if value in mapping_values:
-                    data_dictionary.at[row_index, field_out] = mapping_values[value]
-        elif field_in not in data_dictionary.columns or field_out not in data_dictionary.columns:
+            for idx in data_dictionary[field_in].index:
+                original_val = data_dictionary.at[idx, field_in]
+                mapped_val = apply_mapping(original_val)
+                data_dictionary.at[idx, field_out] = mapped_val
+        else:
             raise ValueError("The field does not exist in the dataframe")
 
     return data_dictionary
@@ -1290,5 +1304,3 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
 
 
     return data_dictionary_copy
-
-
