@@ -1286,8 +1286,6 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
 
     if field_out is None:
         raise ValueError("The output field cannot be None")
-    if field_out not in data_dictionary_copy.columns:
-        raise ValueError("The field does not exist in the dataframe")
     if ((isFieldFirst is True and (not np.issubdtype(data_dictionary_copy[firstOperand].dtype, np.number))) or
             (isFieldSecond is True and (not np.issubdtype(data_dictionary_copy[secondOperand].dtype, np.number)))):
         raise ValueError("The field to operate is not numeric")
@@ -1304,6 +1302,7 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
             data_dictionary_copy[field_out] = firstOperand + data_dictionary_copy[secondOperand]
         elif not isFieldFirst and not isFieldSecond:
             data_dictionary_copy[field_out] = firstOperand + secondOperand
+
     elif math_op == MathOperator.SUBSTRACT:
         if isFieldFirst and isFieldSecond:
             data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] - data_dictionary_copy[secondOperand]
@@ -1314,5 +1313,36 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
         elif not isFieldFirst and not isFieldSecond:
             data_dictionary_copy[field_out] = firstOperand - secondOperand
 
+    elif math_op == MathOperator.MULTIPLY:
+        if isFieldFirst and isFieldSecond:
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] * data_dictionary_copy[secondOperand]
+        elif isFieldFirst and not isFieldSecond:
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] * secondOperand
+        elif not isFieldFirst and isFieldSecond:
+            data_dictionary_copy[field_out] = firstOperand * data_dictionary_copy[secondOperand]
+        elif not isFieldFirst and not isFieldSecond:
+            data_dictionary_copy[field_out] = firstOperand * secondOperand
+
+    elif math_op == MathOperator.DIVIDE:
+        if isFieldFirst and isFieldSecond:
+            # Check if any value in the second operand column is 0.
+            if (data_dictionary_copy[secondOperand] == 0).any():
+                raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] / data_dictionary_copy[secondOperand]
+        elif isFieldFirst and not isFieldSecond:
+            # Check if the constant denominator is 0.
+            if secondOperand == 0:
+                raise ZeroDivisionError("Division by zero encountered with constant denominator.")
+            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] / secondOperand
+        elif not isFieldFirst and isFieldSecond:
+            # Check if any value in the second operand column is 0.
+            if (data_dictionary_copy[secondOperand] == 0).any():
+                raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
+            data_dictionary_copy[field_out] = firstOperand / data_dictionary_copy[secondOperand]
+        elif not isFieldFirst and not isFieldSecond:
+            # Check if the constant denominator is 0.
+            if secondOperand == 0:
+                raise ZeroDivisionError("Division by zero encountered with constant denominator.")
+            data_dictionary_copy[field_out] = firstOperand / secondOperand
 
     return data_dictionary_copy
