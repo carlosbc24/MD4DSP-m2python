@@ -128,6 +128,8 @@ class MathOperator(Enum):
     """
     SUM = 0
     SUBSTRACT = 1
+    MULTIPLY = 2
+    DIVIDE = 3
 
 
 class MapOperation(Enum):
@@ -139,3 +141,4 @@ class MapOperation(Enum):
     """
     VALUE_MAPPING = 0
     SUBSTRING = 1
+
