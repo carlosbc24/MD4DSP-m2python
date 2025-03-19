@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 import functions.contract_invariants as invariants
 import functions.data_transformations as data_transformations
-from helpers.enumerations import Closure, DataType, SpecialType, Belong, MathOperator
+from helpers.enumerations import Closure, DataType, SpecialType, Belong, MathOperator, MapOperation
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
 
@@ -161,7 +161,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             field_in=field_in, field_out=field_out,
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -185,7 +186,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -204,7 +206,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -222,7 +225,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -240,7 +244,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ["Near 0"]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
@@ -262,7 +267,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             field_in=field_in, field_out=field_out,
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -286,7 +292,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -306,7 +313,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
@@ -321,7 +329,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                          data_dictionary_out=result_df,
@@ -339,7 +349,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.small_batch_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=[3.1, 14])
+                                                                            output_values_list=[3.1, 14],
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -357,7 +369,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.small_batch_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                           data_type_input_list=None, input_values_list=input_values_list,
@@ -373,7 +387,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.small_batch_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=[3.1, 14])
+                                                                            output_values_list=[3.1, 14],
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -394,7 +410,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                                 input_values_list=input_values_list,
-                                                                                output_values_list=output_values_list)
+                                                                                output_values_list=output_values_list,
+                                                                                map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
@@ -412,7 +430,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -431,7 +451,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -462,7 +484,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             field_in=field_in, field_out=field_out,
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -487,7 +510,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -507,7 +531,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [True]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -526,7 +551,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = [3.0]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -545,7 +571,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ["Near 0"]
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -568,7 +595,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             field_in=field_in, field_out=field_out,
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -593,7 +621,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         fix_value_output = ['todos los tiempo - Don Diablo Remix']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -614,7 +643,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=fix_value_input,
-                                                                            output_values_list=fix_value_output)
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
@@ -630,7 +660,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         input_values_list = ['Maroon 5', 'Katy Perry']
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                          data_type_input_list=None,
@@ -648,7 +680,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.rest_of_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=[3.1, 14])
+                                                                            output_values_list=[3.1, 14],
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -666,7 +700,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.rest_of_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                          data_dictionary_out=result_df,
                                                                          data_type_input_list=None,
@@ -683,7 +719,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.rest_of_dataset.copy()
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=[3.1, 14])
+                                                                            output_values_list=[3.1, 14],
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -704,7 +742,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                                 input_values_list=input_values_list,
-                                                                                output_values_list=output_values_list)
+                                                                                output_values_list=output_values_list,
+                                                                                map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -722,7 +762,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
@@ -741,7 +783,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                             input_values_list=input_values_list,
-                                                                            output_values_list=output_values_list)
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.VALUE_MAPPING,
+                                                                                                MapOperation.VALUE_MAPPING])
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
