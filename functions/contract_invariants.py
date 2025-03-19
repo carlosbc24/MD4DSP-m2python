@@ -971,11 +971,12 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
             (isFieldSecond is False and (not np.issubdtype(type(secondOperand), np.number)))):
         raise ValueError("The value to operate is not numeric")
 
+    if belong_op_out == Belong.BELONG:
 
-    if belong_op_out==Belong.BELONG:
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]):
+                if data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
@@ -994,9 +995,11 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                 for item in data_dictionary_out[field_out]:
                     if item != (firstOperand + secondOperand):
                         result = False
+
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
-                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]):
+                if data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
@@ -1015,10 +1018,59 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                 for item in data_dictionary_out[field_out]:
                     if item != (firstOperand - secondOperand):
                         result = False
-    elif belong_op_out==Belong.NOTBELONG:
+
+        elif math_op == MathOperator.MULTIPLY:
+            if isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] * data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] * secondOperand):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out].equals(firstOperand * data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                result = True
+                for item in data_dictionary_out[field_out]:
+                    if item != (firstOperand * secondOperand):
+                        result = False
+
+        elif math_op == MathOperator.DIVIDE:
+            if isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] / secondOperand):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if data_dictionary_out[field_out].equals(firstOperand / data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                result = True
+                for item in data_dictionary_out[field_out]:
+                    if item != (firstOperand / secondOperand):
+                        result = False
+
+    elif belong_op_out == Belong.NOTBELONG:
+
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
-                if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]):
+                if not data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
@@ -1038,9 +1090,11 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     if item != (firstOperand + secondOperand):
                         result = True
                         break
+
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
-                if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]):
+                if not data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
@@ -1061,5 +1115,52 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                         result = True
                         break
 
+        elif math_op == MathOperator.MULTIPLY:
+            if isFieldFirst and isFieldSecond:
+                if not data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] * data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] * secondOperand):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if not data_dictionary_out[field_out].equals(firstOperand * data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                result = False
+                for item in data_dictionary_out[field_out]:
+                    if item != (firstOperand * secondOperand):
+                        result = True
+                        break
+
+        elif math_op == MathOperator.DIVIDE:
+            if isFieldFirst and isFieldSecond:
+                if not data_dictionary_out[field_out].equals(
+                        data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif isFieldFirst and not isFieldSecond:
+                if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] / secondOperand):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and isFieldSecond:
+                if not data_dictionary_out[field_out].equals(firstOperand / data_dictionary_in[secondOperand]):
+                    result = True
+                else:
+                    result = False
+            elif not isFieldFirst and not isFieldSecond:
+                result = False
+                for item in data_dictionary_out[field_out]:
+                    if item != (firstOperand / secondOperand):
+                        result = True
+                        break
 
     return result
