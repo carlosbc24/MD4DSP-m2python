@@ -391,12 +391,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.small_batch_dataset.copy()
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                                 input_values_list=input_values_list,
                                                                                 output_values_list=output_values_list)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                    data_dictionary_out=result_df,
                                                                    data_type_input_list=None,
@@ -701,12 +701,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_df = self.rest_of_dataset.copy()
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
                                                                                 input_values_list=input_values_list,
                                                                                 output_values_list=output_values_list)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                    data_dictionary_out=result_df,
                                                                    data_type_input_list=None,
@@ -2010,7 +2010,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_in = 'track_name'
         field_out = 'track_name'
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
@@ -2045,7 +2045,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_in = 'p'
         field_out = 'p'
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
@@ -2139,7 +2139,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_in = 'track_name'
         field_out = 'track_name'
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
@@ -2174,7 +2174,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         field_in = 'p'
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_interval_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(), left_margin=65,
                 right_margin=69, closure_type=Closure(2),
@@ -2354,7 +2354,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_interval_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 left_margin=0.2, right_margin=0.4,
@@ -2551,7 +2551,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_interval_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 left_margin=0.2, right_margin=0.4,
@@ -2758,7 +2758,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_in = 'T'
         field_out = 'T'
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
                                                                            left_margin=2, right_margin=4, closure_type=Closure(3),
                                                                            num_op_output=Operation(0), axis_param=None, field_in=field_in, field_out=field_out)
@@ -2766,7 +2766,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2,
                                                                right_margin=4,
                                                                closure_type=Closure(3), num_op_output=Operation(0),
@@ -2959,7 +2959,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 24
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.small_batch_dataset.copy(),
                                                                            left_margin=2, right_margin=4,
                                                                            closure_type=Closure(3), num_op_output=Operation(0),
@@ -2967,7 +2967,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 24.1 Passed: expected ValueError, got ValueError")
         # Aplicar la invariante
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.small_batch_dataset.copy(), left_margin=2,
                                                                right_margin=4,
                                                                closure_type=Closure(3), num_op_output=Operation(0),
@@ -3151,7 +3151,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_in = 'T'
         field_out = 'T'
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
                                                                         left_margin=2, right_margin=4, closure_type=Closure(3),
                                                                         num_op_output=Operation(0), axis_param=None, field_in=field_in, field_out=field_out)
@@ -3159,7 +3159,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2,
                                                              right_margin=4,
                                                              closure_type=Closure(3), num_op_output=Operation(0),
@@ -3351,7 +3351,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 24
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             expected = self.data_transformations.transform_interval_num_op(data_dictionary=self.rest_of_dataset.copy(),
                                                                            left_margin=2, right_margin=4,
                                                                            closure_type=Closure(3), num_op_output=Operation(0),
@@ -3359,7 +3359,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 24.1 Passed: expected ValueError, got ValueError")
         # Aplicar la invariante
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_interval_num_op(data_dictionary_in=self.rest_of_dataset.copy(), left_margin=2,
                                                                right_margin=4,
                                                                closure_type=Closure(3), num_op_output=Operation(0),
@@ -3642,7 +3642,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_out = 'p'
         fix_value_output = "SpecialValue"
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_fix_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
@@ -3941,7 +3941,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_out = 'p'
         fix_value_output = "SpecialValue"
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_fix_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
@@ -4241,7 +4241,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(1)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
@@ -4266,7 +4266,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
@@ -4290,7 +4290,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_out = 'p'
         derived_type_output = DerivedType(0)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
@@ -4509,7 +4509,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.small_batch_dataset.copy(),
                 special_type_input=special_type_input,
@@ -4749,7 +4749,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(1)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
@@ -4773,7 +4773,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
@@ -4796,7 +4796,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         field_out = 'p'
         derived_type_output = DerivedType(0)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
@@ -5002,7 +5002,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         missing_values = [1, 3, 0.13, 0.187]
         derived_type_output = DerivedType(2)
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.data_transformations.transform_special_value_derived_value(
                 data_dictionary=self.rest_of_dataset.copy(),
                 special_type_input=special_type_input,
@@ -7216,8 +7216,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
                                                               isFieldFirst=False,
@@ -7231,8 +7231,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
                                                               isFieldFirst=False,
@@ -7246,8 +7246,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
                                                               isFieldFirst=False,
@@ -7261,8 +7261,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
                                                               isFieldFirst=False,
@@ -7276,8 +7276,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='P',
                                                               isFieldFirst=True,
@@ -7291,8 +7291,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='danceability',
                                                               isFieldFirst=True,
@@ -7306,8 +7306,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='track_name',
                                                               isFieldFirst=True,
@@ -7321,8 +7321,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='energy',
                                                               isFieldFirst=True,
@@ -7336,8 +7336,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='Hola',
                                                               isFieldFirst=False,
@@ -7351,8 +7351,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness']=self.small_batch_dataset['danceability']+self.small_batch_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
+        with self.assertRaises(expected_exception):
+            self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='energy',
                                                               isFieldFirst=True,
@@ -7360,6 +7360,343 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                               belong_op_out=Belong(0),
                                                               field_in='loudness', field_out='loudness')
         print_and_log("Test Case 42 Passed: Expected ValueError, got ValueError")
+
+        # Test Case 43: Correct multiplication of two dataset columns (danceability * energy)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] * self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 43 Failed: Expected True, got False"
+        print_and_log("Test Case 43 Passed: Expected True, got True")
+
+        # Test Case 44: Incorrect expected multiplication (deliberate error by altering one row)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] * self.small_batch_dataset['energy']
+        # Introduce an error in the expected result of one row
+        expected_df.loc[0, 'loudness'] = expected_df.loc[0, 'loudness'] + 1
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is False, "Test Case 44 Failed: Expected False, got True"
+        print_and_log("Test Case 44 Passed: Expected False, got False")
+
+        # Test Case 43: Multiplication of a column and a constant (danceability * constant)
+        expected_df = self.small_batch_dataset.copy()
+        constant = 2.5
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] * constant
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand=constant, isFieldSecond=False,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 43 Failed: Expected True, got False"
+        print_and_log("Test Case 43 Passed: Expected True, got True")
+
+        # Test Case 44: Multiplication of a constant and a column (constant * energy)
+        expected_df = self.small_batch_dataset.copy()
+        constant = 3.0
+        expected_df['loudness'] = constant * self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand=constant, isFieldFirst=False,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 44 Failed: Expected True, got False"
+        print_and_log("Test Case 44 Passed: Expected True, got True")
+
+        # Test Case 45: Inversion test: using Belong.NOTBELONG with correct multiplication should yield False
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] * self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct multiplication means the inversion is false.
+        assert result is False, "Test Case 45 Failed: Expected False, got True"
+        print_and_log("Test Case 45 Passed: Expected False, got False")
+
+        # Test Case 46: Exception test - field_in is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.small_batch_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.MULTIPLY,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in=None, field_out='loudness'
+            )
+            raise AssertionError("Test Case 46 Failed: Expected ValueError for field_in being None")
+        except ValueError:
+            print_and_log("Test Case 46 Passed: Expected ValueError for None field_in")
+
+        # Test Case 47: Exception test - field_out is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.small_batch_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.MULTIPLY,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in='loudness', field_out=None
+            )
+            raise AssertionError("Test Case 47 Failed: Expected ValueError for field_out being None")
+        except ValueError:
+            print_and_log("Test Case 47 Passed: Expected ValueError for None field_out")
+
+        # Test Case 48: Correct division of two dataset columns (danceability / energy)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 48 Failed: Expected True, got False"
+        print_and_log("Test Case 48 Passed: Expected True, got True")
+
+        # Test Case 49: Incorrect expected division (deliberate error by altering one row)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / self.small_batch_dataset['energy']
+        # Introduce an error in one row (e.g., multiply the result by 1.1)
+        expected_df.loc[0, 'loudness'] = expected_df.loc[0, 'loudness'] * 1.1
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is False, "Test Case 49 Failed: Expected False, got True"
+        print_and_log("Test Case 49 Passed: Expected False, got False")
+
+        # Test Case 50: Division of a column and a constant (danceability / constant)
+        expected_df = self.small_batch_dataset.copy()
+        constant = 2.0
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / constant
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand=constant, isFieldSecond=False,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 50 Failed: Expected True, got False"
+        print_and_log("Test Case 50 Passed: Expected True, got True")
+
+        # Test Case 51: Division of a constant and a column (constant / energy)
+        expected_df = self.small_batch_dataset.copy()
+        constant = 4.0
+        expected_df['loudness'] = constant / self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand=constant, isFieldFirst=False,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 51 Failed: Expected True, got False"
+        print_and_log("Test Case 51 Passed: Expected True, got True")
+
+        # Test Case 52: Inversion test: using Belong.NOTBELONG with correct division should yield False
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is False, "Test Case 52 Failed: Expected False, got True"
+        print_and_log("Test Case 52 Passed: Expected False, got False")
+
+        # Test Case 53: Exception test - field_in is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.small_batch_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in=None, field_out='loudness'
+            )
+            raise AssertionError("Test Case 53 Failed: Expected ValueError for field_in being None")
+        except ValueError:
+            print_and_log("Test Case 53 Passed: Expected ValueError for None field_in")
+
+        # Test Case 54: Exception test - field_out is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.small_batch_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in='loudness', field_out=None
+            )
+            raise AssertionError("Test Case 54 Failed: Expected ValueError for field_out being None")
+        except ValueError:
+            print_and_log("Test Case 54 Passed: Expected ValueError for None field_out")
+
+        # Test Case 55: Correct division of two dataset columns (danceability / energy) using NOTBELONG
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct expected division returns False (because inversion means it does NOT satisfy)
+        assert result is False, "Test Case 55 Failed: Expected False, got True"
+        print_and_log("Test Case 55 Passed: Expected False, got False")
+
+        # Test Case 56: Incorrect expected division (error in one row) using NOTBELONG
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / self.small_batch_dataset['energy']
+        # Introduce an error in one row (multiply by 1.1)
+        expected_df.loc[0, 'loudness'] = expected_df.loc[0, 'loudness'] * 1.1
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Incorrect expected division returns True (because inversion now finds a discrepancy)
+        assert result is True, "Test Case 56 Failed: Expected True, got False"
+        print_and_log("Test Case 56 Passed: Expected True, got True")
+
+        # Test Case 57: Division of a column and a constant (danceability / constant) using NOTBELONG
+        expected_df = self.small_batch_dataset.copy()
+        constant = 2.0
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / constant
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand=constant, isFieldSecond=False,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct division returns False when using NOTBELONG
+        assert result is False, "Test Case 57 Failed: Expected False, got True"
+        print_and_log("Test Case 57 Passed: Expected False, got False")
+
+        # Test Case 58: Division of a constant and a column (constant / energy) using NOTBELONG
+        expected_df = self.small_batch_dataset.copy()
+        constant = 4.0
+        expected_df['loudness'] = constant / self.small_batch_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand=constant, isFieldFirst=False,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct division returns False when using NOTBELONG
+        assert result is False, "Test Case 58 Failed: Expected False, got True"
+        print_and_log("Test Case 58 Passed: Expected False, got False")
+
+        # Test Case 59: Inversion test with correct division using NOTBELONG should yield True if inversion logic flips the result
+        # Here using NOTBELONG and a correct expected result should be considered as not belonging, hence False.
+        # To force a True result, we deliberately alter expected value.
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['loudness'] = self.small_batch_dataset['danceability'] / self.small_batch_dataset['energy']
+        # Introduce deliberate change to simulate inversion test for NOTBELONG
+        expected_df.loc[1, 'loudness'] = expected_df.loc[1, 'loudness'] + 0.5
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.small_batch_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Mismatch in one row with NOTBELONG returns True
+        assert result is True, "Test Case 59 Failed: Expected True, got False"
+        print_and_log("Test Case 59 Passed: Expected True, got True")
+
+        # Test Case 60: Exception test - field_in is None should raise ValueError using NOTBELONG
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.small_batch_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.NOTBELONG,
+                field_in=None, field_out='loudness'
+            )
+            raise AssertionError("Test Case 60 Failed: Expected ValueError for field_in being None")
+        except ValueError:
+            print_and_log("Test Case 60 Passed: Expected ValueError for None field_in")
+
+        # Test Case 61: Exception test - field_out is None should raise ValueError using NOTBELONG
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.small_batch_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.NOTBELONG,
+                field_in='loudness', field_out=None
+            )
+            raise AssertionError("Test Case 61 Failed: Expected ValueError for field_out being None")
+        except ValueError:
+            print_and_log("Test Case 61 Passed: Expected ValueError for None field_out")
 
 
     def execute_WholeDatasetTests_checkInv_MathOperation(self):
@@ -7861,7 +8198,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
@@ -7876,7 +8213,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
@@ -7891,7 +8228,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
@@ -7906,7 +8243,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(1), firstOperand=5,
@@ -7921,7 +8258,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='P',
@@ -7936,7 +8273,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='danceability',
@@ -7951,7 +8288,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='track_name',
@@ -7966,7 +8303,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='energy',
@@ -7981,7 +8318,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='Hola',
@@ -7996,7 +8333,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df['loudness'] = self.rest_of_dataset['danceability'] + self.rest_of_dataset['energy']
 
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_math_operation(data_dictionary_in=self.rest_of_dataset.copy(),
                                                               data_dictionary_out=expected_df,
                                                               math_op=MathOperator(0), firstOperand='energy',
@@ -8006,28 +8343,339 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                               field_in='loudness', field_out='loudness')
         print_and_log("Test Case 42 Passed: Expected ValueError, got ValueError")
 
+        # Test Case 43: Correct multiplication of two dataset columns (danceability * energy)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] * self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 43 Failed: Expected True, got False"
+        print_and_log("Test Case 43 Passed: Expected True, got True")
 
+        # Test Case 44: Incorrect expected multiplication (deliberate error by altering one row)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] * self.rest_of_dataset['energy']
+        # Introduce an error in the expected result of one row
+        expected_df.loc[0, 'loudness'] = expected_df.loc[0, 'loudness'] + 1
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is False, "Test Case 44 Failed: Expected False, got True"
+        print_and_log("Test Case 44 Passed: Expected False, got False")
 
+        # Test Case 43: Multiplication of a column and a constant (danceability * constant)
+        expected_df = self.rest_of_dataset.copy()
+        constant = 2.5
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] * constant
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand=constant, isFieldSecond=False,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 43 Failed: Expected True, got False"
+        print_and_log("Test Case 43 Passed: Expected True, got True")
 
+        # Test Case 44: Multiplication of a constant and a column (constant * energy)
+        expected_df = self.rest_of_dataset.copy()
+        constant = 3.0
+        expected_df['loudness'] = constant * self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand=constant, isFieldFirst=False,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 44 Failed: Expected True, got False"
+        print_and_log("Test Case 44 Passed: Expected True, got True")
 
+        # Test Case 45: Inversion test: using Belong.NOTBELONG with correct multiplication should yield False
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] * self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.MULTIPLY,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct multiplication means the inversion is false.
+        assert result is False, "Test Case 45 Failed: Expected False, got True"
+        print_and_log("Test Case 45 Passed: Expected False, got False")
 
+        # Test Case 46: Exception test - field_in is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.rest_of_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.MULTIPLY,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in=None, field_out='loudness'
+            )
+            raise AssertionError("Test Case 46 Failed: Expected ValueError for field_in being None")
+        except ValueError:
+            print_and_log("Test Case 46 Passed: Expected ValueError for None field_in")
 
+        # Test Case 47: Exception test - field_out is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.rest_of_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.MULTIPLY,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in='loudness', field_out=None
+            )
+            raise AssertionError("Test Case 47 Failed: Expected ValueError for field_out being None")
+        except ValueError:
+            print_and_log("Test Case 47 Passed: Expected ValueError for None field_out")
 
+        # Test Case 48: Correct division of two dataset columns (danceability / energy)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 48 Failed: Expected True, got False"
+        print_and_log("Test Case 48 Passed: Expected True, got True")
 
+        # Test Case 49: Incorrect expected division (deliberate error by altering one row)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / self.rest_of_dataset['energy']
+        # Introduce an error in one row (e.g., multiply the result by 1.1)
+        expected_df.loc[0, 'loudness'] = expected_df.loc[0, 'loudness'] * 1.1
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is False, "Test Case 49 Failed: Expected False, got True"
+        print_and_log("Test Case 49 Passed: Expected False, got False")
 
+        # Test Case 50: Division of a column and a constant (danceability / constant)
+        expected_df = self.rest_of_dataset.copy()
+        constant = 2.0
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / constant
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand=constant, isFieldSecond=False,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 50 Failed: Expected True, got False"
+        print_and_log("Test Case 50 Passed: Expected True, got True")
 
+        # Test Case 51: Division of a constant and a column (constant / energy)
+        expected_df = self.rest_of_dataset.copy()
+        constant = 4.0
+        expected_df['loudness'] = constant / self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand=constant, isFieldFirst=False,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.BELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is True, "Test Case 51 Failed: Expected True, got False"
+        print_and_log("Test Case 51 Passed: Expected True, got True")
 
+        # Test Case 52: Inversion test: using Belong.NOTBELONG with correct division should yield False
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        assert result is False, "Test Case 52 Failed: Expected False, got True"
+        print_and_log("Test Case 52 Passed: Expected False, got False")
 
+        # Test Case 53: Exception test - field_in is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.rest_of_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in=None, field_out='loudness'
+            )
+            raise AssertionError("Test Case 53 Failed: Expected ValueError for field_in being None")
+        except ValueError:
+            print_and_log("Test Case 53 Passed: Expected ValueError for None field_in")
 
+        # Test Case 54: Exception test - field_out is None should raise ValueError
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.rest_of_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.BELONG,
+                field_in='loudness', field_out=None
+            )
+            raise AssertionError("Test Case 54 Failed: Expected ValueError for field_out being None")
+        except ValueError:
+            print_and_log("Test Case 54 Passed: Expected ValueError for None field_out")
 
+        # Test Case 55: Correct division of two dataset columns (danceability / energy) using NOTBELONG
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct expected division returns False (because inversion means it does NOT satisfy)
+        assert result is False, "Test Case 55 Failed: Expected False, got True"
+        print_and_log("Test Case 55 Passed: Expected False, got False")
 
+        # Test Case 56: Incorrect expected division (error in one row) using NOTBELONG
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / self.rest_of_dataset['energy']
+        # Introduce an error in one row (multiply by 1.1)
+        expected_df.loc[0, 'loudness'] = expected_df.loc[0, 'loudness'] * 1.1
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Incorrect expected division returns True (because inversion now finds a discrepancy)
+        assert result is True, "Test Case 56 Failed: Expected True, got False"
+        print_and_log("Test Case 56 Passed: Expected True, got True")
 
+        # Test Case 57: Division of a column and a constant (danceability / constant) using NOTBELONG
+        expected_df = self.rest_of_dataset.copy()
+        constant = 2.0
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / constant
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand=constant, isFieldSecond=False,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct division returns False when using NOTBELONG
+        assert result is False, "Test Case 57 Failed: Expected False, got True"
+        print_and_log("Test Case 57 Passed: Expected False, got False")
 
+        # Test Case 58: Division of a constant and a column (constant / energy) using NOTBELONG
+        expected_df = self.rest_of_dataset.copy()
+        constant = 4.0
+        expected_df['loudness'] = constant / self.rest_of_dataset['energy']
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand=constant, isFieldFirst=False,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Correct division returns False when using NOTBELONG
+        assert result is False, "Test Case 58 Failed: Expected False, got True"
+        print_and_log("Test Case 58 Passed: Expected False, got False")
 
+        # Test Case 59: Inversion test with correct division using NOTBELONG should yield True if inversion logic flips the result
+        # Here using NOTBELONG and a correct expected result should be considered as not belonging, hence False.
+        # To force a True result, we deliberately alter expected value.
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['loudness'] = self.rest_of_dataset['danceability'] / self.rest_of_dataset['energy']
+        # Introduce deliberate change to simulate inversion test for NOTBELONG
+        expected_df.loc[1, 'loudness'] = expected_df.loc[1, 'loudness'] + 0.5
+        result = self.invariants.check_inv_math_operation(
+            data_dictionary_in=self.rest_of_dataset.copy(),
+            data_dictionary_out=expected_df.copy(),
+            math_op=MathOperator.DIVIDE,
+            firstOperand='danceability', isFieldFirst=True,
+            secondOperand='energy', isFieldSecond=True,
+            belong_op_out=Belong.NOTBELONG,
+            field_in='loudness', field_out='loudness'
+        )
+        # Mismatch in one row with NOTBELONG returns True
+        assert result is True, "Test Case 59 Failed: Expected True, got False"
+        print_and_log("Test Case 59 Passed: Expected True, got True")
 
+        # Test Case 60: Exception test - field_in is None should raise ValueError using NOTBELONG
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.rest_of_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.NOTBELONG,
+                field_in=None, field_out='loudness'
+            )
+            raise AssertionError("Test Case 60 Failed: Expected ValueError for field_in being None")
+        except ValueError:
+            print_and_log("Test Case 60 Passed: Expected ValueError for None field_in")
 
-
-
-
-
-
+        # Test Case 61: Exception test - field_out is None should raise ValueError using NOTBELONG
+        try:
+            self.invariants.check_inv_math_operation(
+                data_dictionary_in=self.rest_of_dataset.copy(),
+                data_dictionary_out=expected_df.copy(),
+                math_op=MathOperator.DIVIDE,
+                firstOperand='danceability', isFieldFirst=True,
+                secondOperand='energy', isFieldSecond=True,
+                belong_op_out=Belong.NOTBELONG,
+                field_in='loudness', field_out=None
+            )
+            raise AssertionError("Test Case 61 Failed: Expected ValueError for field_out being None")
+        except ValueError:
+            print_and_log("Test Case 61 Passed: Expected ValueError for None field_out")
