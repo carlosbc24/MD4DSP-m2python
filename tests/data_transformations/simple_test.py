@@ -3486,55 +3486,212 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         # Caso 9 - No field_out
         datadic = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
-        expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [-7, -7, -7, -7, -7]})
 
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+            self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
                                                                            math_op=MathOperator(1), field_out=None,
                                                                            firstOperand=2, isFieldFirst=False,
                                                                            secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 9 Passed: got the expected error")
 
-        # Caso 10 - field_out no existe
+        # Caso 10 - Columna no numerica
         datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
-        expected_df = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [-7, -7, -7, -7, -7]})
+            {'A': ['a', 'b', 'c', 'd', 'e'], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
 
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
-                                                                           math_op=MathOperator(1), field_out='D',
-                                                                           firstOperand=2, isFieldFirst=False,
+            self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+                                                                           math_op=MathOperator(0), field_out='C',
+                                                                           firstOperand='A', isFieldFirst=True,
                                                                            secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 10 Passed: got the expected error")
 
-        # Caso 11 - Columna no numerica
+        # Caso 11 - Valor no numerico
         datadic = pd.DataFrame(
-            {'A': ['a', 'b', 'c', 'd', 'e'], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
-        expected_df = pd.DataFrame(
-            {'A': ['a', 'b', 'c', 'd', 'e'], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
-
-        expected_exception = ValueError
-        with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
-                                                                           math_op=MathOperator(0), field_out='C',
-                                                                           firstOperand='A', isFieldFirst=True,
-                                                                           secondOperand=9, isFieldSecond=False)
-        print_and_log("Test Case 11 Passed: got the expected error")
-
-        # Caso 12 - Valor no numerico
-        datadic = pd.DataFrame(
-            {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
-        expected_df = pd.DataFrame(
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [1, 2, 3, 4, 5]})
 
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
+            self.data_transformations.transform_math_operation(data_dictionary=datadic.copy(),
                                                                            math_op=MathOperator(0), field_out='C',
                                                                            firstOperand='A', isFieldFirst=True,
                                                                            secondOperand='Antonio', isFieldSecond=False)
-        print_and_log("Test Case 12 Passed: got the expected error")
+        print_and_log("Test Case 11 Passed: got the expected error")
+
+        # Caso 12 - Multiplicacion de dos columnas
+        datadic = pd.DataFrame({
+            "A": [2, 3, 4],
+            "B": [5, 6, 7]
+        })
+        expected_df = datadic.copy()
+        expected_df["C"] = datadic["A"] * datadic["B"]
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out="C",
+            firstOperand="A",
+            secondOperand="B",
+            isFieldFirst=True,
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 12 Passed: got the dataframe expected")
+
+        # Caso 13 - Division de dos columnas
+        datadic = pd.DataFrame({
+            "A": [10, 20, 30],
+            "B": [2, 4, 5]
+        })
+        expected_df = datadic.copy()
+        expected_df["C"] = datadic["A"] / datadic["B"]
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out="C",
+            firstOperand="A",
+            secondOperand="B",
+            isFieldFirst=True,
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 13 Passed: got the dataframe expected")
+
+        # Caso 14 - Multiplicacion de columna y numero
+        datadic = pd.DataFrame({
+            "A": [2, 3, 4]
+        })
+        expected_df = datadic.copy()
+        expected_df["B"] = datadic["A"] * 3
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out="B",
+            firstOperand="A",
+            secondOperand=3,
+            isFieldFirst=True,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 14 Passed: got the dataframe expected")
+
+        # Caso 15 - Division de columna y numero
+        datadic = pd.DataFrame({
+            "A": [10, 20, 30]
+        })
+        expected_df = datadic.copy()
+        expected_df["B"] = datadic["A"] / 2
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out="B",
+            firstOperand="A",
+            secondOperand=2,
+            isFieldFirst=True,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 15 Passed: got the dataframe expected")
+
+        # Caso 16 - Multiplicacion de numero y columna
+        datadic = pd.DataFrame({
+            "A": [2, 3, 4]
+        })
+        expected_df = datadic.copy()
+        expected_df["B"] = 3 * datadic["A"]
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out="B",
+            firstOperand=3,
+            secondOperand="A",
+            isFieldFirst=False,
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 16 Passed: got the dataframe expected")
+
+        # Caso 17 - Division de numero y columna
+        datadic = pd.DataFrame({
+            "A": [2, 4, 5]
+        })
+        expected_df = datadic.copy()
+        expected_df["B"] = 100 / datadic["A"]
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out="B",
+            firstOperand=100,
+            secondOperand="A",
+            isFieldFirst=False,
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 17 Passed: got the dataframe expected")
+
+        # Caso 18 - Multiplicacion de numeros
+        # Use a dummy dataframe to supply an index; the resulting constant is applied to every row.
+        datadic = pd.DataFrame({"dummy": [0, 0, 0]})
+        expected_df = datadic.copy()
+        expected_df["C"] = 2 * 3  # constant result 6 for every row
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out="C",
+            firstOperand=2,
+            secondOperand=3,
+            isFieldFirst=False,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 18 Passed: got the dataframe expected")
+
+        # Caso 19 - Division de numeros
+        datadic = pd.DataFrame({"dummy": [0, 0, 0]})
+        expected_df = datadic.copy()
+        expected_df["C"] = 20 / 4  # constant result 5 for every row
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out="C",
+            firstOperand=20,
+            secondOperand=4,
+            isFieldFirst=False,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 19 Passed: got the dataframe expected")
+
+        # Caso 20 - División por columna con algún 0 - Error
+        datadic = pd.DataFrame({
+            "A": [2, 4, 0]
+        })
+        expected_exception = ZeroDivisionError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_math_operation(
+                data_dictionary=datadic.copy(),
+                math_op=MathOperator.DIVIDE,
+                field_out="B",
+                firstOperand=100,
+                secondOperand="A",
+                isFieldFirst=False,
+                isFieldSecond=True
+            )
+        print_and_log("Test Case 20 Passed: got the expected error")
+
+        # Caso 21 - División por entero 0 - Error
+        datadic = pd.DataFrame({
+            "A": [2, 4, 5]
+        })
+        expected_exception = ZeroDivisionError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_math_operation(
+                data_dictionary=datadic.copy(),
+                math_op=MathOperator.DIVIDE,
+                field_out="B",
+                firstOperand="A",
+                secondOperand=0,
+                isFieldFirst=True,
+                isFieldSecond=False
+            )
+        print_and_log("Test Case 21 Passed: got the expected error")

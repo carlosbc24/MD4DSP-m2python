@@ -135,20 +135,20 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         """
         test_methods = [
             self.execute_transform_FixValue_FixValue,
-            # self.execute_transform_FixValue_DerivedValue,
-            # self.execute_transform_FixValue_NumOp,
-            # self.execute_transform_Interval_FixValue,
-            # self.execute_transform_Interval_DerivedValue,
-            # self.execute_transform_Interval_NumOp,
-            # self.execute_transform_SpecialValue_FixValue,
-            # self.execute_transform_SpecialValue_DerivedValue,
-            # self.execute_transform_SpecialValue_NumOp,
-            # self.execute_transform_derived_field,
-            # self.execute_transform_filter_columns,
-            # self.execute_transform_filter_rows_primitive,
-            # self.execute_transform_filter_rows_special_values,
-            # self.execute_transform_filter_rows_range,
-            # self.execute_execute_transform_math_operation
+            self.execute_transform_FixValue_DerivedValue,
+            self.execute_transform_FixValue_NumOp,
+            self.execute_transform_Interval_FixValue,
+            self.execute_transform_Interval_DerivedValue,
+            self.execute_transform_Interval_NumOp,
+            self.execute_transform_SpecialValue_FixValue,
+            self.execute_transform_SpecialValue_DerivedValue,
+            self.execute_transform_SpecialValue_NumOp,
+            self.execute_transform_derived_field,
+            self.execute_transform_filter_columns,
+            self.execute_transform_filter_rows_primitive,
+            self.execute_transform_filter_rows_special_values,
+            self.execute_transform_filter_rows_range,
+            self.execute_execute_transform_math_operation
         ]
 
         print_and_log("")
@@ -5766,48 +5766,195 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         expected_df = self.small_batch_dataset.copy()
         expected_df['track_popularity'] = 8 - 13
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 8 Passed: got the dataframe expected")
 
         # Caso 9 - No field_out
 
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
+            self.data_transformations.transform_math_operation(
                 data_dictionary=self.small_batch_dataset.copy(),
                 math_op=MathOperator(1), field_out=None,
                 firstOperand=2, isFieldFirst=False,
                 secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 9 Passed: got the expected error")
 
-        # Caso 10 - field_out no existe
+        # Caso 10 - Columna no numerica
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
-                data_dictionary=self.small_batch_dataset.copy(),
-                math_op=MathOperator(1), field_out='D',
-                firstOperand=2, isFieldFirst=False,
-                secondOperand=9, isFieldSecond=False)
-        print_and_log("Test Case 10 Passed: got the expected error")
-
-        # Caso 11 - Columna no numerica
-        expected_exception = ValueError
-        with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
+            self.data_transformations.transform_math_operation(
                 data_dictionary=self.small_batch_dataset.copy(),
                 math_op=MathOperator(0), field_out='track_popularity',
                 firstOperand='track_artist', isFieldFirst=True,
                 secondOperand=9, isFieldSecond=False)
-        print_and_log("Test Case 11 Passed: got the expected error")
+        print_and_log("Test Case 10 Passed: got the expected error")
 
-        # Caso 12 - Valor no numerico
+        # Caso 11 - Valor no numerico
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
+            self.data_transformations.transform_math_operation(
                 data_dictionary=self.small_batch_dataset.copy(),
                 math_op=MathOperator(0), field_out='track_popularity',
                 firstOperand='danceability', isFieldFirst=True,
                 secondOperand='Antonio', isFieldSecond=False)
-        print_and_log("Test Case 12 Passed: got the expected error")
+        print_and_log("Test Case 11 Passed: got the expected error")
+
+        # Caso 12 - Multiplicación de dos columnas
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['result'] = expected_df['danceability'] * expected_df['track_popularity']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand='track_popularity',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 12 Passed: Multiplication of two columns")
+
+        # Caso 13 - División de dos columnas
+        expected_df = self.small_batch_dataset.copy()
+        # Ensure no zero values in column 'loudness' to avoid error during division
+        expected_df['result'] = expected_df['danceability'] / expected_df['loudness']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand='loudness',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 13 Passed: Division of two columns")
+
+        # Caso 14 - Multiplicación de columna y número
+        expected_df = self.small_batch_dataset.copy()
+        constant = 2.5
+        expected_df['result'] = expected_df['danceability'] * constant
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand=constant,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 14 Passed: Multiplication of column and number")
+
+        # Caso 15 - División de columna y número
+        expected_df = self.small_batch_dataset.copy()
+        constant = 2.0
+        expected_df['result'] = expected_df['danceability'] / constant
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand=constant,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 15 Passed: Division of column and number")
+
+        # Caso 16 - Multiplicación de número y columna
+        expected_df = self.small_batch_dataset.copy()
+        constant = 3.0
+        expected_df['result'] = constant * expected_df['track_popularity']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand=constant,
+            isFieldFirst=False,
+            secondOperand='track_popularity',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 16 Passed: Multiplication of number and column")
+
+        # Caso 17 - División de número y columna
+        expected_df = self.small_batch_dataset.copy()
+        constant = 3.0
+        expected_df['result'] = constant / expected_df['loudness']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand=constant,
+            isFieldFirst=False,
+            secondOperand='loudness',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 17 Passed: Division of number and column")
+
+        # Caso 18 - Multiplicación de números
+        expected_df = self.small_batch_dataset.copy()
+        constant_result = 5.5 * 2.0  # constant multiplication result
+        expected_df['result'] = constant_result
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand=5.5,
+            isFieldFirst=False,
+            secondOperand=2.0,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 18 Passed: Multiplication of numbers")
+
+        # Caso 19 - División de números
+        expected_df = self.small_batch_dataset.copy()
+        constant_result = 10.0 / 2.0  # constant division result
+        expected_df['result'] = constant_result
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.small_batch_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand=10.0,
+            isFieldFirst=False,
+            secondOperand=2.0,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 19 Passed: Division of numbers")
+
+        # Case 20 - Division by column which has zeros 'mode' - ZeroDivisionError raised
+        expected_exception = ZeroDivisionError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_math_operation(
+                data_dictionary=self.small_batch_dataset.copy(),
+                math_op=MathOperator.DIVIDE,
+                field_out='result',
+                firstOperand=10.0,
+                isFieldFirst=False,
+                secondOperand="mode",
+                isFieldSecond=True
+            )
+        print_and_log("Test Case 20 Passed: ZeroDivisionError raised when dividing by a column with zeros")
+
+        # Case 21 - Division by zero integer - ZeroDivisionError raised
+        expected_exception = ZeroDivisionError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_math_operation(
+                data_dictionary=self.small_batch_dataset.copy(),
+                math_op=MathOperator.DIVIDE,
+                field_out='result',
+                firstOperand="mode",
+                isFieldFirst=True,
+                secondOperand=0,
+                isFieldSecond=False
+            )
+        print_and_log("Test Case 21 Passed: ZeroDivisionError raised when dividing by zero integer")
 
     def execute_WholeDatasetTests_execute_transform_math_operation(self):
         """
@@ -5918,45 +6065,192 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
 
         expected_df = self.rest_of_dataset.copy()
         expected_df['track_popularity'] = 8 - 13
+
+        pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 8 Passed: got the dataframe expected")
 
         # Caso 9 - No field_out
 
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
+            self.data_transformations.transform_math_operation(
                 data_dictionary=self.rest_of_dataset.copy(),
                 math_op=MathOperator(1), field_out=None,
                 firstOperand=2, isFieldFirst=False,
                 secondOperand=9, isFieldSecond=False)
         print_and_log("Test Case 9 Passed: got the expected error")
 
-        # Caso 10 - field_out no existe
+        # Caso 10 - Columna no numerica
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
-                data_dictionary=self.rest_of_dataset.copy(),
-                math_op=MathOperator(1), field_out='D',
-                firstOperand=2, isFieldFirst=False,
-                secondOperand=9, isFieldSecond=False)
-        print_and_log("Test Case 10 Passed: got the expected error")
-
-        # Caso 11 - Columna no numerica
-        expected_exception = ValueError
-        with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
+            self.data_transformations.transform_math_operation(
                 data_dictionary=self.rest_of_dataset.copy(),
                 math_op=MathOperator(0), field_out='track_popularity',
                 firstOperand='track_artist', isFieldFirst=True,
                 secondOperand=9, isFieldSecond=False)
-        print_and_log("Test Case 11 Passed: got the expected error")
+        print_and_log("Test Case 10 Passed: got the expected error")
 
-        # Caso 12 - Valor no numerico
+        # Caso 11 - Valor no numerico
         expected_exception = ValueError
         with self.assertRaises(expected_exception):
-            result_df = self.data_transformations.transform_math_operation(
+            self.data_transformations.transform_math_operation(
                 data_dictionary=self.rest_of_dataset.copy(),
                 math_op=MathOperator(0), field_out='track_popularity',
                 firstOperand='danceability', isFieldFirst=True,
                 secondOperand='Antonio', isFieldSecond=False)
-        print_and_log("Test Case 12 Passed: got the expected error")
+        print_and_log("Test Case 11 Passed: got the expected error")
+
+        # Caso 12 - Multiplicación de dos columnas
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['result'] = expected_df['danceability'] * expected_df['track_popularity']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand='track_popularity',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 12 Passed: Multiplication of two columns")
+
+        # Caso 13 - División de dos columnas
+        expected_df = self.rest_of_dataset.copy()
+        # Ensure no zero values in column 'loudness' to avoid error during division
+        expected_df['result'] = expected_df['danceability'] / expected_df['loudness']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand='loudness',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 13 Passed: Division of two columns")
+
+        # Caso 14 - Multiplicación de columna y número
+        expected_df = self.rest_of_dataset.copy()
+        constant = 2.5
+        expected_df['result'] = expected_df['danceability'] * constant
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand=constant,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 14 Passed: Multiplication of column and number")
+
+        # Caso 15 - División de columna y número
+        expected_df = self.rest_of_dataset.copy()
+        constant = 2.0
+        expected_df['result'] = expected_df['danceability'] / constant
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand='danceability',
+            isFieldFirst=True,
+            secondOperand=constant,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 15 Passed: Division of column and number")
+
+        # Caso 16 - Multiplicación de número y columna
+        expected_df = self.rest_of_dataset.copy()
+        constant = 3.0
+        expected_df['result'] = constant * expected_df['track_popularity']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand=constant,
+            isFieldFirst=False,
+            secondOperand='track_popularity',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 16 Passed: Multiplication of number and column")
+
+        # Caso 17 - División de número y columna
+        expected_df = self.rest_of_dataset.copy()
+        constant = 3.0
+        expected_df['result'] = constant / expected_df['loudness']
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand=constant,
+            isFieldFirst=False,
+            secondOperand='loudness',
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 17 Passed: Division of number and column")
+
+        # Caso 18 - Multiplicación de números
+        expected_df = self.rest_of_dataset.copy()
+        constant_result = 5.5 * 2.0  # constant multiplication result
+        expected_df['result'] = constant_result
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.MULTIPLY,
+            field_out='result',
+            firstOperand=5.5,
+            isFieldFirst=False,
+            secondOperand=2.0,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 18 Passed: Multiplication of numbers")
+
+        # Caso 19 - División de números
+        expected_df = self.rest_of_dataset.copy()
+        constant_result = 10.0 / 2.0  # constant division result
+        expected_df['result'] = constant_result
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=self.rest_of_dataset.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand=10.0,
+            isFieldFirst=False,
+            secondOperand=2.0,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(result_df, expected_df)
+        print_and_log("Test Case 19 Passed: Division of numbers")
+
+        # Case 20 - Division by column which has zeros 'mode' - ZeroDivisionError raised
+        expected_exception = ZeroDivisionError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_math_operation(
+                data_dictionary=self.rest_of_dataset.copy(),
+                math_op=MathOperator.DIVIDE,
+                field_out='result',
+                firstOperand=10.0,
+                isFieldFirst=False,
+                secondOperand="mode",
+                isFieldSecond=True
+            )
+        print_and_log("Test Case 20 Passed: ZeroDivisionError raised when dividing by a column with zeros")
+
+        # Case 21 - Division by zero integer - ZeroDivisionError raised
+        expected_exception = ZeroDivisionError
+        with self.assertRaises(expected_exception):
+            self.data_transformations.transform_math_operation(
+                data_dictionary=self.rest_of_dataset.copy(),
+                math_op=MathOperator.DIVIDE,
+                field_out='result',
+                firstOperand="mode",
+                isFieldFirst=True,
+                secondOperand=0,
+                isFieldSecond=False
+            )
+        print_and_log("Test Case 21 Passed: ZeroDivisionError raised when dividing by zero integer")
