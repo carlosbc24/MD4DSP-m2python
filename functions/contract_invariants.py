@@ -18,6 +18,7 @@ from helpers.enumerations import Closure, DataType, DerivedType, Operation, Spec
 
 def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                   input_values_list: list = None, output_values_list: list = None,
+                                  is_substring_list: list[bool] = None,
                                   belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
                                   data_type_input_list: list = None, data_type_output_list: list = None,
                                   field_in: str = None, field_out: str = None) -> bool:
