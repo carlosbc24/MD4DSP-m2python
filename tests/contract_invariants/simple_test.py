@@ -94,7 +94,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Aplicar la transformación de datos
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=[2],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(0), field_in=None, field_out=None)
 
@@ -115,7 +115,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara'],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(0), field_in=None, field_out=None)
 
@@ -138,7 +138,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                     'B': [True, True, True, True, pd.to_datetime('2021-08-01')]})
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False],
                                                                input_values_list=[pd.to_datetime('2021-01-01')],
                                                                data_type_output_list=None,
                                                                field_in=None, field_out=None,
@@ -158,7 +158,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara'],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                field_in=None, field_out=None,
                                                                output_values_list=fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -176,7 +176,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 2.0, 2.0, 2.0]})
         # Aplicar la transformación de datos
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
-                                                               input_values_list=[3.0],
+                                                               input_values_list=[3.0], is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(0), field_in=None, field_out=None)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -195,7 +195,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Aplicar la transformación de datos
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=[2],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(1),
                                                                field_in=None, field_out=None)
@@ -217,7 +217,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara'],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(1),
                                                                field_in=None, field_out=None)
@@ -243,7 +243,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None,
                                                                input_values_list=[pd.to_datetime('2021-01-01')],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(1), field_in=None, field_out=None)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -261,7 +261,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara'],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(1), field_in=None, field_out=None)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -279,7 +279,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             {'A': ['Clara', 2.0, 'Clara', 'Clara', 'Clara'], 'B': ['Clara', 'Clara', 2.0, 2.0, 2.0]})
         # Aplicar la transformación de datos
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
-                                                               input_values_list=[3.0],
+                                                               input_values_list=[3.0], is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(1), field_in=None, field_out=None)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -298,11 +298,11 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Definir el resultado esperado
         expected_df = pd.DataFrame(
             {'A': [pd.to_datetime('2021-01-01'), 'Ana', pd.to_datetime('2021-01-01'), pd.to_datetime('2021-01-01'), pd.to_datetime('2021-01-01')],
-             'B': ['Clara', 'Clara', 'Ana', pd.to_datetime('2021-01-01'), 'Ana']})
+             'B': ['Clara', 'Clara', 'Ana', 'Ana', 'Ana']})
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara'],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(0), field_in=field_in, field_out=field_out)
 
@@ -324,7 +324,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara'],
-                                                               data_type_output_list=None,
+                                                               data_type_output_list=None, is_substring_list=[False],
                                                                output_values_list=fix_value_output, belong_op_in=Belong(0),
                                                                belong_op_out=Belong(1), field_in=field_in, field_out=field_out)
 
@@ -340,7 +340,8 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara', '8'],
-                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               data_type_output_list=None, is_substring_list=[False, False],
+                                                               belong_op_out=Belong(0),
                                                                field_in=None, field_out=None,
                                                                output_values_list=fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -357,7 +358,8 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None,
                                                                input_values_list=['Clara', '8'],
-                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               data_type_output_list=None, is_substring_list=[False, False],
+                                                               belong_op_out=Belong(0),
                                                                field_in=None, field_out=None,
                                                                output_values_list=fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -373,7 +375,8 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None, input_values_list=['Clara', '8'],
-                                                               data_type_output_list=None, belong_op_out=Belong(1),
+                                                               data_type_output_list=None, is_substring_list=[False, False],
+                                                               belong_op_out=Belong(1),
                                                                field_in=None, field_out=None,
                                                                output_values_list=fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -390,7 +393,8 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None,
                                                                input_values_list=['Clara', '8'],
-                                                               data_type_output_list=None, belong_op_out=Belong(1),
+                                                               data_type_output_list=None, is_substring_list=[False, False],
+                                                               belong_op_out=Belong(1),
                                                                field_in=None, field_out=None,
                                                                output_values_list=fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -408,7 +412,8 @@ class InvariantsSimpleTest(unittest.TestCase):
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                    data_type_input_list=None,
                                                                    input_values_list=['Clara', '8'],
-                                                                   data_type_output_list=None, belong_op_out=Belong(1),
+                                                                   data_type_output_list=None, is_substring_list=[False, False],
+                                                                   belong_op_out=Belong(1),
                                                                    field_in=None, field_out=None,
                                                                    output_values_list=fix_value_output)
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
@@ -423,7 +428,8 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None,
                                                                input_values_list=['Clara', '8'],
-                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               data_type_output_list=None, is_substring_list=[False, False],
+                                                               belong_op_out=Belong(0),
                                                                field_in=None, field_out=None,
                                                                output_values_list=fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
@@ -440,12 +446,279 @@ class InvariantsSimpleTest(unittest.TestCase):
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
                                                                data_type_input_list=None,
                                                                input_values_list=['Clara', 3.0],
-                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                                data_type_output_list=None, is_substring_list=[False, False],
+                                                               belong_op_out=Belong(0),
                                                                field_in=None, field_out=None,
                                                                output_values_list=fix_value_output)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 19 Failed: Expected True, but got False"
         print_and_log("Test Case 19 Passed: Expected True, got True")
+
+        # Tests with substrings
+
+        # Caso 20
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Asta', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Asta', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'na'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(0),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma", "sta"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Caso 21
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Asta', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Asta', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'na'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(1),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma", "sta"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 21 Failed: Expected False, but got True"
+        print_and_log("Test Case 21 Passed: Expected False, got False")
+
+        # Caso 22
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Ana', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(0),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 22 Failed: Expected True, but got False"
+        print_and_log("Test Case 22 Passed: Expected True, got True")
+
+        # Caso 23
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Ana', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(1),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 23 Failed: Expected False, but got True"
+        print_and_log("Test Case 23 Passed: Expected False, got False")
+
+        # Caso 24
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Jesucristo', 5, 5]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana' , 3.0],
+                                                               data_type_output_list=None, is_substring_list=[True, False, False],
+                                                               belong_op_out=Belong(0),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 24 Failed: Expected True, but got False"
+        print_and_log("Test Case 24 Passed: Expected True, got True")
+
+        # Caso 25
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame(
+            {'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Jesucristo', 5, 5]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana', 3.0],
+                                                               data_type_output_list=None,
+                                                               is_substring_list=[True, True, False],
+                                                               belong_op_out=Belong(0),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 25 Failed: Expected True, but got False"
+        print_and_log("Test Case 25 Passed: Expected True, got True")
+
+        # Caso 26
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Jesucristo', 5, 5]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana' , 3.0],
+                                                               data_type_output_list=None, is_substring_list=[True, False, False],
+                                                               belong_op_out=Belong(1),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 26 Failed: Expected False, but got True"
+        print_and_log("Test Case 26 Passed: Expected False, got False")
+
+        # Caso 27
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame(
+            {'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Cámara', 'Cámara', 'Jesucristo', 5, 5]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana', 3.0],
+                                                               data_type_output_list=None,
+                                                               is_substring_list=[True, True, False],
+                                                               belong_op_out=Belong(1),
+                                                               field_in=None, field_out=None,
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 27 Failed: Expected False, but got True"
+        print_and_log("Test Case 27 Passed: Expected False, got False")
+
+        # Caso 28
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Asta', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'na'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(0),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma", "sta"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 28 Failed: Expected True, but got False"
+        print_and_log("Test Case 28 Passed: Expected True, got True")
+
+        # Caso 29
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Asta', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'na'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(1),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma", "sta"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 29 Failed: Expected False, but got True"
+        print_and_log("Test Case 29 Passed: Expected False, got False")
+
+        # Caso 30
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Ana', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(0),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 30 Failed: Expected True, but got False"
+        print_and_log("Test Case 30 Passed: Expected True, got True")
+
+        # Caso 31
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Ana', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la'],
+                                                               data_type_output_list=None, is_substring_list=[True, True],
+                                                               belong_op_out=Belong(1),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma"])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 31 Failed: Expected False, but got True"
+        print_and_log("Test Case 31 Passed: Expected False, got False")
+
+        # Caso 32
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana' , 3.0],
+                                                               data_type_output_list=None, is_substring_list=[True, False, False],
+                                                               belong_op_out=Belong(0),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 32 Failed: Expected True, but got False"
+        print_and_log("Test Case 32 Passed: Expected True, got True")
+
+        # Caso 33
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame(
+            {'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana', 3.0],
+                                                               data_type_output_list=None,
+                                                               is_substring_list=[True, True, False],
+                                                               belong_op_out=Belong(0),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 25 Failed: Expected True, but got False"
+        print_and_log("Test Case 33 Passed: Expected True, got True")
+
+        # Caso 34
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame({'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana' , 3.0],
+                                                               data_type_output_list=None, is_substring_list=[True, False, False],
+                                                               belong_op_out=Belong(1),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 34 Failed: Expected False, but got True"
+        print_and_log("Test Case 34 Passed: Expected False, got False")
+
+        # Caso 35
+        df = pd.DataFrame({'A': ['Clara', 'Ana', 'Clara', 'Clara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+        # Definir el resultado esperado
+        expected_df = pd.DataFrame(
+            {'A': ['Cámara', 'Jesucristo', 'Cámara', 'Cámara', np.NaN], 'B': ['Clara', 'Clara', 'Ana', 3.0, 3.0]})
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=df, data_dictionary_out=expected_df,
+                                                               data_type_input_list=None,
+                                                               input_values_list=['la', 'Ana', 3.0],
+                                                               data_type_output_list=None,
+                                                               is_substring_list=[True, True, False],
+                                                               belong_op_out=Belong(1),
+                                                               field_in='A', field_out='A',
+                                                               output_values_list=["áma", 'Jesucristo', 5])
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 35 Failed: Expected False, but got True"
+        print_and_log("Test Case 35 Passed: Expected False, got False")
 
 
         print_and_log("")
