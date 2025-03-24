@@ -135,15 +135,15 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                                     f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0].strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                     else:
                         # Comprobar si el valor correspondiente en data_dictionary_out coincide con fix_value_output
-                        if data_dictionary_out.loc[row_index, field_in] != mapping_values[value]:
+                        if data_dictionary_out.loc[row_index, field_in] != mapping_values[value][0]:
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
                 elif value in mapping_values and mapping_values[value][1] == True:
                     if (not pd.isna(data_dictionary_out.loc[row_index, field_out]) and type(data_dictionary_out.loc[row_index, field_out]) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
