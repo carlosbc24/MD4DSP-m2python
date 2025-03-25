@@ -1193,3 +1193,61 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                         result = True
                         break
     return result
+
+
+def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                        cast_type_in: CastType, cast_type_out: CastType, belong_op_out: Belong = Belong.BELONG,
+                        field_in: str = None, field_out: str = None) -> bool:
+    """
+    This function checks if the invariant of the CastType relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the cast is correctly applied to the
+    input values.
+    """
+    result = None
+    if belong_op_out == Belong.BELONG:
+        result = True
+    elif belong_op_out == Belong.NOTBELONG:
+        result = False
+
+    if field_in is None:
+        raise ValueError("The field_in parameter is required")
+    elif field_out is None:
+        raise ValueError("The field_out parameter is required")
+    elif field_in not in data_dictionary_in.columns:
+        raise ValueError("The input field does not exist in the dataframe")
+    elif field_out not in data_dictionary_out.columns:
+        raise ValueError("The output field does not exist in the dataframe")
+
+    if belong_op_out == Belong.BELONG:
+        if cast_type == CastType.INTEGER:
+            if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
+                result = True
+            else:
+                result = False
+        elif cast_type == CastType.FLOAT:
+            if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
+                result = True
+            else:
+                result = False
+        elif cast_type == CastType.STRING:
+            if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(str)):
+                result = True
+            else:
+                result = False
+    elif belong_op_out == Belong.NOTBELONG:
+        if cast_type == CastType.INTEGER:
+            if not data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
+                result = True
+            else:
+                result = False
+        elif cast_type == CastType.FLOAT:
+            if not data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
+                result = True
+            else:
+                result = False
+        elif cast_type == CastType.STRING:
+            if not data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(str)):
+                result = True
+            else:
+                result = False
+    return result
