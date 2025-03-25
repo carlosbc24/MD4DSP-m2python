@@ -169,7 +169,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                          data_type_input_list=None,
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output,
-                                                                         data_type_output_list=None,
+                                                                         data_type_output_list=None, is_substring_list=[False],
                                                                          field_in=field_in, field_out=field_out)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result_invariant is True, "Test Case 1 Failed: Expected True, but got False"
@@ -189,7 +189,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             output_values_list=fix_value_output,
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df, is_substring_list=[False],
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -209,7 +209,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             output_values_list=fix_value_output,
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df, is_substring_list=[False],
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -228,7 +228,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             output_values_list=fix_value_output,
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df, is_substring_list=[False],
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -247,7 +247,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             output_values_list=fix_value_output,
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df, is_substring_list=[False],
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -272,7 +272,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
-                                                                         data_type_input_list=None,
+                                                                         data_type_input_list=None, is_substring_list=[False],
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output,
                                                                          data_type_output_list=None, field_in=field_in,
@@ -295,7 +295,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             output_values_list=fix_value_output,
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df, is_substring_list=[False],
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -316,7 +316,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             output_values_list=fix_value_output,
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df, is_substring_list=[False],
                                                                          belong_op_in=Belong(0), belong_op_out=Belong(1),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -334,7 +334,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                                                 MapOperation.VALUE_MAPPING])
 
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df, is_substring_list=[False, False],
                                                                          data_type_input_list=None, input_values_list=input_values_list,
                                                                          data_type_output_list=None, belong_op_out=Belong(0),
                                                                          output_values_list=output_values_list)
@@ -355,7 +355,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(0),
                                                                output_values_list=output_values_list)
@@ -373,7 +373,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING,
                                                                                                 MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
-                                                                         data_dictionary_out=result_df,
+                                                                         data_dictionary_out=result_df,  is_substring_list=[False, False],
                                                                           data_type_input_list=None, input_values_list=input_values_list,
                                                                           data_type_output_list=None, belong_op_out=Belong(1),
                                                                           output_values_list=output_values_list)
@@ -393,7 +393,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(1),
                                                                output_values_list=output_values_list)
@@ -417,7 +417,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                    data_dictionary_out=result_df,
-                                                                   data_type_input_list=None,
+                                                                   data_type_input_list=None, is_substring_list=[False, False],
                                                                    input_values_list=input_values_list,
                                                                    data_type_output_list=None, belong_op_out=Belong(1),
                                                                    output_values_list=output_values_list)
@@ -436,7 +436,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(1),
                                                                output_values_list=output_values_list)
@@ -457,13 +457,236 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(0),
                                                                output_values_list=output_values_list)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
+
+        # Caso 16
+        fix_value_input = ['Shee']
+        fix_value_output = ['Pe']
+        field_in = 'track_artist'
+        field_out = 'track_artist'
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                            field_in=field_in, field_out=field_out,
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                                        data_dictionary_out=result_df,
+                                                                        belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                                        data_type_input_list=None,
+                                                                        input_values_list=fix_value_input,
+                                                                        output_values_list=fix_value_output,
+                                                                        data_type_output_list=None, is_substring_list=[True],
+                                                                        field_in=field_in, field_out=field_out)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is True, "Test Case 16 Failed: Expected True, but got False"
+        print_and_log("Test Case 16 Passed: Expected True, and got True")
+
+        # Caso 17
+        expected_df = self.small_batch_dataset.copy()
+        fix_value_input = ['Don Diablo Remix']
+        fix_value_output = ['Remix del Señor Satán']
+        result_df = self.data_transformations.transform_fix_value_fix_value(
+            data_dictionary=self.small_batch_dataset.copy(),
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output,
+            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
+                                                                         data_dictionary_out=result_df,
+                                                                         is_substring_list=[True],
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
+        assert result_invariant is True, "Test Case 17 Failed: Expected True, but got False"
+        print_and_log("Test Case 17 Passed: Expected True, and got True")
+
+        # Caso 18
+        expected_df = self.small_batch_dataset.copy()
+        fix_value_input = ['Maroon 5']
+        fix_value_output = ['Marrón 3']
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
+                                                                         data_dictionary_out=result_df,
+                                                                         is_substring_list=[True],
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
+        assert result_invariant is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, and got True")
+
+        # Caso 19
+        expected_df = self.small_batch_dataset.copy()
+        fix_value_input = ['All the Time']
+        fix_value_output = ['Todo el tiempo']
+        result_df = self.data_transformations.transform_fix_value_fix_value(
+            data_dictionary=self.small_batch_dataset.copy(),
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output,
+            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
+                                                                         data_dictionary_out=result_df,
+                                                                         is_substring_list=[True],
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(1),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
+        assert result_invariant is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, and got False")
+
+        # Caso 20
+        output_values_list = ['Macarrón', 'Taylor']
+        input_values_list = ['Maroon', 'Perry']
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.small_batch_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                                        data_dictionary_out=result_df, is_substring_list=[True, True],
+                                                                        data_type_input_list=None, input_values_list=input_values_list,
+                                                                        data_type_output_list=None, belong_op_out=Belong(0),
+                                                                        output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Caso 21
+        output_values_list = ['4', '13']
+        input_values_list = ['5', 'Katy Perry']
+        result_df = self.small_batch_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=['5', 14],
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, True],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 21 Failed: Expected False, but got True"
+        print_and_log("Test Case 21 Passed: Expected False, got False")
+
+        # Caso 22
+        output_values_list = ['4', 'Taylor']
+        input_values_list = ['5', 'Katy']
+        result_df = self.small_batch_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                                        data_dictionary_out=result_df, is_substring_list=[True, True],
+                                                                        data_type_input_list=None, input_values_list=input_values_list,
+                                                                        data_type_output_list=None, belong_op_out=Belong(1),
+                                                                        output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is False, "Test Case 22 Failed: Expected False, but got True"
+        print_and_log("Test Case 22 Passed: Expected False, got False")
+
+        # Caso 23
+        output_values_list = ['4', 'Taylor']
+        input_values_list = ['5', 'Katy']
+        result_df = self.small_batch_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, True],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 23 Failed: Expected True, but got False"
+        print_and_log("Test Case 23 Passed: Expected True, got True")
+
+        # Caso 24
+        output_values_list = [3.0]
+        input_values_list = ['Maroon', 'Perry']
+        result_df = self.small_batch_dataset.copy()
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                                input_values_list=input_values_list,
+                                                                                output_values_list=output_values_list,
+                                                                                map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                    MapOperation.SUBSTRING])
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                                   data_dictionary_out=result_df,
+                                                                   data_type_input_list=None,
+                                                                   is_substring_list=[True, False],
+                                                                   input_values_list=input_values_list,
+                                                                   data_type_output_list=None, belong_op_out=Belong(1),
+                                                                   output_values_list=output_values_list)
+        print_and_log("Test Case 24 Passed: Expected ValueError, got ValueError")
+
+        # Caso 25
+        output_values_list = ['5.0', 'Taylor Swift']
+        input_values_list = ['5', 'Katy Perry']
+        result_df = self.small_batch_dataset.copy()
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.VALUE_MAPPING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, False],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 25 Failed: Expected True, but got False"
+        print_and_log("Test Case 25 Passed: Expected True, got True")
+
+        # Caso 26
+        output_values_list = ['Antonio', 6.0]
+        input_values_list = ['Maroon 5', 3.0]
+        result_df = self.small_batch_dataset.copy()
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.VALUE_MAPPING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, False],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        print_and_log("Test Case 26 Passed: Expected True, got True")
 
 
     def execute_WholeDatasetTests_checkInv_FixValue_FixValue(self):
@@ -490,7 +713,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
                                                                          belong_op_out=Belong(0),
-                                                                         data_type_input_list=None,
+                                                                         data_type_input_list=None, is_substring_list=[False],
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output,
                                                                          data_type_output_list=None,
@@ -514,7 +737,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_in=Belong(0), is_substring_list=[False],
                                                                          belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -535,7 +758,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_in=Belong(0), is_substring_list=[False],
                                                                          belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -555,7 +778,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_in=Belong(0), is_substring_list=[False],
                                                                          belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -575,7 +798,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_in=Belong(0), is_substring_list=[False],
                                                                          belong_op_out=Belong(0),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -601,7 +824,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                          data_dictionary_out=result_df,
                                                                          belong_op_in=Belong(0),
                                                                          belong_op_out=Belong(1),
-                                                                         data_type_input_list=None,
+                                                                         data_type_input_list=None, is_substring_list=[False],
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output,
                                                                          data_type_output_list=None,
@@ -625,7 +848,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_in=Belong(0), is_substring_list=[False],
                                                                          belong_op_out=Belong(1),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -647,7 +870,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                             map_operation_list=[MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
                                                                          data_dictionary_out=result_df,
-                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_in=Belong(0), is_substring_list=[False],
                                                                          belong_op_out=Belong(1),
                                                                          input_values_list=fix_value_input,
                                                                          output_values_list=fix_value_output)
@@ -665,7 +888,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                                                 MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                          data_dictionary_out=result_df,
-                                                                         data_type_input_list=None,
+                                                                         data_type_input_list=None, is_substring_list=[False, False],
                                                                          input_values_list=input_values_list,
                                                                          data_type_output_list=None, belong_op_out=Belong(0),
                                                                          output_values_list=output_values_list)
@@ -686,7 +909,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(0),
                                                                output_values_list=output_values_list)
@@ -705,7 +928,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                                                 MapOperation.VALUE_MAPPING])
         result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                          data_dictionary_out=result_df,
-                                                                         data_type_input_list=None,
+                                                                         data_type_input_list=None, is_substring_list=[False, False],
                                                                          input_values_list=input_values_list,
                                                                          data_type_output_list=None, belong_op_out=Belong(1),
                                                                          output_values_list=output_values_list)
@@ -725,7 +948,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(1),
                                                                output_values_list=output_values_list)
@@ -749,7 +972,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(expected_exception):
             result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                    data_dictionary_out=result_df,
-                                                                   data_type_input_list=None,
+                                                                   data_type_input_list=None, is_substring_list=[False, False],
                                                                    input_values_list=input_values_list,
                                                                    data_type_output_list=None, belong_op_out=Belong(1),
                                                                    output_values_list=output_values_list)
@@ -768,7 +991,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(1),
                                                                output_values_list=output_values_list)
@@ -789,13 +1012,236 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                data_dictionary_out=result_df,
-                                                               data_type_input_list=None,
+                                                               data_type_input_list=None, is_substring_list=[False, False],
                                                                input_values_list=input_values_list,
                                                                data_type_output_list=None, belong_op_out=Belong(0),
                                                                output_values_list=output_values_list)
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 15 Failed: Expected True, but got False"
         print_and_log("Test Case 15 Passed: Expected True, got True")
+
+        # Caso 16
+        fix_value_input = ['Shee']
+        fix_value_output = ['Pe']
+        field_in = 'track_artist'
+        field_out = 'track_artist'
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            field_in=field_in, field_out=field_out,
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                                        data_dictionary_out=result_df,
+                                                                        belong_op_in=Belong(0), belong_op_out=Belong(0),
+                                                                        data_type_input_list=None,
+                                                                        input_values_list=fix_value_input,
+                                                                        output_values_list=fix_value_output,
+                                                                        data_type_output_list=None, is_substring_list=[True],
+                                                                        field_in=field_in, field_out=field_out)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is True, "Test Case 16 Failed: Expected True, but got False"
+        print_and_log("Test Case 16 Passed: Expected True, and got True")
+
+        # Caso 17
+        expected_df = self.rest_of_dataset.copy()
+        fix_value_input = ['Don Diablo Remix']
+        fix_value_output = ['Remix del Señor Satán']
+        result_df = self.data_transformations.transform_fix_value_fix_value(
+            data_dictionary=self.rest_of_dataset.copy(),
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output,
+            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
+                                                                         data_dictionary_out=result_df,
+                                                                         is_substring_list=[True],
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
+        assert result_invariant is True, "Test Case 17 Failed: Expected True, but got False"
+        print_and_log("Test Case 17 Passed: Expected True, and got True")
+
+        # Caso 18
+        expected_df = self.rest_of_dataset.copy()
+        fix_value_input = ['Maroon 5']
+        fix_value_output = ['Marrón 3']
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            input_values_list=fix_value_input,
+                                                                            output_values_list=fix_value_output,
+                                                                            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
+                                                                         data_dictionary_out=result_df,
+                                                                         is_substring_list=[True],
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(0),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
+        assert result_invariant is True, "Test Case 18 Failed: Expected True, but got False"
+        print_and_log("Test Case 18 Passed: Expected True, and got True")
+
+        # Caso 19
+        expected_df = self.rest_of_dataset.copy()
+        fix_value_input = ['All the Time']
+        fix_value_output = ['Todo el tiempo']
+        result_df = self.data_transformations.transform_fix_value_fix_value(
+            data_dictionary=self.rest_of_dataset.copy(),
+            input_values_list=fix_value_input,
+            output_values_list=fix_value_output,
+            map_operation_list=[MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=expected_df,
+                                                                         data_dictionary_out=result_df,
+                                                                         is_substring_list=[True],
+                                                                         belong_op_in=Belong(0),
+                                                                         belong_op_out=Belong(1),
+                                                                         input_values_list=fix_value_input,
+                                                                         output_values_list=fix_value_output)
+        assert result_invariant is False, "Test Case 19 Failed: Expected False, but got True"
+        print_and_log("Test Case 19 Passed: Expected False, and got False")
+
+        # Caso 20
+        output_values_list = ['Macarrón', 'Taylor']
+        input_values_list = ['Maroon', 'Perry']
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=self.rest_of_dataset.copy(),
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                                        data_dictionary_out=result_df, is_substring_list=[True, True],
+                                                                        data_type_input_list=None, input_values_list=input_values_list,
+                                                                        data_type_output_list=None, belong_op_out=Belong(0),
+                                                                        output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is True, "Test Case 20 Failed: Expected True, but got False"
+        print_and_log("Test Case 20 Passed: Expected True, got True")
+
+        # Caso 21
+        output_values_list = ['4', '13']
+        input_values_list = ['5', 'Katy Perry']
+        result_df = self.rest_of_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=['5', 14],
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, True],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 21 Failed: Expected False, but got True"
+        print_and_log("Test Case 21 Passed: Expected False, got False")
+
+        # Caso 22
+        output_values_list = ['4', 'Taylor']
+        input_values_list = ['5', 'Katy']
+        result_df = self.rest_of_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+        result_invariant = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                                        data_dictionary_out=result_df, is_substring_list=[True, True],
+                                                                        data_type_input_list=None, input_values_list=input_values_list,
+                                                                        data_type_output_list=None, belong_op_out=Belong(1),
+                                                                        output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result_invariant is False, "Test Case 22 Failed: Expected False, but got True"
+        print_and_log("Test Case 22 Passed: Expected False, got False")
+
+        # Caso 23
+        output_values_list = ['4', 'Taylor']
+        input_values_list = ['5', 'Katy']
+        result_df = self.rest_of_dataset.copy()
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.SUBSTRING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, True],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 23 Failed: Expected True, but got False"
+        print_and_log("Test Case 23 Passed: Expected True, got True")
+
+        # Caso 24
+        output_values_list = [3.0]
+        input_values_list = ['Maroon', 'Perry']
+        result_df = self.rest_of_dataset.copy()
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                                input_values_list=input_values_list,
+                                                                                output_values_list=output_values_list,
+                                                                                map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                    MapOperation.SUBSTRING])
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                                   data_dictionary_out=result_df,
+                                                                   data_type_input_list=None,
+                                                                   is_substring_list=[True, False],
+                                                                   input_values_list=input_values_list,
+                                                                   data_type_output_list=None, belong_op_out=Belong(1),
+                                                                   output_values_list=output_values_list)
+        print_and_log("Test Case 24 Passed: Expected ValueError, got ValueError")
+
+        # Caso 25
+        output_values_list = ['5.0', 'Taylor Swift']
+        input_values_list = ['5', 'Katy Perry']
+        result_df = self.rest_of_dataset.copy()
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.VALUE_MAPPING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, False],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 25 Failed: Expected True, but got False"
+        print_and_log("Test Case 25 Passed: Expected True, got True")
+
+        # Caso 26
+        output_values_list = ['Antonio', 6.0]
+        input_values_list = ['Maroon 5', 3.0]
+        result_df = self.rest_of_dataset.copy()
+
+        result_df = self.data_transformations.transform_fix_value_fix_value(data_dictionary=result_df,
+                                                                            input_values_list=input_values_list,
+                                                                            output_values_list=output_values_list,
+                                                                            map_operation_list=[MapOperation.SUBSTRING,
+                                                                                                MapOperation.VALUE_MAPPING])
+
+        result = self.invariants.check_inv_fix_value_fix_value(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                               data_dictionary_out=result_df,
+                                                               data_type_input_list=None,
+                                                               is_substring_list=[True, False],
+                                                               input_values_list=input_values_list,
+                                                               data_type_output_list=None, belong_op_out=Belong(0),
+                                                               output_values_list=output_values_list)
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        print_and_log("Test Case 26 Passed: Expected True, got True")
 
 
     def execute_checkInv_FixValue_DerivedValue(self):
