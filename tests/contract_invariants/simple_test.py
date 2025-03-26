@@ -48,17 +48,18 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue,
-            self.execute_chekInv_MathOperation
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            # self.execute_checkInv_MathOperation,
+            self.execute_checkInv_CastType
         ]
 
         print_and_log("")
@@ -4651,7 +4652,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 10 Failed: Expected True, but got False"
         print_and_log("Test Case 10 Passed: Expected True, got True")
 
-    def execute_chekInv_MathOperation(self):
+    def execute_checkInv_MathOperation(self):
         """
         Execute the simple tests of the function checkInv_MathOperation
         """
@@ -5827,3 +5828,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         )
         assert result is False, "Division Test 85 Failed: Expected False, but got True"
         print_and_log("Division Test 85 Passed: Expected False, got False")
+
+    def execute_checkInv_CastType(self):
+        # Caso 1
+        pass

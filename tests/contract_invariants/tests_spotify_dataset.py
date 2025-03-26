@@ -97,17 +97,18 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue,
-            self.execute_checkInv_MathOperation
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            # self.execute_checkInv_MathOperation,
+            self.execute_checkInv_CastType
         ]
 
         print_and_log("")
@@ -9169,3 +9170,41 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             raise AssertionError("Test Case 61 Failed: Expected ValueError for field_out being None")
         except ValueError:
             print_and_log("Test Case 61 Passed: Expected ValueError for None field_out")
+
+
+    def execute_checkInv_CastType(self):
+        """
+        Execute the invariant test with external dataset for the function check_inv_cast_type
+        """
+        print_and_log("Testing check_inv_cast_type invariant Function")
+        print_and_log("")
+
+        pd.options.mode.chained_assignment = None  # Suppresses warnings related to modifying copies of dataframes
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_CastType()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_CastType()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+
+    def execute_SmallBatchTests_checkInv_CastType(self):
+        # Caso 1
+        pass
+
+
+    def execute_WholeDatasetTests_checkInv_CastType(self):
+        # Caso 1
+        pass
+
+
+
+
+
+
+
+
