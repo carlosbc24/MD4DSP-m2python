@@ -1196,7 +1196,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
 
 
 def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                        cast_type_in: CastType, cast_type_out: CastType, belong_op_out: Belong = Belong.BELONG,
+                        cast_type_in: DataType, cast_type_out: DataType, belong_op_out: Belong = Belong.BELONG,
                         field_in: str = None, field_out: str = None) -> bool:
     """
     This function checks if the invariant of the CastType relation is satisfied in the output dataframe
