@@ -1219,35 +1219,62 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         raise ValueError("The output field does not exist in the dataframe")
 
     if belong_op_out == Belong.BELONG:
-        if cast_type == CastType.INTEGER:
-            if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
-                result = True
+        if cast_type_out == DataType.INTEGER and cast_type_in == DataType.STRING:
+            if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(data_dictionary_in[field_in].dtype, str):
+                if np.issubdtype(data_dictionary_out[field_out].dtype, int):
+                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
+                        result = True
+                    else:
+                        result = False
+                        print_and_log('The value should be: {} of type int but is: {} of type {}'.format(data_dictionary_in[field_in].astype(int), data_dictionary_out[field_out], data_dictionary_out[field_out].dtype))
+                else:
+                    result = False
+                    print_and_log('The output field should be of type int but is of type {}'.format(data_dictionary_out[field_out].dtype))
             else:
                 result = False
-        elif cast_type == CastType.FLOAT:
-            if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
-                result = True
+                print_and_log('The input field should be of type string but is of type {}'.format(data_dictionary_in[field_in].dtype))
+        elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
+            if np.issubdtype(data_dictionary_out[field_out].dtype, float):
+                if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
+                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
+                        result = True
+                    else:
+                        result = False
+                        print_and_log('The value should be: {} of type float but is: {} of type {}'.format(data_dictionary_in[field_in].astype(float), data_dictionary_out[field_out], data_dictionary_out[field_out].dtype))
+                else:
+                    result = False
+                    print_and_log('The output field should be of type float but is of type {}'.format(data_dictionary_out[field_out].dtype))
             else:
                 result = False
-        elif cast_type == CastType.STRING:
-            if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(str)):
-                result = True
-            else:
-                result = False
+                print_and_log('The input field should be of type string but is of type {}'.format(data_dictionary_in[field_in].dtype))
     elif belong_op_out == Belong.NOTBELONG:
-        if cast_type == CastType.INTEGER:
-            if not data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
-                result = True
+        if cast_type_out == DataType.INTEGER and cast_type_in == DataType.STRING:
+            if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(data_dictionary_in[field_in].dtype, str):
+                if np.issubdtype(data_dictionary_out[field_out].dtype, int):
+                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
+                        result = False
+                    else:
+                        result = True
+                        print_and_log('The value should be: {} of type int but is: {} of type {}'.format(data_dictionary_in[field_in].astype(int), data_dictionary_out[field_out], data_dictionary_out[field_out].dtype))
+                else:
+                    result = True
+                    print_and_log('The output field should be of type int but is of type {}'.format(data_dictionary_out[field_out].dtype))
             else:
-                result = False
-        elif cast_type == CastType.FLOAT:
-            if not data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
                 result = True
+                print_and_log('The input field should be of type string but is of type {}'.format(data_dictionary_in[field_in].dtype))
+        elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
+            if np.issubdtype(data_dictionary_out[field_out].dtype, float):
+                if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
+                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
+                        result = False
+                    else:
+                        result = True
+                        print_and_log('The value should be: {} of type float but is: {} of type {}'.format(data_dictionary_in[field_in].astype(float), data_dictionary_out[field_out], data_dictionary_out[field_out].dtype))
+                else:
+                    result = True
+                    print_and_log('The output field should be of type float but is of type {}'.format(data_dictionary_out[field_out].dtype))
             else:
-                result = False
-        elif cast_type == CastType.STRING:
-            if not data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(str)):
                 result = True
-            else:
-                result = False
+                print_and_log('The input field should be of type string but is of type {}'.format(data_dictionary_in[field_in].dtype))
+
     return result
