@@ -5830,5 +5830,16 @@ class InvariantsSimpleTest(unittest.TestCase):
         print_and_log("Division Test 85 Passed: Expected False, got False")
 
     def execute_checkInv_CastType(self):
+        # For the moment there will only be tests regarding the casting string to number
         # Caso 1
-        pass
+        datadic= pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+        expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=datadic.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='A', field_out='A')
+
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
