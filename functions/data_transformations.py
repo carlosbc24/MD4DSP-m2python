@@ -1373,7 +1373,7 @@ def transform_join(data_dictionary: pd.DataFrame, dictionary: dict, field_out: s
     data_dictionary_copy[field_out] = ''
     for key, value in dictionary.items():
         if value:
-            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + data_dictionary[key].astype(str)
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + data_dictionary[key].fillna('').astype(str)
         elif not value:
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + key
 
