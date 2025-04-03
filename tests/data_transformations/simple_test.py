@@ -3814,6 +3814,24 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 6 Passed: got the expected error")
 
+        # Caso 7 - Columna numérica
+        datadic = pd.DataFrame(
+            {'A': [0, 1, 2, 3, 4],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'No']})
+
+        expected_df = pd.DataFrame(
+            {'A': [0, 1, 2, 3, 4],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Otro | 0', 'Contenido | 1', 'Distinto | 2', 'Contenido | 3', 'Otro | 4']})
+
+        dictionary = {'B': True, ' | ': False, 'A': True}
+
+        result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                                 field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the dataframe expected")
+
 
 
 
