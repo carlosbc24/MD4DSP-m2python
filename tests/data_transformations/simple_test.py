@@ -49,22 +49,22 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            # self.execute_transform_FixValue_FixValue,
-            # self.execute_transform_FixValue_DerivedValue,
-            # self.execute_transform_FixValue_NumOp,
-            # self.execute_transform_Interval_FixValue,
-            # self.execute_transform_Interval_DerivedValue,
-            # self.execute_transform_Interval_NumOp,
-            # self.execute_transform_SpecialValue_FixValue,
-            # self.execute_transform_SpecialValue_DerivedValue,
-            # self.execute_transform_SpecialValue_NumOp,
-            # self.execute_transform_derived_field,
-            # self.execute_transform_filter_columns,
-            # self.execute_transform_cast_type,
-            # self.execute_transform_filter_rows_primitive,
-            # self.execute_transform_filter_rows_special_values,
-            # self.execute_transform_filter_rows_range,
-            # self.execute_transform_math_operation,
+            self.execute_transform_FixValue_FixValue,
+            self.execute_transform_FixValue_DerivedValue,
+            self.execute_transform_FixValue_NumOp,
+            self.execute_transform_Interval_FixValue,
+            self.execute_transform_Interval_DerivedValue,
+            self.execute_transform_Interval_NumOp,
+            self.execute_transform_SpecialValue_FixValue,
+            self.execute_transform_SpecialValue_DerivedValue,
+            self.execute_transform_SpecialValue_NumOp,
+            self.execute_transform_derived_field,
+            self.execute_transform_filter_columns,
+            self.execute_transform_cast_type,
+            self.execute_transform_filter_rows_primitive,
+            self.execute_transform_filter_rows_special_values,
+            self.execute_transform_filter_rows_range,
+            self.execute_transform_math_operation,
             self.execute_transform_join
         ]
 
@@ -3761,6 +3761,58 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                              field_out='C', dictionary=dictionary)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Join de la columna de salida, una columna y un string
+        datadic = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'No']})
+
+        expected_df = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Otro | Parece que funcionaSe',
+                   'Contenido | Parece que funcionaSobreescriben',
+                   'Distinto | Parece que funcionaEstos',
+                   'Contenido | Parece que funcionaValores',
+                   'Otro | Parece que funcionaNo']})
+
+        dictionary = {'B': True, ' | ': False, 'Parece que funciona': False, 'C': True}
+
+        result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                             field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5 - Columna que no existe
+        datadic = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'No']})
+
+        dictionary = {'B': True, ' | ': False, 'Parece que funciona': False, 'C': True, 'X': True}
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                                 field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the expected error")
+
+        # Caso 6 - field_out que no existe
+        datadic = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'No']})
+
+        dictionary = {'B': True, ' | ': False, 'Parece que funciona': False, 'C': True}
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                                 field_out='J', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the expected error")
 
 
 
