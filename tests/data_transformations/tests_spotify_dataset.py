@@ -148,7 +148,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             self.execute_transform_filter_rows_primitive,
             self.execute_transform_filter_rows_special_values,
             self.execute_transform_filter_rows_range,
-            self.execute_execute_transform_math_operation
+            self.execute_execute_transform_math_operation,
+            self.execute_transform_join
         ]
 
         print_and_log("")
@@ -6254,3 +6255,207 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                 isFieldSecond=False
             )
         print_and_log("Test Case 21 Passed: ZeroDivisionError raised when dividing by zero integer")
+
+    def execute_transform_join(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_join
+        """
+        print_and_log("Testing transform_join Data Transformation Function")
+        print_and_log("")
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_execute_transform_join()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_execute_transform_join()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_execute_transform_join(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_join
+        """
+        print_and_log("Testing transform_join Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        # Caso 1 - Join de dos columnas
+        dictionary = {'track_name': True, 'track_artist': True}
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_id'] = expected_df['track_name'].fillna('')+expected_df['track_artist'].fillna('')
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
+                                                             field_out='track_id', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2 - Join de dos columnas y un string
+        dictionary = {'track_name': True, ' | ': False, 'track_artist': True}
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_id'] = expected_df['track_name'].fillna('') + ' | ' + expected_df['track_artist'].fillna('')
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
+                                                             field_out='track_id', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3 - Join de la columna de salida, una columna y un string
+        dictionary = {'track_artist': True, 'track_name': True, ' | ': False, 'Parece que funciona': False}
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_artist'] = expected_df['track_artist'].fillna('') + expected_df['track_name'].fillna('') + ' | ' + 'Parece que funciona'
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
+                                                             field_out='track_artist', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Join de la columna de salida, una columna y un string
+        dictionary = {'track_artist': True, ' | ': False, 'Parece que funciona': False, 'track_name': True}
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_artist'] = ((expected_df['track_artist'].fillna('') + ' | ' + 'Parece que funciona')
+                                       + expected_df['track_name'].fillna(''))
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
+                                                             field_out='track_artist', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5 - Columna que no existe
+        dictionary = {'track_name': True, ' | ': False, 'Parece que funciona': False, 'track_artist': True, 'X': True}
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 field_out='track_name', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the expected error")
+
+        # Caso 6 - field_out que no existe
+        dictionary = {'track_artist': True, ' | ': False, 'Parece que funciona': False, 'track_name': True}
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
+                                                                 field_out='J', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the expected error")
+
+        # Caso 7 - Columna numérica
+        dictionary = {'track_artist': True, ' | ': False, 'track_popularity': True}
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_artist'] = expected_df['track_artist'].fillna('') + ' | ' + expected_df['track_popularity'].fillna('').fillna('').astype(str)
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
+                                                             field_out='track_artist', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+    def execute_WholeDatasetTests_execute_transform_join(self):
+        """
+        Execute the data transformation test using the whole dataset for the function transform_join
+        """
+        print_and_log("Testing transform_join Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        # Caso 1 - Join de dos columnas
+        dictionary = {'track_name': True, 'track_artist': True}
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_id'] = expected_df['track_name'].fillna('') + expected_df['track_artist'].fillna('')
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
+                                                             field_out='track_id', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2 - Join de dos columnas y un string
+        dictionary = {'track_name': True, ' | ': False, 'track_artist': True}
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_id'] = expected_df['track_name'].fillna('') + ' | ' + expected_df['track_artist'].fillna('')
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
+                                                             field_out='track_id', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3 - Join de la columna de salida, una columna y un string
+        dictionary = {'track_artist': True, 'track_name': True, ' | ': False, 'Parece que funciona': False}
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_artist'] = expected_df['track_artist'].fillna('') + expected_df['track_name'].fillna('') + ' | ' + 'Parece que funciona'
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
+                                                             field_out='track_artist', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+        # Caso 4 - Join de la columna de salida, una columna y un string
+        dictionary = {'track_artist': True, ' | ': False, 'Parece que funciona': False, 'track_name': True}
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_artist'] = ((expected_df['track_artist'].fillna('') + ' | ' + 'Parece que funciona')
+                                       + expected_df['track_name'].fillna(''))
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
+                                                             field_out='track_artist', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 4 Passed: got the dataframe expected")
+
+        # Caso 5 - Columna que no existe
+        dictionary = {'track_name': True, ' | ': False, 'Parece que funciona': False, 'track_artist': True, 'X': True}
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 field_out='track_name', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 5 Passed: got the expected error")
+
+        # Caso 6 - field_out que no existe
+        dictionary = {'track_artist': True, ' | ': False, 'Parece que funciona': False, 'track_name': True}
+
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
+                                                                 field_out='J', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 6 Passed: got the expected error")
+
+        # Caso 7 - Columna numérica
+        dictionary = {'track_artist': True, ' | ': False, 'track_popularity': True}
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_artist'] = expected_df['track_artist'].fillna('') + ' | ' + expected_df['track_popularity'].fillna('').fillna('').astype(str)
+
+        result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
+                                                             field_out='track_artist', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

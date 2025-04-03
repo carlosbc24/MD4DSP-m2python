@@ -3830,7 +3830,7 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
                                                                  field_out='C', dictionary=dictionary)
         pd.testing.assert_frame_equal(expected_df, result_df)
-        print_and_log("Test Case 6 Passed: got the dataframe expected")
+        print_and_log("Test Case 7 Passed: got the dataframe expected")
 
 
 
