@@ -1346,3 +1346,57 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
             data_dictionary_copy[field_out] = firstOperand / secondOperand
 
     return data_dictionary_copy
+
+
+def transform_join(data_dictionary: pd.DataFrame, dictionary: dict, field_out: str) -> pd.DataFrame:
+    """
+    Execute the data transformation of the Join relation
+    :param data_dictionary: dataframe with the data
+    :param dictionary: dictionary with the columns or string to join.
+                            If the value is True, it mans the key is a column.
+                            If the value is False, it means the key is a string.
+    :param field_out: field to store the output value
+    :return: pd.DataFrame: data_dictionary with the result of the join operation
+    """
+    # dict {columna:True, string:False}
+    if field_out is None:
+        raise ValueError("The output field cannot be None")
+    if field_out not in data_dictionary.columns:
+        raise ValueError("The output field does not exist in the dataframe")
+
+    data_dictionary_copy = data_dictionary.copy()
+
+    for key, value in dictionary.items():
+        if value and key not in data_dictionary_copy.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+    data_dictionary_copy[field_out] = ''
+    for key, value in dictionary.items():
+        if value:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + data_dictionary[key].astype(str)
+        elif not value:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + key
+
+    return data_dictionary_copy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
