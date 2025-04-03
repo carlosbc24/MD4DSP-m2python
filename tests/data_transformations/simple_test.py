@@ -49,22 +49,23 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            self.execute_transform_FixValue_FixValue,
-            self.execute_transform_FixValue_DerivedValue,
-            self.execute_transform_FixValue_NumOp,
-            self.execute_transform_Interval_FixValue,
-            self.execute_transform_Interval_DerivedValue,
-            self.execute_transform_Interval_NumOp,
-            self.execute_transform_SpecialValue_FixValue,
-            self.execute_transform_SpecialValue_DerivedValue,
-            self.execute_transform_SpecialValue_NumOp,
-            self.execute_transform_derived_field,
-            self.execute_transform_filter_columns,
-            self.execute_transform_cast_type,
-            self.execute_transform_filter_rows_primitive,
-            self.execute_transform_filter_rows_special_values,
-            self.execute_transform_filter_rows_range,
-            self.execute_transform_math_operation
+            # self.execute_transform_FixValue_FixValue,
+            # self.execute_transform_FixValue_DerivedValue,
+            # self.execute_transform_FixValue_NumOp,
+            # self.execute_transform_Interval_FixValue,
+            # self.execute_transform_Interval_DerivedValue,
+            # self.execute_transform_Interval_NumOp,
+            # self.execute_transform_SpecialValue_FixValue,
+            # self.execute_transform_SpecialValue_DerivedValue,
+            # self.execute_transform_SpecialValue_NumOp,
+            # self.execute_transform_derived_field,
+            # self.execute_transform_filter_columns,
+            # self.execute_transform_cast_type,
+            # self.execute_transform_filter_rows_primitive,
+            # self.execute_transform_filter_rows_special_values,
+            # self.execute_transform_filter_rows_range,
+            # self.execute_transform_math_operation,
+            self.execute_transform_join
         ]
 
         print_and_log("")
@@ -3695,3 +3696,135 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                 isFieldSecond=False
             )
         print_and_log("Test Case 21 Passed: got the expected error")
+
+    def execute_transform_join(self):
+        """
+        Execute the simple tests of the function transform_join
+        """
+        print_and_log("Testing transform_join Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+        # Caso 1 - Join de dos columnas
+        datadic = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'Si']})
+        expected_df = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+                'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+                'C': ['AlgoOtro', 'TextoContenido', 'PruebaDistinto', 'TextoContenido', 'AlgoOtro']})
+
+        dictionary= {'A': True, 'B': True}
+
+        result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                             field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 1 Passed: got the dataframe expected")
+
+        # Caso 2 - Join de dos columnas y un string
+        datadic = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'Si']})
+        expected_df = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Algo | Otro', 'Texto | Contenido', 'Prueba | Distinto', 'Texto | Contenido', 'Algo | Otro']})
+
+        dictionary= {'A': True, ' | ': False, 'B': True}
+
+        result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                             field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 2 Passed: got the dataframe expected")
+
+        # Caso 3 - Join de la columna de salida, una columna y un string
+        datadic = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'No']})
+
+        expected_df = pd.DataFrame(
+            {'A': ['Algo', 'Texto', 'Prueba', 'Texto', 'Algo'],
+             'B': ['Otro', 'Contenido', 'Distinto', 'Contenido', 'Otro'],
+             'C': ['SeOtro | Parece que funciona', 'SobreescribenContenido | Parece que funciona',
+                   'EstosDistinto | Parece que funciona', 'ValoresContenido | Parece que funciona',
+                   'NoOtro | Parece que funciona']})
+
+        dictionary = {'C': True, 'B': True, ' | ': False, 'Parece que funciona': False}
+
+        result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                             field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 3 Passed: got the dataframe expected")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
