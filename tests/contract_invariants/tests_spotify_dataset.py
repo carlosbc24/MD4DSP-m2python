@@ -5567,7 +5567,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                           num_op_output=num_op_output,
                                                                           belong_op_in=Belong(0), belong_op_out=Belong(0),
                                                                           axis_param=0)
-        print(result_df.loc[6, 'acousticness'])
         assert invariant_result is True, "Test Case 20 Failed: Expected True, but got False"
         print_and_log("Test Case 20 Passed: Expected True, and got True")
 
