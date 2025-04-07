@@ -30,9 +30,9 @@ def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Be
         return True # Case 2
     elif belong_op == Belong.NOTBELONG:
         for field in fields:
-            if field not in data_dictionary.columns:
-                return True # Case 3
-        return False # Case 4
+            if field in data_dictionary.columns:
+                return False # Case 3
+        return True # Case 4
 
 
 def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: pd.DataFrame, belong_op: Belong,

@@ -106,7 +106,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Case 3 of checkFieldRange
         # Check that fields 'c2' and 'c3' don't belong to the data dictionary.It must return True as 'c3' doesn't belong
-        fields = ['c2', 'c3']
+        fields = ['c3', 'c4']
         data_dictionary = pd.DataFrame(columns=['c1', 'c2'])
         belong = 1
         result = self.pre_post.check_field_range(fields=fields, data_dictionary=data_dictionary, belong_op=Belong(belong))

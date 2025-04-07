@@ -109,7 +109,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Case 3 of checkFieldRange
         # Check that fields 'c2', 'track_id' and 'loudness' don't belong to the data dictionary.It must return True as 'c2' doesn't belong
-        fields = ['c2', 'track_id', 'loudness']
+        fields = ['c2', 'paper', 'wonka']
         belong = 1
         result = self.pre_post.check_field_range(fields=fields, data_dictionary=self.data_dictionary,
                                                  belong_op=Belong(belong))
