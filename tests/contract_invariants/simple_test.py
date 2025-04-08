@@ -48,17 +48,17 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            # self.execute_checkInv_FixValue_FixValue,
-            # self.execute_checkInv_FixValue_DerivedValue,
-            # self.execute_checkInv_FixValue_NumOp,
-            # self.execute_checkInv_Interval_FixValue,
-            # self.execute_checkInv_Interval_DerivedValue,
-            # self.execute_checkInv_Interval_NumOp,
-            # self.execute_checkInv_SpecialValue_FixValue,
-            # self.execute_checkInv_SpecialValue_DerivedValue,
-            # self.execute_checkInv_SpecialValue_NumOp,
-            # self.execute_checkInv_MissingValue_MissingValue,
-            # self.execute_checkInv_MathOperation,
+            self.execute_checkInv_FixValue_FixValue,
+            self.execute_checkInv_FixValue_DerivedValue,
+            self.execute_checkInv_FixValue_NumOp,
+            self.execute_checkInv_Interval_FixValue,
+            self.execute_checkInv_Interval_DerivedValue,
+            self.execute_checkInv_Interval_NumOp,
+            self.execute_checkInv_SpecialValue_FixValue,
+            self.execute_checkInv_SpecialValue_DerivedValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_MathOperation,
             self.execute_checkInv_CastType
         ]
 
