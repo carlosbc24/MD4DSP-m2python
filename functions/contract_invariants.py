@@ -1278,3 +1278,61 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                 print_and_log('The input field should be of type string but is of type {}'.format(data_dictionary_in[field_in].dtype))
 
     return result
+
+
+def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                     dictionary: dict, field_in: str = None, field_out: str = None) -> bool:
+    """
+    This function checks if the invariant of the Join relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the join is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param dictionary: dictionary with the columns or string to join.
+                            If the value is True, it mans the key is a column.
+                            If the value is False, it means the key is a string.
+    :param field_in: field to check the invariant in the input dataframe
+    :param field_out: field to check the invariant in the output dataframe
+
+    :return: True if the invariant is satisfied, False otherwise
+    """
+    result = True
+    if field_in is None:
+        raise ValueError("The field_in parameter is required")
+    elif field_out is None:
+        raise ValueError("The field_out parameter is required")
+    elif field_in not in data_dictionary_in.columns:
+        raise ValueError("The input field does not exist in the dataframe")
+    elif field_out not in data_dictionary_out.columns:
+        raise ValueError("The output field does not exist in the dataframe")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
