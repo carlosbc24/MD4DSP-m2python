@@ -1307,9 +1307,26 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
     elif field_out not in data_dictionary_out.columns:
         raise ValueError("The output field does not exist in the dataframe")
 
+    for key, value in dictionary.items():
+        if value and key not in data_dictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
 
+    data_dictionary_copy = data_dictionary_in.copy()
+    data_dictionary_copy[field_out] = ''
+    for key, value in dictionary.items():
+        if value:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + data_dictionary_in[key].fillna('').astype(str)
+        elif not value:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + key
 
+    for idx, val in data_dictionary_in[field_in]:
+        if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
+            result = False
+            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
+        else:
+            result = True
 
+    return result
 
 
 
