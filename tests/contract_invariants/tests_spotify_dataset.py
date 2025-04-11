@@ -108,7 +108,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             self.execute_checkInv_SpecialValue_NumOp,
             self.execute_checkInv_MissingValue_MissingValue,
             self.execute_checkInv_MathOperation,
-            self.execute_checkInv_CastType
+            self.execute_checkInv_CastType,
+            self.execute_checkInv_Join
         ]
 
         print_and_log("")
@@ -9197,6 +9198,36 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_WholeDatasetTests_checkInv_CastType(self):
+        # Caso 1
+        pass
+
+
+    def execute_checkInv_Join(self):
+        """
+        Execute the invariant test with external dataset for the function check_inv_join
+        """
+        print_and_log("Testing check_inv_join invariant Function")
+        print_and_log("")
+
+        pd.options.mode.chained_assignment = None  # Suppresses warnings related to modifying copies of dataframes
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_CastType()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_CastType()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+
+    def execute_SmallBatchTests_checkInv_Join(self):
+        # Caso 1
+        pass
+
+
+    def execute_WholeDatasetTests_checkInv_Join(self):
         # Caso 1
         pass
 

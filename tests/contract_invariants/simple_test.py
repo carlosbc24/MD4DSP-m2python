@@ -59,7 +59,8 @@ class InvariantsSimpleTest(unittest.TestCase):
             self.execute_checkInv_SpecialValue_NumOp,
             self.execute_checkInv_MissingValue_MissingValue,
             self.execute_checkInv_MathOperation,
-            self.execute_checkInv_CastType
+            self.execute_checkInv_CastType,
+            self.execute_checkInv_Join
         ]
 
         print_and_log("")
@@ -5843,3 +5844,25 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
+
+
+
+
+    def execute_checkInv_Join(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
