@@ -1346,6 +1346,76 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame, data_
     """
     result = True
 
+    if cols_special_type_values is None:
+        raise ValueError("The cols_special_type_values parameter is required")
+    if filter_type is None:
+        raise ValueError("The filter_type parameter is required")
+
+    # Crear un dataframe para marcar filas que cumplen con los criterios de filtrado
+    rows_to_include = pd.DataFrame(False, index=data_dictionary_in.index, columns=['match'])
+
+    # Para cada columna en el diccionario de valores especiales
+    for column_name in cols_special_type_values.keys():
+        # Verificar que la columna existe en el dataframe de entrada
+        if column_name not in data_dictionary_in.columns:
+            raise ValueError(f"The column {column_name} does not exist in the input dataframe")
+
+        # Para cada tipo especial en esa columna
+        for special_type in cols_special_type_values[column_name].keys():
+            if special_type == 'missing':
+                # Obtener la lista de valores missing
+                missing_values_list = cols_special_type_values[column_name]['missing']
+
+                # Marcar filas con valores en la lista de valores missing
+                matching_rows = data_dictionary_in[data_dictionary_in[column_name].isin(missing_values_list)].index
+                rows_to_include.loc[matching_rows, 'match'] = True
+
+                # Marcar filas con valores nulos
+                null_rows = data_dictionary_in[data_dictionary_in[column_name].isnull()].index
+                rows_to_include.loc[null_rows, 'match'] = True
+
+            elif special_type == 'invalid':
+                # Obtener la lista de valores inválidos
+                invalid_values_list = cols_special_type_values[column_name]['invalid']
+
+                # Marcar filas con valores en la lista de valores inválidos
+                matching_rows = data_dictionary_in[data_dictionary_in[column_name].isin(invalid_values_list)].index
+                rows_to_include.loc[matching_rows, 'match'] = True
+
+            elif special_type == 'outlier':
+                if cols_special_type_values[column_name]['outlier']:
+                    # Obtener el dataframe máscara con outliers detectados
+                    outlier_mask = get_outliers(data_dictionary_in, column_name)
+
+                    # Marcar filas identificadas como outliers
+                    outlier_rows = outlier_mask[outlier_mask[column_name] == 1].index
+                    rows_to_include.loc[outlier_rows, 'match'] = True
+
+    # Obtener los índices que cumplen con el criterio
+    matching_indices = rows_to_include[rows_to_include['match'] == True].index
+
+    # Determinar los índices esperados según el tipo de filtro
+    if filter_type == FilterType.INCLUDE:
+        expected_indices = set(matching_indices)
+    elif filter_type == FilterType.EXCLUDE:
+        expected_indices = set(data_dictionary_in.index) - set(matching_indices)
+    else:
+        raise ValueError(f"Unknown filter type: {filter_type}")
+
+    # Verificar el resultado
+    actual_indices = set(data_dictionary_out.index)
+
+    # Verificar si faltan filas que deberían estar incluidas
+    missing_indices = expected_indices - actual_indices
+    if missing_indices:
+        print_and_log(f"Missing rows that should be included: {missing_indices}")
+        result = False
+
+    # Verificar si hay filas adicionales que no deberían estar incluidas
+    extra_indices = actual_indices - expected_indices
+    if extra_indices:
+        print_and_log(f"Extra rows that should not be included: {extra_indices}")
+        result = False
 
     return result
 
