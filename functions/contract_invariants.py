@@ -1344,8 +1344,10 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame, data_
 
     :return: dataframe with the filtered rows
     """
+    result = True
 
-    return True
+
+    return result
 
 
 def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1366,9 +1368,10 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame, data_dictionar
 
     :return: True if the invariant is satisfied, False otherwise
     """
+    result = True
 
 
-    return True
+    return result
 
 
 def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1387,8 +1390,71 @@ def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame, data_dicti
 
     :return: True if the invariant is satisfied, False otherwise
     """
+    result = True
 
-    return True
+    if columns is None:
+        raise ValueError("The columns parameter is required")
+    if filter_fix_value_list is None:
+        raise ValueError("The filter_fix_value_list parameter is required")
+    if filter_type is None:
+        raise ValueError("The filter_type parameter is required")
+
+    for current_column in columns:
+        if current_column not in data_dictionary_in.columns:
+            raise ValueError(f"The column {current_column} does not exist in the input dataframe")
+        if current_column not in data_dictionary_out.columns:
+            raise ValueError(f"The column {current_column} does not exist in the output dataframe")
+
+    # Crear un dataframe filtrado con las filas que cumplen los criterios de filtrado
+    rows_to_include = pd.DataFrame(False, index=data_dictionary_in.index, columns=['match'])
+
+    # Para cada valor de filtro y cada columna, identificar las filas que coinciden
+    for fix_value in filter_fix_value_list:
+        for column in columns:
+            matched_rows = data_dictionary_in[data_dictionary_in[column] == fix_value].index
+            rows_to_include.loc[matched_rows, 'match'] = True
+
+    # Obtener los índices que cumplen con el criterio
+    matching_indices = rows_to_include[rows_to_include['match'] == True].index
+
+    if filter_type == FilterType.INCLUDE:
+        # El dataframe de salida solo debe contener filas que coincidan con el filtro
+        expected_indices = set(matching_indices)
+        actual_indices = set(data_dictionary_out.index)
+
+        # Verificar si todas las filas esperadas están presentes
+        missing_indices = expected_indices - actual_indices
+        if missing_indices:
+            print_and_log(f"Missing rows that should be included: {missing_indices}")
+            result = False
+
+        # Verificar si hay filas adicionales no esperadas
+        extra_indices = actual_indices - expected_indices
+        if extra_indices:
+            print_and_log(f"Extra rows that should not be included: {extra_indices}")
+            result = False
+
+    elif filter_type == FilterType.EXCLUDE:
+        # El dataframe de salida solo debe contener filas que NO coincidan con el filtro
+        non_matching_indices = set(data_dictionary_in.index) - set(matching_indices)
+        expected_indices = non_matching_indices
+        actual_indices = set(data_dictionary_out.index)
+
+        # Verificar si todas las filas esperadas están presentes
+        missing_indices = expected_indices - actual_indices
+        if missing_indices:
+            print_and_log(f"Missing rows that should be included: {missing_indices}")
+            result = False
+
+        # Verificar si hay filas adicionales no esperadas
+        extra_indices = actual_indices - expected_indices
+        if extra_indices:
+            print_and_log(f"Extra rows that should not be included: {extra_indices}")
+            result = False
+
+
+
+    return result
 
 
 def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
