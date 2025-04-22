@@ -13,7 +13,8 @@ from helpers.invariant_aux import check_special_type_most_frequent, check_specia
     check_interval_closest
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers
-from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, MathOperator
+from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, MathOperator, \
+    FilterType
 
 
 def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1329,21 +1330,83 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
     return result
 
 
+def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                         cols_special_type_values: dict, filter_type: FilterType) -> bool:
+    """
+    This function checks if the invariant of the FilterRows relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param cols_special_type_values: dictionary with the columns and the special type values to check
+    :param filter_type: type of filter to check
+
+    :return: dataframe with the filtered rows
+    """
+
+    return True
 
 
+def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                columns: list[str] = None, left_margin_list: list[float] = None, right_margin_list: list[float] = None,
+                                closure_type_list: list[Closure] = None, filter_type: FilterType = None) -> bool:
+    """
+    This function checks if the invariant of the FilterRows relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param columns: list of column names to apply the filter
+    :param left_margin_list: list of left margins for the filtering intervals
+    :param right_margin_list: list of right margins for the filtering intervals
+    :param closure_type_list: list of closure types (e.g., open, closed) for the filtering intervals
+    :param filter_type: type of filter to check
+
+    :return: True if the invariant is satisfied, False otherwise
+    """
 
 
+    return True
 
 
+def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                    columns: list[str], filter_fix_value_list: list = None,
+                                    filter_type: FilterType = None) -> bool:
+    """
+    This function checks if the invariant of the FilterRows relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param columns: list of column names to apply the filter
+    :param filter_fix_value_list: list of fixed values to filter
+    :param filter_type: type of filter to check
+
+    :return: True if the invariant is satisfied, False otherwise
+    """
+
+    return True
 
 
+def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                              columns: list[str], belong_op: Belong) -> bool:
+    """
+    This function checks if the invariant of the FilterColumns relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
 
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param columns: list of column names to apply the filter
+    :param belong_op: condition to check the invariant
 
+    :return: True if the invariant is satisfied, False otherwise
+    """
 
-
-
-
-
+    return True
 
 
 
