@@ -1605,7 +1605,55 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
     :return: True if the invariant is satisfied, False otherwise
     """
 
-    return True
+    result = True
+
+    if columns is None:
+        raise ValueError("La lista de columnas no puede ser None")
+
+    # Verificar que todas las columnas en la lista existen en el dataframe de entrada
+    for column in columns:
+        if column not in data_dictionary_in.columns:
+            raise ValueError(f"La columna {column} no existe en el dataframe de entrada")
+
+    # Obtener conjuntos de columnas para facilitar las comparaciones
+    input_columns = set(data_dictionary_in.columns)
+    output_columns = set(data_dictionary_out.columns)
+    columns_set = set(columns)
+
+    # Verificar según el tipo de operación
+    if belong_op == Belong.BELONG:
+        # Las columnas en la lista deben ser eliminadas
+        expected_columns = input_columns - columns_set
+
+        # Verificar columnas faltantes (deberían mantenerse pero no están)
+        missing_columns = expected_columns - output_columns
+        if missing_columns:
+            print_and_log(f"Columnas faltantes que deberían mantenerse: {missing_columns}")
+            result = False
+
+        # Verificar columnas adicionales (deberían eliminarse pero están)
+        extra_columns = output_columns & columns_set
+        if extra_columns:
+            print_and_log(f"Columnas adicionales que deberían eliminarse: {extra_columns}")
+            result = False
+
+    elif belong_op == Belong.NOTBELONG:
+        # Solo las columnas en la lista deben mantenerse
+        expected_columns = columns_set
+
+        # Verificar columnas faltantes (deberían mantenerse pero no están)
+        missing_columns = expected_columns - output_columns
+        if missing_columns:
+            print_and_log(f"Columnas faltantes que deberían mantenerse: {missing_columns}")
+            result = False
+
+        # Verificar columnas adicionales (no deberían estar pero están)
+        extra_columns = output_columns - columns_set
+        if extra_columns:
+            print_and_log(f"Columnas adicionales que no deberían estar: {extra_columns}")
+            result = False
+
+    return result
 
 
 
