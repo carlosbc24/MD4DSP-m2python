@@ -1440,6 +1440,77 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame, data_dictionar
     """
     result = True
 
+    if columns is None:
+        raise ValueError("The columns parameter is required")
+    if left_margin_list is None:
+        raise ValueError("The left_margin_list parameter is required")
+    if right_margin_list is None:
+        raise ValueError("The right_margin_list parameter is required")
+    if closure_type_list is None:
+        raise ValueError("The closure_type_list parameter is required")
+    if filter_type is None:
+        raise ValueError("The filter_type parameter is required")
+
+    # Verificar que todas las listas tengan la misma longitud
+    if len(left_margin_list) != len(right_margin_list) or len(left_margin_list) != len(closure_type_list):
+        raise ValueError("The left_margin_list, right_margin_list and closure_type_list must have the same length")
+
+    # Verificar que todas las columnas existen en el dataframe de entrada
+    for column in columns:
+        if column not in data_dictionary_in.columns:
+            raise ValueError(f"The column {column} does not exist in the input dataframe")
+
+    # Crear un dataframe para marcar filas que cumplen con los criterios de filtrado
+    rows_to_include = pd.DataFrame(False, index=data_dictionary_in.index, columns=['match'])
+
+    # Para cada intervalo y columna, identificar las filas que cumplen con la condición
+    for index in range(len(left_margin_list)):
+        for column in columns:
+            # Verificar que la columna es numérica
+            if not np.issubdtype(data_dictionary_in[column].dtype, np.number):
+                raise ValueError(f"The column {column} is not numeric")
+
+            # Identificar las filas que cumplen con la condición del intervalo
+            for idx in data_dictionary_in.index:
+                value = data_dictionary_in.loc[idx, column]
+                if check_interval_condition(value, left_margin_list[index], right_margin_list[index],
+                                            closure_type_list[index]):
+                    rows_to_include.loc[idx, 'match'] = True
+
+    # Obtener los índices que cumplen con el criterio
+    matching_indices = set(rows_to_include[rows_to_include['match'] == True].index)
+
+    # Determinar los índices esperados según el tipo de filtro
+    if filter_type == FilterType.INCLUDE:
+        expected_indices = matching_indices
+    elif filter_type == FilterType.EXCLUDE:
+        expected_indices = set(data_dictionary_in.index) - matching_indices
+    else:
+        raise ValueError(f"Unknown filter type: {filter_type}")
+
+    # Verificar el resultado
+    actual_indices = set(data_dictionary_out.index)
+
+    # Verificar si faltan filas que deberían estar incluidas
+    missing_indices = expected_indices - actual_indices
+    if missing_indices:
+        print_and_log(f"Missing rows that should be included: {missing_indices}")
+        result = False
+
+    # Verificar si hay filas adicionales que no deberían estar incluidas
+    extra_indices = actual_indices - expected_indices
+    if extra_indices:
+        print_and_log(f"Extra rows that should not be included: {extra_indices}")
+        result = False
+
+
+
+
+
+
+
+
+
 
     return result
 
