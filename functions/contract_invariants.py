@@ -1417,6 +1417,7 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame, data_
         print_and_log(f"Extra rows that should not be included: {extra_indices}")
         result = False
 
+
     return result
 
 
@@ -1504,14 +1505,6 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame, data_dictionar
         result = False
 
 
-
-
-
-
-
-
-
-
     return result
 
 
@@ -1592,7 +1585,6 @@ def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame, data_dicti
         if extra_indices:
             print_and_log(f"Extra rows that should not be included: {extra_indices}")
             result = False
-
 
 
     return result
