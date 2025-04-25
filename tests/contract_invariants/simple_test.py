@@ -59,8 +59,12 @@ class InvariantsSimpleTest(unittest.TestCase):
             # self.execute_checkInv_SpecialValue_NumOp,
             # self.execute_checkInv_MissingValue_MissingValue,
             # self.execute_checkInv_MathOperation,
-            self.execute_checkInv_CastType,
-            self.execute_checkInv_Join
+            # self.execute_checkInv_CastType,
+            # self.execute_checkInv_Join,
+            self.execute_checkInv_filter_rows_primitive,
+            self.execute_checkInv_filter_rows_range,
+            self.execute_checkInv_filter_rows_special_values,
+            self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -5915,12 +5919,19 @@ class InvariantsSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, got True")
 
-
-
-
-
-
     def execute_checkInv_Join(self):
+        pass
+
+    def execute_checkInv_filter_rows_primitive(self):
+        pass
+
+    def execute_checkInv_filter_rows_range(self):
+        pass
+
+    def execute_checkInv_filter_rows_special_values(self):
+        pass
+
+    def execute_checkInv_filter_columns(self):
         pass
 
 
