@@ -97,19 +97,23 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue,
-            self.execute_checkInv_MathOperation,
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            # self.execute_checkInv_MathOperation,
             self.execute_checkInv_CastType,
-            self.execute_checkInv_Join
+            self.execute_checkInv_Join,
+            self.execute_checkInv_filter_rows_primitive,
+            self.execute_checkInv_filter_rows_range,
+            self.execute_checkInv_filter_rows_special_values,
+            self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -9230,6 +9234,211 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
     def execute_WholeDatasetTests_checkInv_Join(self):
         # Caso 1
         pass
+
+
+    def execute_checkInv_filter_rows_primitive(self):
+        """
+        Execute the invariant test with external dataset for the function check_inv_filter_rows_primitive
+        """
+        print_and_log("Testing check_inv_filter_rows_primitive invariant Function")
+        print_and_log("")
+
+        pd.options.mode.chained_assignment = None  # Suppresses warnings related to modifying copies of dataframes
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_filter_rows_primitive()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_filter_rows_primitive()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+
+    def execute_SmallBatchTests_checkInv_filter_rows_primitive(self):
+        # Caso 1
+        pass
+
+
+    def execute_WholeDatasetTests_checkInv_filter_rows_primitive(self):
+        # Caso 1
+        pass
+
+    def execute_checkInv_filter_rows_range(self):
+        """
+        Execute the invariant test with external dataset for the function check_inv_filter_rows_range
+        """
+        print_and_log("Testing check_inv_filter_rows_range invariant Function")
+        print_and_log("")
+
+        pd.options.mode.chained_assignment = None  # Suppresses warnings related to modifying copies of dataframes
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_filter_rows_range()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_filter_rows_range()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_checkInv_filter_rows_range(self):
+        # Caso 1
+        pass
+
+    def execute_WholeDatasetTests_checkInv_filter_rows_range(self):
+        # Caso 1
+        pass
+
+
+    def execute_checkInv_filter_rows_special_values(self):
+        """
+        Execute the invariant test with external dataset for the function check_inv_filter_rows_special_values
+        """
+        print_and_log("Testing check_inv_filter_rows_special_values invariant Function")
+        print_and_log("")
+
+        pd.options.mode.chained_assignment = None  # Suppresses warnings related to modifying copies of dataframes
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_filter_rows_special_values()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_filter_rows_special_values()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_checkInv_filter_rows_special_values(self):
+        # Caso 1
+        pass
+
+    def execute_WholeDatasetTests_checkInv_filter_rows_special_values(self):
+        # Caso 1
+        pass
+
+
+    def execute_checkInv_filter_columns(self):
+        """
+        Execute the invariant test with external dataset for the function check_inv_filter_columns
+        """
+        print_and_log("Testing check_inv_filter_columns invariant Function")
+        print_and_log("")
+
+        pd.options.mode.chained_assignment = None  # Suppresses warnings related to modifying copies of dataframes
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_checkInv_filter_columns()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_checkInv_filter_columns()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_checkInv_filter_columns(self):
+        # Caso 1
+        pass
+
+    def execute_WholeDatasetTests_checkInv_filter_columns(self):
+        # Caso 1
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

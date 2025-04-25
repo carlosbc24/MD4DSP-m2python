@@ -60,7 +60,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             # self.execute_checkInv_MissingValue_MissingValue,
             # self.execute_checkInv_MathOperation,
             # self.execute_checkInv_CastType,
-            # self.execute_checkInv_Join,
+            self.execute_checkInv_Join,
             self.execute_checkInv_filter_rows_primitive,
             self.execute_checkInv_filter_rows_range,
             self.execute_checkInv_filter_rows_special_values,
