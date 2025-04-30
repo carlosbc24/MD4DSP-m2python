@@ -1319,6 +1319,8 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + data_dictionary_in[key].fillna('').astype(str)
         elif not value:
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + key
+    # Replace empty strings with NaN
+    data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace('', np.nan)
 
     for idx, val in data_dictionary_in[field_in]:
         if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
@@ -1654,12 +1656,3 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
             result = False
 
     return result
-
-
-
-
-
-
-
-
-
