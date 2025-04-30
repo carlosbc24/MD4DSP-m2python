@@ -6285,6 +6285,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         dictionary = {'track_name': True, 'track_artist': True}
         expected_df = self.small_batch_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'].fillna('')+expected_df['track_artist'].fillna('')
+        expected_df['track_id'] = expected_df['track_id'].replace('', np.nan)
 
         result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
                                                              field_out='track_id', dictionary=dictionary)
@@ -6295,6 +6296,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         dictionary = {'track_name': True, ' | ': False, 'track_artist': True}
         expected_df = self.small_batch_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'].fillna('') + ' | ' + expected_df['track_artist'].fillna('')
+        expected_df['track_id'] = expected_df['track_id'].replace('', np.nan)
 
         result_df = self.data_transformations.transform_join(data_dictionary=self.small_batch_dataset.copy(),
                                                              field_out='track_id', dictionary=dictionary)
@@ -6364,6 +6366,8 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         dictionary = {'track_name': True, 'track_artist': True}
         expected_df = self.rest_of_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'].fillna('') + expected_df['track_artist'].fillna('')
+        # Replace empty strings with NaN
+        expected_df['track_id'] = expected_df['track_id'].replace('', np.nan)
 
         result_df = self.data_transformations.transform_join(data_dictionary=self.rest_of_dataset.copy(),
                                                              field_out='track_id', dictionary=dictionary)
@@ -6430,32 +6434,3 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                              field_out='track_artist', dictionary=dictionary)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
