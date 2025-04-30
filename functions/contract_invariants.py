@@ -13,7 +13,8 @@ from helpers.invariant_aux import check_special_type_most_frequent, check_specia
     check_interval_closest
 from helpers.logger import print_and_log
 from helpers.transform_aux import get_outliers
-from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, MathOperator
+from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, MathOperator, \
+    FilterType
 
 
 def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
@@ -1278,3 +1279,387 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                 print_and_log('The input field should be of type string but is of type {}'.format(data_dictionary_in[field_in].dtype))
 
     return result
+
+
+def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                     dictionary: dict, field_in: str = None, field_out: str = None) -> bool:
+    """
+    This function checks if the invariant of the Join relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the join is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param dictionary: dictionary with the columns or string to join.
+                            If the value is True, it mans the key is a column.
+                            If the value is False, it means the key is a string.
+    :param field_in: field to check the invariant in the input dataframe
+    :param field_out: field to check the invariant in the output dataframe
+
+    :return: True if the invariant is satisfied, False otherwise
+    """
+    result = True
+    if field_in is None:
+        raise ValueError("The field_in parameter is required")
+    elif field_out is None:
+        raise ValueError("The field_out parameter is required")
+    elif field_in not in data_dictionary_in.columns:
+        raise ValueError("The input field does not exist in the dataframe")
+    elif field_out not in data_dictionary_out.columns:
+        raise ValueError("The output field does not exist in the dataframe")
+
+    for key, value in dictionary.items():
+        if value and key not in data_dictionary_in.columns:
+            raise ValueError("The field does not exist in the dataframe")
+
+    data_dictionary_copy = data_dictionary_in.copy()
+    data_dictionary_copy[field_out] = ''
+    for key, value in dictionary.items():
+        if value:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + data_dictionary_in[key].fillna('').astype(str)
+        elif not value:
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + key
+
+    for idx, val in data_dictionary_in[field_in]:
+        if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
+            result = False
+            print_and_log(f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
+        else:
+            result = True
+
+    return result
+
+
+def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                         cols_special_type_values: dict, filter_type: FilterType) -> bool:
+    """
+    This function checks if the invariant of the FilterRows relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param cols_special_type_values: dictionary with the columns and the special type values to check
+    :param filter_type: type of filter to check
+
+    :return: dataframe with the filtered rows
+    """
+    result = True
+
+    if cols_special_type_values is None:
+        raise ValueError("The cols_special_type_values parameter is required")
+    if filter_type is None:
+        raise ValueError("The filter_type parameter is required")
+
+    # Crear un dataframe para marcar filas que cumplen con los criterios de filtrado
+    rows_to_include = pd.DataFrame(False, index=data_dictionary_in.index, columns=['match'])
+
+    # Para cada columna en el diccionario de valores especiales
+    for column_name in cols_special_type_values.keys():
+        # Verificar que la columna existe en el dataframe de entrada
+        if column_name not in data_dictionary_in.columns:
+            raise ValueError(f"The column {column_name} does not exist in the input dataframe")
+
+        # Para cada tipo especial en esa columna
+        for special_type in cols_special_type_values[column_name].keys():
+            if special_type == 'missing':
+                # Obtener la lista de valores missing
+                missing_values_list = cols_special_type_values[column_name]['missing']
+
+                # Marcar filas con valores en la lista de valores missing
+                matching_rows = data_dictionary_in[data_dictionary_in[column_name].isin(missing_values_list)].index
+                rows_to_include.loc[matching_rows, 'match'] = True
+
+                # Marcar filas con valores nulos
+                null_rows = data_dictionary_in[data_dictionary_in[column_name].isnull()].index
+                rows_to_include.loc[null_rows, 'match'] = True
+
+            elif special_type == 'invalid':
+                # Obtener la lista de valores inválidos
+                invalid_values_list = cols_special_type_values[column_name]['invalid']
+
+                # Marcar filas con valores en la lista de valores inválidos
+                matching_rows = data_dictionary_in[data_dictionary_in[column_name].isin(invalid_values_list)].index
+                rows_to_include.loc[matching_rows, 'match'] = True
+
+            elif special_type == 'outlier':
+                if cols_special_type_values[column_name]['outlier']:
+                    # Obtener el dataframe máscara con outliers detectados
+                    outlier_mask = get_outliers(data_dictionary_in, column_name)
+
+                    # Marcar filas identificadas como outliers
+                    outlier_rows = outlier_mask[outlier_mask[column_name] == 1].index
+                    rows_to_include.loc[outlier_rows, 'match'] = True
+
+    # Obtener los índices que cumplen con el criterio
+    matching_indices = rows_to_include[rows_to_include['match'] == True].index
+
+    # Determinar los índices esperados según el tipo de filtro
+    if filter_type == FilterType.INCLUDE:
+        expected_indices = set(matching_indices)
+    elif filter_type == FilterType.EXCLUDE:
+        expected_indices = set(data_dictionary_in.index) - set(matching_indices)
+    else:
+        raise ValueError(f"Unknown filter type: {filter_type}")
+
+    # Verificar el resultado
+    actual_indices = set(data_dictionary_out.index)
+
+    # Verificar si faltan filas que deberían estar incluidas
+    missing_indices = expected_indices - actual_indices
+    if missing_indices:
+        print_and_log(f"Missing rows that should be included: {missing_indices}")
+        result = False
+
+    # Verificar si hay filas adicionales que no deberían estar incluidas
+    extra_indices = actual_indices - expected_indices
+    if extra_indices:
+        print_and_log(f"Extra rows that should not be included: {extra_indices}")
+        result = False
+
+
+    return result
+
+
+def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                columns: list[str] = None, left_margin_list: list[float] = None, right_margin_list: list[float] = None,
+                                closure_type_list: list[Closure] = None, filter_type: FilterType = None) -> bool:
+    """
+    This function checks if the invariant of the FilterRows relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param columns: list of column names to apply the filter
+    :param left_margin_list: list of left margins for the filtering intervals
+    :param right_margin_list: list of right margins for the filtering intervals
+    :param closure_type_list: list of closure types (e.g., open, closed) for the filtering intervals
+    :param filter_type: type of filter to check
+
+    :return: True if the invariant is satisfied, False otherwise
+    """
+    result = True
+
+    if columns is None:
+        raise ValueError("The columns parameter is required")
+    if left_margin_list is None:
+        raise ValueError("The left_margin_list parameter is required")
+    if right_margin_list is None:
+        raise ValueError("The right_margin_list parameter is required")
+    if closure_type_list is None:
+        raise ValueError("The closure_type_list parameter is required")
+    if filter_type is None:
+        raise ValueError("The filter_type parameter is required")
+
+    # Verificar que todas las listas tengan la misma longitud
+    if len(left_margin_list) != len(right_margin_list) or len(left_margin_list) != len(closure_type_list):
+        raise ValueError("The left_margin_list, right_margin_list and closure_type_list must have the same length")
+
+    # Verificar que todas las columnas existen en el dataframe de entrada
+    for column in columns:
+        if column not in data_dictionary_in.columns:
+            raise ValueError(f"The column {column} does not exist in the input dataframe")
+
+    # Crear un dataframe para marcar filas que cumplen con los criterios de filtrado
+    rows_to_include = pd.DataFrame(False, index=data_dictionary_in.index, columns=['match'])
+
+    # Para cada intervalo y columna, identificar las filas que cumplen con la condición
+    for index in range(len(left_margin_list)):
+        for column in columns:
+            # Verificar que la columna es numérica
+            if not np.issubdtype(data_dictionary_in[column].dtype, np.number):
+                raise ValueError(f"The column {column} is not numeric")
+
+            # Identificar las filas que cumplen con la condición del intervalo
+            for idx in data_dictionary_in.index:
+                value = data_dictionary_in.loc[idx, column]
+                if check_interval_condition(value, left_margin_list[index], right_margin_list[index],
+                                            closure_type_list[index]):
+                    rows_to_include.loc[idx, 'match'] = True
+
+    # Obtener los índices que cumplen con el criterio
+    matching_indices = set(rows_to_include[rows_to_include['match'] == True].index)
+
+    # Determinar los índices esperados según el tipo de filtro
+    if filter_type == FilterType.INCLUDE:
+        expected_indices = matching_indices
+    elif filter_type == FilterType.EXCLUDE:
+        expected_indices = set(data_dictionary_in.index) - matching_indices
+    else:
+        raise ValueError(f"Unknown filter type: {filter_type}")
+
+    # Verificar el resultado
+    actual_indices = set(data_dictionary_out.index)
+
+    # Verificar si faltan filas que deberían estar incluidas
+    missing_indices = expected_indices - actual_indices
+    if missing_indices:
+        print_and_log(f"Missing rows that should be included: {missing_indices}")
+        result = False
+
+    # Verificar si hay filas adicionales que no deberían estar incluidas
+    extra_indices = actual_indices - expected_indices
+    if extra_indices:
+        print_and_log(f"Extra rows that should not be included: {extra_indices}")
+        result = False
+
+
+    return result
+
+
+def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                                    columns: list[str], filter_fix_value_list: list = None,
+                                    filter_type: FilterType = None) -> bool:
+    """
+    This function checks if the invariant of the FilterRows relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param columns: list of column names to apply the filter
+    :param filter_fix_value_list: list of fixed values to filter
+    :param filter_type: type of filter to check
+
+    :return: True if the invariant is satisfied, False otherwise
+    """
+    result = True
+
+    if columns is None:
+        raise ValueError("The columns parameter is required")
+    if filter_fix_value_list is None:
+        raise ValueError("The filter_fix_value_list parameter is required")
+    if filter_type is None:
+        raise ValueError("The filter_type parameter is required")
+
+    for current_column in columns:
+        if current_column not in data_dictionary_in.columns:
+            raise ValueError(f"The column {current_column} does not exist in the input dataframe")
+        if current_column not in data_dictionary_out.columns:
+            raise ValueError(f"The column {current_column} does not exist in the output dataframe")
+
+    # Crear un dataframe filtrado con las filas que cumplen los criterios de filtrado
+    rows_to_include = pd.DataFrame(False, index=data_dictionary_in.index, columns=['match'])
+
+    # Para cada valor de filtro y cada columna, identificar las filas que coinciden
+    for fix_value in filter_fix_value_list:
+        for column in columns:
+            matched_rows = data_dictionary_in[data_dictionary_in[column] == fix_value].index
+            rows_to_include.loc[matched_rows, 'match'] = True
+
+    # Obtener los índices que cumplen con el criterio
+    matching_indices = rows_to_include[rows_to_include['match'] == True].index
+
+    if filter_type == FilterType.INCLUDE:
+        # El dataframe de salida solo debe contener filas que coincidan con el filtro
+        expected_indices = set(matching_indices)
+        actual_indices = set(data_dictionary_out.index)
+
+        # Verificar si todas las filas esperadas están presentes
+        missing_indices = expected_indices - actual_indices
+        if missing_indices:
+            print_and_log(f"Missing rows that should be included: {missing_indices}")
+            result = False
+
+        # Verificar si hay filas adicionales no esperadas
+        extra_indices = actual_indices - expected_indices
+        if extra_indices:
+            print_and_log(f"Extra rows that should not be included: {extra_indices}")
+            result = False
+
+    elif filter_type == FilterType.EXCLUDE:
+        # El dataframe de salida solo debe contener filas que NO coincidan con el filtro
+        non_matching_indices = set(data_dictionary_in.index) - set(matching_indices)
+        expected_indices = non_matching_indices
+        actual_indices = set(data_dictionary_out.index)
+
+        # Verificar si todas las filas esperadas están presentes
+        missing_indices = expected_indices - actual_indices
+        if missing_indices:
+            print_and_log(f"Missing rows that should be included: {missing_indices}")
+            result = False
+
+        # Verificar si hay filas adicionales no esperadas
+        extra_indices = actual_indices - expected_indices
+        if extra_indices:
+            print_and_log(f"Extra rows that should not be included: {extra_indices}")
+            result = False
+
+
+    return result
+
+
+def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
+                              columns: list[str], belong_op: Belong) -> bool:
+    """
+    This function checks if the invariant of the FilterColumns relation is satisfied in the output dataframe
+    with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
+    input values.
+
+    :param data_dictionary_in: dataframe with the input data
+    :param data_dictionary_out: dataframe with the output data
+    :param columns: list of column names to apply the filter
+    :param belong_op: condition to check the invariant
+
+    :return: True if the invariant is satisfied, False otherwise
+    """
+
+    result = True
+
+    if columns is None:
+        raise ValueError("La lista de columnas no puede ser None")
+
+    # Verificar que todas las columnas en la lista existen en el dataframe de entrada
+    for column in columns:
+        if column not in data_dictionary_in.columns:
+            raise ValueError(f"La columna {column} no existe en el dataframe de entrada")
+
+    # Obtener conjuntos de columnas para facilitar las comparaciones
+    input_columns = set(data_dictionary_in.columns)
+    output_columns = set(data_dictionary_out.columns)
+    columns_set = set(columns)
+
+    # Verificar según el tipo de operación
+    if belong_op == Belong.BELONG:
+        # Las columnas en la lista deben ser eliminadas
+        expected_columns = input_columns - columns_set
+
+        # Verificar columnas faltantes (deberían mantenerse pero no están)
+        missing_columns = expected_columns - output_columns
+        if missing_columns:
+            print_and_log(f"Columnas faltantes que deberían mantenerse: {missing_columns}")
+            result = False
+
+        # Verificar columnas adicionales (deberían eliminarse pero están)
+        extra_columns = output_columns & columns_set
+        if extra_columns:
+            print_and_log(f"Columnas adicionales que deberían eliminarse: {extra_columns}")
+            result = False
+
+    elif belong_op == Belong.NOTBELONG:
+        # Solo las columnas en la lista deben mantenerse
+        expected_columns = columns_set
+
+        # Verificar columnas faltantes (deberían mantenerse pero no están)
+        missing_columns = expected_columns - output_columns
+        if missing_columns:
+            print_and_log(f"Columnas faltantes que deberían mantenerse: {missing_columns}")
+            result = False
+
+        # Verificar columnas adicionales (no deberían estar pero están)
+        extra_columns = output_columns - columns_set
+        if extra_columns:
+            print_and_log(f"Columnas adicionales que no deberían estar: {extra_columns}")
+            result = False
+
+    return result
+
+
+
+
+
+
+
+
+

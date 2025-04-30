@@ -1083,10 +1083,14 @@ def transform_filter_columns(data_dictionary: pd.DataFrame, columns: list[str],
     Returns:
         pd.DataFrame:
     """
+    data_dictionary_copy = data_dictionary.copy()
+
     if belong_op == Belong.BELONG:
-        return data_dictionary.drop(columns=columns, axis=1)
+        data_dictionary_copy = data_dictionary.drop(columns=columns, axis=1)
     elif belong_op == Belong.NOTBELONG:
-        return data_dictionary[columns]
+        data_dictionary_copy = data_dictionary[columns]
+
+    return data_dictionary_copy
 
 
 def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataType,
