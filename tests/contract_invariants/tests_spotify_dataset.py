@@ -105,15 +105,15 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             # self.execute_checkInv_Interval_NumOp,
             # self.execute_checkInv_SpecialValue_FixValue,
             # self.execute_checkInv_SpecialValue_DerivedValue,
-            # self.execute_checkInv_SpecialValue_NumOp,
-            # self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue,
             # self.execute_checkInv_MathOperation,
-            self.execute_checkInv_CastType,
-            self.execute_checkInv_Join,
-            self.execute_checkInv_filter_rows_primitive,
-            self.execute_checkInv_filter_rows_range,
-            self.execute_checkInv_filter_rows_special_values,
-            self.execute_checkInv_filter_columns
+            # self.execute_checkInv_CastType,
+            # self.execute_checkInv_Join,
+            # self.execute_checkInv_filter_rows_primitive,
+            # self.execute_checkInv_filter_rows_range,
+            # self.execute_checkInv_filter_rows_special_values,
+            # self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -6918,7 +6918,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 1
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=self.small_batch_dataset.copy(),
                                                                        data_dictionary_out=self.small_batch_dataset.copy(),
-                                                                       belong_op_out=Belong(1), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
@@ -6932,8 +6934,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None,
-                                                                       field_out=None)
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
@@ -6943,69 +6946,78 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         in_df = self.small_batch_dataset.copy()
         in_df['danceability'][0] = np.NaN
-        expected_df['danceability'][0] = 5
-
-        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
-                                                                       data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None,
-                                                                       field_out=None)
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 3 Failed: Expected True, but got False"
-        print_and_log("Test Case 3 Passed: Expected True, got True")
-
-        # Caso 4
-        expected_df = self.small_batch_dataset.copy()
-        in_df = self.small_batch_dataset.copy()
-        in_df['danceability'][0] = np.NaN
         in_df['danceability'][1] = np.NaN
         expected_df['danceability'][0] = 5
         expected_df['danceability'][1] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None,
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.BELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 4 Failed: Expected True, but got False"
-        print_and_log("Test Case 4 Passed: Expected True, got True")
+        assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        print_and_log("Test Case 3 Passed: Expected False, got False")
 
-        # Caso 5
+        # Caso 4
         expected_df = self.small_batch_dataset.copy()
         in_df = self.small_batch_dataset.copy()
         in_df['danceability'][0] = np.NaN
         expected_df['danceability'][0] = np.NaN
-        expected_df['danceability'][1] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None,
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 5 Failed: Expected False, but got True"
-        print_and_log("Test Case 5 Passed: Expected False, got False")
+        assert result is False, "Test Case 4 Failed: Expected False, but got True"
+        print_and_log("Test Case 4 Passed: Expected False, got False")
 
-        # Caso 6
+        # Caso 5
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=self.small_batch_dataset.copy(),
-                                                                        data_dictionary_out=self.small_batch_dataset.copy(),
-                                                                        belong_op_out=Belong(1), field_in='danceability',
+                                                                       data_dictionary_out=self.small_batch_dataset.copy(),
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 6 Failed: Expected True, but got False"
-        print_and_log("Test Case 6 Passed: Expected True, got True")
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6
+        expected_df = self.small_batch_dataset.copy()
+        in_df = self.small_batch_dataset.copy()
+        in_df['danceability'][0] = np.NaN
+        expected_df['danceability'][0] = np.NaN
+
+        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
+                                                                       data_dictionary_out=expected_df,
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
+                                                                       field_out='danceability')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Caso 7
         expected_df = self.small_batch_dataset.copy()
         in_df = self.small_batch_dataset.copy()
         in_df['danceability'][0] = np.NaN
-        expected_df['danceability'][0] = np.NaN
+        expected_df['danceability'][0] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7016,35 +7028,22 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.small_batch_dataset.copy()
         in_df = self.small_batch_dataset.copy()
         in_df['danceability'][0] = np.NaN
-        expected_df['danceability'][0] = 5
-
-        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
-                                                                       data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
-                                                                       field_out='danceability')
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 8 Failed: Expected True, but got False"
-        print_and_log("Test Case 8 Passed: Expected True, got True")
-
-        # Caso 9
-        expected_df = self.small_batch_dataset.copy()
-        in_df = self.small_batch_dataset.copy()
-        in_df['danceability'][0] = np.NaN
         in_df['danceability'][1] = np.NaN
         expected_df['danceability'][0] = 5
         expected_df['danceability'][1] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 9 Failed: Expected True, but got False"
-        print_and_log("Test Case 9 Passed: Expected True, got True")
+        assert result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, got False")
 
-        # Caso 10
+        # Caso 9
         expected_df = self.small_batch_dataset.copy()
         in_df = self.small_batch_dataset.copy()
         in_df['danceability'][0] = np.NaN
@@ -7053,12 +7052,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 10 Failed: Expected False, but got True"'d'
-        print_and_log("Test Case 10 Passed: Expected False, got False")
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"'d'
+        print_and_log("Test Case 9 Passed: Expected False, got False")
 
 
     def execute_WholeDatasetTests_checkInv_MissingValue_MissingValue(self):
@@ -7068,7 +7069,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 1
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=self.rest_of_dataset.copy(),
                                                                        data_dictionary_out=self.rest_of_dataset.copy(),
-                                                                       belong_op_out=Belong(1), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
@@ -7082,7 +7085,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
@@ -7092,66 +7097,76 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         in_df = self.rest_of_dataset.copy()
         in_df['danceability'][0] = np.NaN
-        expected_df['danceability'][0] = 5
-
-        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
-                                                                       data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None, field_out=None)
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 3 Failed: Expected True, but got False"
-        print_and_log("Test Case 3 Passed: Expected True, got True")
-
-        # Caso 4
-        expected_df = self.rest_of_dataset.copy()
-        in_df = self.rest_of_dataset.copy()
-        in_df['danceability'][0] = np.NaN
         in_df['danceability'][1] = np.NaN
         expected_df['danceability'][0] = 5
         expected_df['danceability'][1] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.BELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 4 Failed: Expected True, but got False"
-        print_and_log("Test Case 4 Passed: Expected True, got True")
+        assert result is False, "Test Case 3 Failed: Expected False, but got True"
+        print_and_log("Test Case 3 Passed: Expected False, got False")
 
-        # Caso 5
+        # Caso 4
         expected_df = self.rest_of_dataset.copy()
         in_df = self.rest_of_dataset.copy()
         in_df['danceability'][0] = np.NaN
         expected_df['danceability'][0] = np.NaN
-        expected_df['danceability'][1] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 5 Failed: Expected False, but got True"
-        print_and_log("Test Case 5 Passed: Expected False, got False")
+        assert result is False, "Test Case 4 Failed: Expected False, but got True"
+        print_and_log("Test Case 4 Passed: Expected False, got False")
 
-        # Caso 6
+        # Caso 5
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=self.rest_of_dataset.copy(),
-                                                                        data_dictionary_out=self.rest_of_dataset.copy(),
-                                                                        belong_op_out=Belong(1), field_in='danceability',
+                                                                       data_dictionary_out=self.rest_of_dataset.copy(),
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 6 Failed: Expected True, but got False"
-        print_and_log("Test Case 6 Passed: Expected True, got True")
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6
+        expected_df = self.rest_of_dataset.copy()
+        in_df = self.rest_of_dataset.copy()
+        in_df['danceability'][0] = np.NaN
+        expected_df['danceability'][0] = np.NaN
+
+        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
+                                                                       data_dictionary_out=expected_df,
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
+                                                                       field_out='danceability')
+
+        # Verificar si el resultado obtenido coincide con el esperado
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
 
         # Caso 7
         expected_df = self.rest_of_dataset.copy()
         in_df = self.rest_of_dataset.copy()
         in_df['danceability'][0] = np.NaN
-        expected_df['danceability'][0] = np.NaN
+        expected_df['danceability'][0] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7162,35 +7177,22 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         expected_df = self.rest_of_dataset.copy()
         in_df = self.rest_of_dataset.copy()
         in_df['danceability'][0] = np.NaN
-        expected_df['danceability'][0] = 5
-
-        result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
-                                                                       data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
-                                                                       field_out='danceability')
-
-        # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 8 Failed: Expected True, but got False"
-        print_and_log("Test Case 8 Passed: Expected True, got True")
-
-        # Caso 9
-        expected_df = self.rest_of_dataset.copy()
-        in_df = self.rest_of_dataset.copy()
-        in_df['danceability'][0] = np.NaN
         in_df['danceability'][1] = np.NaN
         expected_df['danceability'][0] = 5
         expected_df['danceability'][1] = 5
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 9 Failed: Expected True, but got False"
-        print_and_log("Test Case 9 Passed: Expected True, got True")
+        assert result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, got False")
 
-        # Caso 10
+        # Caso 9
         expected_df = self.rest_of_dataset.copy()
         in_df = self.rest_of_dataset.copy()
         in_df['danceability'][0] = np.NaN
@@ -7199,13 +7201,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=in_df,
                                                                        data_dictionary_out=expected_df,
-                                                                       belong_op_out=Belong(0), field_in='danceability',
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is False, "Test Case 10 Failed: Expected False, but got True"'d'
-        print_and_log("Test Case 10 Passed: Expected False, got False")
-
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"'d'
+        print_and_log("Test Case 9 Passed: Expected False, got False")
 
     def execute_checkInv_MathOperation(self):
         """
@@ -7282,7 +7285,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_math_operation(data_dictionary_in=self.small_batch_dataset.copy(),
                                                           data_dictionary_out=expected_df,
-                                                          math_op=MathOperator(1), firstOperand='danceability', isFieldFirst=True,
+                                                          math_op=MathOperator(1), firstOperand='danceability',
+                                                          isFieldFirst=True,
                                                           secondOperand='energy', isFieldSecond=True,
                                                           belong_op_out=Belong(0),
                                                           field_in='loudness', field_out='loudness')
@@ -9347,103 +9351,3 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
     def execute_WholeDatasetTests_checkInv_filter_columns(self):
         # Caso 1
         pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

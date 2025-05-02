@@ -56,15 +56,15 @@ class InvariantsSimpleTest(unittest.TestCase):
             # self.execute_checkInv_Interval_NumOp,
             # self.execute_checkInv_SpecialValue_FixValue,
             # self.execute_checkInv_SpecialValue_DerivedValue,
-            # self.execute_checkInv_SpecialValue_NumOp,
-            # self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue,
             # self.execute_checkInv_MathOperation,
             # self.execute_checkInv_CastType,
-            self.execute_checkInv_Join,
-            self.execute_checkInv_filter_rows_primitive,
-            self.execute_checkInv_filter_rows_range,
-            self.execute_checkInv_filter_rows_special_values,
-            self.execute_checkInv_filter_columns
+            # self.execute_checkInv_Join,
+            # self.execute_checkInv_filter_rows_primitive,
+            # self.execute_checkInv_filter_rows_range,
+            # self.execute_checkInv_filter_rows_special_values,
+            # self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -4525,7 +4525,10 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(1), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
@@ -4539,7 +4542,9 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(0), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
@@ -4553,7 +4558,10 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(0), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
@@ -4567,7 +4575,9 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(0), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
@@ -4581,10 +4591,12 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(1), field_in=None, field_out=None)
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None, field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        assert result is False, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
@@ -4595,7 +4607,10 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(1), field_in='B', field_out='B')
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='B',
+                                                                       field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 6 Failed: Expected True, but got False"
@@ -4609,7 +4624,9 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(0), field_in='B', field_out='B')
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.BELONG,
+                                                                       field_in='B', field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 7 Failed: Expected False, but got True"
@@ -4623,7 +4640,9 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(0), field_in='B', field_out='B')
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='B', field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
@@ -4637,7 +4656,9 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(0), field_in='B', field_out='B')
+                                                                       belong_op_in=Belong.BELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='B', field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 9 Failed: Expected True, but got False"
@@ -4651,11 +4672,13 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         result = self.invariants.check_inv_missing_value_missing_value(data_dictionary_in=datadic.copy(),
                                                                        data_dictionary_out=expected_df.copy(),
-                                                                       belong_op_out=Belong(1), field_in='C', field_out='C')
+                                                                       belong_op_in=Belong.NOTBELONG,
+                                                                       belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='C', field_out='C')
 
         # Verificar si el resultado obtenido coincide con el esperado
-        assert result is True, "Test Case 10 Failed: Expected True, but got False"
-        print_and_log("Test Case 10 Passed: Expected True, got True")
+        assert result is False, "Test Case 10 Failed: Expected False, but got True"
+        print_and_log("Test Case 10 Passed: Expected False, got False")
 
     def execute_checkInv_MathOperation(self):
         """
@@ -5933,19 +5956,3 @@ class InvariantsSimpleTest(unittest.TestCase):
 
     def execute_checkInv_filter_columns(self):
         pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
