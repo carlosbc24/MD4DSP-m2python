@@ -1893,18 +1893,28 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
-                            data_dictionary_in_copy.at[idx, col_name] = truncate(data_dictionary_in_copy.at[idx, col_name], 8)
-                            data_dictionary_out.at[idx, col_name] = truncate(data_dictionary_out.at[idx, col_name], 8)
+                            value_in = data_dictionary_in_copy.at[idx, col_name]
+                            value_out = data_dictionary_out.at[idx, col_name]
+                            if pd.notnull(value_in) and pd.notnull(value_out):
+                                data_dictionary_in_copy.at[idx, col_name] = truncate(value_in, 8)
+                                data_dictionary_out.at[idx, col_name] = truncate(value_out, 8)
 
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[col_name].dropna() % 1 == 0).all():
                         for idx in data_dictionary_in.index:
-                            if data_dictionary_in.at[idx, col_name] % 1 >= 0.5:
-                                data_dictionary_in_copy.at[idx, col_name] = math.ceil(data_dictionary_in_copy.at[idx, col_name])
-                                data_dictionary_out.at[idx, col_name] = math.ceil(data_dictionary_out.at[idx, col_name])
+                            value_in = data_dictionary_in_copy.at[idx, col_name]
+                            value_out = data_dictionary_out.at[idx, col_name]
+                            # Process data_dictionary_in and data_dictionary_out
+                            if pd.notnull(value_in) and pd.notnull(value_out):
+                                if value_in % 1 >= 0.5 and value_out % 1 >= 0.5:
+                                    data_dictionary_in_copy.at[idx, col_name] = math.ceil(value_in)
+                                    data_dictionary_out.at[idx, col_name] = math.ceil(value_out)
+                                else:
+                                    data_dictionary_in_copy.at[idx, col_name] = value_in.round(0)
+                                    data_dictionary_out.at[idx, col_name] = value_out.round(0)
                             else:
-                                data_dictionary_in_copy.at[idx, col_name] = data_dictionary_in_copy.at[idx, col_name].round(0)
-                                data_dictionary_out.at[idx, col_name] = data_dictionary_out.at[idx, col_name].round(0)
+                                data_dictionary_in_copy.at[idx, col_name] = value_in  # Keep NaN
+                                data_dictionary_out.at[idx, col_name] = value_out  # Keep NaN
 
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
@@ -1926,18 +1936,28 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                            data_dictionary_in_copy.at[row, col_name] = truncate(data_dictionary_in_copy.at[row, col_name], 8)
-                            data_dictionary_out.at[row, col_name] = truncate(data_dictionary_out.at[row, col_name], 8)
+                        for col_name in data_dictionary_in.select_dtypes(include=[pd.np.number]).columns:
+                            value_in = data_dictionary_in_copy.at[row, col_name]
+                            value_out = data_dictionary_out.at[row, col_name]
+                            if pd.notnull(value_in) and pd.notnull(value_out):
+                                data_dictionary_in_copy.at[row, col_name] = truncate(value_in, 8)
+                                data_dictionary_out.at[row, col_name] = truncate(value_out, 8)
+
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
-                            if data_dictionary_in_copy.at[row, col_name] % 1 >= 0.5:
-                                data_dictionary_in_copy.at[row, col_name] = math.ceil(data_dictionary_in_copy.at[row, col_name])
-                                data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
+                        for col_name in data_dictionary_in.select_dtypes(include=[pd.np.number]).columns:
+                            value_in = data_dictionary_in_copy.at[row, col_name]
+                            value_out = data_dictionary_out.at[row, col_name]
+                            if pd.notnull(value_in) and pd.notnull(value_out):
+                                if value_in % 1 >= 0.5 and value_out % 1 >= 0.5:
+                                    data_dictionary_in_copy.at[row, col_name] = math.ceil(value_in)
+                                    data_dictionary_out.at[row, col_name] = math.ceil(value_out)
+                                else:
+                                    data_dictionary_in_copy.at[row, col_name] = value_in.round(0)
+                                    data_dictionary_out.at[row, col_name] = value_out.round(0)
                             else:
-                                data_dictionary_in_copy.at[row, col_name] = data_dictionary_in_copy.at[row, col_name].round(0)
-                                data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
+                                data_dictionary_in_copy.at[row, col_name] = value_in
+                                data_dictionary_out.at[row, col_name] = value_out
 
                 for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
                     for idx in data_dictionary_in.index:
@@ -2137,17 +2157,27 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
             # Trunk the decimals to 8 if the column is full of floats or decimal numbers
             if (data_dictionary_in[field_in].dropna() % 1 != 0).any():
                 for idx in data_dictionary_in.index:
-                    data_dictionary_in_copy.at[idx, field_in] = truncate(data_dictionary_in_copy.at[idx, field_in], 8)
-                    data_dictionary_out.at[idx, field_out] = truncate(data_dictionary_out.at[idx, field_out], 8)
+                    value_in = data_dictionary_in_copy.at[idx, field_in]
+                    value_out = data_dictionary_out.at[idx, field_out]
+                    if pd.notnull(value_in) and pd.notnull(value_out):
+                        data_dictionary_in_copy.at[idx, field_in] = truncate(value_in, 8)
+                        data_dictionary_out.at[idx, field_out] = truncate(value_out, 8)
+
             # Trunk the decimals to 0 if the column is int or if it has no decimals
             elif (data_dictionary_in[field_in].dropna() % 1 == 0).all():
                 for idx in data_dictionary_in.index:
-                    if data_dictionary_in_copy.at[idx, field_in] % 1 >= 0.5:
-                        data_dictionary_in_copy.at[idx, field_in] = math.ceil(data_dictionary_in_copy.at[idx, field_in])
-                        data_dictionary_out.at[idx, field_out] = math.ceil(data_dictionary_out.at[idx, field_out])
+                    value_in = data_dictionary_in_copy.at[idx, field_in]
+                    value_out = data_dictionary_out.at[idx, field_out]
+                    if pd.notnull(value_in) and pd.notnull(value_out):
+                        if value_in % 1 >= 0.5 and value_out % 1 >= 0.5:
+                            data_dictionary_in_copy.at[idx, field_in] = math.ceil(value_in)
+                            data_dictionary_out.at[idx, field_out] = math.ceil(value_out)
+                        else:
+                            data_dictionary_in_copy.at[idx, field_in] = value_in.round(0)
+                            data_dictionary_out.at[idx, field_out] = value_out.round(0)
                     else:
-                        data_dictionary_in_copy.at[idx, field_in] = data_dictionary_in_copy.at[idx, field_in].round(0)
-                        data_dictionary_out.at[idx, field_out] = data_dictionary_out.at[idx, field_out].round(0)
+                        data_dictionary_in_copy.at[idx, field_in] = value_in  # Keep NaN
+                        data_dictionary_out.at[idx, field_out] = value_out  # Keep NaN
 
             for idx in data_dictionary_in.index:
                 if data_dictionary_in.at[idx, field_in] in missing_values or pd.isnull(
