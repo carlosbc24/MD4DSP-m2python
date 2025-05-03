@@ -5917,11 +5917,11 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Caso 5
         datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
         expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
-        expected_df['A'] = expected_df['A'].astype(float)
+        expected_df['A'] = expected_df['A'].astype(int)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=datadic.copy(),
                                                      data_dictionary_out=expected_df.copy(),
-                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
                                                      belong_op_out=Belong.BELONG,
                                                      field_in='A', field_out='B')
 
@@ -5931,11 +5931,11 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Caso 6
         datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
         expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
-        expected_df['A'] = expected_df['A'].astype(float)
+        expected_df['A'] = expected_df['A'].astype(int)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=datadic.copy(),
                                                      data_dictionary_out=expected_df.copy(),
-                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.DOUBLE,
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
                                                      belong_op_out=Belong.BELONG,
                                                      field_in='A', field_out='B')
 
