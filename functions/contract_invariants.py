@@ -1774,22 +1774,6 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
 
     # Verificar según el tipo de operación
     if belong_op == Belong.BELONG:
-        # Las columnas en la lista deben ser eliminadas
-        expected_columns = input_columns - columns_set
-
-        # Verificar columnas faltantes (deberían mantenerse pero no están)
-        missing_columns = expected_columns - output_columns
-        if missing_columns:
-            print_and_log(f"Columnas faltantes que deberían mantenerse: {missing_columns}")
-            result = False
-
-        # Verificar columnas adicionales (deberían eliminarse pero están)
-        extra_columns = output_columns & columns_set
-        if extra_columns:
-            print_and_log(f"Columnas adicionales que deberían eliminarse: {extra_columns}")
-            result = False
-
-    elif belong_op == Belong.NOTBELONG:
         # Solo las columnas en la lista deben mantenerse
         expected_columns = columns_set
 
@@ -1803,6 +1787,22 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
         extra_columns = output_columns - columns_set
         if extra_columns:
             print_and_log(f"Columnas adicionales que no deberían estar: {extra_columns}")
+            result = False
+
+    elif belong_op == Belong.NOTBELONG:
+        # Las columnas en la lista deben ser eliminadas
+        expected_columns = input_columns - columns_set
+
+        # Verificar columnas faltantes (deberían mantenerse pero no están)
+        missing_columns = expected_columns - output_columns
+        if missing_columns:
+            print_and_log(f"Columnas faltantes que deberían mantenerse: {missing_columns}")
+            result = False
+
+        # Verificar columnas adicionales (deberían eliminarse pero están)
+        extra_columns = output_columns & columns_set
+        if extra_columns:
+            print_and_log(f"Columnas adicionales que deberían eliminarse: {extra_columns}")
             result = False
 
     return result
