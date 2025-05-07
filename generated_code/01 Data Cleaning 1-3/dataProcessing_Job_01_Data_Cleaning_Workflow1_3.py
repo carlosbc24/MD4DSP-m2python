@@ -46,7 +46,7 @@ def generateWorkflow():
 	cols_special_type_values_rowFilterMissing_Life_expectancy__INV_condition={'Life_expectancy':{'missing': []}}
 	
 	if contract_invariants.check_inv_filter_rows_special_values(data_dictionary_in=rowFilterMissing_Life_expectancy__input_dataDictionary_df,
-											data_dictionary_out=invalid_df,
+											data_dictionary_out=rowFilterMissing_Life_expectancy__output_dataDictionary_df,
 											cols_special_type_values=cols_special_type_values_rowFilterMissing_Life_expectancy__INV_condition,
 											filter_type=FilterType.EXCLUDE):
 		print('INVARIANT rowFilterMissing(Life_expectancy)_INV_condition VALIDATED')

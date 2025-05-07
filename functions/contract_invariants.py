@@ -1626,7 +1626,7 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
     return True
 
 
-def check_inv_filter_rows_fixed(data_dictionary_in: pd.DataFrame,
+def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame,
                                 data_dictionary_out: pd.DataFrame,
                                 columns: list[str],
                                 filter_fix_value_list: list = None,
