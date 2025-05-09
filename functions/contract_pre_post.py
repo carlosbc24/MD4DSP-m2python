@@ -259,9 +259,7 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                                                                  # missing values from the list 'missing_values'
                                                                  # in data_dictionary and if it meets the condition
                                                                  # of quant_rel and quant_op
-                    if (data_dictionary.isnull().values.any() or (missing_values is not None and any(
-                            value in missing_values for value in
-                            data_dictionary.values.flatten()))) and compare_numbers(
+                    if compare_numbers(
                         (data_dictionary.isnull().values.sum() + sum(
                             [count_abs_frequency(value, data_dictionary) for value in
                              (missing_values if missing_values is not None else [])])) / data_dictionary.size,
@@ -276,9 +274,7 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                 elif quant_abs is not None:  # Check there are any null python values or missing values from the
                     # list 'missing_values' in data_dictionary and if it meets the condition of quant_abs and
                     # quant_op
-                    if (data_dictionary.isnull().values.any() or (
-                            missing_values is not None and any(
-                        value in missing_values for value in data_dictionary.values.flatten()))) and compare_numbers(
+                    if compare_numbers(
                         data_dictionary.isnull().values.sum() + sum(
                             [count_abs_frequency(value, data_dictionary) for value in
                              (missing_values if missing_values is not None else [])]),
@@ -323,15 +319,10 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                 else:
                     if quant_rel is not None and quant_abs is None:  # Check there are null python values or
                         # missing values from the list 'missing_values' in the column specified by field and if it
-                        # meets the condition of quant_rel and quant_op
-                        if (data_dictionary[field].isnull().values.any() or (
-                                missing_values is not None and any(value in missing_values for value in
-                                                                   data_dictionary[
-                                                                       field].values))) and compare_numbers(
-                            (data_dictionary[field].isnull().values.sum() + sum(
-                                [count_abs_frequency(value, data_dictionary, field) for value in
-                                 (missing_values if missing_values is not None else [])])) / data_dictionary[
-                                field].size, quant_rel, quant_op):
+                        if compare_numbers((data_dictionary[field].isnull().values.sum() + sum(
+                            [count_abs_frequency(value, data_dictionary, field) for value in
+                             (missing_values if missing_values is not None else [])])) / data_dictionary[
+                            field].size, quant_rel, quant_op):
                             return True  # Case 20
                         else:
                             return False  # Case 21
@@ -343,10 +334,7 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                     elif quant_abs is not None:  # Check there are null python values or missing values from the
                         # list 'missing_values' in the column specified by field and if it meets the condition of
                         # quant_abs and quant_op
-                        if (data_dictionary[field].isnull().values.any() or (
-                                missing_values is not None and any(value in missing_values for value in
-                                                                   data_dictionary[
-                                                                       field].values))) and compare_numbers(
+                        if compare_numbers(
                             data_dictionary[field].isnull().values.sum() + sum(
                                 [count_abs_frequency(value, data_dictionary, field) for value in
                                  (missing_values if missing_values is not None else [])]),

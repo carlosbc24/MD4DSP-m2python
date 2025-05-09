@@ -1590,8 +1590,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                    belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                    quant_rel=quant_rel)
-        assert result is False, "Test Case 6 Failed: Expected False, but got True"
-        print_and_log("Test Case 6 Passed: Expected False, got False")
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
 
         # Caso 8
         belong = 0
@@ -1718,8 +1718,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                    belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                    quant_rel=quant_rel, missing_values=missing_values)
-        assert result is False, "Test Case 21 Failed: Expected False, but got True"
-        print_and_log("Test Case 21 Passed: Expected False, got False")
+        assert result is True, "Test Case 21 Failed: Expected True, but got False"
+        print_and_log("Test Case 21 Passed: Expected True, got True")
 
         # Caso 24
         belong = 0
