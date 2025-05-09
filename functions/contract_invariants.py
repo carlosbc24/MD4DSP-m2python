@@ -1473,7 +1473,7 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
     # Replace empty strings with NaN
     data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace('', np.nan)
 
-    for idx, val in data_dictionary_in[field_in]:
+    for idx, val in data_dictionary_in[field_in].items():
         if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
             result = False
             print_and_log(
