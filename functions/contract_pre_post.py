@@ -8,9 +8,11 @@ import pandas as pd
 from helpers.auxiliar import compare_numbers, count_abs_frequency
 from helpers.enumerations import Belong, Operator, Closure
 from helpers.transform_aux import get_outliers
+from helpers.logger import print_and_log, print_metadata_error_row, print_metadata_error_field
 
 
-def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Belong) -> bool:
+def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Belong,
+                      origin_function: str = None) -> bool:
     """
     Check if fields meets the condition of belong_op in data_dictionary.
     If belong_op is Belong.BELONG, then it checks if all fields are in data_dictionary.
@@ -19,6 +21,7 @@ def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Be
     :param fields: list of columns
     :param data_dictionary: data dictionary
     :param belong_op: enum operator which can be Belong.BELONG or Belong.NOTBELONG
+    :param origin_function: function name
 
     :return: if fields meets the condition of belong_op in data_dictionary
     :rtype: bool
@@ -31,13 +34,15 @@ def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Be
     elif belong_op == Belong.NOTBELONG:
         for field in fields:
             if field in data_dictionary.columns:
+                if origin_function:
+                    print_metadata_error_field(function=origin_function, field=field)
                 return False  # Case 3
         return True  # Case 4
 
 
 def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: pd.DataFrame, belong_op: Belong,
                           field: str = None, quant_abs: int = None, quant_rel: float = None,
-                          quant_op: Operator = None) -> bool:
+                          quant_op: Operator = None, origin_function: str = None) -> bool:
     """
     Check if fields meets the condition of belong_op in data_dictionary
 
@@ -51,6 +56,7 @@ def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: p
                         with respect the enum operator quant_op
     :param quant_rel: float which represents the relative number of times that value should appear
                         with respect the enum operator quant_op
+    :param origin_function: function name
 
     :return: if fields meets the condition of belong_op in data_dictionary and field
     :rtype: bool
@@ -59,29 +65,29 @@ def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: p
         np.nan: None})  # Replace NaN values with None to avoid error when comparing None with NaN.
     # As the dataframe is of floats, the None are converted to NaN
     if value is not None and type(value) is not str and type(
-            value) is not pd.Timestamp: # Before casting, it is checked that value is not None,
-                                            # str or datetime(Timestamp), so that only the int are casted
-                                            # Before casting, it is checked that value is not None,
-                                            # str or datetime(Timestamp), so that only the int are casted
+            value) is not pd.Timestamp:  # Before casting, it is checked that value is not None,
+        # str or datetime(Timestamp), so that only the int are casted
+        # Before casting, it is checked that value is not None,
+        # str or datetime(Timestamp), so that only the int are casted
         value = float(value)  # Cast the float to avoid errors when comparing the value with the values of the dataframe
 
     if field is None:
         if belong_op == Belong.BELONG:
             if quant_op is None:  # Check if value is in data_dictionary
-                return True if value in data_dictionary.values else False # Case 1 y 2
+                return True if value in data_dictionary.values else False  # Case 1 y 2
             else:
                 if quant_rel is not None and quant_abs is None:  # Check if value is in data_dictionary and if it meets the condition of quant_rel
-                    return True if value in data_dictionary.values and compare_numbers( # Case 3 y 4
+                    return True if value in data_dictionary.values and compare_numbers(  # Case 3 y 4
                         count_abs_frequency(value, data_dictionary) / data_dictionary.size,
                         quant_rel,
                         quant_op) else False  # If field is None, in place of looking in a column, it looks in the whole dataframe
                     # Important to highlight that it is necessary to use dropna=False to count the NaN values in case value is None
                 elif quant_rel is not None and quant_abs is not None:
                     # If both are provided, a ValueError is raised
-                    raise ValueError( # Case 4.5
+                    raise ValueError(  # Case 4.5
                         "quant_rel and quant_abs can't have different values than None at the same time")
                 elif quant_abs is not None:
-                    return True if value in data_dictionary.values and compare_numbers( # Case 5 y 6
+                    return True if value in data_dictionary.values and compare_numbers(  # Case 5 y 6
                         count_abs_frequency(value, data_dictionary),
                         quant_abs,
                         quant_op) else False  # If field is None, in place of looking in a column, it looks in the whole dataframe
@@ -98,7 +104,7 @@ def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: p
         if field is not None:
             if field not in data_dictionary.columns:  # It checks that the column exists in the dataframe
                 raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 10.5
-            if belong_op == Belong.BELONG: # If the value should belong to the column
+            if belong_op == Belong.BELONG:  # If the value should belong to the column
                 if quant_op is None:
                     return True if value in data_dictionary[field].values else False  # Case 11 y 12
                 else:
@@ -120,13 +126,21 @@ def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: p
                             "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")
             else:
                 if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                    return True if value not in data_dictionary[field].values else False  # Case 18 y 19
+                    if value not in data_dictionary[field].values:
+                        return True
+                    else:
+                        if origin_function:
+                            for idx, val in data_dictionary[field].items():
+                                if val == value:
+                                    print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
+                        return False  # Case 18 y 19
                 else:  # Case 20
                     raise ValueError("Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")
 
 
 def check_interval_range_float(left_margin: float, right_margin: float, data_dictionary: pd.DataFrame,
-                               closure_type: Closure, belong_op: Belong, field: str = None) -> bool:
+                               closure_type: Closure, belong_op: Belong, field: str = None,
+                               origin_function: str = None) -> bool:
     """
         Check if the data_dictionary meets the condition of belong_op in the interval
         defined by leftMargin and rightMargin with the closure_type.
@@ -140,6 +154,7 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
                             Closure.closedOpen=2, Closure.closedClosed=3
         :param belong_op: enum operator which can be Belong.BELONG or Belong.NOTBELONG
         :param field: dataset column in which value will be checked
+        :param origin_function: function name
 
         :return: if data_dictionary meets the condition of belong_op in the interval defined by leftMargin and rightMargin with the closure_type
     """
@@ -181,13 +196,13 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
 
         return result
 
-
     if field is None:
         for column in data_dictionary.select_dtypes(include=[np.number]).columns:
             for i in data_dictionary.index:  # Cases 1-16
                 # Verify if the index exists in the mask and if the value is an outlier
                 if not np.isnan(data_dictionary.at[i, column]):
-                    result = check_condition(data_dictionary.at[i, column], left_margin, right_margin, belong_op, result)
+                    result = check_condition(data_dictionary.at[i, column], left_margin, right_margin, belong_op,
+                                             result)
                     if belong_op == Belong.BELONG and not result:
                         return False
                     elif belong_op == Belong.NOTBELONG and result:
@@ -206,19 +221,19 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
                         return False
                     elif belong_op == Belong.NOTBELONG and result:
                         return True
-        else:   #Si no es de tipo numerico se puede suponer que no se encuentra en el rango de valores
+        else:  # Si no es de tipo numerico se puede suponer que no se encuentra en el rango de valores
             if belong_op == Belong.BELONG:
                 return False
             elif belong_op == Belong.NOTBELONG:
                 return True
-           # raise ValueError("Error: field should be a float")  # Case 33
+        # raise ValueError("Error: field should be a float")  # Case 33
 
     return result
 
 
 def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field: str = None,
                         missing_values: list = None, quant_abs: int = None, quant_rel: float = None,
-                        quant_op: Operator = None) -> bool:
+                        quant_op: Operator = None, origin_function: str = None) -> bool:
     """
     Check if the data_dictionary meets the condition of belong_op with respect to the missing values defined in missing_values.
     If field is None, it does the check in the whole data_dictionary. If not, it does the check in the column specified by field.
@@ -231,6 +246,7 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
     :param quant_rel: float which represents the relative number of times that value should appear
     :param quant_op: enum operator which can be Operator.GREATEREQUAL=0, Operator.GREATER=1, Operator.LESSEQUAL=2,
             Operator.LESS=3, Operator.EQUAL=4
+    :param origin_function: function name
 
     :return: if data_dictionary meets the condition of belong_op with respect to the missing values defined in missing_values
     """
@@ -242,7 +258,7 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
     if field is None:
         if belong_op == Belong.BELONG:
             if quant_op is None:  # Checks if there are any missing values from the list
-                                  # 'missing_values' in data_dictionary
+                # 'missing_values' in data_dictionary
                 if data_dictionary.isnull().values.any():
                     return True  # Case 1
                 else:  # If there aren't null python values in data_dictionary, it checks if there are any of the
@@ -252,7 +268,7 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                             value in missing_values for value in
                             data_dictionary.values.flatten()) else False  # Case 2 y 3
                     else:  # If the list is None, it returns False.
-                           # It checks that in fact there aren't any missing values
+                        # It checks that in fact there aren't any missing values
                         return False  # Case 4
             else:
                 if quant_rel is not None and quant_abs is None:  # Check there are any null python values or
@@ -311,9 +327,12 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                     else:  # If there aren't null python values in data_dictionary, it checks if there are any of the
                         # missing values in the list 'missing_values'
                         if missing_values is not None:
-                            return True if any(
-                                value in missing_values for value in
-                                data_dictionary[field].values) else False  # Case 17 y 18
+                            if any(
+                                    value in missing_values for value in
+                                    data_dictionary[field].values):
+                                return True
+                            else:
+                                return False  # Case 17 y 18
                         else:  # If the list is None, it returns False. It checks that in fact there aren't any missing values
                             return False  # Case 19
                 else:
@@ -350,9 +369,16 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                     # Check that there aren't any null python values or missing values from the list
                     # 'missing_values' in the column specified by field
                     if missing_values is not None:  # Check that there are missing values in the list 'missing_values'
-                        return True if not data_dictionary[field].isnull().values.any() and not any(
-                            value in missing_values for value in
-                            data_dictionary[field].values) else False  # Case 26 y 27
+                        if not data_dictionary[field].isnull().values.any() and not any(
+                                value in missing_values for value in
+                                data_dictionary[field].values):
+                            return True
+                        else:
+                            if origin_function:
+                                for idx, val in data_dictionary[field].items():
+                                    if val in missing_values or pd.isnull(val):
+                                        print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
+                            return False  # Case 26 y 27
                     else:  # If the list is None, it checks that there aren't any python null values in the column specified by field
                         return True if not data_dictionary[field].isnull().values.any() else False  # Case 28 y 29
                 else:
@@ -362,7 +388,7 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
 
 def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, invalid_values: list,
                          field: str = None, quant_abs: int = None, quant_rel: float = None,
-                         quant_op: Operator = None) -> bool:
+                         quant_op: Operator = None, origin_function: str = None) -> bool:
     """
     Check if the data_dictionary meets the condition of belong_op with
     respect to the invalid values defined in invalid_values.
@@ -379,6 +405,7 @@ def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, inval
                         with respect the enum operator quant_op
     :param quant_op: enum operator which can be Operator.GREATEREQUAL=0, Operator.GREATER=1, Operator.LESSEQUAL=2,
            Operator.LESS=3, Operator.EQUAL=4
+    :param origin_function: function name
 
     :return: if data_dictionary meets the condition of belong_op with respect
     to the invalid values defined in invalid_values
@@ -490,7 +517,7 @@ def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, inval
             else:
                 if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                     # Check that there aren't any invalid values in the column specified by field
-                    if invalid_values is not None: # Checks that there are invalid values in the list 'invalid_values'
+                    if invalid_values is not None:  # Checks that there are invalid values in the list 'invalid_values'
                         return True if not any(
                             value in invalid_values for value in
                             data_dictionary[field].values) else False  # Case 27 y 28
@@ -502,7 +529,8 @@ def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, inval
 
 
 def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, field: str = None,
-                   quant_abs: int = None, quant_rel: float = None, quant_op: Operator = None) -> bool:
+                   quant_abs: int = None, quant_rel: float = None, quant_op: Operator = None,
+                   origin_function: str = None) -> bool:
     """
     Check if there are outliers in the numeric columns of data_dictionary. The Outliers are calculated using the IQR method, so the outliers are the values that are
     below Q1 - 1.5 * IQR or above Q3 + 1.5 * IQR
@@ -514,6 +542,8 @@ def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, fiel
     :param quant_abs: integer which represents the absolute number of times that value should appear
     :param quant_rel: float which represents the relative number of times that value should appear
     :param quant_op: enum operator which can be Operator.GREATEREQUAL=0, Operator.GREATER=1, Operator.LESSEQUAL=2,
+              Operator.LESS=3, Operator.EQUAL=4
+    :param origin_function: function name
 
     :return: boolean indicating if there are outliers in the data_dictionary
     """
@@ -543,7 +573,7 @@ def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, fiel
                     else:
                         return False  # Case 6
                 elif quant_abs is not None and quant_rel is not None:
-                        # If both are provided, a ValueError is raised
+                    # If both are provided, a ValueError is raised
                     raise ValueError(
                         "quant_rel and quant_abs can't have different values than None at the same time")  # Case 7
                 else:
@@ -590,7 +620,8 @@ def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, fiel
                         raise ValueError(
                             "quant_rel and quant_abs can't have different values than None at the same time")  # Case 19
                     else:
-                        raise ValueError("Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 20
+                        raise ValueError(
+                            "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 20
             else:
                 if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                     # Check that there aren't any invalid values in the column specified by field
