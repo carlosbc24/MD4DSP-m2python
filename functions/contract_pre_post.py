@@ -40,7 +40,7 @@ def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Be
         return True  # Case 4
 
 
-def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: pd.DataFrame, belong_op: Belong,
+def check_fix_value_range(value: Union[str, float, datetime, int], data_dictionary: pd.DataFrame, belong_op: Belong,
                           field: str = None, quant_abs: int = None, quant_rel: float = None,
                           quant_op: Operator = None, origin_function: str = None) -> bool:
     """
@@ -64,12 +64,29 @@ def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: p
     data_dictionary = data_dictionary.replace({
         np.nan: None})  # Replace NaN values with None to avoid error when comparing None with NaN.
     # As the dataframe is of floats, the None are converted to NaN
-    if value is not None and type(value) is not str and type(
-            value) is not pd.Timestamp:  # Before casting, it is checked that value is not None,
-        # str or datetime(Timestamp), so that only the int are casted
-        # Before casting, it is checked that value is not None,
-        # str or datetime(Timestamp), so that only the int are casted
-        value = float(value)  # Cast the float to avoid errors when comparing the value with the values of the dataframe
+    # If value is not None, perform the corresponding conversion
+    if value is not None:
+        # If a specific field is provided, use the type of that column.
+        if field is not None:
+            # If the column is numeric and value is a string, attempt to convert it to int or float.
+            if np.issubdtype(data_dictionary[field].dtype, np.number) and isinstance(value, str):
+                try:
+                    value = int(value)
+                except ValueError:
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        raise ValueError("Could not convert the value to a numeric type.")
+            # For cases where value is neither a string nor a pd.Timestamp, cast it to float.
+            elif not isinstance(value, str) and not isinstance(value, pd.Timestamp):
+                value = float(value)
+        else:
+            # When field is None, simply try to cast value to float if it's not a str or Timestamp.
+            if not isinstance(value, str) and not isinstance(value, pd.Timestamp):
+                try:
+                    value = float(value)
+                except ValueError:
+                    raise ValueError("Could not convert the value to a numeric type.")
 
     if field is None:
         if belong_op == Belong.BELONG:
@@ -106,7 +123,11 @@ def check_fix_value_range(value: Union[str, float, datetime], data_dictionary: p
                 raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 10.5
             if belong_op == Belong.BELONG:  # If the value should belong to the column
                 if quant_op is None:
-                    return True if value in data_dictionary[field].values else False  # Case 11 y 12
+                    if value in data_dictionary[field].values:
+                        return True  # Case 11
+                    else:
+                        print_and_log(f"Origin function: {origin_function} value {value} not in column {field}")
+                        return False  # Case 12
                 else:
                     if quant_rel is not None and quant_abs is None:
                         return True if value in data_dictionary[field].values and compare_numbers(  # Case 13 y 14
