@@ -97,7 +97,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
@@ -122,7 +122,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
@@ -150,7 +150,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
@@ -164,7 +164,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
@@ -1011,7 +1011,8 @@ def check_inv_special_value_num_op(data_dictionary_in: pd.DataFrame, data_dictio
 
 def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                           belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                          field_in: str = None, field_out: str = None) -> bool:
+                                          field_in: str = None,
+                                          field_out: str = None, origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the MissingValue - MissingValue relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if all missing values in the input dataframe are still
@@ -1026,6 +1027,7 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                                 If it's Belong.NOTBELONG, the function checks if the missing values are not missing anymore.
         field_in (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
         field_out (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+        origin_function (str): The name of the function that calls this function. This is used for logging purposes.
 
     Returns:
         bool: True if the invariant is satisfied, False otherwise.
@@ -1039,13 +1041,13 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                         if belong_op_out == Belong.NOTBELONG:
                             if pd.isnull(data_dictionary_out.loc[row_index, column_name]) or data_dictionary_out.loc[row_index, column_name] != value:
                                 print_and_log(
-                                    f"Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
                                 return False
 
                         if belong_op_out == Belong.BELONG:
                             if not pd.isnull(data_dictionary_out.loc[row_index, column_name]):
                                 print_and_log(
-                                    f"Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
                                 return False
 
                 elif belong_op_in == Belong.BELONG:  # Check those that belong to NULL
@@ -1053,13 +1055,13 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                         if belong_op_out == Belong.NOTBELONG:
                             if pd.isnull(data_dictionary_out.loc[row_index, column_name]):
                                 print_and_log(
-                                    f"Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
                                 return False
 
                         if belong_op_out == Belong.BELONG:
                             if not pd.isnull(data_dictionary_out.loc[row_index, column_name]):
                                 print_and_log(
-                                    f"Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
                                 return False
 
         return True
@@ -1702,7 +1704,7 @@ def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame,
 
 
 def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                             columns: list[str], belong_op: Belong) -> bool:
+                             columns: list[str], belong_op: Belong, origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the FilterColumns relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if the filter is correctly applied to the
@@ -1712,6 +1714,7 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
     :param data_dictionary_out: dataframe with the output data
     :param columns: list of column names to apply the filter
     :param belong_op: condition to check the invariant
+    :param origin_function: name of the function that calls this function
 
     :return: True if the invariant is satisfied, False otherwise
     """
@@ -1739,13 +1742,13 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
         # Verify missing columns (should be kept but are not)
         missing_columns = expected_columns - output_columns
         if missing_columns:
-            print_and_log(f"Missing columns that should be kept: {missing_columns}")
+            print_and_log(f"Error in function:  {origin_function} Missing columns that should be kept: {missing_columns}")
             result = False
 
         # Verify extra columns (should not be there but are)
         extra_columns = output_columns & columns_set
         if extra_columns:
-            print_and_log(f"Additional columns that should not be there: {extra_columns}")
+            print_and_log(f"Error in function:  {origin_function} Additional columns that should not be there: {extra_columns}")
             result = False
 
     elif belong_op == Belong.NOTBELONG:
@@ -1755,13 +1758,13 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
         # Verify missing columns (should be kept but are not)
         missing_columns = expected_columns - output_columns
         if missing_columns:
-            print_and_log(f"Missing columns that should be kept: {missing_columns}")
+            print_and_log(f"Error in function:  {origin_function} Missing columns that should be kept: {missing_columns}")
             result = False
 
         # Verify extra columns (should not be there but are)
         extra_columns = output_columns - columns_set
         if extra_columns:
-            print_and_log(f"Additional columns that should not be there: {extra_columns}")
+            print_and_log(f"Error in function:  {origin_function} Additional columns that should not be there: {extra_columns}")
             result = False
 
     return result

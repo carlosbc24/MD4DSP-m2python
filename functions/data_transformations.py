@@ -1094,13 +1094,15 @@ def transform_filter_columns(data_dictionary: pd.DataFrame, columns: list[str],
 
 
 def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataType,
-                        field: str) -> pd.DataFrame:
+                        field: str, origin_function: str = None) -> pd.DataFrame:
     """
     Execute the data transformation of the CastType relation
     Args:
         data_dictionary: dataframe with the data
         data_type_output: data type of the output column
         field: field to execute and store the data transformation
+        origin_function: function that calls this function
+
     Returns:
         pd.DataFrame:
     """
@@ -1117,9 +1119,9 @@ def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataTyp
         else:
             raise ValueError("The data type is not numeric")
     elif data_dictionary[field].dtype == int or data_dictionary[field].dtype == float:
-        print_and_log("The field is already a numeric type")
+        print_and_log(f"Error in function:  {origin_function}, the field is already a numeric type")
     else:
-        print_and_log("The field is not a string or object")
+        print_and_log(f"Error in function:  {origin_function}, the field is not a string or object")
 
     return data_dictionary_copy
 

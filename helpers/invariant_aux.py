@@ -4383,7 +4383,7 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
                             keep_no_trans_result = False
                             print_and_log(f"Error in function:  {origin_function} row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
-    if not keep_no_trans_result:
+    if keep_no_trans_result == False:
         return False
     else:
         return True if result else False
