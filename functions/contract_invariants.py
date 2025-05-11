@@ -90,7 +90,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {mapping_values[value][0].strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0].strip()} and is: {data_dictionary_out.loc[row_index, column_name].strip()}")
                     else:
                         # Check if the corresponding value in data_dictionary_out matches fix_value_output
                         if data_dictionary_out.loc[row_index, column_name] != mapping_values[value][0]:
@@ -101,7 +101,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, column_name]}")
                 elif value in mapping_values and mapping_values[value][1] == True:
                     if (not pd.isna(data_dictionary_out.loc[row_index, column_name]) and type(
                             data_dictionary_out.loc[row_index, column_name]) == str
@@ -115,7 +115,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, column_name]}")
                     else:
                         if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
                             row_index, column_name].replace(value, mapping_values[value][0]):
@@ -126,7 +126,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, column_name]}")
     elif field_in is not None:
         if field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
             for row_index, value in data_dictionary_in[field_in].items():
@@ -143,7 +143,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value][0].strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
+                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value][0].strip()} and is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                     else:
                         # Check if the corresponding value in data_dictionary_out matches fix_value_output
                         if data_dictionary_out.loc[row_index, field_in] != mapping_values[value][0]:
@@ -154,7 +154,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, field_in]}")
                 elif value in mapping_values and mapping_values[value][1] == True:
                     if (not pd.isna(data_dictionary_out.loc[row_index, field_out]) and type(
                             data_dictionary_out.loc[row_index, field_out]) == str
@@ -168,7 +168,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, field_in]}")
                     else:
                         if data_dictionary_out.loc[row_index, field_out] != data_dictionary_in.loc[
                             row_index, field_in].replace(value, mapping_values[value][0]):
@@ -179,7 +179,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} and is: {data_dictionary_out.loc[row_index, field_in]}")
 
         elif field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
@@ -1076,12 +1076,12 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                     if belong_op_out == Belong.NOTBELONG:  # Check those that do not belong to NULL
                         if pd.isnull(data_dictionary_out.loc[row_index, field_out]) or data_dictionary_out.loc[row_index, field_out] != value:
                             print_and_log(
-                                f"Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
+                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
                             return False  # False because it was not null in the input and is null in the output
                     elif belong_op_out == Belong.BELONG:  # Check those that belong to NULL
                         if not pd.isnull(data_dictionary_out.loc[row_index, field_out]):
                             print_and_log(
-                                f"Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
+                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
                             return False  # False because it was not null in the input and is null in the output
 
             elif belong_op_in == Belong.BELONG:  # Check those that belong to NULL
@@ -1089,12 +1089,12 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                     if belong_op_out == Belong.NOTBELONG:
                         if pd.isnull(data_dictionary_out.loc[row_index, field_out]):
                             print_and_log(
-                                f"Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
+                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
                             return False  # False because it was null in the input and is null in the output
                     elif belong_op_out == Belong.BELONG:  # Check those that belong to NULL
                         if not pd.isnull(data_dictionary_out.loc[row_index, field_out]):
                             print_and_log(
-                                f"Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
+                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
                             return False  # False because it was null in the input and is null in the output
 
         return True
@@ -1105,8 +1105,8 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
 
 def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                              math_op: MathOperator, firstOperand, isFieldFirst: bool, secondOperand,
-                             isFieldSecond: bool,
-                             belong_op_out: Belong = Belong.BELONG, field_in: str = None, field_out: str = None) -> bool:
+                             isFieldSecond: bool, belong_op_out: Belong = Belong.BELONG, field_in: str = None,
+                             field_out: str = None, origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the MathOperation relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if the operation is correctly applied to the
@@ -1124,6 +1124,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                                 If it's Belong.NOTBELONG, the function checks if the operation is incorrect.
         field_in (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
         field_out (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+        origin_function (str): The name of the function that calls this function. This is used for logging purposes.
 
     Returns:
         bool: True if the invariant is satisfied, False otherwise.
@@ -1161,21 +1162,25 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + secondOperand):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] + secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(firstOperand + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand + data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 result = True
                 for item in data_dictionary_out[field_out]:
                     if item != (firstOperand + secondOperand):
                         result = False
+                        print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand + secondOperand} but is: {item}")
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(
@@ -1183,21 +1188,25 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - secondOperand):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] - secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(firstOperand - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand - data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 result = True
                 for item in data_dictionary_out[field_out]:
                     if item != (firstOperand - secondOperand):
                         result = False
+                        print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand - secondOperand} but is: {item}")
         elif math_op == MathOperator.MULTIPLY:
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(
@@ -1205,21 +1214,25 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] * data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] * secondOperand):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] * secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(firstOperand * data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand * data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 result = True
                 for item in data_dictionary_out[field_out]:
                     if item != (firstOperand * secondOperand):
                         result = False
+                        print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand * secondOperand} but is: {item}")
         elif math_op == MathOperator.DIVIDE:
             # Check division by zero before invariant check
             if isFieldFirst and isFieldSecond:
@@ -1230,6 +1243,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if secondOperand == 0:
                     raise ZeroDivisionError("Division by zero encountered with constant denominator.")
@@ -1237,6 +1251,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if data_dictionary_in[secondOperand].eq(0).any():
                     raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
@@ -1244,6 +1259,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 if secondOperand == 0:
                     raise ZeroDivisionError("Division by zero encountered with constant denominator.")
@@ -1251,6 +1267,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                 for item in data_dictionary_out[field_out]:
                     if item != (firstOperand / secondOperand):
                         result = False
+                        print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand / secondOperand} but is: {item}")
     elif belong_op_out == Belong.NOTBELONG:
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
@@ -1259,16 +1276,19 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] + data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] + secondOperand):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] + secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if not data_dictionary_out[field_out].equals(firstOperand + data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand + data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 result = False
                 for item in data_dictionary_out[field_out]:
@@ -1282,16 +1302,19 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] - data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] - secondOperand):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] - secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if not data_dictionary_out[field_out].equals(firstOperand - data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand - data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 result = False
                 for item in data_dictionary_out[field_out]:
@@ -1305,16 +1328,19 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] * data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] * secondOperand):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] * secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if not data_dictionary_out[field_out].equals(firstOperand * data_dictionary_in[secondOperand]):
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand * data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 result = False
                 for item in data_dictionary_out[field_out]:
@@ -1330,6 +1356,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             elif isFieldFirst and not isFieldSecond:
                 if secondOperand == 0:
                     raise ZeroDivisionError("Division by zero encountered with constant denominator.")
@@ -1337,6 +1364,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / secondOperand} but is: {data_dictionary_out[field_out]}")
             elif not isFieldFirst and isFieldSecond:
                 if data_dictionary_in[secondOperand].eq(0).any():
                     raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
@@ -1344,6 +1372,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     result = True
                 else:
                     result = False
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
             else:
                 if secondOperand == 0:
                     raise ZeroDivisionError("Division by zero encountered with constant denominator.")
