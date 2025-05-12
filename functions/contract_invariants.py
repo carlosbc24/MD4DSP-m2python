@@ -77,109 +77,118 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
         # Iterate through all the columns of the dataframe
         for column_index, column_name in enumerate(data_dictionary_in.columns):
             for row_index, value in data_dictionary_in[column_name].items():
+                # Force the value to be a string and remove leading and trailing spaces
+                val_out = str(data_dictionary_out.loc[row_index, column_name]).strip()
+                val_mapped = str(mapping_values[value][0]).strip()
                 # Check if the value is equal to fix_value_input
                 if value in mapping_values and mapping_values[value][1] == False:
-                    if (not pd.isna(data_dictionary_out.loc[row_index, column_name]) and type(
-                            data_dictionary_out.loc[row_index, column_name]) == str
+                    if (not pd.isna(val_out) and type(
+                            val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
-                        if data_dictionary_out.loc[row_index, column_name].strip() != mapping_values[value][0].strip():
+                        if val_out.strip() != val_mapped.strip():
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {mapping_values[value][0].strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
+                                    f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {val_mapped.strip()} but is: {val_out.strip()}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0].strip()} and is: {data_dictionary_out.loc[row_index, column_name].strip()}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped.strip()} and is: {val_out.strip()}")
                     else:
                         # Check if the corresponding value in data_dictionary_out matches fix_value_output
-                        if data_dictionary_out.loc[row_index, column_name] != mapping_values[value][0]:
+                        if data_dictionary_out.loc[row_index, column_name] != val_mapped:
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {val_mapped} but is: {val_out}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
                 elif value in mapping_values and mapping_values[value][1] == True:
-                    if (not pd.isna(data_dictionary_out.loc[row_index, column_name]) and type(
-                            data_dictionary_out.loc[row_index, column_name]) == str
+                    if (not pd.isna(val_out) and type(
+                            val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
-                        if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
-                            row_index, column_name].replace(value, mapping_values[value][0]):
+                        if val_out != data_dictionary_in.loc[
+                            row_index, column_name].replace(value, val_mapped):
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {mapping_values[value]} but is: {val_out}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
                     else:
-                        if data_dictionary_out.loc[row_index, column_name] != data_dictionary_in.loc[
-                            row_index, column_name].replace(value, mapping_values[value][0]):
+                        if val_out != data_dictionary_in.loc[
+                            row_index, column_name].replace(value, val_mapped):
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {val_mapped} but is: {val_out}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, column_name]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
     elif field_in is not None:
         if field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
             for row_index, value in data_dictionary_in[field_in].items():
+                # Force the value to be a string and remove leading and trailing spaces
+                val_out = str(data_dictionary_out.loc[row_index, field_out]).strip()
+                key = str(value).strip()  # Convert key to string to assure it matches the mapping
+                if key in mapping_values:
+                    val_mapped = str(mapping_values[key][0]).strip()
+
                 # Check if the value is equal to fix_value_input
                 if value in mapping_values and mapping_values[value][1] == False:
-                    if (not pd.isna(data_dictionary_out.loc[row_index, field_out]) and type(
-                            data_dictionary_out.loc[row_index, field_out]) == str
+                    if (not pd.isna(val_out) and type(val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
-                        if data_dictionary_out.loc[row_index, field_out].strip() != mapping_values[value][0].strip():
+                        if val_out != val_mapped:
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value][0].strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
+                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {val_mapped.strip()} but is: {val_out.strip()}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value][0].strip()} and is: {data_dictionary_out.loc[row_index, field_out].strip()}")
+                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {val_mapped.strip()} and is: {val_out.strip()}")
                     else:
                         # Check if the corresponding value in data_dictionary_out matches fix_value_output
-                        if data_dictionary_out.loc[row_index, field_in] != mapping_values[value][0]:
+                        if val_out != val_mapped:
                             if belong_op_out == Belong.BELONG:
                                 result = False
+                                print("Data out: ", val_out, "Data mapped: ", val_mapped)
                                 print_and_log(
-                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {field_out} value should be: {val_mapped} but is: {val_out}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {val_mapped} and is: {val_out}")
                 elif value in mapping_values and mapping_values[value][1] == True:
-                    if (not pd.isna(data_dictionary_out.loc[row_index, field_out]) and type(
-                            data_dictionary_out.loc[row_index, field_out]) == str
+                    if (not pd.isna(val_out) and type(
+                            val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
-                        if data_dictionary_out.loc[row_index, field_out] != data_dictionary_in.loc[
-                            row_index, field_in].replace(value, mapping_values[value][0]):
+                        if val_out != data_dictionary_in.loc[
+                            row_index, field_in].replace(value, val_mapped):
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Error in function:  {origin_function} Error in row: {row_index} and column: {field_out} value should be: {val_mapped} but is: {val_out}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {mapping_values[value][0]} and is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {val_mapped} and is: {val_out}")
                     else:
-                        if data_dictionary_out.loc[row_index, field_out] != data_dictionary_in.loc[
-                            row_index, field_in].replace(value, mapping_values[value][0]):
+                        if val_out != data_dictionary_in.loc[
+                            row_index, field_in].replace(value, val_mapped):
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
-                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} but is: {val_out}")
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} and is: {data_dictionary_out.loc[row_index, field_in]}")
+                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} and is: {val_out}")
 
         elif field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
@@ -373,7 +382,7 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
                     if data_dictionary_out.loc[row_index, field_out].strip() != fix_value_output.strip():
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
                             result = False
-                            print_and_log(
+                            print(
                                 f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output.strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
