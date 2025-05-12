@@ -68,25 +68,27 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
     if value is not None:
         # If a specific field is provided, use the type of that column.
         if field is not None:
-            # If the column is numeric and value is a string, attempt to convert it to int or float.
-            if np.issubdtype(data_dictionary[field].dtype, np.number) and isinstance(value, str):
-                try:
-                    value = int(value)
-                except ValueError:
+            for idx, val in data_dictionary[field].items():
+                cell_dtype = np.array(data_dictionary.at[idx, field]).dtype
+                # If the column is numeric and value is a string, attempt to convert it to int or float.
+                if np.issubdtype(cell_dtype, np.number) and isinstance(value, str):
                     try:
-                        value = float(value)
+                        value = int(value)
                     except ValueError:
-                        raise ValueError("Could not convert the value to a numeric type.")
-            # For cases where value is neither a string nor a pd.Timestamp, cast it to float.
-            elif not isinstance(value, str) and not isinstance(value, pd.Timestamp):
-                value = float(value)
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            print_and_log("Could not convert the value to a numeric type.")
+                # For cases where value is neither a string nor a pd.Timestamp, cast it to float.
+                elif not isinstance(value, str) and not isinstance(value, pd.Timestamp):
+                    value = float(value)
         else:
             # When field is None, simply try to cast value to float if it's not a str or Timestamp.
             if not isinstance(value, str) and not isinstance(value, pd.Timestamp):
                 try:
                     value = float(value)
                 except ValueError:
-                    raise ValueError("Could not convert the value to a numeric type.")
+                    print_and_log("Could not convert the value to a numeric type.")
 
     if field is None:
         if belong_op == Belong.BELONG:
