@@ -1511,7 +1511,7 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
     :param data_dictionary_in: dataframe with the input data
     :param data_dictionary_out: dataframe with the output data
     :param dictionary: dictionary with the columns or string to join.
-                            If the value is True, it mans the key is a column.
+                            If the value is True, it means the key is a column.
                             If the value is False, it means the key is a string.
     :param field_in: field to check the invariant in the input dataframe
     :param field_out: field to check the invariant in the output dataframe
@@ -1548,8 +1548,6 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
             result = False
             print_and_log(
                 f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
-        else:
-            result = True
 
     return result
 
