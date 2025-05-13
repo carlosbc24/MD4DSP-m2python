@@ -9204,91 +9204,176 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # For the moment there will only be tests regarding the casting string to number
 
         # Caso 1
-        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
-        expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+        self.small_batch_dataset['track_popularity']=self.small_batch_dataset['track_popularity'].astype(object)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(int)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
                                                      cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
                                                      belong_op_out=Belong.BELONG,
-                                                     field_in='A', field_out='A')
+                                                     field_in='track_popularity', field_out='track_popularity')
 
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Caso 2
-        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
-        expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-        expected_df['A'] = expected_df['A'].astype(float)
+        self.small_batch_dataset['track_popularity'] = self.small_batch_dataset['track_popularity'].astype(str)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(float)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
                                                      cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
                                                      belong_op_out=Belong.BELONG,
-                                                     field_in='A', field_out='A')
+                                                     field_in='track_popularity', field_out='track_popularity')
 
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
 
         # Caso 3
-        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
-        expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-        expected_df['A'] = expected_df['A'].astype(float)
+        self.small_batch_dataset['energy'] = self.small_batch_dataset['energy'].astype(str)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['energy'] = expected_df['energy'].astype(float)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
                                                      cast_type_in=DataType.STRING, cast_type_out=DataType.DOUBLE,
                                                      belong_op_out=Belong.BELONG,
-                                                     field_in='A', field_out='A')
+                                                     field_in='energy', field_out='energy')
 
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Caso 4
-        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
-        expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
+        self.small_batch_dataset['energy'] = self.small_batch_dataset['energy'].astype(str)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['energy'] = expected_df['energy'].astype(float)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
-                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.DOUBLE,
                                                      belong_op_out=Belong.BELONG,
-                                                     field_in='A', field_out='B')
+                                                     field_in='energy', field_out='energy')
 
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Caso 5
-        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
-        expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
-        expected_df['A'] = expected_df['A'].astype(int)
+        self.small_batch_dataset['track_popularity'] = self.small_batch_dataset['track_popularity'].astype(str)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(float)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
-                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
                                                      belong_op_out=Belong.BELONG,
-                                                     field_in='A', field_out='B')
+                                                     field_in='track_popularity', field_out='track_popularity')
 
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Caso 6
-        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
-        expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
-        expected_df['A'] = expected_df['A'].astype(int)
+        self.small_batch_dataset['track_popularity'] = self.small_batch_dataset['track_popularity'].astype(object)
+        expected_df = self.small_batch_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(float)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
-                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
                                                      belong_op_out=Belong.BELONG,
-                                                     field_in='A', field_out='B')
+                                                     field_in='track_popularity', field_out='track_popularity')
 
         assert result is True, "Test Case 6 Failed: Expected True, but got False"
         print_and_log("Test Case 6 Passed: Expected True, got True")
 
 
     def execute_WholeDatasetTests_checkInv_CastType(self):
+        # For the moment there will only be tests regarding the casting string to number
+
         # Caso 1
-        pass
+        self.rest_of_dataset['track_popularity']=self.rest_of_dataset['track_popularity'].astype(object)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(int).fillna(0)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='track_popularity', field_out='track_popularity')
+
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        self.rest_of_dataset['track_popularity'] = self.rest_of_dataset['track_popularity'].astype(str)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(float).fillna(0)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='track_popularity', field_out='track_popularity')
+
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3
+        self.rest_of_dataset['energy'] = self.rest_of_dataset['energy'].astype(str)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['energy'] = expected_df['energy'].astype(float).fillna(0)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.DOUBLE,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='energy', field_out='energy')
+
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4
+        self.rest_of_dataset['energy'] = self.rest_of_dataset['energy'].astype(str)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['energy'] = expected_df['energy'].astype(float).fillna(0)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.DOUBLE,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='energy', field_out='energy')
+
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+        # Caso 5
+        self.rest_of_dataset['track_popularity'] = self.rest_of_dataset['track_popularity'].astype(str)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(float).fillna(0)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='track_popularity', field_out='track_popularity')
+
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6
+        self.rest_of_dataset['track_popularity'] = self.rest_of_dataset['track_popularity'].astype(object)
+        expected_df = self.rest_of_dataset.copy()
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(float).fillna(0)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='track_popularity', field_out='track_popularity')
+
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
 
 
     def execute_checkInv_Join(self):
@@ -9301,10 +9386,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         pd.options.mode.chained_assignment = None  # Suppresses warnings related to modifying copies of dataframes
 
         print_and_log("Dataset tests using small batch of the dataset:")
-        self.execute_SmallBatchTests_checkInv_CastType()
+        self.execute_SmallBatchTests_checkInv_Join()
         print_and_log("")
         print_and_log("Dataset tests using the whole dataset:")
-        self.execute_WholeDatasetTests_checkInv_CastType()
+        self.execute_WholeDatasetTests_checkInv_Join()
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
