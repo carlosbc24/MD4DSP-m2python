@@ -1545,9 +1545,10 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
 
     for idx, val in data_dictionary_in[field_in].items():
         if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
-            result = False
-            print_and_log(
-                f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
+            if data_dictionary_copy.loc[idx, field_out] is not np.nan or data_dictionary_out.loc[idx, field_out] is not np.nan:
+                result = False
+                print_and_log(
+                    f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     return result
 

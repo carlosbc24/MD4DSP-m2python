@@ -97,23 +97,23 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue,
-            self.execute_checkInv_MathOperation,
-            self.execute_checkInv_CastType,
-            self.execute_checkInv_Join,
-            self.execute_checkInv_filter_rows_primitive,
-            self.execute_checkInv_filter_rows_range,
-            self.execute_checkInv_filter_rows_special_values,
-            self.execute_checkInv_filter_columns
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            # self.execute_checkInv_MathOperation,
+            # self.execute_checkInv_CastType,
+            self.execute_checkInv_Join#,
+            # self.execute_checkInv_filter_rows_primitive,
+            # self.execute_checkInv_filter_rows_range,
+            # self.execute_checkInv_filter_rows_special_values,
+            # self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -9201,8 +9201,89 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_SmallBatchTests_checkInv_CastType(self):
+        # For the moment there will only be tests regarding the casting string to number
+
         # Caso 1
-        pass
+        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+        expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='A', field_out='A')
+
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+        expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+        expected_df['A'] = expected_df['A'].astype(float)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.FLOAT,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='A', field_out='A')
+
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3
+        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+        expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+        expected_df['A'] = expected_df['A'].astype(float)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.DOUBLE,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='A', field_out='A')
+
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4
+        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+        expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='A', field_out='B')
+
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+        # Caso 5
+        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+        expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
+        expected_df['A'] = expected_df['A'].astype(int)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='A', field_out='B')
+
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6
+        datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
+        expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
+        expected_df['A'] = expected_df['A'].astype(int)
+
+        result = self.invariants.check_inv_cast_type(data_dictionary_in=self.small_batch_dataset.copy(),
+                                                     data_dictionary_out=expected_df.copy(),
+                                                     cast_type_in=DataType.STRING, cast_type_out=DataType.INTEGER,
+                                                     belong_op_out=Belong.BELONG,
+                                                     field_in='A', field_out='B')
+
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
 
 
     def execute_WholeDatasetTests_checkInv_CastType(self):

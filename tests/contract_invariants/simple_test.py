@@ -48,23 +48,23 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            # self.execute_checkInv_FixValue_FixValue,
-            # self.execute_checkInv_FixValue_DerivedValue,
-            # self.execute_checkInv_FixValue_NumOp,
-            # self.execute_checkInv_Interval_FixValue,
-            # self.execute_checkInv_Interval_DerivedValue,
-            # self.execute_checkInv_Interval_NumOp,
-            # self.execute_checkInv_SpecialValue_FixValue,
-            # self.execute_checkInv_SpecialValue_DerivedValue,
-            # self.execute_checkInv_SpecialValue_NumOp,
-            # self.execute_checkInv_MissingValue_MissingValue,
-            # self.execute_checkInv_MathOperation,
-            # self.execute_checkInv_CastType,
-            self.execute_checkInv_Join#,
-            # self.execute_checkInv_filter_rows_primitive,
-            # self.execute_checkInv_filter_rows_range,
-            # self.execute_checkInv_filter_rows_special_values,
-            # self.execute_checkInv_filter_columns
+            self.execute_checkInv_FixValue_FixValue,
+            self.execute_checkInv_FixValue_DerivedValue,
+            self.execute_checkInv_FixValue_NumOp,
+            self.execute_checkInv_Interval_FixValue,
+            self.execute_checkInv_Interval_DerivedValue,
+            self.execute_checkInv_Interval_NumOp,
+            self.execute_checkInv_SpecialValue_FixValue,
+            self.execute_checkInv_SpecialValue_DerivedValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_MathOperation,
+            self.execute_checkInv_CastType,
+            self.execute_checkInv_Join,
+            self.execute_checkInv_filter_rows_primitive,
+            self.execute_checkInv_filter_rows_range,
+            self.execute_checkInv_filter_rows_special_values,
+            self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -6099,6 +6099,18 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         assert result is False, "Test Case 13 Failed: Expected False, but got True"
         print_and_log("Test Case 13 Passed: Expected False, got False")
+
+        # Caso 14: Unir con valores faltantes y manejo adecuado (NaN)
+        datadic = pd.DataFrame({'A': ['1', np.nan, '3'], 'B': ['x', np.nan, 'z']})
+        expected_df = pd.DataFrame({'A': ['1', np.nan, '3'], 'B': ['x', np.nan, 'z'], 'C': ['1x', np.nan, '3z']})
+        dictionary = {'A': True, 'B': True}
+
+        result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                dictionary=dictionary, field_in='A', field_out='C')
+
+        assert result is True, "Test Case 14 Failed: Expected True, but got False"
+        print_and_log("Test Case 14 Passed: Expected True, got True")
 
     def execute_checkInv_filter_rows_primitive(self):
         pass
