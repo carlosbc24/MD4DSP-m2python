@@ -33,6 +33,30 @@ def set_logger(logger_name: str = "test"):
         print(f"Error al configurar el registro: {e}")
 
 
+def print_metadata_error_row(function: str, index, field, value):
+    """
+    Print the error in the metadata
+
+    Parameters:
+        function: function name
+        index: index of the row
+        field: field name
+        value: value of the field
+    """
+    print_and_log(f"Error in function: {function} row: {index} and column: {field} value is: {value}")
+
+
+def print_metadata_error_field(function: str, field):
+    """
+    Print the error in the metadata
+
+    Parameters:
+        function: function name
+        field: field name
+    """
+    print_and_log(f"Error in function: {function} column: {field} is in dataframe")
+
+
 def print_and_log(message, level=logging.INFO):
     """
     Print a message on screen and save it in the log
