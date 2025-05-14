@@ -1112,16 +1112,13 @@ def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataTyp
         raise ValueError("The field does not exist in the dataframe")
 
     if data_dictionary[field].dtype == 'object' or data_dictionary[field].dtype == 'string':
-        nan_indexes = data_dictionary_copy[data_dictionary_copy[field].isnull()].index
-
         if data_type_output == DataType.INTEGER:
-            data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(int)
+            data_dictionary_copy[field] = data_dictionary_copy[field].astype('Int64')
         elif data_type_output == DataType.DOUBLE or data_type_output == DataType.FLOAT:
-            data_dictionary_copy[field] = data_dictionary_copy[field].fillna(0).astype(float)
+            data_dictionary_copy[field] = data_dictionary_copy[field].astype(float)
         else:
             raise ValueError("The data type is not numeric")
-        # Fill the original NaN values with NaN again
-        data_dictionary_copy.loc[nan_indexes, field] = np.nan
+
     elif data_dictionary[field].dtype == int or data_dictionary[field].dtype == float:
         print_and_log(f"Error in function:  {origin_function}, the field is already a numeric type")
     else:
