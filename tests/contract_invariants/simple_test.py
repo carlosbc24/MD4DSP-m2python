@@ -5863,6 +5863,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Caso 1
         datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
         expected_df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+        expected_df['A'] = expected_df['A'].astype('Int64')
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=datadic.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -5904,6 +5905,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Caso 4
         datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
         expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
+        expected_df['B'] = datadic['A'].astype('Int64')
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=datadic.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -5917,7 +5919,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Caso 5
         datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
         expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
-        expected_df['A'] = expected_df['A'].astype(int)
+        expected_df['B'] = expected_df['A'].astype('Int64')
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=datadic.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -5931,7 +5933,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         # Caso 6
         datadic = pd.DataFrame({'A': ['1', '2', '3'], 'B': [4, 5, 6]})
         expected_df = pd.DataFrame({'A': ['1', '2', '3'], 'B': [1, 2, 3]})
-        expected_df['A'] = expected_df['A'].astype(int)
+        expected_df['B'] = expected_df['A'].astype('Int64')
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=datadic.copy(),
                                                      data_dictionary_out=expected_df.copy(),
