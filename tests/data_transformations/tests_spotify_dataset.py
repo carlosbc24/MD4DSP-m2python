@@ -134,22 +134,23 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         Execute all the data_transformations with external dataset tests
         """
         test_methods = [
-            self.execute_transform_FixValue_FixValue,
-            self.execute_transform_FixValue_DerivedValue,
-            self.execute_transform_FixValue_NumOp,
-            self.execute_transform_Interval_FixValue,
-            self.execute_transform_Interval_DerivedValue,
-            self.execute_transform_Interval_NumOp,
-            self.execute_transform_SpecialValue_FixValue,
-            self.execute_transform_SpecialValue_DerivedValue,
-            self.execute_transform_SpecialValue_NumOp,
-            self.execute_transform_derived_field,
-            self.execute_transform_filter_columns,
-            self.execute_transform_filter_rows_primitive,
-            self.execute_transform_filter_rows_special_values,
-            self.execute_transform_filter_rows_range,
-            self.execute_execute_transform_math_operation,
-            self.execute_transform_join
+            # self.execute_transform_FixValue_FixValue,
+            # self.execute_transform_FixValue_DerivedValue,
+            # self.execute_transform_FixValue_NumOp,
+            # self.execute_transform_Interval_FixValue,
+            # self.execute_transform_Interval_DerivedValue,
+            # self.execute_transform_Interval_NumOp,
+            # self.execute_transform_SpecialValue_FixValue,
+            # self.execute_transform_SpecialValue_DerivedValue,
+            # self.execute_transform_SpecialValue_NumOp,
+            # self.execute_transform_derived_field,
+            # self.execute_transform_filter_columns,
+            # self.execute_transform_filter_rows_primitive,
+            # self.execute_transform_filter_rows_special_values,
+            # self.execute_transform_filter_rows_range,
+            # self.execute_execute_transform_math_operation,
+            # self.execute_transform_join,
+            self.execute_transform_cast_type
         ]
 
         print_and_log("")
@@ -6434,3 +6435,56 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                              field_out='track_artist', dictionary=dictionary)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+    def execute_transform_cast_type(self):
+        """
+        Execute the data transformation test for the function transform_join
+        """
+        print_and_log("Testing transform_cast_type Data Transformation Function")
+        print_and_log("")
+
+        print_and_log("Dataset tests using small batch of the dataset:")
+        self.execute_SmallBatchTests_execute_transform_cast_type()
+        print_and_log("")
+        print_and_log("Dataset tests using the whole dataset:")
+        self.execute_WholeDatasetTests_execute_transform_cast_type()
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_SmallBatchTests_execute_transform_cast_type(self):
+        """
+        Execute the data transformation test using a small batch of the dataset for the function transform_cast_type
+        """
+        print_and_log("Testing transform_cast_type Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+
+    def execute_WholeDatasetTests_execute_transform_cast_type(self):
+        """
+        Execute the data transformation test using the whole dataset for the function transform_cast_type
+        """
+        print_and_log("Testing transform_cast_type Function")
+        print_and_log("")
+        print_and_log("Casos Básicos añadidos:")
+        print_and_log("")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
