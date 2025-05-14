@@ -108,12 +108,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             # self.execute_checkInv_SpecialValue_NumOp,
             # self.execute_checkInv_MissingValue_MissingValue,
             # self.execute_checkInv_MathOperation,
-            # self.execute_checkInv_CastType,
-            self.execute_checkInv_Join#,
-            # self.execute_checkInv_filter_rows_primitive,
-            # self.execute_checkInv_filter_rows_range,
-            # self.execute_checkInv_filter_rows_special_values,
-            # self.execute_checkInv_filter_columns
+            self.execute_checkInv_CastType,
+            self.execute_checkInv_Join,
+            self.execute_checkInv_filter_rows_primitive,
+            self.execute_checkInv_filter_rows_range,
+            self.execute_checkInv_filter_rows_special_values,
+            self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -9294,11 +9294,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 1
         self.rest_of_dataset['track_popularity']=self.rest_of_dataset['track_popularity'].astype(object)
         expected_df = self.rest_of_dataset.copy()
-        nan_indexes = expected_df[expected_df['track_popularity'].isnull()].index
-        expected_df['track_popularity'] = expected_df['track_popularity'].fillna(0).astype('Int64')
-
-        expected_df.loc[nan_indexes, 'track_popularity'] = np.nan
-
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype('Int64')
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -9312,9 +9308,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 2
         self.rest_of_dataset['track_popularity'] = self.rest_of_dataset['track_popularity'].astype(str)
         expected_df = self.rest_of_dataset.copy()
-        nan_indexes = expected_df[expected_df['track_popularity'].isnull()].index
-        expected_df['track_popularity'] = expected_df['track_popularity'].fillna(0).astype(float)
-        expected_df.loc[nan_indexes, 'track_popularity'] = np.nan
+        expected_df['track_popularity'] = expected_df['track_popularity'].astype(float)
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -9328,9 +9322,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 3
         self.rest_of_dataset['energy'] = self.rest_of_dataset['energy'].astype(str)
         expected_df = self.rest_of_dataset.copy()
-        nan_indexes = expected_df[expected_df['energy'].isnull()].index
         expected_df['energy'] = expected_df['energy'].fillna(0).astype(float)
-        expected_df.loc[nan_indexes, 'energy'] = np.nan
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -9344,9 +9336,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 4
         self.rest_of_dataset['energy'] = self.rest_of_dataset['energy'].astype(str)
         expected_df = self.rest_of_dataset.copy()
-        nan_indexes = expected_df[expected_df['energy'].isnull()].index
         expected_df['energy'] = expected_df['energy'].fillna(0).astype(float)
-        expected_df.loc[nan_indexes, 'energy'] = np.nan
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -9360,9 +9350,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 5
         self.rest_of_dataset['track_popularity'] = self.rest_of_dataset['track_popularity'].astype(str)
         expected_df = self.rest_of_dataset.copy()
-        nan_indexes = expected_df[expected_df['track_popularity'].isnull()].index
         expected_df['track_popularity'] = expected_df['track_popularity'].fillna(0).astype(float)
-        expected_df.loc[nan_indexes, 'track_popularity'] = np.nan
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
@@ -9376,9 +9364,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 6
         self.rest_of_dataset['track_popularity'] = self.rest_of_dataset['track_popularity'].astype(object)
         expected_df = self.rest_of_dataset.copy()
-        nan_indexes = expected_df[expected_df['track_popularity'].isnull()].index
         expected_df['track_popularity'] = expected_df['track_popularity'].fillna(0).astype(float)
-        expected_df.loc[nan_indexes, 'track_popularity'] = np.nan
 
         result = self.invariants.check_inv_cast_type(data_dictionary_in=self.rest_of_dataset.copy(),
                                                      data_dictionary_out=expected_df.copy(),
