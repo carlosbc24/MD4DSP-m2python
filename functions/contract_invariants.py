@@ -1053,7 +1053,8 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                     # to validate that the cast has been done correctly we have other invariants.
                     if not pd.isnull(value):
                         if belong_op_out == Belong.NOTBELONG:
-                            if pd.isnull(data_dictionary_out.loc[row_index, column_name]) or data_dictionary_out.loc[row_index, column_name] != value:
+                            if pd.isnull(data_dictionary_out.loc[row_index, column_name]) or str(
+                                    data_dictionary_out.loc[row_index, column_name]) != str(value):
                                 print_and_log(
                                     f"Error in function:  {origin_function} Error in row: {row_index} and column: {column_name} value should be: {value} but is: {data_dictionary_out.loc[row_index, column_name]}")
                                 return False
@@ -1088,11 +1089,10 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                 # to validate that the cast has been done correctly we have other invariants.
                 if not pd.isnull(value):
                     if belong_op_out == Belong.NOTBELONG:  # Check those that do not belong to NULL
-                        if pd.isnull(data_dictionary_out.loc[row_index, field_out]) or data_dictionary_out.loc[row_index, field_out] != value:
+                        if pd.isnull(data_dictionary_out.loc[row_index, field_out]) or str(data_dictionary_out.loc[
+                            row_index, field_out]) != str(value):
                             print(
-                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} "
-                                f"value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]} "
-                                f"type output: {type(data_dictionary_out.loc[row_index, field_out])} type input: {type(value)}")
+                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
                             return False  # False because it was not null in the input and is null in the output
                     elif belong_op_out == Belong.BELONG:  # Check those that belong to NULL
                         if not pd.isnull(data_dictionary_out.loc[row_index, field_out]):
