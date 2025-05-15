@@ -1091,7 +1091,7 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                     if belong_op_out == Belong.NOTBELONG:  # Check those that do not belong to NULL
                         if pd.isnull(data_dictionary_out.loc[row_index, field_out]) or str(data_dictionary_out.loc[
                             row_index, field_out]) != str(value):
-                            print(
+                            print_and_log(
                                 f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
                             return False  # False because it was not null in the input and is null in the output
                     elif belong_op_out == Belong.BELONG:  # Check those that belong to NULL
