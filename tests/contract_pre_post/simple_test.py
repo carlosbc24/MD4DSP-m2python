@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 # Importing functions and classes from packages
 import functions.contract_pre_post as pre_post
-from helpers.enumerations import Belong, Operator, Closure
+from helpers.enumerations import Belong, Operator, Closure, DataType
 from helpers.logger import print_and_log
 
 
@@ -42,6 +42,7 @@ class PrePostSimpleTest(unittest.TestCase):
         execute_CheckMissingRange_SimpleTests: execute the simple tests of the function checkMissingRange
         execute_CheckInvalidValues_SimpleTests: execute the simple tests of the function checkInvalidValues
         execute_CheckOutliers_SimpleTests: execute the simple tests of the function checkOutliers
+        execute_CheckFieldType_SimpleTests: execute the simple tests of the function checkFieldType
         """
         super().__init__()
         self.pre_post = pre_post
@@ -58,7 +59,8 @@ class PrePostSimpleTest(unittest.TestCase):
             self.execute_CheckIntervalRangeFloat_SimpleTests,
             self.execute_CheckMissingRange_SimpleTests,
             self.execute_CheckInvalidValues_SimpleTests,
-            self.execute_CheckOutliers_SimpleTests
+            self.execute_CheckOutliers_SimpleTests,
+            self.execute_CheckFieldType_SimpleTests
         ]
 
         print_and_log("")
@@ -2571,3 +2573,109 @@ class PrePostSimpleTest(unittest.TestCase):
                                                   field=field,
                                                   quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
         print_and_log("Test Case 23 Passed: Expected ValueError, got ValueError")
+
+    def execute_CheckFieldType_SimpleTests(self):
+        """
+        Execute the simple tests of the function checkFieldType
+        """
+        print_and_log("Testing checkFieldType Function")
+        print_and_log("")
+
+        print_and_log("Casos Básicos añadidos:")
+
+        # Caso 1
+        data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = 'colour'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.FLOAT,
+                                                origin_function="String To Number")
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2
+        data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = 'colour'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.INTEGER,
+                                                origin_function="String To Number")
+        assert result is False, "Test Case 2 Failed: Expected False, but got True"
+        print_and_log("Test Case 2 Passed: Expected False, got False")
+
+        # Caso 3
+        data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = 'names'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.STRING,
+                                                origin_function="String To Number")
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4
+        data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 2.25, 1],
+                                             'names': ['John', 'Mary', 'Mary', 'Mary', 'Karl', 'Antonio']})
+        # convert to string
+        data_dictionary['names'] = data_dictionary['names'].astype(str)
+        field = 'names'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.STRING,
+                                                origin_function="String To Number")
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+        # CHECK THAT THE COLUMN IS INTEGER, DATETIMES AND TIME HAVING THIS TYPE OF DATA
+        # Caso 5
+        data_dictionary = pd.DataFrame(data={'ages': [1, 2, 3, 4, 5, 6],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = 'ages'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.INTEGER,
+                                                origin_function="String To Number")
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6
+        data_dictionary = pd.DataFrame(data={'ages': [1, 2, 3, 4, 5, 6],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = 'ages'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.FLOAT,
+                                                origin_function="String To Number")
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: Expected False, got False")
+
+        # Caso 7
+        data_dictionary = pd.DataFrame(data={'ages': [1, 2, 3, 4, 5, 6],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+
+        field = 'ages'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.STRING,
+                                                origin_function="String To Number")
+        assert result is False, "Test Case 7 Failed: Expected False, but got True"
+        print_and_log("Test Case 7 Passed: Expected False, got True")
+
+        # Caso 8
+        data_dictionary = pd.DataFrame(data={'ages': [1, 2, 3, 4, 5, 6],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = 'names'
+        result = self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.INTEGER,
+                                                origin_function="String To Number")
+        assert result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, got True")
+
+        # Casos de error añadidos: no se especifica la columna
+        # Caso 9
+        data_dictionary = pd.DataFrame(data={'ages': [1, 2, 3, 4, 5, 6],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = None
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.INTEGER,
+                                           origin_function="String To Number")
+        print_and_log("Test Case 9 Passed: Expected ValueError, got ValueError")
+
+        # Caso 10
+        data_dictionary = pd.DataFrame(data={'ages': [1, 2, 3, 4, 5, 6],
+                                             'names': ['John', 'Mary', None, np.NaN, None, None]})
+        field = 'names'
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception) as context:
+            self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=None,
+                                           origin_function="String To Number")
+        print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")

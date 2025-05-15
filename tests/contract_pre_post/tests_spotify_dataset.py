@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 # Importing functions and classes from packages
 import functions.contract_pre_post as pre_post
-from helpers.enumerations import Belong, Operator, Closure
+from helpers.enumerations import Belong, Operator, Closure, DataType
 from helpers.logger import print_and_log
 
 
@@ -62,7 +62,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
             self.execute_checkIntervalRangeFloat_ExternalDatasetTests,
             self.execute_CheckMissingRange_ExternalDatasetTests,
             self.execute_CheckInvalidValues_ExternalDatasetTests,
-            self.execute_CheckOutliers_SpotifyDatasetTests
+            self.execute_CheckOutliers_ExternalDatasetTests,
+            self.execute_CheckFieldType_ExternalDatasetTests,
         ]
 
         print_and_log("")
@@ -2104,7 +2105,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("-----------------------------------------------------------")
         print_and_log("")
 
-    def execute_CheckOutliers_SpotifyDatasetTests(self):
+    def execute_CheckOutliers_ExternalDatasetTests(self):
         """
         Execute the simple tests of the function CheckOutliers
         """
@@ -2312,6 +2313,62 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                   field=field,
                                                   quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
         print_and_log("Test Case 21 Passed: Expected ValueError, got ValueError")
+
+        print_and_log("")
+        print_and_log("-----------------------------------------------------------")
+        print_and_log("")
+
+    def execute_CheckFieldType_ExternalDatasetTests(self):
+        """
+        Execute the simple tests of the function checkMissingRange
+        """
+        print_and_log("Testing CheckFieldType Function")
+        print_and_log("")
+        print_and_log("Casos de test con dataset Spotify:")
+
+        field = "danceability"
+        result = self.pre_post.check_field_type(
+            data_dictionary=self.data_dictionary,
+            field=field,
+            field_type=DataType.FLOAT,
+        )
+        assert result is True, "External Dataset Test Case 1 Failed: Expected True, got False"
+        print_and_log("External Dataset Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2: Campo inexistente en el dataset externo debe lanzar ValueError
+        field_nonexistent = "non_existent"
+        expected_exception = ValueError
+        try:
+            self.pre_post.check_field_type(
+                data_dictionary=self.data_dictionary,
+                field=expected_exception,
+                field_type=DataType.FLOAT,
+            )
+            assert False, "External Dataset Test Case 2 Failed: Expected ValueError"
+        except ValueError:
+            print_and_log("External Dataset Test Case 2 Passed: Expected ValueError, got ValueError")
+
+        # Caso 3, check track_artist field is STRING
+        field = "track_artist"
+        result = self.pre_post.check_field_type(
+            data_dictionary=self.data_dictionary,
+            field=field,
+            field_type=DataType.STRING,
+        )
+        assert result is True, "External Dataset Test Case 3 Failed: Expected True, got False"
+        print_and_log("External Dataset Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4, check track_album_release_date is DATE
+        field = "track_album_release_date"
+        try:
+            self.pre_post.check_field_type(
+                data_dictionary=self.data_dictionary,
+                field=field,
+                field_type=None,
+            )
+            assert False, "External Dataset Test Case 4 Failed: Expected ValueError"
+        except ValueError:
+            print_and_log("External Dataset Test Case 4 Passed: Expected ValueError, got ValueError")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")
