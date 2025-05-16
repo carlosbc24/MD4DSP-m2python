@@ -413,7 +413,8 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
             raise ValueError("The field does not exist in the dataframe")
 
         elif field_in in data_dictionary.columns:
-            if np.issubdtype(data_dictionary[field_in].dtype, np.number):
+            # Reemplaza np.issubdtype(...) por pd.api.types.is_numeric_dtype(...)
+            if pd.api.types.is_numeric_dtype(data_dictionary[field_in]):
                 if closure_type == Closure.openOpen:
                     for i in data_dictionary_copy.index:
                         # Verify if the index exists in the mask and if the value is an outlier
