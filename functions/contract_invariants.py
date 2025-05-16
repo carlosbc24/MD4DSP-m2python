@@ -1779,7 +1779,7 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
     output_columns = set(data_dictionary_out.columns)
     columns_set = set(columns)
 
-    # Verify that the columns exist in the output dataframe
+    # Verify that the columns have been removed
     if belong_op == Belong.BELONG:
         # Columns that should be kept
         expected_columns = input_columns - columns_set
@@ -1796,6 +1796,7 @@ def check_inv_filter_columns(data_dictionary_in: pd.DataFrame, data_dictionary_o
             print_and_log(f"Error in function:  {origin_function} Additional columns that should not be there: {extra_columns}")
             result = False
 
+    # Verify that the columns have been kept
     elif belong_op == Belong.NOTBELONG:
         # Just columns that should be kept
         expected_columns = columns_set
