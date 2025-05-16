@@ -1402,11 +1402,22 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
 
 def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                         cast_type_in: DataType, cast_type_out: DataType, belong_op_out: Belong = Belong.BELONG,
-                        field_in: str = None, field_out: str = None) -> bool:
+                        field_in: str = None, field_out: str = None, origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the CastType relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if the cast is correctly applied to the
     input values.
+
+    Parameters:
+        data_dictionary_in (pd.DataFrame): The input dataframe.
+        data_dictionary_out (pd.DataFrame): The output dataframe.
+        cast_type_in (DataType): The data type of the input values.
+        cast_type_out (DataType): The data type of the output values.
+        belong_op_out (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the cast is correct.
+                                If it's Belong.NOTBELONG, the function checks if the cast is incorrect.
+        field_in (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+        field_out (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
+        origin_function (str): The name of the function that calls this function. This is used for logging purposes.
     """
     result = None
     if belong_op_out == Belong.BELONG:
@@ -1437,16 +1448,13 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                         val_in = pd.array([data_dictionary_in.iloc[idx][field_in]], dtype='Int64')[0]
                         if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
                             result = False
-                            print_and_log('The value should be: {} of type int but is: {} of type {}'.format(
-                                val_in, item, type(item)))
+                            print_and_log(f"Error in function:  {origin_function} The value should be: {val_in} of type int but is: {item} of type {type(item)}")
                 else:
                     result = False
-                    print_and_log('The output field should be of type int but is of type {}'.format(
-                        data_dictionary_out[field_out].dtype))
+                    print_and_log(f"Error in function:  {origin_function} The output field should be of type int but is of type {data_dictionary_out[field_out].dtype}")
             else:
                 result = False
-                print_and_log('The input field should be of type string but is of type {}'.format(
-                    data_dictionary_in[field_in].dtype))
+                print_and_log(f"Error in function:  {origin_function} The input field should be of type string but is of type {data_dictionary_in[field_in].dtype}")
         elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
             if np.issubdtype(data_dictionary_out[field_out].dtype, float):
                 if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
@@ -1454,15 +1462,13 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                         val_in = float(data_dictionary_in.iloc[idx][field_in])
                         if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
                             result = False
-                            print_and_log('The value should be: {} of type float but is: {} of type {}'.format(val_in, item, type(item)))
+                            print_and_log(f"Error in function:  {origin_function} The value should be: {val_in} of type float but is: {item} of type {type(item)}")
                 else:
                     result = False
-                    print_and_log('The output field should be of type float but is of type {}'.format(
-                        data_dictionary_out[field_out].dtype))
+                    print_and_log(f"Error in function:  {origin_function} The output field should be of type float but is of type {data_dictionary_out[field_out].dtype}")
             else:
                 result = False
-                print_and_log('The input field should be of type string but is of type {}'.format(
-                    data_dictionary_in[field_in].dtype))
+                print_and_log(f"Error in function:  {origin_function} The input field should be of type string but is of type {data_dictionary_in[field_in].dtype}")
     elif belong_op_out == Belong.NOTBELONG:
         if cast_type_out == DataType.INTEGER and cast_type_in == DataType.STRING:
             if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(data_dictionary_in[field_in].dtype, str):
@@ -1471,16 +1477,13 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                         val_in = pd.array([data_dictionary_in.iloc[idx][field_in]], dtype='Int64')[0]
                         if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
                             result = True
-                            print_and_log('The value should be: {} of type int but is: {} of type {}'.format(
-                                val_in, item, type(item)))
+                            print_and_log(f"Error in function:  {origin_function} The value should be: {val_in} of type int but is: {item} of type {type(item)}")
                 else:
                     result = True
-                    print_and_log('The output field should be of type int but is of type {}'.format(
-                        data_dictionary_out[field_out].dtype))
+                    print_and_log(f"Error in function:  {origin_function} The output field should be of type int but is of type {data_dictionary_out[field_out].dtype}")
             else:
                 result = True
-                print_and_log('The input field should be of type string but is of type {}'.format(
-                    data_dictionary_in[field_in].dtype))
+                print_and_log(f"Error in function:  {origin_function} The input field should be of type string but is of type {data_dictionary_in[field_in].dtype}")
         elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
             if np.issubdtype(data_dictionary_out[field_out].dtype, float):
                 if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
@@ -1488,22 +1491,19 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                         val_in = float(data_dictionary_in.iloc[idx][field_in])
                         if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
                             result = True
-                            print_and_log('The value should be: {} of type float but is: {} of type {}'.format(val_in, item,
-                                                                                                     type(item)))
+                            print_and_log(f"Error in function:  {origin_function} The value should be: {val_in} of type float but is: {item} of type {type(item)}")
                 else:
                     result = True
-                    print_and_log('The output field should be of type float but is of type {}'.format(
-                        data_dictionary_out[field_out].dtype))
+                    print_and_log(f"Error in function:  {origin_function} The output field should be of type float but is of type {data_dictionary_out[field_out].dtype}")
             else:
                 result = True
-                print_and_log('The input field should be of type string but is of type {}'.format(
-                    data_dictionary_in[field_in].dtype))
+                print_and_log(f"Error in function:  {origin_function} The input field should be of type string but is of type {data_dictionary_in[field_in].dtype}")
 
     return result
 
 
 def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                   dictionary: dict, field_in: str = None, field_out: str = None) -> bool:
+                   dictionary: dict, field_in: str = None, field_out: str = None, origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the Join relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if the join is correctly applied to the
@@ -1516,6 +1516,7 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
                             If the value is False, it means the key is a string.
     :param field_in: field to check the invariant in the input dataframe
     :param field_out: field to check the invariant in the output dataframe
+    :param origin_function: name of the function that calls this function
 
     :return: True if the invariant is satisfied, False otherwise
     """
@@ -1548,8 +1549,8 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
         if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
             if data_dictionary_copy.loc[idx, field_out] is not np.nan or data_dictionary_out.loc[idx, field_out] is not np.nan:
                 result = False
-                print_and_log(
-                    f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
+                print_and_log(f"Error in function:  {origin_function} Error in row: {idx} and column: {field_out} "
+                              f"value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     return result
 
@@ -1557,7 +1558,8 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
 def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
                                          data_dictionary_out: pd.DataFrame,
                                          cols_special_type_values: dict,
-                                         filter_type: FilterType) -> bool:
+                                         filter_type: FilterType,
+                                         origin_function: str = None) -> bool:
     """
     Validates the invariant for the FilterRows relation using special values.
     For each column, a combined mask is built using the conditions for each special type
@@ -1571,6 +1573,7 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
       cols_special_type_values (dict): Dictionary with columns as keys and special value criteria
                                        as values (keys: "missing", "invalid", "outlier").
       filter_type (FilterType): Filter type to apply (INCLUDE or EXCLUDE).
+      origin_function (str): Name of the function that calls this function (for logging).
 
     Returns:
       bool: True if the frequency counts match for all specified columns, False otherwise.
@@ -1623,6 +1626,7 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
         counts_out = data_dictionary_out[col].value_counts(dropna=False).to_dict()
 
         if counts_in != counts_out:
+            print_and_log(f"Error in function:  {origin_function} Error in column: {col} ")
             return False
 
     return True
@@ -1634,7 +1638,8 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
                                 left_margin_list: list[float] = None,
                                 right_margin_list: list[float] = None,
                                 closure_type_list: list[Closure] = None,
-                                filter_type: FilterType = None) -> bool:
+                                filter_type: FilterType = None,
+                                origin_function: str = None) -> bool:
     """
     Validates the invariant for the FilterRows relation by verifying that after
     applying the filtering condition on the input data the frequency count (value_counts)
@@ -1648,6 +1653,7 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
       right_margin_list (list[float]): List of right margin values for each column.
       closure_type_list (list[Closure]): List of closure types for the filtering intervals.
       filter_type (FilterType): The type of filter to apply (INCLUDE or EXCLUDE).
+      origin_function (str): Name of the function that calls this function (for logging).
 
     Returns:
       bool: True if the frequency counts match for all specified columns, False otherwise.
@@ -1691,6 +1697,7 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
 
         # Compare the frequency counts; if they don't match, the invariant is not satisfied.
         if counts_in != counts_out:
+            print_and_log(f"Error in function:  {origin_function} Error in column: {col} ")
             return False
 
     return True
@@ -1700,7 +1707,8 @@ def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame,
                                 data_dictionary_out: pd.DataFrame,
                                 columns: list[str],
                                 filter_fix_value_list: list = None,
-                                filter_type: FilterType = None) -> bool:
+                                filter_type: FilterType = None,
+                                origin_function: str = None) -> bool:
     """
     Validates the invariant for the FilterRows relation by verifying that, after applying a fixed value filter
     on the input data, the frequency count (value_counts) for each possible value in every specified column
@@ -1712,6 +1720,7 @@ def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame,
       columns (list[str]): List of column names to apply the filter.
       filter_fix_value_list (list): List of fixed values to filter.
       filter_type (FilterType): Type of filter to apply (INCLUDE or EXCLUDE).
+      origin_function (str): Name of the function that calls this function (for logging).
 
     Returns:
       bool: True if the frequency counts match for all specified columns, False otherwise.
@@ -1741,6 +1750,7 @@ def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame,
         counts_out = data_dictionary_out[col].value_counts(dropna=False).to_dict()
 
         if counts_in != counts_out:
+            print_and_log(f"Error in function:  {origin_function} Error in column: {col} ")
             return False
 
     return True
