@@ -1046,8 +1046,9 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
 
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
-            raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
+            raise ValueError("Field not found in the DataFrame")
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_copy[field_in]):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
