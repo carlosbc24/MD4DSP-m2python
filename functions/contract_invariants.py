@@ -1423,6 +1423,12 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
     elif field_out not in data_dictionary_out.columns:
         raise ValueError("The output field does not exist in the dataframe")
 
+    # Reset index if not RangeIndex
+    if not isinstance(data_dictionary_in.index, pd.RangeIndex):
+        data_dictionary_in = data_dictionary_in.reset_index(drop=True)
+    if not isinstance(data_dictionary_out.index, pd.RangeIndex):
+        data_dictionary_out = data_dictionary_out.reset_index(drop=True)
+
     if belong_op_out == Belong.BELONG:
         if cast_type_out == DataType.INTEGER and cast_type_in == DataType.STRING:
             if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(data_dictionary_in[field_in].dtype, str):
