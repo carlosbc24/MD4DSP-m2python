@@ -858,8 +858,9 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
-            raise ValueError("The field is not numeric")
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
+            raise ValueError("Field is not numeric")
 
         data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x == fix_value_input else x).
                                          interpolate(method='linear', limit_direction='both'))
@@ -983,7 +984,8 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
         # Check the data_dictionary_out positions with missing values have been replaced with the mean
         mean = data_dictionary_in[field_in].mean()
@@ -1104,7 +1106,8 @@ def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
 
         # Check the data_dictionary_out positions with missing values have been replaced with the median
@@ -1249,7 +1252,8 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
 
         # Flatten the column into a list of values
@@ -1394,8 +1398,9 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
-            raise ValueError("The field is not numeric")
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
+            raise ValueError("Field is not numeric")
 
         data_dictionary_in_copy[field_in] = data_dictionary_in_copy[field_in].apply(
             lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
@@ -1541,7 +1546,8 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
         # Check the data_dictionary_out positions with missing values have been replaced with the mean
         mean = data_dictionary_in[field_in].mean()
@@ -1670,7 +1676,8 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
         # Check the data_dictionary_out positions with missing values have been replaced with the median
         median = data_dictionary_in[field_in].median()
@@ -1830,7 +1837,8 @@ def check_interval_closest(data_dictionary_in: pd.DataFrame, data_dictionary_out
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
 
         # Flatten the column into a list of values
@@ -2169,8 +2177,9 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field is not in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
-            raise ValueError("The field is not numeric")
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
+            raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
             data_dictionary_in_copy[field_in] = (data_dictionary_in[field_in].apply(lambda x: np.nan if x in missing_values else x).
@@ -2619,7 +2628,8 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
@@ -3054,7 +3064,8 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING:
@@ -3364,7 +3375,8 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("Field not found in the data_dictionary_in")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
