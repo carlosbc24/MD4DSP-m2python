@@ -2852,6 +2852,8 @@ class DataTransformationsSimpleTest(unittest.TestCase):
             {'A': ['0', '2', '3', '4', '1'], 'B': ['2', '3', '4', '6', '12'], 'C': ['10', '1', '3', '3', '0'],
              'D': [1, 8, 6, 1, 2]})
 
+        expected_df['D'] = expected_df['D'].astype('Int64')
+
         result_df = self.data_transformations.transform_cast_type(data_dictionary=datadic.copy(),
                                                                   data_type_output=DataType(2), field='D')
         pd.testing.assert_frame_equal(expected_df, result_df)

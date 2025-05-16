@@ -1425,16 +1425,14 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 
     if belong_op_out == Belong.BELONG:
         if cast_type_out == DataType.INTEGER and cast_type_in == DataType.STRING:
-            if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(
-                    data_dictionary_in[field_in].dtype, str):
-                if np.issubdtype(data_dictionary_out[field_out].dtype, int):
-                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
-                        result = True
-                    else:
-                        result = False
-                        print_and_log('The value should be: {} of type int but is: {} of type {}'.format(
-                            data_dictionary_in[field_in].astype(int), data_dictionary_out[field_out],
-                            data_dictionary_out[field_out].dtype))
+            if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(data_dictionary_in[field_in].dtype, str):
+                if str(data_dictionary_out[field_out].dtype) == 'Int64':
+                    for idx, item in data_dictionary_out[field_out].items():
+                        val_in = pd.array([data_dictionary_in.iloc[idx][field_in]], dtype='Int64')[0]
+                        if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
+                            result = False
+                            print_and_log('The value should be: {} of type int but is: {} of type {}'.format(
+                                val_in, item, type(item)))
                 else:
                     result = False
                     print_and_log('The output field should be of type int but is of type {}'.format(
@@ -1446,13 +1444,11 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
             if np.issubdtype(data_dictionary_out[field_out].dtype, float):
                 if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
-                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
-                        result = True
-                    else:
-                        result = False
-                        print_and_log('The value should be: {} of type float but is: {} of type {}'.format(
-                            data_dictionary_in[field_in].astype(float), data_dictionary_out[field_out],
-                            data_dictionary_out[field_out].dtype))
+                    for idx, item in data_dictionary_out[field_out].items():
+                        val_in = float(data_dictionary_in.iloc[idx][field_in])
+                        if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
+                            result = False
+                            print_and_log('The value should be: {} of type float but is: {} of type {}'.format(val_in, item, type(item)))
                 else:
                     result = False
                     print_and_log('The output field should be of type float but is of type {}'.format(
@@ -1463,16 +1459,14 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                     data_dictionary_in[field_in].dtype))
     elif belong_op_out == Belong.NOTBELONG:
         if cast_type_out == DataType.INTEGER and cast_type_in == DataType.STRING:
-            if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(
-                    data_dictionary_in[field_in].dtype, str):
-                if np.issubdtype(data_dictionary_out[field_out].dtype, int):
-                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(int)):
-                        result = False
-                    else:
-                        result = True
-                        print_and_log('The value should be: {} of type int but is: {} of type {}'.format(
-                            data_dictionary_in[field_in].astype(int), data_dictionary_out[field_out],
-                            data_dictionary_out[field_out].dtype))
+            if np.issubdtype(data_dictionary_in[field_in].dtype, object) or np.issubdtype(data_dictionary_in[field_in].dtype, str):
+                if str(data_dictionary_out[field_out].dtype) == 'Int64':
+                    for idx, item in data_dictionary_out[field_out].items():
+                        val_in = pd.array([data_dictionary_in.iloc[idx][field_in]], dtype='Int64')[0]
+                        if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
+                            result = True
+                            print_and_log('The value should be: {} of type int but is: {} of type {}'.format(
+                                val_in, item, type(item)))
                 else:
                     result = True
                     print_and_log('The output field should be of type int but is of type {}'.format(
@@ -1484,13 +1478,12 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
             if np.issubdtype(data_dictionary_out[field_out].dtype, float):
                 if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
-                    if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
-                        result = False
-                    else:
-                        result = True
-                        print_and_log('The value should be: {} of type float but is: {} of type {}'.format(
-                            data_dictionary_in[field_in].astype(float), data_dictionary_out[field_out],
-                            data_dictionary_out[field_out].dtype))
+                    for idx, item in data_dictionary_out[field_out].items():
+                        val_in = float(data_dictionary_in.iloc[idx][field_in])
+                        if not ((pd.isna(item) and pd.isna(val_in)) or (pd.notna(item) and pd.notna(val_in) and item == val_in)):
+                            result = True
+                            print_and_log('The value should be: {} of type float but is: {} of type {}'.format(val_in, item,
+                                                                                                     type(item)))
                 else:
                     result = True
                     print_and_log('The output field should be of type float but is of type {}'.format(
@@ -1513,7 +1506,7 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
     :param data_dictionary_in: dataframe with the input data
     :param data_dictionary_out: dataframe with the output data
     :param dictionary: dictionary with the columns or string to join.
-                            If the value is True, it mans the key is a column.
+                            If the value is True, it means the key is a column.
                             If the value is False, it means the key is a string.
     :param field_in: field to check the invariant in the input dataframe
     :param field_out: field to check the invariant in the output dataframe
@@ -1547,11 +1540,10 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
 
     for idx, val in data_dictionary_in[field_in].items():
         if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
-            result = False
-            print_and_log(
-                f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
-        else:
-            result = True
+            if data_dictionary_copy.loc[idx, field_out] is not np.nan or data_dictionary_out.loc[idx, field_out] is not np.nan:
+                result = False
+                print_and_log(
+                    f"Error in row: {idx} and column: {field_out} value should be: {data_dictionary_copy.loc[idx, field_out]} but is: {data_dictionary_out.loc[idx, field_out]}")
 
     return result
 
