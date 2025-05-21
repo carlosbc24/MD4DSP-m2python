@@ -373,7 +373,7 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
-        if not np.issubdtype(data_dictionary_in[field_in].dtype, np.number):
+        if not pd.api.types.is_numeric_dtype(data_dictionary_in[field_in]):
             raise ValueError("The field is not numeric")
 
         for row_index, value in data_dictionary_in[field_in].items():
@@ -1456,7 +1456,7 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                 result = False
                 print_and_log(f"Error in function:  {origin_function} The input field should be of type string but is of type {data_dictionary_in[field_in].dtype}")
         elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
-            if np.issubdtype(data_dictionary_out[field_out].dtype, float):
+            if pd.api.types.is_numeric_dtype(data_dictionary_out[field_out].dtype):
                 if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
                     for idx, item in data_dictionary_out[field_out].items():
                         val_in = float(data_dictionary_in.iloc[idx][field_in])
@@ -1485,7 +1485,7 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
                 result = True
                 print_and_log(f"Error in function:  {origin_function} The input field should be of type string but is of type {data_dictionary_in[field_in].dtype}")
         elif (cast_type_out == DataType.FLOAT or cast_type_out == DataType.DOUBLE) and cast_type_in == DataType.STRING:
-            if np.issubdtype(data_dictionary_out[field_out].dtype, float):
+            if pd.api.types.is_numeric_dtype(data_dictionary_out[field_out]):
                 if data_dictionary_out[field_out].equals(data_dictionary_in[field_in].astype(float)):
                     for idx, item in data_dictionary_out[field_out].items():
                         val_in = float(data_dictionary_in.iloc[idx][field_in])
