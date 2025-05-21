@@ -78,7 +78,7 @@ def get_outliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: i
             return data_dictionary_copy
     elif field is not None:
         # Se usa pd.api.types.is_numeric_dtype en lugar de np.issubdtype para evitar el error con el tipo Int64
-        if not np.issubdtype(data_dictionary[field].dtype, np.number):
+        if not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             raise ValueError("El campo no es numérico")
 
         q1 = data_dictionary[field].quantile(0.25)
