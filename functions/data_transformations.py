@@ -247,7 +247,7 @@ def transform_fix_value_num_op(data_dictionary: pd.DataFrame, fix_value_input, n
         elif num_op_output == Operation.MEAN:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the mean of these numeric columns
                 mean_value = only_numbers_df.mean().mean()
                 # Replace 'fix_value_input' with the mean of the entire DataFrame using lambda
@@ -278,7 +278,7 @@ def transform_fix_value_num_op(data_dictionary: pd.DataFrame, fix_value_input, n
         elif num_op_output == Operation.MEDIAN:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the median of these numeric columns
                 median_value = only_numbers_df.median().median()
                 # Replace 'fix_value_input' with the median of the entire DataFrame using lambda
@@ -621,7 +621,7 @@ def transform_interval_num_op(data_dictionary: pd.DataFrame, left_margin: float,
         elif num_op_output == Operation.MEAN:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the mean of these numeric columns
                 mean_value = only_numbers_df.mean().mean()
                 # Replace the values within the interval with the mean of the entire DataFrame using lambda
@@ -656,7 +656,7 @@ def transform_interval_num_op(data_dictionary: pd.DataFrame, left_margin: float,
         elif num_op_output == Operation.MEDIAN:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the median of these numeric columns
                 median_value = only_numbers_df.median().median()
                 # Replace the values within the interval with the median of the entire DataFrame using lambda
@@ -668,14 +668,14 @@ def transform_interval_num_op(data_dictionary: pd.DataFrame, left_margin: float,
                                                                                                closure_type)) else x))
 
             elif axis_param == 0:
-                for col in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_copy.select_dtypes(include=[np.number, 'Int64']).columns:
                     median = data_dictionary_copy[col].median()
                     data_dictionary_copy[col] = data_dictionary_copy[col].apply(
                         lambda x: x if not check_interval_condition(x, left_margin, right_margin,
                                                                     closure_type) else median)
             elif axis_param == 1:
                 data_dictionary_copy = data_dictionary_copy.T
-                for row in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
+                for row in data_dictionary_copy.select_dtypes(include=[np.number, 'Int64']).columns:
                     median = data_dictionary_copy[row].median()
                     data_dictionary_copy[row] = data_dictionary_copy[row].apply(
                         lambda x: x if not check_interval_condition(x, left_margin, right_margin,

@@ -71,7 +71,7 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
             for idx, val in data_dictionary[field].items():
                 cell_dtype = np.array(data_dictionary.at[idx, field]).dtype
                 # If the column is numeric and value is a string, attempt to convert it to int or float.
-                if np.issubdtype(cell_dtype, np.number) and isinstance(value, str):
+                if pd.api.types.is_numeric_dtype(cell_dtype) and isinstance(value, str):
                     try:
                         value = int(value)
                     except ValueError:
@@ -220,7 +220,7 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
         return result
 
     if field is None:
-        for column in data_dictionary.select_dtypes(include=[np.number]).columns:
+        for column in data_dictionary.select_dtypes(include=[np.number, 'Int64']).columns:
             for i in data_dictionary.index:  # Cases 1-16
                 # Verify if the index exists in the mask and if the value is an outlier
                 if not np.isnan(data_dictionary.at[i, column]):
@@ -235,7 +235,7 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
         if field not in data_dictionary.columns:  # It checks that the column exists in the dataframe
             raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 16.5
 
-        if np.issubdtype(data_dictionary[field].dtype, np.number):
+        if pd.api.types.is_numeric_dtype(data_dictionary[field]):
             for i in data_dictionary[field].index:  # Cases 17-32
                 # Verify if the index exists in the mask and if the value is an outlier
                 if not np.isnan(data_dictionary.at[i, field]):

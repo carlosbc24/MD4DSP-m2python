@@ -78,7 +78,7 @@ def get_outliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: i
             return data_dictionary_copy
     elif field is not None:
         # Se usa pd.api.types.is_numeric_dtype en lugar de np.issubdtype para evitar el error con el tipo Int64
-        if not pd.api.types.is_numeric_dtype(data_dictionary[field]):
+        if not np.issubdtype(data_dictionary[field].dtype, np.number):
             raise ValueError("El campo no es numérico")
 
         q1 = data_dictionary[field].quantile(0.25)
@@ -553,7 +553,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the mean of these numeric columns
                 mean_value = only_numbers_df.mean().mean()
                 # Replace the missing values with the mean of the entire DataFrame using lambda
@@ -594,7 +594,7 @@ def special_type_mean(data_dictionary_copy: pd.DataFrame, special_type_input: Sp
         if special_type_input == SpecialType.INVALID:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the mean of these numeric columns
                 mean_value = only_numbers_df.mean().mean()
                 data_dictionary_copy = data_dictionary_copy.apply(
@@ -740,7 +740,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the median of these numeric columns
                 median_value = only_numbers_df.median().median()
                 data_dictionary_copy = data_dictionary_copy.apply(
@@ -781,7 +781,7 @@ def special_type_median(data_dictionary_copy: pd.DataFrame, special_type_input: 
         if special_type_input == SpecialType.INVALID:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the median of these numeric columns
                 median_value = only_numbers_df.median().median()
                 # Replace the values in missing_values (INVALID VALUES) by the median
@@ -934,7 +934,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
     if field_in is None:
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             if axis_param is None:
-                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_copy.select_dtypes(include=[np.number, 'Int64'])
                 # Flatten the DataFrame into a single series of values
                 flattened_values = only_numbers_df.values.flatten().tolist()
                 # Create a dictionary to store the closest value for each missing value
@@ -956,7 +956,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
 
             elif axis_param == 0:
                 # Iterate over each column
-                for col_name in data_dictionary_copy.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_copy.select_dtypes(include=[np.number, 'Int64']).columns:
                     # Get the missing values in the current column
                     missing_values_in_col = [val for val in missing_values if val in data_dictionary_copy[col_name].values]
                     # If there are no missing values in the column, skip the rest of the loop
@@ -984,7 +984,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                 for row_idx in data_dictionary_copy.index:
                     # Get the numeric values in the current row
                     numeric_values_in_row = data_dictionary_copy.iloc[row_idx].select_dtypes(
-                        include=[np.number]).values.tolist()
+                        include=[np.number, 'Int64']).values.tolist()
                     # Get the missing values in the current row
                     missing_values_in_row = [val for val in missing_values if val in numeric_values_in_row]
                     # If there are no missing values in the row, skip the rest of the loop
@@ -1048,7 +1048,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("Field not found in the DataFrame")
         # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
-        if not pd.api.types.is_numeric_dtype(data_dictionary_copy[field_in]):
+        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:

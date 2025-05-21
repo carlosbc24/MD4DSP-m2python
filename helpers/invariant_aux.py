@@ -815,12 +815,12 @@ def check_fix_value_interpolation(data_dictionary_in: pd.DataFrame, data_diction
     if field_in is None:
         if axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 data_dictionary_in_copy[col_name] = (
                     data_dictionary_in[col_name].apply(lambda x: np.nan if x == fix_value_input else x).
                     interpolate(method='linear', limit_direction='both'))
 
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 for idx in data_dictionary_in.index:
                     if data_dictionary_in.at[idx, col_name] == fix_value_input:
                         if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
@@ -916,7 +916,7 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
     if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
             # Calculate the mean of these numeric columns
             mean_value = only_numbers_df.mean().mean()
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
@@ -941,7 +941,7 @@ def check_fix_value_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: 
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 mean = data_dictionary_in[col_name].mean()
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -1042,7 +1042,7 @@ def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out
     if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
             # Calculate the median of these numeric columns
             median_value = only_numbers_df.median().median()
             # Check the data_dictionary_out positions with missing values have been replaced with the median
@@ -1066,7 +1066,7 @@ def check_fix_value_median(data_dictionary_in: pd.DataFrame, data_dictionary_out
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 median = data_dictionary_in[col_name].median()
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -1324,14 +1324,14 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
     data_dictionary_in_copy = data_dictionary_in.copy()
     if field_in is None:
         if axis_param == 0:
-            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 if np.issubdtype(data_dictionary_in[col].dtype, np.number):
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].apply(
                         lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].interpolate(method='linear',
                                                                                               limit_direction='both')
             # Iterate over each column
-            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 # For each index in the column
                 for idx in data_dictionary_in.index:
                     # Verify if the value is NaN in the original dataframe
@@ -1340,7 +1340,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
                         data_dictionary_in_copy.at[idx, col] = data_dictionary_in.at[idx, col]
 
             # Iterate over each column
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 # Iterate over each index in the column
                 for idx in data_dictionary_in.index:
                     if check_interval_condition(data_dictionary_in.at[idx, col_name], left_margin, right_margin, closure_type):
@@ -1360,14 +1360,14 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
         elif axis_param == 1:
             data_dictionary_in_copy = data_dictionary_in_copy.T
             data_dictionary_in = data_dictionary_in.T
-            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 if np.issubdtype(data_dictionary_in[col].dtype, np.number):
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].apply(
                         lambda x: np.nan if check_interval_condition(x, left_margin, right_margin, closure_type) else x)
                     data_dictionary_in_copy[col] = data_dictionary_in_copy[col].interpolate(method='linear',
                                                                                               limit_direction='both')
             # Iterate over each column
-            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 # For each index in the column
                 for idx in data_dictionary_in.index:
                     # Verify if the value is NaN in the original dataframe
@@ -1377,7 +1377,7 @@ def check_interval_interpolation(data_dictionary_in: pd.DataFrame, data_dictiona
             data_dictionary_in_copy = data_dictionary_in_copy.T
             data_dictionary_in = data_dictionary_in.T
 
-            for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 for idx in data_dictionary_in.index:
                     if check_interval_condition(data_dictionary_in.at[idx, col], left_margin, right_margin,
                                                 closure_type):
@@ -1478,11 +1478,11 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
     if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
             # Calculate the mean of these numeric columns
             mean_value = only_numbers_df.mean().mean()
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
                         if check_interval_condition(data_dictionary_in.at[idx, col_name], left_margin, right_margin, closure_type):
@@ -1503,7 +1503,7 @@ def check_interval_mean(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             # Check the data_dictionary_out positions with missing values have been replaced with the mean
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 mean = data_dictionary_in[col_name].mean()
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -1608,11 +1608,11 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
     if field_in is None:
         if axis_param is None:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
-            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+            only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
             # Calculate the median of these numeric columns
             median_value = only_numbers_df.median().median()
             # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
                         if check_interval_condition(data_dictionary_in.at[idx, col_name], left_margin, right_margin, closure_type):
@@ -1633,7 +1633,7 @@ def check_interval_median(data_dictionary_in: pd.DataFrame, data_dictionary_out:
         elif axis_param == 0:
             # Select only columns with numeric data, including all numeric types (int, float, etc.)
             # Check the data_dictionary_out positions with missing values have been replaced with the median
-            for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+            for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                 median = data_dictionary_in[col_name].median()
                 for idx, value in data_dictionary_in[col_name].items():
                     if np.issubdtype(type(value), np.number) or pd.isnull(value):
@@ -1915,7 +1915,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
         if special_type_input == SpecialType.MISSING:
             if axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     data_dictionary_in_copy[col_name] = data_dictionary_in[col_name].apply(lambda x: np.nan if x in missing_values else x)
 
                     data_dictionary_in_copy[col_name] = data_dictionary_in_copy[col_name].interpolate(method='linear', limit_direction='both')
@@ -1946,7 +1946,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in_copy.at[idx, col_name] = value_in  # Keep NaN
                                 data_dictionary_out.at[idx, col_name] = value_out  # Keep NaN
 
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(data_dictionary_in.at[idx, col_name]):
                             if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
@@ -1966,7 +1966,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                        for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                             value_in = data_dictionary_in_copy.at[row, col_name]
                             value_out = data_dictionary_out.at[row, col_name]
                             if pd.notnull(value_in) and pd.notnull(value_out):
@@ -1975,7 +1975,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                        for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                             value_in = data_dictionary_in_copy.at[row, col_name]
                             value_out = data_dictionary_out.at[row, col_name]
                             if pd.notnull(value_in) and pd.notnull(value_out):
@@ -1989,7 +1989,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_in_copy.at[row, col_name] = value_in
                                 data_dictionary_out.at[row, col_name] = value_out
 
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col_name] in missing_values or pd.isnull(data_dictionary_in.at[idx, col_name]):
                             if data_dictionary_out.at[idx, col_name] != data_dictionary_in_copy.at[idx, col_name]:
@@ -2002,7 +2002,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
         elif special_type_input == SpecialType.INVALID:
             if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
 
                     data_dictionary_in_copy[col] = (
                         data_dictionary_in[col].apply(lambda x: np.nan if x in missing_values else x).
@@ -2024,7 +2024,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
 
                 # Iterate over each column
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     # For each index in the column
                     for idx in data_dictionary_in.index:
                         # Verify if the value is NaN in the original dataframe
@@ -2032,7 +2032,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             data_dictionary_in_copy.at[idx, col] = data_dictionary_in.at[idx, col]
 
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col] in missing_values:
                             if data_dictionary_out.at[idx, col] != data_dictionary_in_copy.at[idx, col]:
@@ -2053,12 +2053,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                        for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                             data_dictionary_in_copy.at[row, col_name] = truncate(data_dictionary_in_copy.at[row, col_name], 8)
                             data_dictionary_out.at[row, col_name] = truncate(data_dictionary_out.at[row, col_name], 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                        for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                             if data_dictionary_in_copy.at[row, col_name] % 1 >= 0.5:
                                 data_dictionary_in_copy.at[row, col_name] = math.ceil(data_dictionary_in_copy.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
@@ -2067,7 +2067,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_out.at[row, col_name] = data_dictionary_out.at[row, col_name].round(0)
 
                 # Iterate over each column
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     # For each index in the column
                     for idx in data_dictionary_in.index:
                         # Verify if the value is NaN in the original dataframe
@@ -2075,7 +2075,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                             # Replace the value with the corresponding one from dataDictionary_copy_copy
                             data_dictionary_in_copy.at[idx, col] = data_dictionary_in.at[idx, col]
 
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     for idx in data_dictionary_in.index:
                         if data_dictionary_in.at[idx, col] in missing_values:
                             if data_dictionary_out.at[idx, col] != data_dictionary_in_copy.at[idx, col]:
@@ -2088,7 +2088,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
         elif special_type_input == SpecialType.OUTLIER:
             if axis_param == 0:
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     for idx, value in data_dictionary_in[col].items():
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             data_dictionary_in_copy.at[idx, col] = np.NaN
@@ -2111,7 +2111,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                                 data_dictionary_out.at[idx, col] = data_dictionary_out.at[idx, col].round(0)
 
                 # Iterate over each column
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     # For each index in the column
                     for idx in data_dictionary_in.index:
                         # Verify if the value is NaN in the original dataframe
@@ -2132,7 +2132,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
             elif axis_param == 1:
                 for idx, row in data_dictionary_in.iterrows():
-                    for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                    for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                         if data_dictionary_outliers_mask.at[idx, col] == 1:
                             data_dictionary_in_copy.at[idx, col] = np.NaN
 
@@ -2141,12 +2141,12 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[row].dropna() % 1 != 0).any():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                        for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                             data_dictionary_in_copy.at[row, col_name] = truncate(data_dictionary_in_copy.at[row, col_name], 8)
                             data_dictionary_out.at[row, col_name] = truncate(data_dictionary_out.at[row, col_name], 8)
                     # Trunk the decimals to 0 if the column is int or if it has no decimals
                     elif (data_dictionary_in[row].dropna() % 1 == 0).all():
-                        for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                        for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                             if data_dictionary_in_copy.at[row, col_name] % 1 >= 0.5:
                                 data_dictionary_in_copy.at[row, col_name] = math.ceil(data_dictionary_in_copy.at[row, col_name])
                                 data_dictionary_out.at[row, col_name] = math.ceil(data_dictionary_out.at[row, col_name])
@@ -2336,7 +2336,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
 
                 # Calculate the mean of these numeric columns
                 mean = only_numbers_df.mean().mean()
@@ -2375,7 +2375,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     mean = data_dictionary_in[col_name].mean()
                     mean_value = None
 
@@ -2439,7 +2439,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         if special_type_input == SpecialType.INVALID:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the mean of these numeric columns
                 mean = only_numbers_df.mean().mean()
                 mean_value = None
@@ -2474,7 +2474,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the mean
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     mean = data_dictionary_in[col_name].mean()
                     mean_value = None
 
@@ -2536,12 +2536,12 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the mean of these numeric columns
                 mean = only_numbers_df.mean().mean()
                 mean_value = None
                 # Replace the missing values with the mean of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
                         for idx in data_dictionary_in.index:
@@ -2568,7 +2568,7 @@ def check_special_type_mean(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                     print_and_log(f"Error in function:  {origin_function} row: {idx} and column: {col_name} value should be: {mean_value} but is: {data_dictionary_out.loc[idx, col_name]}")
 
             if axis_param == 0:  # Iterate over each column
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     mean = data_dictionary_in[col].mean()
                     mean_value = None
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
@@ -2762,12 +2762,12 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
         if special_type_input == SpecialType.MISSING:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the median of these numeric columns
                 median = only_numbers_df.median().median()
                 median_value = None
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
@@ -2800,7 +2800,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     median = data_dictionary_in[col_name].median()
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
@@ -2866,12 +2866,12 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
         if special_type_input == SpecialType.INVALID:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the median of these numeric columns
                 median = only_numbers_df.median().median()
                 median_value = None
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
@@ -2902,7 +2902,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
             elif axis_param == 0:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
                 # Check the data_dictionary_out positions with missing values have been replaced with the median
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     median = data_dictionary_in[col_name].median()
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
@@ -2967,12 +2967,12 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
                 # Select only columns with numeric data, including all numeric types (int, float, etc.)
-                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number])
+                only_numbers_df = data_dictionary_in.select_dtypes(include=[np.number, 'Int64'])
                 # Calculate the median of these numeric columns
                 median = only_numbers_df.median().median()
                 median_value = None
                 # Replace the missing values with the median of the entire DataFrame using lambda
-                for col_name in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col_name in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers
                     if (data_dictionary_in[col_name].dropna() % 1 != 0).any():
@@ -3001,7 +3001,7 @@ def check_special_type_median(data_dictionary_in: pd.DataFrame, data_dictionary_
                                     print_and_log(f"Error in function:  {origin_function} row: {idx} and column: {col_name} value should be: {median_value} but is: {data_dictionary_out.loc[idx, col_name]}")
 
             if axis_param == 0:  # Iterate over each column
-                for col in data_dictionary_in.select_dtypes(include=[np.number]).columns:
+                for col in data_dictionary_in.select_dtypes(include=[np.number, 'Int64']).columns:
                     median = data_dictionary_in[col].median()
 
                     # Trunk the decimals to 8 if the column is full of floats or decimal numbers

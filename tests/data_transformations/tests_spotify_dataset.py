@@ -2071,7 +2071,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                      closure_type=Closure(0),
                                                                      num_op_output=Operation(1),
                                                                      axis_param=None)
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         # Calcular la media de estas columnas numéricas
         mean_value = only_numbers_df.mean().mean()
         # Reemplaza 'fix_value_input' con la media del DataFrame completo usando lambda
@@ -2104,7 +2104,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                      closure_type=Closure(2),
                                                                      num_op_output=Operation(2),
                                                                      axis_param=None)
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         # Calcular la media de estas columnas numéricas
         median_value = only_numbers_df.median().median()
         # Reemplaza los valores en el intervalo con la mediana del DataFrame completo usando lambda
@@ -2304,7 +2304,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                      closure_type=Closure(0),
                                                                      num_op_output=Operation(1),
                                                                      axis_param=None)
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         # Calcular la media de estas columnas numéricas
         mean_value = only_numbers_df.mean().mean()
         # Reemplaza 'fix_value_input' con la media del DataFrame completo usando lambda
@@ -2337,7 +2337,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                      closure_type=Closure(2),
                                                                      num_op_output=Operation(2),
                                                                      axis_param=None)
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         # Calcular la media de estas columnas numéricas
         median_value = only_numbers_df.median().median()
         # Reemplaza los valores en el intervalo con la mediana del DataFrame completo usando lambda
@@ -2358,7 +2358,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                      num_op_output=Operation(3),
                                                                      axis_param=None)
 
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         indice_row = []
         indice_col = []
         values = []
@@ -2405,7 +2405,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
                                                                      num_op_output=Operation(3),
                                                                      axis_param=0)
 
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         for col in only_numbers_df.columns:
             indice_row = []
             indice_col = []
@@ -4105,7 +4105,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             axis_param=None)
         # Obtener la media de las columnas numéricas del dataframe
         # Obtener las columnas numéricas
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         # Obtener la media de todas las columnas numéricas
         mean_value = only_numbers_df.mean().mean()
         # Sustituir los valores faltantes y valores nulos por la media de todas las columnas numéricas
@@ -4345,7 +4345,7 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
             missing_values=missing_values,
             axis_param=None)
         # Sustituir los valores invalidos por el valor más cercano en el dataframe
-        only_numbers_df = expected_df.select_dtypes(include=[np.number])
+        only_numbers_df = expected_df.select_dtypes(include=[np.number, 'Int64'])
         # Flatten the DataFrame into a single series of values
         flattened_values = only_numbers_df.values.flatten().tolist()
 
