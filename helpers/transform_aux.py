@@ -77,7 +77,7 @@ def get_outliers(data_dictionary: pd.DataFrame, field: str = None, axis_param: i
                         data_dictionary_copy.at[idx, col] = 1
             return data_dictionary_copy
     elif field is not None:
-        # Se usa pd.api.types.is_numeric_dtype en lugar de np.issubdtype para evitar el error con el tipo Int64
+        # Se usa pd.api.types.is_numeric_dtype para evitar el error con el tipo Int64
         if not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             raise ValueError("El campo no es numérico")
 
@@ -116,10 +116,9 @@ def apply_derived_type_col_row_outliers(derived_type_output: DerivedType, data_d
         if derived_type_output == DerivedType.MOSTFREQUENT:
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
-                    if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
-                        for idx, value in data_dictionary_copy[col].items():
-                            if data_dictionary_copy_copy.at[idx, col] == 1:
-                                data_dictionary_copy.at[idx, col] = data_dictionary_copy[col].value_counts().idxmax()
+                    for idx, value in data_dictionary_copy[col].items():
+                        if data_dictionary_copy_copy.at[idx, col] == 1:
+                            data_dictionary_copy.at[idx, col] = data_dictionary_copy[col].value_counts().idxmax()
             elif axis_param == 1:
                 for idx, row in data_dictionary_copy.iterrows():
                     for col in row.index:
@@ -423,7 +422,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
         if special_type_input == SpecialType.OUTLIER:
             if axis_param == 0:
                 for col in data_dictionary_copy.columns:
-                    if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                    if pd.api.types.is_numeric_dtype(data_dictionary_copy[col]):
                         for idx, value in data_dictionary_copy[col].items():
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy_copy.at[idx, col] = np.NaN
@@ -447,7 +446,7 @@ def special_type_interpolation(data_dictionary_copy: pd.DataFrame, special_type_
                 data_dictionary_copy_copy=data_dictionary_copy_copy.T
                 data_dictionary_copy=data_dictionary_copy.T
                 for col in data_dictionary_copy.columns:
-                    if np.issubdtype(data_dictionary_copy[col].dtype, np.number):
+                    if pd.api.types.is_numeric_dtype(data_dictionary_copy[col]):
                         for idx, value in data_dictionary_copy[col].items():
                             if data_dictionary_copy_mask.at[idx, col] == 1:
                                 data_dictionary_copy.at[idx, col] = np.NaN
@@ -1047,8 +1046,8 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
     elif field_in is not None:
         if field_in not in data_dictionary_copy.columns or field_out not in data_dictionary_copy.columns:
             raise ValueError("Field not found in the DataFrame")
-        # Se usa is_numeric_dtype en lugar de np.issubdtype para evitar problemas con Int64Dtype
-        if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
+        # Se usa is_numeric_dtype para evitar problemas con Int64Dtype
+        if not pd.api.types.is_numeric_dtype(data_dictionary_copy[field_in]):
             raise ValueError("Field is not numeric")
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
