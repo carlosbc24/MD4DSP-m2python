@@ -675,7 +675,7 @@ def check_field_type(data_dictionary: pd.DataFrame, field_type: DataType, field:
                 print_and_log(f"Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False
         elif field_type == DataType.INTEGER:
-            if data_dictionary[field].dtype != int and data_dictionary[field].dtype != np.int64:
+            if data_dictionary[field].dtype != int and data_dictionary[field].dtype != np.int64 and data_dictionary[field].dtype != 'Int64':
                 print_and_log(f"Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False  # Case 1
         elif field_type == DataType.FLOAT or field_type == DataType.DOUBLE:
