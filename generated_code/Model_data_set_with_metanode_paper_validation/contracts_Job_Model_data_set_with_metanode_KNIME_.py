@@ -11,9 +11,9 @@ from functions.PMML import PMMLModel
 
 def generateWorkflow():
 	#-----------------New DataProcessing-----------------
-	imputeMissingByMostFrequent_sex_IRISCHOOL_ETHNICITY__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv')
-	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.csv'):
-		imputeMissingByMostFrequent_sex_IRISCHOOL_ETHNICITY__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')
+	imputeMissingByMostFrequent_sex_IRISCHOOL_ETHNICITY__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_input_dataDictionary.parquet')
+	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.parquet'):
+		imputeMissingByMostFrequent_sex_IRISCHOOL_ETHNICITY__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_output_dataDictionary.parquet')
 
 	missing_values_imputeByDerivedValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeMissingByMostFrequent_sex_IRISCHOOL_ETHNICITY__input_dataDictionary_df, field='sex',
@@ -106,10 +106,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	imputeMissingByFixValue_ACADEMIC_INTEREST_2_ACADEMIC_INTEREST_1__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv')
+	imputeMissingByFixValue_ACADEMIC_INTEREST_2_ACADEMIC_INTEREST_1__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_input_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.csv'):
-		imputeMissingByFixValue_ACADEMIC_INTEREST_2_ACADEMIC_INTEREST_1__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.parquet'):
+		imputeMissingByFixValue_ACADEMIC_INTEREST_2_ACADEMIC_INTEREST_1__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_output_dataDictionary.parquet')
 
 	missing_values_imputeByFixValue_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeMissingByFixValue_ACADEMIC_INTEREST_2_ACADEMIC_INTEREST_1__input_dataDictionary_df, field='ACADEMIC_INTEREST_2',
@@ -176,10 +176,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	imputeMissingByMean_avg_income_distance__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv')
+	imputeMissingByMean_avg_income_distance__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_input_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.csv'):
-		imputeMissingByMean_avg_income_distance__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.parquet'):
+		imputeMissingByMean_avg_income_distance__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_output_dataDictionary.parquet')
 
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeMissingByMean_avg_income_distance__input_dataDictionary_df, field='avg_income',
@@ -242,10 +242,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	imputeMissingByLinearInterpolation_satscore__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_input_dataDictionary.csv')
+	imputeMissingByLinearInterpolation_satscore__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_input_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.csv'):
-		imputeMissingByLinearInterpolation_satscore__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/missing_output_dataDictionary.parquet'):
+		imputeMissingByLinearInterpolation_satscore__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_output_dataDictionary.parquet')
 
 	missing_values_imputeByNumericOp_PRE_valueRange=[]
 	if contract_pre_post.check_missing_range(belong_op=Belong(0), data_dictionary=imputeMissingByLinearInterpolation_satscore__input_dataDictionary_df, field='satscore',
@@ -278,10 +278,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	rowFilterRange_init_span__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/missing_output_dataDictionary.csv')
+	rowFilterRange_init_span__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/missing_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv'):
-		rowFilterRange_init_span__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/rowFilter_output_dataDictionary.parquet'):
+		rowFilterRange_init_span__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/rowFilter_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=rowFilterRange_init_span__input_dataDictionary_df,
 	                                	closure_type=Closure(2), belong_op=Belong(1), field='init_span', origin_function="Row Filter"):
@@ -314,10 +314,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	columnFilter_TRAVEL_INIT_CNTCTS_REFERRAL_CNCTS_telecq_interest_stuemail_CONTACT_CODE1__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/rowFilter_output_dataDictionary.csv')
+	columnFilter_TRAVEL_INIT_CNTCTS_REFERRAL_CNCTS_telecq_interest_stuemail_CONTACT_CODE1__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/rowFilter_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv'):
-		columnFilter_TRAVEL_INIT_CNTCTS_REFERRAL_CNCTS_telecq_interest_stuemail_CONTACT_CODE1__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/columnFilter_output_dataDictionary.parquet'):
+		columnFilter_TRAVEL_INIT_CNTCTS_REFERRAL_CNCTS_telecq_interest_stuemail_CONTACT_CODE1__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/columnFilter_output_dataDictionary.parquet')
 
 	field_list_columnFilter_PRE_field_range=['TRAVEL_INIT_CNTCTS', 'REFERRAL_CNTCTS', 'telecq', 'stuemail', 'interest', 'CONTACT_CODE1']
 	if contract_pre_post.check_field_range(fields=field_list_columnFilter_PRE_field_range,
@@ -352,10 +352,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	mapping_TERRITORY__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/columnFilter_output_dataDictionary.csv')
+	mapping_TERRITORY__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/columnFilter_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv'):
-		mapping_TERRITORY__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.parquet'):
+		mapping_TERRITORY__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_fix_value_range(value='A', data_dictionary=mapping_TERRITORY__input_dataDictionary_df, belong_op=Belong(0), field='TERRITORY',
 									quant_abs=None, quant_rel=None, quant_op=None, origin_function="Rule Engine"):
@@ -405,10 +405,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	mapping_Instate__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.csv')
+	mapping_Instate__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/ruleEngine_territory_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv'):
-		mapping_Instate__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.parquet'):
+		mapping_Instate__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_fix_value_range(value='Y', data_dictionary=mapping_Instate__input_dataDictionary_df, belong_op=Belong(0), field='Instate',
 									quant_abs=None, quant_rel=None, quant_op=None, origin_function="Rule Engine"):
@@ -458,10 +458,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	stringToNumber_TERRITORY_Instate__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.csv')
+	stringToNumber_TERRITORY_Instate__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/ruleEngine_instate_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv'):
-		stringToNumber_TERRITORY_Instate__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/stringToNumber_output_dataDictionary.parquet'):
+		stringToNumber_TERRITORY_Instate__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/stringToNumber_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_field_type(data_dictionary=stringToNumber_TERRITORY_Instate__input_dataDictionary_df,
 	                                	  field='TERRITORY', field_type=DataType(0), origin_function="String To Number"):
@@ -532,10 +532,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	imputeOutlierByClosest_avg_income_distance_Instate__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/stringToNumber_output_dataDictionary.csv')
+	imputeOutlierByClosest_avg_income_distance_Instate__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/stringToNumber_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv'):
-		imputeOutlierByClosest_avg_income_distance_Instate__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/numericOutliers_output_dataDictionary.parquet'):
+		imputeOutlierByClosest_avg_income_distance_Instate__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericOutliers_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_outliers(belong_op=Belong(0), data_dictionary=imputeOutlierByClosest_avg_income_distance_Instate__input_dataDictionary_df, field='avg_income',
 									quant_abs=None, quant_rel=None, quant_op=None, origin_function="Numeric Outliers"):
@@ -613,10 +613,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	binner_TOTAL_CONTACTS_SELF_INIT_CNTCTS_SOLICITED_CNTCTS__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
+	binner_TOTAL_CONTACTS_SELF_INIT_CNTCTS_SOLICITED_CNTCTS__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericOutliers_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):
-		binner_TOTAL_CONTACTS_SELF_INIT_CNTCTS_SOLICITED_CNTCTS__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet'):
+		binner_TOTAL_CONTACTS_SELF_INIT_CNTCTS_SOLICITED_CNTCTS__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=binner_TOTAL_CONTACTS_SELF_INIT_CNTCTS_SOLICITED_CNTCTS__input_dataDictionary_df,
 	                                	closure_type=Closure(0), belong_op=Belong(0), field='TOTAL_CONTACTS', origin_function="Numeric Binner"):
@@ -772,10 +772,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	binner_TERRITORY__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
+	binner_TERRITORY__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericOutliers_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):
-		binner_TERRITORY__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet'):
+		binner_TERRITORY__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_interval_range_float(left_margin=0.0, right_margin=1000.0, data_dictionary=binner_TERRITORY__input_dataDictionary_df,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='TERRITORY', origin_function="Numeric Binner"):
@@ -853,10 +853,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	binner_satscore__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
+	binner_satscore__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericOutliers_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):
-		binner_satscore__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet'):
+		binner_satscore__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=2000.0, data_dictionary=binner_satscore__input_dataDictionary_df,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='satscore', origin_function="Numeric Binner"):
@@ -922,10 +922,10 @@ def generateWorkflow():
 
 
 	#-----------------New DataProcessing-----------------
-	binner_avg_income__input_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericOutliers_output_dataDictionary.csv')
+	binner_avg_income__input_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericOutliers_output_dataDictionary.parquet')
 
-	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv'):
-		binner_avg_income__output_dataDictionary_df=pd.read_csv('./knime_dataDictionaries/numericBinner_output_dataDictionary.csv')
+	if os.path.exists('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet'):
+		binner_avg_income__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/numericBinner_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_interval_range_float(left_margin=9.0, right_margin=100000.0, data_dictionary=binner_avg_income__input_dataDictionary_df,
 	                                	closure_type=Closure(3), belong_op=Belong(0), field='avg_income', origin_function="Numeric Binner"):
