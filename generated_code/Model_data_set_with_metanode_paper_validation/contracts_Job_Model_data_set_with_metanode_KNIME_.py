@@ -284,10 +284,10 @@ def generateWorkflow():
 		rowFilterRange_init_span__output_dataDictionary_df=pd.read_parquet('./knime_dataDictionaries/rowFilter_output_dataDictionary.parquet')
 
 	if contract_pre_post.check_interval_range_float(left_margin=-1000.0, right_margin=1000.0, data_dictionary=rowFilterRange_init_span__input_dataDictionary_df,
-	                                	closure_type=Closure(2), belong_op=Belong(1), field='init_span', origin_function="Row Filter"):
-		print('PRECONDITION Row Filter(init_span) Interval:[-1000.0, 1000.0) VALIDATED')
+	                                	closure_type=Closure(0), belong_op=Belong(0), field='init_span', origin_function="Row Filter"):
+		print('PRECONDITION Row Filter(init_span) Interval:(-1000.0, 1000.0) VALIDATED')
 	else:
-		print('PRECONDITION Row Filter(init_span) Interval:[-1000.0, 1000.0) NOT VALIDATED')
+		print('PRECONDITION Row Filter(init_span) Interval:(-1000.0, 1000.0) NOT VALIDATED')
 
 	if contract_pre_post.check_fix_value_range(value=-216, data_dictionary=rowFilterRange_init_span__output_dataDictionary_df, belong_op=Belong(1), field='init_span',
 									quant_abs=None, quant_rel=None, quant_op=None, origin_function="Row Filter"):
@@ -965,7 +965,7 @@ def generateWorkflow():
 
 	if contract_invariants.check_inv_interval_fix_value(data_dictionary_in=binner_avg_income__input_dataDictionary_df,
 											data_dictionary_out=binner_avg_income__output_dataDictionary_df,
-											left_margin=55559.0, right_margin=100000.0,
+											left_margin=55590.0, right_margin=100000.0,
 											closure_type=Closure(2),
 											fix_value_output='High',
 											belong_op_in=Belong(0), belong_op_out=Belong(0),
