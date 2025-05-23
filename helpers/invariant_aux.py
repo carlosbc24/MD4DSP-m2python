@@ -1936,7 +1936,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                             value_out = data_dictionary_out.at[idx, col_name]
                             # Process data_dictionary_in and data_dictionary_out
                             if pd.notnull(value_in) and pd.notnull(value_out):
-                                if value_in % 1 >= 0.5 and value_out % 1 >= 0.5:
+                                if value_in % 1 >= 0.5:
                                     data_dictionary_in_copy.at[idx, col_name] = math.ceil(value_in)
                                     data_dictionary_out.at[idx, col_name] = math.ceil(value_out)
                                 else:
@@ -1979,7 +1979,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                             value_in = data_dictionary_in_copy.at[row, col_name]
                             value_out = data_dictionary_out.at[row, col_name]
                             if pd.notnull(value_in) and pd.notnull(value_out):
-                                if value_in % 1 >= 0.5 and value_out % 1 >= 0.5:
+                                if value_in % 1 >= 0.5:
                                     data_dictionary_in_copy.at[row, col_name] = math.ceil(value_in)
                                     data_dictionary_out.at[row, col_name] = math.ceil(value_out)
                                 else:
@@ -2200,7 +2200,7 @@ def check_special_type_interpolation(data_dictionary_in: pd.DataFrame, data_dict
                     value_in = data_dictionary_in_copy.at[idx, field_in]
                     value_out = data_dictionary_out.at[idx, field_out]
                     if pd.notnull(value_in) and pd.notnull(value_out):
-                        if value_in % 1 >= 0.5 and value_out % 1 >= 0.5:
+                        if value_in % 1 >= 0.5:
                             data_dictionary_in_copy.at[idx, field_in] = math.ceil(value_in)
                             data_dictionary_out.at[idx, field_out] = math.ceil(value_out)
                         else:
