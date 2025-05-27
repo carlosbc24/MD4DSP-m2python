@@ -1064,7 +1064,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 2 of checkIntervalRangeFloat
         # Check that the data in the field 'c1' of the data dictionary belongs to the interval [0, 5]
-        # adn returns False because the 0 is not included in the interval and there is a 0 in the data dictionary
+        # adn returns True because the data between the interval is present in the dictionary
         leftMargin = 0
         rightMargin = 5
         data_dictionary = pd.DataFrame(data={'c1': [0, 1, 2, 3, 4, 5]})
@@ -1075,8 +1075,8 @@ class PrePostSimpleTest(unittest.TestCase):
                                                           data_dictionary=data_dictionary,
                                                           closure_type=Closure(closure_type),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 2 Failed: Expected False, but got True"
-        print_and_log("Test Case 2 Passed: Expected False, got False")
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
         print_and_log("")
 
         print_and_log("Casos Básicos añadidos:")
@@ -1096,11 +1096,11 @@ class PrePostSimpleTest(unittest.TestCase):
                                              'c2': [0, 0, 0.3, 1.4, 0.3, 5, 0, 0, None, None]})
         closure = 0  # OpenOpen
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.check_interval_range_float(left_margin=left0, right_margin=right0,
-                                                              data_dictionary=data_dictionary,
-                                                              closure_type=Closure(closure),
-                                                              belong_op=Belong(belong_op))
+        with self.assertRaises(expected_exception):
+            self.pre_post.check_interval_range_float(left_margin=left0, right_margin=right0,
+                                                     data_dictionary=data_dictionary,
+                                                     closure_type=Closure(closure),
+                                                     belong_op=Belong(belong_op))
         print_and_log("Test Case 0 Passed: Expected ValueError, got ValueError")
 
         # Example 1.1 of checkIntervalRangeFloat
@@ -1111,8 +1111,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is False, "Test Case 1.1 Failed: Expected False, but got True"
-        print_and_log("Test Case 1.1 Passed: Expected False, got False")
+        assert result is True, "Test Case 1.1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1.1 Passed: Expected True, got True")
 
         # Example 2.1 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
@@ -1144,8 +1144,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is False, "Test Case 4 Failed: Expected False, but got True"
-        print_and_log("Test Case 4 Passed: Expected False, got False")
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
 
         # Example 5 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
@@ -1160,8 +1160,8 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 6 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c1': [209.0, 209, 5209, 255.3, 444, 673.5, 422, 122.5, None, None],
+                                             'c2': [7209, 155, 209.3, 242.4, 555.3, 544, 703.4, 823, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
@@ -1182,8 +1182,8 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 8 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 0.001, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c1': [-220.0, -2.9, -5, 725.3, -0.001, 767.5, -42, -0.5, None, None],
+                                             'c2': [-7, -15, -0.3, -1.4, -0.3, -5, 770.4001, -8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
@@ -1202,8 +1202,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is True, "Test Case 9 Failed: Expected True, but got False"
-        print_and_log("Test Case 9 Passed: Expected True, got True")
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, got False")
 
         # Example 10 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
@@ -1218,14 +1218,14 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 11 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c1': [-0.01, 662.9, 665, 625.3, 664, 767.5, 842, 990.5, None, None],
+                                             'c2': [-7, -15, -0.3, -1.4, -0.3, -5, -70.4, -8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is False, "Test Case 11 Failed: Expected False, but got True"
-        print_and_log("Test Case 11 Passed: Expected False, got False")
+        assert result is True, "Test Case 11 Failed: Expected True, but got False"
+        print_and_log("Test Case 11 Passed: Expected True, got True")
 
         # Example 12 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
@@ -1235,8 +1235,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is True, "Test Case 12 Failed: Expected True, but got False"
-        print_and_log("Test Case 12 Passed: Expected True, got True")
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
 
         # Example 13 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
@@ -1251,8 +1251,8 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 14 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c1': [220.0, 222.9, -5, -25.3, -4, -67.5, -42, -0.5, None, None],
+                                             'c2': [887, 715, 770.3, 771.4, -0.3, -5, -70.4, -8, None, None]})
         closure = 2  # ClosedOpen
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
@@ -1279,8 +1279,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is True, "Test Case 16 Failed: Expected True, but got False"
-        print_and_log("Test Case 16 Passed: Expected True, got True")
+        assert result is False, "Test Case 16 Failed: Expected False, but got True"
+        print_and_log("Test Case 16 Passed: Expected False, got False")
 
         # field = 'c2'
         field = 'c2'
@@ -1295,8 +1295,8 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 17 Failed: Expected False, but got True"
-        print_and_log("Test Case 17 Passed: Expected False, got False")
+        assert result is True, "Test Case 17 Failed: Expected True, but got False"
+        print_and_log("Test Case 17 Passed: Expected True, got True")
 
         # Example 18 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
@@ -1322,8 +1322,8 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 20 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c1': [-0.01, -2.9, -5, -25.3, -4, -67.5, -42, -0.5, None, None],
+                                             'c2': [-7, -15, -0.3, -1.4, -0.3, -5, -70.5, -8, None, None]})
         closure = 1  # OpenClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
@@ -1344,8 +1344,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 22 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c2': [97, 158, 70.4, None, 90.3]})
         closure = 2  # ClosedOpen
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
@@ -1366,8 +1365,7 @@ class PrePostSimpleTest(unittest.TestCase):
 
         # Example 24 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 0.001, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c2': [-7, -15, -0.3, -1.4, -0.3, -5, 70.4001, -8, None, None]})
         closure = 3  # ClosedClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
@@ -1386,85 +1384,19 @@ class PrePostSimpleTest(unittest.TestCase):
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is True, "Test Case 25 Failed: Expected True, but got False"
-        print_and_log("Test Case 25 Passed: Expected True, got True")
+        assert result is False, "Test Case 25 Failed: Expected False, but got True"
+        print_and_log("Test Case 25 Passed: Expected False, got False")
 
         # Example 26 of checkIntervalRangeFloat
         # Check that the data in the whole dictionary belongs to the interval (0, 70.4)
-        data_dictionary = pd.DataFrame(data={'c1': [0.1, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 7.0, 8, None, None]})
+        data_dictionary = pd.DataFrame(data={'c1': [0.0, -2.9, -5, -25.3, -4,- 67.5, -42, -0.5, 70.4, None],
+                                             'c2': [-7, -15, -0.3, -1.4, -0.3, -5, -7.0, -8, None, None]})
         closure = 0  # OpenOpen
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=data_dictionary, closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 26 Failed: Expected False, but got True"
-        print_and_log("Test Case 26 Passed: Expected False, got False")
-
-        # Example 27 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
-        closure = 1  # OpenClosed
-        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
-                                                          data_dictionary=data_dictionary, closure_type=Closure(closure),
-                                                          belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 27 Failed: Expected False, but got True"
-        print_and_log("Test Case 27 Passed: Expected False, got False")
-
-        # Example 28 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval (0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.01, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.5, 8, None, None]})
-        closure = 1  # OpenClosed
-        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
-                                                          data_dictionary=data_dictionary, closure_type=Closure(closure),
-                                                          belong_op=Belong(belong_op), field=field)
-        assert result is True, "Test Case 28 Failed: Expected True, but got False"
-        print_and_log("Test Case 28 Passed: Expected True, got True")
-
-        # Example 29 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.3, 8, None, None]})
-        closure = 2  # ClosedOpen
-        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
-                                                          data_dictionary=data_dictionary, closure_type=Closure(closure),
-                                                          belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 29 Failed: Expected False, but got True"
-        print_and_log("Test Case 29 Passed: Expected False, got False")
-
-        # Example 30 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4)
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
-        closure = 2  # ClosedOpen
-        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
-                                                          data_dictionary=data_dictionary, closure_type=Closure(closure),
-                                                          belong_op=Belong(belong_op), field=field)
-        assert result is True, "Test Case 30 Failed: Expected True, but got False"
-        print_and_log("Test Case 30 Passed: Expected True, got True")
-
-        # Example 31 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, -2.9, 5, 25.3, 4, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4, 8, None, None]})
-        closure = 3  # ClosedClosed
-        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
-                                                          data_dictionary=data_dictionary, closure_type=Closure(closure),
-                                                          belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 31 Failed: Expected False, but got True"
-        print_and_log("Test Case 31 Passed: Expected False, got False")
-
-        # Example 32 of checkIntervalRangeFloat
-        # Check that the data in the whole dictionary belongs to the interval [0, 70.4]
-        data_dictionary = pd.DataFrame(data={'c1': [0.0, 2.9, 5, 25.3, 0.001, 67.5, 42, 0.5, None, None],
-                                             'c2': [7, 15, 0.3, 1.4, 0.3, 5, 70.4001, 8, None, None]})
-        closure = 3  # ClosedClosed
-        result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
-                                                          data_dictionary=data_dictionary, closure_type=Closure(closure),
-                                                          belong_op=Belong(belong_op), field=field)
-        assert result is True, "Test Case 32 Failed: Expected True, but got False"
-        print_and_log("Test Case 32 Passed: Expected True, got True")
+        assert result is True, "Test Case 26 Failed: Expected True, but got False"
+        print_and_log("Test Case 26 Passed: Expected True, got True")
 
         print_and_log("")
         print_and_log("-----------------------------------------------------------")

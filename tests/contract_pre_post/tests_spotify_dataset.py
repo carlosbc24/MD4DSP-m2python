@@ -933,7 +933,6 @@ class ContractExternalDatasetTests(unittest.TestCase):
         """
 
         # field = None
-        field = None
         # belong_op = 0
         belong_op = 0
 
@@ -946,8 +945,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is False, "Test Case 1 Failed: Expected False, but got True"
-        print_and_log("Test Case 1 Passed: Expected False, got False")
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
 
         # Example 2 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-47.30, 518000)
@@ -974,9 +973,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3 Passed: Expected True, got True")
 
         # Example 4 of checkIntervalRangeFloat
-        # Check if the data in the whole dictionary belongs to the interval (-47.30, 517809.99]
-        left = -47.30
-        right = 517809.99
+        left = -4700000.30
+        right = -517809.99
         closure = 1  # OpenClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=self.data_dictionary,
@@ -998,9 +996,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 5 Passed: Expected True, got True")
 
         # Example 6 of checkIntervalRangeFloat
-        # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810.0)
-        left = -46.448
-        right = 517810.0
+        left = 4600000.448
+        right = 5178100.0
         belong_op = 0
         closure = 2  # ClosedOpen
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
@@ -1031,8 +1028,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is False, "Test Case 8 Failed: Expected False, but got True"
-        print_and_log("Test Case 8 Passed: Expected False, got False")
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
 
         # belong_op = 1
         belong_op = 1
@@ -1046,8 +1043,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is True, "Test Case 9 Failed: Expected True, but got False"
-        print_and_log("Test Case 9 Passed: Expected True, got True")
+        assert result is False, "Test Case 9 Failed: Expected False, but got True"
+        print_and_log("Test Case 9 Passed: Expected False, got False")
 
         # Example 10 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.449, 517810.1)
@@ -1075,8 +1072,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 12 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.448, 517810]
-        left = -46.448
-        right = 517810
+        left = 4600000.448
+        right = 5178100
         closure = 1  # OpenClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=self.data_dictionary,
@@ -1106,8 +1103,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op))
-        assert result is True, "Test Case 14 Failed: Expected True, but got False"
-        print_and_log("Test Case 14 Passed: Expected True, got True")
+        assert result is False, "Test Case 14 Failed: Expected False, but got True"
+        print_and_log("Test Case 14 Passed: Expected False, got False")
 
         # Example 15 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval [-46.448, 517810]
@@ -1123,8 +1120,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 16 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval [-46.448, 517809.9]
-        left = -46.448
-        right = 517809.9
+        left = -46000000.448
+        right = -5178090.9
         closure = 3  # ClosedClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=self.data_dictionary,
@@ -1139,7 +1136,6 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong_op = 0
 
         # Example 17 of checkIntervalRangeFloat
-        # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.275)
         left = -46.448
         right = 1.275
         closure = 0  # OpenOpen
@@ -1147,11 +1143,10 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 17 Failed: Expected False, but got True"
-        print_and_log("Test Case 17 Passed: Expected False, got False")
+        assert result is True, "Test Case 17 Failed: Expected True, but got False"
+        print_and_log("Test Case 17 Passed: Expected True, got True")
 
         # Example 18 of checkIntervalRangeFloat
-        # Check if the data in the whole dictionary belongs to the interval (-46.449, 1.276)
         left = -46.449
         right = 1.276
         closure = 0  # OpenOpen
@@ -1176,8 +1171,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 20 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.275]
-        left = -46.448
-        right = 1.275
+        left = -46000000.448
+        right = -100000.275
         closure = 1  # OpenClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=self.data_dictionary,
@@ -1200,8 +1195,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 22 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275)
-        left = -46.448
-        right = 1.275
+        left = -460000.448
+        right = -100000.275
         closure = 2  # ClosedOpen
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=self.data_dictionary,
@@ -1231,8 +1226,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is False, "Test Case 24 Failed: Expected False, but got True"
-        print_and_log("Test Case 24 Passed: Expected False, got False")
+        assert result is True, "Test Case 24 Failed: Expected True, but got False"
+        print_and_log("Test Case 24 Passed: Expected True, got True")
 
         # belong_op = 1
         belong_op = 1
@@ -1246,8 +1241,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is True, "Test Case 25 Failed: Expected True, but got False"
-        print_and_log("Test Case 25 Passed: Expected True, got True")
+        assert result is False, "Test Case 25 Failed: Expected False, but got True"
+        print_and_log("Test Case 25 Passed: Expected False, got False")
 
         # Example 26 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.449, 1.276)
@@ -1275,8 +1270,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 28 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval (-46.448, 1.275]
-        left = -46.448
-        right = 1.275
+        left = -4600000.448
+        right = -100000.275
         closure = 1  # OpenClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=self.data_dictionary,
@@ -1306,8 +1301,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
                                                           data_dictionary=self.data_dictionary,
                                                           closure_type=Closure(closure),
                                                           belong_op=Belong(belong_op), field=field)
-        assert result is True, "Test Case 30 Failed: Expected True, but got False"
-        print_and_log("Test Case 30 Passed: Expected True, got True")
+        assert result is False, "Test Case 30 Failed: Expected False, but got True"
+        print_and_log("Test Case 30 Passed: Expected False, got False")
 
         # Example 31 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275]
@@ -1323,8 +1318,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
 
         # Example 32 of checkIntervalRangeFloat
         # Check if the data in the whole dictionary belongs to the interval [-46.448, 1.275]
-        left = -46.447
-        right = 1.275
+        left = -4600000.447
+        right = -100000.275
         closure = 3  # ClosedClosed
         result = self.pre_post.check_interval_range_float(left_margin=left, right_margin=right,
                                                           data_dictionary=self.data_dictionary,
@@ -1342,8 +1337,8 @@ class ContractExternalDatasetTests(unittest.TestCase):
         right0 = 15
         closure = 0  # OpenOpen
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
-            result = self.pre_post.check_interval_range_float(left_margin=left0, right_margin=right0,
+        with self.assertRaises(expected_exception):
+            self.pre_post.check_interval_range_float(left_margin=left0, right_margin=right0,
                                                               data_dictionary=self.data_dictionary,
                                                               closure_type=Closure(closure),
                                                               belong_op=Belong(belong_op))

@@ -184,74 +184,49 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
     if left_margin > right_margin:
         raise ValueError("Error: leftMargin should be less than or equal to rightMargin")  # Case 0
 
-    result = True
-
-    if belong_op == Belong.BELONG:
-        result = True
-    elif belong_op == Belong.NOTBELONG:
-        result = False
-
-    def check_condition(value, left_margin: float, right_margin: float, belong_op: Belong, result: bool) -> bool:
+    def in_interval(value, left_margin: float, right_margin: float, closure_type: Closure) -> bool:
         if closure_type == Closure.openOpen:
-            if not (value > left_margin and value < right_margin):
-                if belong_op == Belong.BELONG:
-                    result = False
-                elif belong_op == Belong.NOTBELONG:
-                    result = True
+            return value > left_margin and value < right_margin
         elif closure_type == Closure.openClosed:
-            if not (value > left_margin and value <= right_margin):
-                if belong_op == Belong.BELONG:
-                    result = False
-                elif belong_op == Belong.NOTBELONG:
-                    result = True
+            return value > left_margin and value <= right_margin
         elif closure_type == Closure.closedOpen:
-            if not (value >= left_margin and value < right_margin):
-                if belong_op == Belong.BELONG:
-                    result = False
-                elif belong_op == Belong.NOTBELONG:
-                    result = True
+            return value >= left_margin and value < right_margin
         elif closure_type == Closure.closedClosed:
-            if not (value >= left_margin and value <= right_margin):
-                if belong_op == Belong.BELONG:
-                    result = False
-                elif belong_op == Belong.NOTBELONG:
-                    result = True
+            return value >= left_margin and value <= right_margin
+        print_and_log(f"Origin function: {origin_function} - value {value} is not in the interval [{left_margin}, {right_margin}] with closure type {closure_type}")
+        return False
 
-        return result
-
+    # Columns selection based on field
     if field is None:
-        for column in data_dictionary.select_dtypes(include=[np.number, 'Int64']).columns:
-            for i in data_dictionary.index:  # Cases 1-16
-                # Verify if the index exists in the mask and if the value is an outlier
-                if not np.isnan(data_dictionary.at[i, column]):
-                    result = check_condition(data_dictionary.at[i, column], left_margin, right_margin, belong_op,
-                                             result)
-                    if belong_op == Belong.BELONG and not result:
-                        return False
-                    elif belong_op == Belong.NOTBELONG and result:
-                        return True
-
-    elif field is not None:
-        if field not in data_dictionary.columns:  # It checks that the column exists in the dataframe
-            raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 16.5
-
-        if pd.api.types.is_numeric_dtype(data_dictionary[field]):
-            for i in data_dictionary[field].index:  # Cases 17-32
-                # Verify if the index exists in the mask and if the value is an outlier
-                if not np.isnan(data_dictionary.at[i, field]):
-                    result = check_condition(data_dictionary.at[i, field], left_margin, right_margin, belong_op, result)
-                    if belong_op == Belong.BELONG and not result:
-                        return False
-                    elif belong_op == Belong.NOTBELONG and result:
-                        return True
-        else:  # Si no es de tipo numerico se puede suponer que no se encuentra en el rango de valores
+        columns = data_dictionary.select_dtypes(include=[np.number, 'Int64']).columns
+    else:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Column '{field}' not found in data_dictionary.")
+        if not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             if belong_op == Belong.BELONG:
+                print_and_log(f"Origin function: {origin_function} - field {field} is not numeric.")
                 return False
             elif belong_op == Belong.NOTBELONG:
                 return True
-        # raise ValueError("Error: field should be a float")  # Case 33
+        columns = [field]
 
-    return result
+    # Vectorization for efficient checking
+    for column in columns:
+        col_values = data_dictionary[column].dropna()
+        if belong_op == Belong.BELONG:
+            # Return True if any value is in the interval
+            if (col_values.apply(lambda v: in_interval(v, left_margin, right_margin, closure_type))).any():
+                return True
+        elif belong_op == Belong.NOTBELONG:
+            # Return True if no value is in the interval
+            if (col_values.apply(lambda v: in_interval(v, left_margin, right_margin, closure_type))).any():
+                print_and_log(f"Origin function: {origin_function} - value in column {column} is in the interval [{left_margin}, {right_margin}] with closure type {closure_type}")
+                return False
+    if belong_op == Belong.BELONG:
+        print_and_log(f"Origin function: {origin_function} - value not in column {field}.")
+        return False
+    elif belong_op == Belong.NOTBELONG:
+        return True
 
 
 def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field: str = None,
