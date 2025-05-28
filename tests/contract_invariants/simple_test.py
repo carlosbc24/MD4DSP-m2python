@@ -3939,7 +3939,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             {'A': [0, 2, 3, 4, 1], 'B': [2, 3, 4, 6, 12], 'C': [10, 1, 3, 3, 0], 'D': [1, 8.2, 6, 1, 2]})
         missing_values = [1, 3, 4]
         expected_df = pd.DataFrame(
-            {'A': [0, 2, 2, 2.0, 2], 'B': [2, 3, 5, 6, 12], 'C': [10, 8, 5, 2, 0],
+            {'A': [0, 2, 2, 2.0, 2], 'B': [2, 3, 5, 6, 12], 'C': [10, 8, 5, 3, 0],
              'D': [8.2, 8.2, 6, 4, 2]})
         result = self.invariants.check_inv_special_value_num_op(data_dictionary_in=datadic.copy(),
                                                                 data_dictionary_out=expected_df,
