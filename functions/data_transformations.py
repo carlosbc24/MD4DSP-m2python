@@ -1373,17 +1373,16 @@ def transform_join(data_dictionary: pd.DataFrame, dictionary: dict, field_out: s
         raise ValueError(f"The output field {field_out} is not in dataDictionary")
 
     data_dictionary_copy = data_dictionary.copy()
-
-    for key, value in dictionary.items():
-        if value and key not in data_dictionary_copy.columns:
-            raise ValueError(f"The field {key} does not exist in the dataframe")
-
     data_dictionary_copy[field_out] = ''
+
     for key, value in dictionary.items():
-        if value:
+        if value:  # It is a column
+            if key not in data_dictionary_copy.columns:
+                raise ValueError(f"Column {key} doesn't exist in DataFrame")
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + data_dictionary[key].fillna('').astype(str)
-        elif not value:
-            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + key
+        elif not value:  # It is fix value
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + str(key)
+
     # Replace empty strings with NaN
     data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace('', np.nan)
 
