@@ -1533,7 +1533,7 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
                 raise ValueError(f"Column {key} doesn't exist in DataFrame")
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + data_dictionary_in[key].fillna('').astype(str)
         elif not value:  # It is fix value
-            data_dictionary_copy[field_out] = data_dictionary_copy[field_out] + str(key)
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + str(key)
 
     # Replace empty strings with NaN
     data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace('', np.nan)
