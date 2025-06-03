@@ -9404,7 +9404,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_artist', field_out='track_artist')
+                                                dictionary=dictionary, field_out='track_artist')
 
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
@@ -9416,7 +9416,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
@@ -9428,7 +9428,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_artist')
+                                                dictionary=dictionary, field_out='track_artist')
 
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
@@ -9440,7 +9440,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
@@ -9452,7 +9452,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
@@ -9464,7 +9464,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_name')
+                                                dictionary=dictionary, field_out='track_name')
 
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
@@ -9476,7 +9476,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='energy', field_out='track_popularity')
+                                                dictionary=dictionary, field_out='track_popularity')
 
         assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
@@ -9488,7 +9488,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_popularity', field_out='track_popularity')
+                                                dictionary=dictionary, field_out='track_popularity')
 
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
@@ -9500,12 +9500,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 9 Failed: Expected True, but got False"
         print_and_log("Test Case 9 Passed: Expected True, got True")
 
-        # Caso 10: Prueba con campo de entrada inexistente
+        # Caso 10: Campo de salida no existe en el DataFrame de salida
         expected_df = self.small_batch_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
         dictionary = {'track_name': True, '': False, 'track_id': True}
@@ -9513,21 +9513,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                            data_dictionary_out=expected_df.copy(),
-                                           dictionary=dictionary, field_in='Z', field_out='track_name')
+                                           dictionary=dictionary, field_out='Z')
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
-        # Caso 11: Campo de salida no existe en el DataFrame de salida
-        expected_df = self.small_batch_dataset.copy()
-        expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
-        dictionary = {'track_name': True, '': False, 'track_id': True}
-
-        with self.assertRaises(ValueError):
-            self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
-                                           data_dictionary_out=expected_df.copy(),
-                                           dictionary=dictionary, field_in='track_name', field_out='Z')
-        print_and_log("Test Case 11 Passed: Expected ValueError, got ValueError")
-
-        # Caso 12: Fallo - valores NaN en salida incorrectos
+        # Caso 11: Fallo - valores NaN en salida incorrectos
         expected_df = self.small_batch_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
         dictionary = {'track_name': True, '': False, 'track_id': True}
@@ -9536,12 +9525,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
-        assert result is False, "Test Case 12 Failed: Expected False, but got True"
-        print_and_log("Test Case 12 Passed: Expected False, got False")
+        assert result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, got False")
 
-        # Caso 13: Fallo - valores incorrectos en el campo de salida
+        # Caso 12: Fallo - valores incorrectos en el campo de salida
         expected_df = self.small_batch_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
         dictionary = {'track_name': True, '': False, 'track_id': True}
@@ -9550,12 +9539,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
-        assert result is False, "Test Case 13 Failed: Expected False, but got True"
-        print_and_log("Test Case 13 Passed: Expected False, got False")
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
 
-        # Caso 14: Unir con valores faltantes y manejo adecuado (NaN)
+        # Caso 13: Unir con valores faltantes y manejo adecuado (NaN)
         expected_df = self.small_batch_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'].astype(str) + expected_df['track_artist'].astype(str)
         dictionary = {'track_name': True, 'track_artist': True}
@@ -9566,10 +9555,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.small_batch_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
-        assert result is True, "Test Case 14 Failed: Expected True, but got False"
-        print_and_log("Test Case 14 Passed: Expected True, got True")
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
 
 
     def execute_WholeDatasetTests_checkInv_Join(self):
@@ -9580,7 +9569,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_artist', field_out='track_artist')
+                                                dictionary=dictionary, field_out='track_artist')
 
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
@@ -9592,7 +9581,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
@@ -9604,7 +9593,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_artist')
+                                                dictionary=dictionary, field_out='track_artist')
 
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
@@ -9616,7 +9605,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
@@ -9628,7 +9617,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
@@ -9640,7 +9629,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_name')
+                                                dictionary=dictionary, field_out='track_name')
 
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
@@ -9652,7 +9641,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='energy', field_out='track_popularity')
+                                                dictionary=dictionary, field_out='track_popularity')
 
         assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
@@ -9664,7 +9653,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_popularity', field_out='track_popularity')
+                                                dictionary=dictionary, field_out='track_popularity')
 
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
@@ -9676,12 +9665,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
         assert result is True, "Test Case 9 Failed: Expected True, but got False"
         print_and_log("Test Case 9 Passed: Expected True, got True")
 
-        # Caso 10: Prueba con campo de entrada inexistente
+        # Caso 10: Campo de salida no existe en el DataFrame de salida
         expected_df = self.rest_of_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
         dictionary = {'track_name': True, '': False, 'track_id': True}
@@ -9689,21 +9678,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                            data_dictionary_out=expected_df.copy(),
-                                           dictionary=dictionary, field_in='Z', field_out='track_name')
+                                           dictionary=dictionary, field_out='Z')
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
-        # Caso 11: Campo de salida no existe en el DataFrame de salida
-        expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
-        dictionary = {'track_name': True, '': False, 'track_id': True}
-
-        with self.assertRaises(ValueError):
-            self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
-                                           data_dictionary_out=expected_df.copy(),
-                                           dictionary=dictionary, field_in='track_name', field_out='Z')
-        print_and_log("Test Case 11 Passed: Expected ValueError, got ValueError")
-
-        # Caso 12: Fallo - valores NaN en salida incorrectos
+        # Caso 11: Fallo - valores NaN en salida incorrectos
         expected_df = self.rest_of_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
         dictionary = {'track_name': True, '': False, 'track_id': True}
@@ -9712,12 +9690,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
-        assert result is False, "Test Case 12 Failed: Expected False, but got True"
-        print_and_log("Test Case 12 Passed: Expected False, got False")
+        assert result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, got False")
 
-        # Caso 13: Fallo - valores incorrectos en el campo de salida
+        # Caso 12: Fallo - valores incorrectos en el campo de salida
         expected_df = self.rest_of_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
         dictionary = {'track_name': True, '': False, 'track_id': True}
@@ -9726,12 +9704,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_id', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
-        assert result is False, "Test Case 13 Failed: Expected False, but got True"
-        print_and_log("Test Case 13 Passed: Expected False, got False")
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
 
-        # Caso 14: Unir con valores faltantes y manejo adecuado (NaN)
+        # Caso 13: Unir con valores faltantes y manejo adecuado (NaN)
         expected_df = self.rest_of_dataset.copy()
         expected_df['track_id'] = expected_df['track_name'].astype(str) + expected_df['track_artist'].astype(str)
         dictionary = {'track_name': True, 'track_artist': True}
@@ -9742,10 +9720,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='track_name', field_out='track_id')
+                                                dictionary=dictionary, field_out='track_id')
 
-        assert result is True, "Test Case 14 Failed: Expected True, but got False"
-        print_and_log("Test Case 14 Passed: Expected True, got True")
+        assert result is True, "Test Case 13 Failed: Expected True, but got False"
+        print_and_log("Test Case 13 Passed: Expected True, got True")
 
 
     def execute_checkInv_filter_rows_primitive(self):

@@ -1366,7 +1366,7 @@ def transform_join(data_dictionary: pd.DataFrame, dictionary: dict, field_out: s
     :param field_out: field to store the output value
     :return: pd.DataFrame: data_dictionary with the result of the join operation
     """
-    # dict {columna:True, string:False}
+
     if field_out is None:
         raise ValueError(f"The output field {field_out} cannot be None")
     elif field_out not in data_dictionary.columns:

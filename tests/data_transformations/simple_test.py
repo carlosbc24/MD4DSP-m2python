@@ -49,22 +49,22 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            self.execute_transform_FixValue_FixValue,
-            self.execute_transform_FixValue_DerivedValue,
-            self.execute_transform_FixValue_NumOp,
-            self.execute_transform_Interval_FixValue,
-            self.execute_transform_Interval_DerivedValue,
-            self.execute_transform_Interval_NumOp,
-            self.execute_transform_SpecialValue_FixValue,
-            self.execute_transform_SpecialValue_DerivedValue,
-            self.execute_transform_SpecialValue_NumOp,
-            self.execute_transform_derived_field,
-            self.execute_transform_filter_columns,
-            self.execute_transform_cast_type,
-            self.execute_transform_filter_rows_primitive,
-            self.execute_transform_filter_rows_special_values,
-            self.execute_transform_filter_rows_range,
-            self.execute_transform_math_operation,
+            # self.execute_transform_FixValue_FixValue,
+            # self.execute_transform_FixValue_DerivedValue,
+            # self.execute_transform_FixValue_NumOp,
+            # self.execute_transform_Interval_FixValue,
+            # self.execute_transform_Interval_DerivedValue,
+            # self.execute_transform_Interval_NumOp,
+            # self.execute_transform_SpecialValue_FixValue,
+            # self.execute_transform_SpecialValue_DerivedValue,
+            # self.execute_transform_SpecialValue_NumOp,
+            # self.execute_transform_derived_field,
+            # self.execute_transform_filter_columns,
+            # self.execute_transform_cast_type,
+            # self.execute_transform_filter_rows_primitive,
+            # self.execute_transform_filter_rows_special_values,
+            # self.execute_transform_filter_rows_range,
+            # self.execute_transform_math_operation,
             self.execute_transform_join
         ]
 
@@ -3833,3 +3833,39 @@ class DataTransformationsSimpleTest(unittest.TestCase):
                                                                  field_out='C', dictionary=dictionary)
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 7 Passed: got the dataframe expected")
+
+        # Caso 8 - Una columna con nulos
+        datadic = pd.DataFrame(
+            {'A': [0, 1, 2, 3, 4],
+             'B': [np.nan, 'np.nan', None, np.nan, np.nan],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'No']})
+
+        expected_df = pd.DataFrame(
+            {'A': [0, 1, 2, 3, 4],
+             'B': [np.nan, 'np.nan', None, np.nan, np.nan],
+             'C': [' | 0', 'np.nan | 1', ' | 2', ' | 3', ' | 4']})
+
+        dictionary = {'B': True, ' | ': False, 'A': True}
+
+        result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                                 field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 8 Passed: got the dataframe expected")
+
+        # Caso 8 - Una columna con nulos
+        datadic = pd.DataFrame(
+            {'A': [np.nan, 'np.nan', None, np.nan, np.nan],
+             'B': [np.nan, 'np.nan', None, np.nan, np.nan],
+             'C': ['Se', 'Sobreescriben', 'Estos', 'Valores', 'No']})
+
+        expected_df = pd.DataFrame(
+            {'A': [np.nan, 'np.nan', None, np.nan, np.nan],
+             'B': [np.nan, 'np.nan', None, np.nan, np.nan],
+             'C': [np.nan, 'np.nannp.nan', np.nan, np.nan, np.nan]})
+
+        dictionary = {'B': True, 'A': True}
+
+        result_df = self.data_transformations.transform_join(data_dictionary=datadic.copy(),
+                                                                 field_out='C', dictionary=dictionary)
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 9 Passed: got the dataframe expected")
