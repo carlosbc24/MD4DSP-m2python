@@ -1082,7 +1082,7 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
     elif field_out is not None:
         if field_out not in data_dictionary_out.columns:
             raise ValueError(f"The field {field_out} does not exist in the dataframe")
-        for row_index, value in data_dictionary_in[field_out].items():
+        for row_index, value in data_dictionary_out[field_out].items():
             if belong_op_in == Belong.NOTBELONG:  # Just check those that do not belong to NULL, the rest of the values,
                 # to validate that the cast has been done correctly we have other invariants.
                 if not pd.isnull(value):
