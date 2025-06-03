@@ -6920,6 +6920,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.small_batch_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6936,6 +6937,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6954,6 +6956,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6970,6 +6973,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6981,6 +6985,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.small_batch_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6997,6 +7002,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7013,6 +7019,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7031,6 +7038,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7048,6 +7056,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7064,6 +7073,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.rest_of_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7080,6 +7090,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7098,6 +7109,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7114,6 +7126,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7125,6 +7138,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.rest_of_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7141,6 +7155,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7157,6 +7172,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7175,6 +7191,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7192,6 +7209,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado

@@ -4527,6 +4527,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4543,6 +4544,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4559,6 +4561,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4575,6 +4578,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4591,6 +4595,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4607,6 +4612,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='B',
                                                                        field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4623,6 +4629,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.BELONG,
+                                                                       field_in='B',
                                                                        field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4640,6 +4647,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='B',
                                                                        field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4656,6 +4664,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='B',
                                                                        field_out='B')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -4672,6 +4681,7 @@ class InvariantsSimpleTest(unittest.TestCase):
                                                                        data_dictionary_out=expected_df.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
+                                                                       field_in='C',
                                                                        field_out='C')
 
         # Verificar si el resultado obtenido coincide con el esperado
