@@ -1369,6 +1369,8 @@ def transform_join(data_dictionary: pd.DataFrame, dictionary: dict, field_out: s
     # dict {columna:True, string:False}
     if field_out is None:
         raise ValueError(f"The output field {field_out} cannot be None")
+    elif field_out not in data_dictionary.columns:
+        raise ValueError(f"The output field {field_out} is not in dataDictionary")
 
     data_dictionary_copy = data_dictionary.copy()
 

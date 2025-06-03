@@ -6920,7 +6920,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.small_batch_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in=None, field_out=None)
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
@@ -6936,7 +6936,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in=None, field_out=None)
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
@@ -6954,7 +6954,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
-                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6971,7 +6970,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in=None,
                                                                        field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -6983,7 +6981,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.small_batch_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7000,7 +6997,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7017,7 +7013,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7036,7 +7031,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7054,7 +7048,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7071,7 +7064,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.rest_of_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in=None, field_out=None)
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
@@ -7087,7 +7080,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in=None, field_out=None)
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 2 Failed: Expected False, but got True"
@@ -7105,7 +7098,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
-                                                                       field_in=None, field_out=None)
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 3 Failed: Expected False, but got True"
@@ -7121,7 +7114,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in=None, field_out=None)
+                                                                       field_out=None)
 
         # Verificar si el resultado obtenido coincide con el esperado
         assert result is False, "Test Case 4 Failed: Expected False, but got True"
@@ -7132,7 +7125,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=self.rest_of_dataset.copy(),
                                                                        belong_op_in=Belong.NOTBELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7149,7 +7141,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7166,7 +7157,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7185,7 +7175,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.BELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -7203,7 +7192,6 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
                                                                        data_dictionary_out=expected_df,
                                                                        belong_op_in=Belong.BELONG,
                                                                        belong_op_out=Belong.NOTBELONG,
-                                                                       field_in='danceability',
                                                                        field_out='danceability')
 
         # Verificar si el resultado obtenido coincide con el esperado
@@ -9404,7 +9392,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='A')
+                                                dictionary=dictionary, field_out='A')
 
         assert result is True, "Test Case 1 Failed: Expected True, but got False"
         print_and_log("Test Case 1 Passed: Expected True, got True")
@@ -9416,7 +9404,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='A')
+                                                dictionary=dictionary, field_out='A')
 
         assert result is True, "Test Case 2 Failed: Expected True, but got False"
         print_and_log("Test Case 2 Passed: Expected True, got True")
@@ -9429,7 +9417,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='D')
+                                                dictionary=dictionary, field_out='D')
 
         assert result is True, "Test Case 3 Failed: Expected True, but got False"
         print_and_log("Test Case 3 Passed: Expected True, got True")
@@ -9442,7 +9430,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='B')
+                                                dictionary=dictionary, field_out='B')
 
         assert result is True, "Test Case 4 Failed: Expected True, but got False"
         print_and_log("Test Case 4 Passed: Expected True, got True")
@@ -9454,7 +9442,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='C')
+                                                dictionary=dictionary, field_out='C')
 
         assert result is True, "Test Case 5 Failed: Expected True, but got False"
         print_and_log("Test Case 5 Passed: Expected True, got True")
@@ -9466,7 +9454,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='A')
+                                                dictionary=dictionary, field_out='A')
 
         assert result is False, "Test Case 6 Failed: Expected False, but got True"
         print_and_log("Test Case 6 Passed: Expected False, got False")
@@ -9478,7 +9466,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='C')
+                                                dictionary=dictionary, field_out='C')
 
         assert result is True, "Test Case 7 Failed: Expected True, but got False"
         print_and_log("Test Case 7 Passed: Expected True, got True")
@@ -9491,7 +9479,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='D', field_out='D')
+                                                dictionary=dictionary, field_out='D')
 
         assert result is True, "Test Case 8 Failed: Expected True, but got False"
         print_and_log("Test Case 8 Passed: Expected True, got True")
@@ -9503,7 +9491,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='C')
+                                                dictionary=dictionary, field_out='C')
 
         assert result is True, "Test Case 9 Failed: Expected True, but got False"
         print_and_log("Test Case 9 Passed: Expected True, got True")
@@ -9516,7 +9504,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                            data_dictionary_out=expected_df.copy(),
-                                           dictionary=dictionary, field_in='Z', field_out='A')
+                                           dictionary=dictionary, field_out='A')
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Caso 11: Campo de salida no existe en el DataFrame de salida
@@ -9527,7 +9515,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                            data_dictionary_out=expected_df.copy(),
-                                           dictionary=dictionary, field_in='A', field_out='Z')
+                                           dictionary=dictionary, field_out='Z')
         print_and_log("Test Case 11 Passed: Expected ValueError, got ValueError")
 
         # Caso 12: Fallo - valores NaN en salida incorrectos
@@ -9537,7 +9525,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='C')
+                                                dictionary=dictionary, field_out='C')
 
         assert result is False, "Test Case 12 Failed: Expected False, but got True"
         print_and_log("Test Case 12 Passed: Expected False, got False")
@@ -9549,7 +9537,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='C')
+                                                dictionary=dictionary, field_out='C')
 
         assert result is False, "Test Case 13 Failed: Expected False, but got True"
         print_and_log("Test Case 13 Passed: Expected False, got False")
@@ -9561,7 +9549,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         result = self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                                 data_dictionary_out=expected_df.copy(),
-                                                dictionary=dictionary, field_in='A', field_out='C')
+                                                dictionary=dictionary, field_out='C')
 
         assert result is True, "Test Case 14 Failed: Expected True, but got False"
         print_and_log("Test Case 14 Passed: Expected True, got True")
