@@ -9504,7 +9504,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.invariants.check_inv_join(data_dictionary_in=datadic.copy(),
                                            data_dictionary_out=expected_df.copy(),
-                                           dictionary=dictionary, field_out='A')
+                                           dictionary=dictionary, field_out='Z')
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
 
         # Caso 11: Campo de salida no existe en el DataFrame de salida
