@@ -1025,7 +1025,6 @@ def check_inv_special_value_num_op(data_dictionary_in: pd.DataFrame, data_dictio
 
 def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                           belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                          field_in: str = None,
                                           field_out: str = None, origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the MissingValue - MissingValue relation is satisfied in the output dataframe
@@ -1039,14 +1038,13 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                                 If it's Belong.NOTBELONG, the function checks if the missing values are not missing anymore.
         belong_op_out (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the missing values are still missing.
                                 If it's Belong.NOTBELONG, the function checks if the missing values are not missing anymore.
-        field_in (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
         field_out (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
         origin_function (str): The name of the function that calls this function. This is used for logging purposes.
 
     Returns:
         bool: True if the invariant is satisfied, False otherwise.
     """
-    if field_in is None and field_out is None:
+    if field_out is None:
         for column_index, column_name in enumerate(data_dictionary_in.columns):
             for row_index, value in data_dictionary_in[column_name].items():
                 if belong_op_in == Belong.NOTBELONG:  # Just check those that do not belong to NULL, the rest of the values,
@@ -1081,10 +1079,10 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
 
         return True
 
-    elif field_in is not None and field_out is not None:
-        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
-            raise ValueError("The field does not exist in the dataframe")
-        for row_index, value in data_dictionary_in[field_in].items():
+    elif field_out is not None:
+        if field_out not in data_dictionary_out.columns:
+            raise ValueError(f"The field {field_out} does not exist in the dataframe")
+        for row_index, value in data_dictionary_in[field_out].items():
             if belong_op_in == Belong.NOTBELONG:  # Just check those that do not belong to NULL, the rest of the values,
                 # to validate that the cast has been done correctly we have other invariants.
                 if not pd.isnull(value):
@@ -1503,7 +1501,7 @@ def check_inv_cast_type(data_dictionary_in: pd.DataFrame, data_dictionary_out: p
 
 
 def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
-                   dictionary: dict, field_in: str = None, field_out: str = None, origin_function: str = None) -> bool:
+                   dictionary: dict, field_out: str = None, origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the Join relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if the join is correctly applied to the
@@ -1514,19 +1512,14 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
     :param dictionary: dictionary with the columns or string to join.
                             If the value is True, it means the key is a column.
                             If the value is False, it means the key is a string.
-    :param field_in: field to check the invariant in the input dataframe
     :param field_out: field to check the invariant in the output dataframe
     :param origin_function: name of the function that calls this function
 
     :return: True if the invariant is satisfied, False otherwise
     """
     result = True
-    if field_in is None:
-        raise ValueError("The field_in parameter is required")
-    elif field_out is None:
+    if field_out is None:
         raise ValueError("The field_out parameter is required")
-    elif field_in not in data_dictionary_in.columns:
-        raise ValueError("The input field does not exist in the dataframe")
     elif field_out not in data_dictionary_out.columns:
         raise ValueError("The output field does not exist in the dataframe")
 
@@ -1545,7 +1538,7 @@ def check_inv_join(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.Dat
     # Replace empty strings with NaN
     data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace('', np.nan)
 
-    for idx, val in data_dictionary_in[field_in].items():
+    for idx, val in data_dictionary_out[field_out].items():
         if data_dictionary_copy.loc[idx, field_out] != data_dictionary_out.loc[idx, field_out]:
             if data_dictionary_copy.loc[idx, field_out] is not np.nan or data_dictionary_out.loc[idx, field_out] is not np.nan:
                 result = False
