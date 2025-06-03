@@ -1025,7 +1025,8 @@ def check_inv_special_value_num_op(data_dictionary_in: pd.DataFrame, data_dictio
 
 def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                           belong_op_in: Belong = Belong.BELONG, belong_op_out: Belong = Belong.BELONG,
-                                          field_out: str = None, origin_function: str = None) -> bool:
+                                          field_in: str = None, field_out: str = None,
+                                          origin_function: str = None) -> bool:
     """
     This function checks if the invariant of the MissingValue - MissingValue relation is satisfied in the output dataframe
     with respect to the input dataframe. The invariant is satisfied if all missing values in the input dataframe are still
@@ -1038,13 +1039,14 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                                 If it's Belong.NOTBELONG, the function checks if the missing values are not missing anymore.
         belong_op_out (Belong): The condition to check the invariant. If it's Belong.BELONG, the function checks if the missing values are still missing.
                                 If it's Belong.NOTBELONG, the function checks if the missing values are not missing anymore.
+         field_in (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
         field_out (str): The specific field (column) to check the invariant. If it's None, the function checks all fields.
         origin_function (str): The name of the function that calls this function. This is used for logging purposes.
 
     Returns:
         bool: True if the invariant is satisfied, False otherwise.
     """
-    if field_out is None:
+    if field_in is None and field_out is None:
         for column_index, column_name in enumerate(data_dictionary_in.columns):
             for row_index, value in data_dictionary_in[column_name].items():
                 if belong_op_in == Belong.NOTBELONG:  # Just check those that do not belong to NULL, the rest of the values,
@@ -1079,10 +1081,10 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
 
         return True
 
-    elif field_out is not None:
-        if field_out not in data_dictionary_out.columns:
+    elif field_in is not None and field_out is not None:
+        if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError(f"The field {field_out} does not exist in the dataframe")
-        for row_index, value in data_dictionary_in[field_out].items():
+        for row_index, value in data_dictionary_in[field_in].items():
             if belong_op_in == Belong.NOTBELONG:  # Just check those that do not belong to NULL, the rest of the values,
                 # to validate that the cast has been done correctly we have other invariants.
                 if not pd.isnull(value):
@@ -1090,7 +1092,7 @@ def check_inv_missing_value_missing_value(data_dictionary_in: pd.DataFrame, data
                         if pd.isnull(data_dictionary_out.loc[row_index, field_out]) or str(data_dictionary_out.loc[
                             row_index, field_out]) != str(value):
                             print_and_log(
-                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {value} but is: {data_dictionary_out.loc[row_index, field_out]}")
+                                f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {str(value)} but is: {str(data_dictionary_out.loc[row_index, field_out])}")
                             return False  # False because it was not null in the input and is null in the output
                     elif belong_op_out == Belong.BELONG:  # Check those that belong to NULL
                         if not pd.isnull(data_dictionary_out.loc[row_index, field_out]):
