@@ -1,7 +1,7 @@
 # Importing functions and classes from packages
+import warnings
 import numpy as np
 import pandas as pd
-
 from helpers.auxiliar import cast_type_FixValue, find_closest_value, check_interval_condition
 from helpers.enumerations import Closure, DataType, DerivedType, Operation, SpecialType, Belong, FilterType, \
     MathOperator, MapOperation
@@ -1333,25 +1333,27 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
 
     elif math_op == MathOperator.DIVIDE:
         if isFieldFirst and isFieldSecond:
-            # Check if any value in the second operand column is 0.
             if (data_dictionary_copy[secondOperand] == 0).any():
-                raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
+                warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
             data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] / data_dictionary_copy[secondOperand]
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace([np.inf, -np.inf], np.nan)
         elif isFieldFirst and not isFieldSecond:
-            # Check if the constant denominator is 0.
             if secondOperand == 0:
-                raise ZeroDivisionError("Division by zero encountered with constant denominator.")
-            data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] / secondOperand
+                warnings.warn("Division by zero encountered with constant denominator. Result will be NaN.")
+                data_dictionary_copy[field_out] = np.nan
+            else:
+                data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] / secondOperand
         elif not isFieldFirst and isFieldSecond:
-            # Check if any value in the second operand column is 0.
             if (data_dictionary_copy[secondOperand] == 0).any():
-                raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
+                warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
             data_dictionary_copy[field_out] = firstOperand / data_dictionary_copy[secondOperand]
+            data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace([np.inf, -np.inf], np.nan)
         elif not isFieldFirst and not isFieldSecond:
-            # Check if the constant denominator is 0.
             if secondOperand == 0:
-                raise ZeroDivisionError("Division by zero encountered with constant denominator.")
-            data_dictionary_copy[field_out] = firstOperand / secondOperand
+                warnings.warn("Division by zero encountered with constant denominator. Result will be NaN.")
+                data_dictionary_copy[field_out] = np.nan
+            else:
+                data_dictionary_copy[field_out] = firstOperand / secondOperand
 
     return data_dictionary_copy
 

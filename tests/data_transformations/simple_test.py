@@ -49,22 +49,22 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            # self.execute_transform_FixValue_FixValue,
-            # self.execute_transform_FixValue_DerivedValue,
-            # self.execute_transform_FixValue_NumOp,
-            # self.execute_transform_Interval_FixValue,
-            # self.execute_transform_Interval_DerivedValue,
-            # self.execute_transform_Interval_NumOp,
-            # self.execute_transform_SpecialValue_FixValue,
-            # self.execute_transform_SpecialValue_DerivedValue,
-            # self.execute_transform_SpecialValue_NumOp,
-            # self.execute_transform_derived_field,
-            # self.execute_transform_filter_columns,
-            # self.execute_transform_cast_type,
-            # self.execute_transform_filter_rows_primitive,
-            # self.execute_transform_filter_rows_special_values,
-            # self.execute_transform_filter_rows_range,
-            # self.execute_transform_math_operation,
+            self.execute_transform_FixValue_FixValue,
+            self.execute_transform_FixValue_DerivedValue,
+            self.execute_transform_FixValue_NumOp,
+            self.execute_transform_Interval_FixValue,
+            self.execute_transform_Interval_DerivedValue,
+            self.execute_transform_Interval_NumOp,
+            self.execute_transform_SpecialValue_FixValue,
+            self.execute_transform_SpecialValue_DerivedValue,
+            self.execute_transform_SpecialValue_NumOp,
+            self.execute_transform_derived_field,
+            self.execute_transform_filter_columns,
+            self.execute_transform_cast_type,
+            self.execute_transform_filter_rows_primitive,
+            self.execute_transform_filter_rows_special_values,
+            self.execute_transform_filter_rows_range,
+            self.execute_transform_math_operation,
             self.execute_transform_join
         ]
 
@@ -3665,39 +3665,43 @@ class DataTransformationsSimpleTest(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, result_df)
         print_and_log("Test Case 19 Passed: got the dataframe expected")
 
-        # Caso 20 - División por columna con algún 0 - Error
+        # Caso 20 - División por columna con algún 0 - nan esperado
         datadic = pd.DataFrame({
             "A": [2, 4, 0]
         })
-        expected_exception = ZeroDivisionError
-        with self.assertRaises(expected_exception):
-            self.data_transformations.transform_math_operation(
-                data_dictionary=datadic.copy(),
-                math_op=MathOperator.DIVIDE,
-                field_out="B",
-                firstOperand=100,
-                secondOperand="A",
-                isFieldFirst=False,
-                isFieldSecond=True
-            )
-        print_and_log("Test Case 20 Passed: got the expected error")
+        expected_df = datadic.copy()
+        expected_df["B"] = 100 / datadic["A"]
+        expected_df["B"] = expected_df["B"].replace([np.inf, -np.inf], np.nan)
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out="B",
+            firstOperand=100,
+            secondOperand="A",
+            isFieldFirst=False,
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 20 Passed: got the dataframe expected")
 
-        # Caso 21 - División por entero 0 - Error
+        # Caso 21 - División por entero 0 - nan esperado
         datadic = pd.DataFrame({
             "A": [2, 4, 5]
         })
-        expected_exception = ZeroDivisionError
-        with self.assertRaises(expected_exception):
-            self.data_transformations.transform_math_operation(
-                data_dictionary=datadic.copy(),
-                math_op=MathOperator.DIVIDE,
-                field_out="B",
-                firstOperand="A",
-                secondOperand=0,
-                isFieldFirst=True,
-                isFieldSecond=False
-            )
-        print_and_log("Test Case 21 Passed: got the expected error")
+        expected_df = datadic.copy()
+        expected_df["B"] = datadic["A"] / 0
+        expected_df["B"] = expected_df["B"].replace([np.inf, -np.inf], np.nan)
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic.copy(),
+            math_op=MathOperator.DIVIDE,
+            field_out="B",
+            firstOperand="A",
+            secondOperand=0,
+            isFieldFirst=True,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 21 Passed: got the dataframe expected")
 
     def execute_transform_join(self):
         """

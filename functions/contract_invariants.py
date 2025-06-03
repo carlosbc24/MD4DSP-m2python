@@ -1,4 +1,5 @@
 # Importing libraries
+import warnings
 import numpy as np
 import pandas as pd
 
@@ -1171,6 +1172,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
         raise ValueError("The value to operate is not numeric")
 
     if belong_op_out == Belong.BELONG:
+
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(
@@ -1197,6 +1199,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     if item != (firstOperand + secondOperand):
                         result = False
                         print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand + secondOperand} but is: {item}")
+
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(
@@ -1223,6 +1226,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     if item != (firstOperand - secondOperand):
                         result = False
                         print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand - secondOperand} but is: {item}")
+
         elif math_op == MathOperator.MULTIPLY:
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_out[field_out].equals(
@@ -1249,42 +1253,56 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     if item != (firstOperand * secondOperand):
                         result = False
                         print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand * secondOperand} but is: {item}")
+
         elif math_op == MathOperator.DIVIDE:
-            # Check division by zero before invariant check
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_in[secondOperand].eq(0).any():
-                    raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
-                if data_dictionary_out[field_out].equals(
-                        data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]):
+                    warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
+                expected = data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]
+                expected = expected.replace([np.inf, -np.inf], np.nan)
+                out = data_dictionary_out[field_out].replace([np.inf, -np.inf], np.nan)
+                if out.equals(expected) or out.fillna(np.nan).equals(expected.fillna(np.nan)):
                     result = True
                 else:
                     result = False
-                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
+                    print_and_log(f"Error in function: {origin_function} row: {field_out} value should be: {expected} but is: {out}")
             elif isFieldFirst and not isFieldSecond:
                 if secondOperand == 0:
-                    raise ZeroDivisionError("Division by zero encountered with constant denominator.")
-                if data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] / secondOperand):
+                    warnings.warn("Division by zero encountered with constant denominator. Result will be NaN.")
+                    expected = pd.Series([np.nan] * len(data_dictionary_in))
+                else:
+                    expected = data_dictionary_in[firstOperand] / secondOperand
+                out = data_dictionary_out[field_out].replace([np.inf, -np.inf], np.nan)
+                if out.equals(expected) or out.fillna(np.nan).equals(expected.fillna(np.nan)):
                     result = True
                 else:
                     result = False
-                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / secondOperand} but is: {data_dictionary_out[field_out]}")
+                    print_and_log(f"Error in function: {origin_function} row: {field_out} value should be: {expected} but is: {out}")
             elif not isFieldFirst and isFieldSecond:
                 if data_dictionary_in[secondOperand].eq(0).any():
-                    raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
-                if data_dictionary_out[field_out].equals(firstOperand / data_dictionary_in[secondOperand]):
+                    warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
+                expected = firstOperand / data_dictionary_in[secondOperand]
+                expected = expected.replace([np.inf, -np.inf], np.nan)
+                out = data_dictionary_out[field_out].replace([np.inf, -np.inf], np.nan)
+                if out.equals(expected) or out.fillna(np.nan).equals(expected.fillna(np.nan)):
                     result = True
                 else:
                     result = False
-                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
+                    print_and_log(f"Error in function: {origin_function} row: {field_out} value should be: {expected} but is: {out}")
             else:
                 if secondOperand == 0:
-                    raise ZeroDivisionError("Division by zero encountered with constant denominator.")
+                    warnings.warn("Division by zero encountered with constant denominator. Result will be NaN.")
+                    expected = np.nan
+                else:
+                    expected = firstOperand / secondOperand
                 result = True
                 for item in data_dictionary_out[field_out]:
-                    if item != (firstOperand / secondOperand):
+                    if (secondOperand == 0 and not pd.isna(item)) or (secondOperand != 0 and item != expected):
                         result = False
-                        print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand / secondOperand} but is: {item}")
+                        print_and_log(f"Error in function: {origin_function} row: {field_out} value should be: {expected} but is: {item}")
+
     elif belong_op_out == Belong.NOTBELONG:
+
         if math_op == MathOperator.SUM:
             if isFieldFirst and isFieldSecond:
                 if not data_dictionary_out[field_out].equals(
@@ -1311,6 +1329,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     if item != (firstOperand + secondOperand):
                         result = True
                         break
+
         elif math_op == MathOperator.SUBSTRACT:
             if isFieldFirst and isFieldSecond:
                 if not data_dictionary_out[field_out].equals(
@@ -1337,6 +1356,7 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     if item != (firstOperand - secondOperand):
                         result = True
                         break
+
         elif math_op == MathOperator.MULTIPLY:
             if isFieldFirst and isFieldSecond:
                 if not data_dictionary_out[field_out].equals(
@@ -1363,38 +1383,51 @@ def check_inv_math_operation(data_dictionary_in: pd.DataFrame, data_dictionary_o
                     if item != (firstOperand * secondOperand):
                         result = True
                         break
+
         elif math_op == MathOperator.DIVIDE:
             if isFieldFirst and isFieldSecond:
                 if data_dictionary_in[secondOperand].eq(0).any():
-                    raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
-                if not data_dictionary_out[field_out].equals(
-                        data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]):
+                    warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
+                expected = data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]
+                expected = expected.replace([np.inf, -np.inf], np.nan)
+                out = data_dictionary_out[field_out].replace([np.inf, -np.inf], np.nan)
+                if not (out.equals(expected) or out.fillna(np.nan).equals(expected.fillna(np.nan))):
                     result = True
                 else:
                     result = False
-                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {expected} but is: {out}")
             elif isFieldFirst and not isFieldSecond:
                 if secondOperand == 0:
-                    raise ZeroDivisionError("Division by zero encountered with constant denominator.")
-                if not data_dictionary_out[field_out].equals(data_dictionary_in[firstOperand] / secondOperand):
+                    warnings.warn("Division by zero encountered with constant denominator. Result will be NaN.")
+                    expected = pd.Series([np.nan] * len(data_dictionary_in))
+                else:
+                    expected = data_dictionary_in[firstOperand] / secondOperand
+                out = data_dictionary_out[field_out].replace([np.inf, -np.inf], np.nan)
+                if not (out.equals(expected) or out.fillna(np.nan).equals(expected.fillna(np.nan))):
                     result = True
                 else:
                     result = False
-                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {data_dictionary_in[firstOperand] / secondOperand} but is: {data_dictionary_out[field_out]}")
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {expected} but is: {out}")
             elif not isFieldFirst and isFieldSecond:
                 if data_dictionary_in[secondOperand].eq(0).any():
-                    raise ZeroDivisionError("Division by zero encountered in column '{}'".format(secondOperand))
-                if not data_dictionary_out[field_out].equals(firstOperand / data_dictionary_in[secondOperand]):
+                    warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
+                expected = firstOperand / data_dictionary_in[secondOperand]
+                expected = expected.replace([np.inf, -np.inf], np.nan)
+                out = data_dictionary_out[field_out].replace([np.inf, -np.inf], np.nan)
+                if not (out.equals(expected) or out.fillna(np.nan).equals(expected.fillna(np.nan))):
                     result = True
                 else:
                     result = False
-                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {firstOperand / data_dictionary_in[secondOperand]} but is: {data_dictionary_out[field_out]}")
+                    print_and_log(f"Error in function:  {origin_function} row: {field_out} value should be: {expected} but is: {out}")
             else:
                 if secondOperand == 0:
-                    raise ZeroDivisionError("Division by zero encountered with constant denominator.")
+                    warnings.warn("Division by zero encountered with constant denominator. Result will be NaN.")
+                    expected = np.nan
+                else:
+                    expected = firstOperand / secondOperand
                 result = False
                 for item in data_dictionary_out[field_out]:
-                    if item != (firstOperand / secondOperand):
+                    if (secondOperand == 0 and not pd.isna(item)) or (secondOperand != 0 and item != expected):
                         result = True
                         break
     return result

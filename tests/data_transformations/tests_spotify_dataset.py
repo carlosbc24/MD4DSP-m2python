@@ -5930,33 +5930,39 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: Division of numbers")
 
-        # Case 20 - Division by column which has zeros 'mode' - ZeroDivisionError raised
-        expected_exception = ZeroDivisionError
-        with self.assertRaises(expected_exception):
-            self.data_transformations.transform_math_operation(
-                data_dictionary=self.small_batch_dataset.copy(),
-                math_op=MathOperator.DIVIDE,
-                field_out='result',
-                firstOperand=10.0,
-                isFieldFirst=False,
-                secondOperand="mode",
-                isFieldSecond=True
-            )
-        print_and_log("Test Case 20 Passed: ZeroDivisionError raised when dividing by a column with zeros")
+        # Caso 20 - División por columna que tiene ceros: resultado NaN donde divisor es 0
+        datadic = self.small_batch_dataset.copy()
+        expected_df = datadic.copy()
+        expected_df['result'] = 10.0 / datadic['mode']
+        expected_df['result'] = expected_df['result'].replace([np.inf, -np.inf], np.nan)
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic,
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand=10.0,
+            isFieldFirst=False,
+            secondOperand="mode",
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 20 Passed: division by column with zeros returns NaN for zero divisors")
 
-        # Case 21 - Division by zero integer - ZeroDivisionError raised
-        expected_exception = ZeroDivisionError
-        with self.assertRaises(expected_exception):
-            self.data_transformations.transform_math_operation(
-                data_dictionary=self.small_batch_dataset.copy(),
-                math_op=MathOperator.DIVIDE,
-                field_out='result',
-                firstOperand="mode",
-                isFieldFirst=True,
-                secondOperand=0,
-                isFieldSecond=False
-            )
-        print_and_log("Test Case 21 Passed: ZeroDivisionError raised when dividing by zero integer")
+        # Caso 21 - División por cero entero: resultado NaN en toda la columna
+        datadic = self.small_batch_dataset.copy()
+        expected_df = datadic.copy()
+        expected_df['result'] = datadic['mode'] / 0
+        expected_df['result'] = expected_df['result'].replace([np.inf, -np.inf], np.nan)
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic,
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand="mode",
+            isFieldFirst=True,
+            secondOperand=0,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 21 Passed: division by zero integer returns NaN")
 
     def execute_WholeDatasetTests_execute_transform_math_operation(self):
         """
@@ -6229,33 +6235,39 @@ class DataTransformationsExternalDatasetTests(unittest.TestCase):
         pd.testing.assert_frame_equal(result_df, expected_df)
         print_and_log("Test Case 19 Passed: Division of numbers")
 
-        # Case 20 - Division by column which has zeros 'mode' - ZeroDivisionError raised
-        expected_exception = ZeroDivisionError
-        with self.assertRaises(expected_exception):
-            self.data_transformations.transform_math_operation(
-                data_dictionary=self.rest_of_dataset.copy(),
-                math_op=MathOperator.DIVIDE,
-                field_out='result',
-                firstOperand=10.0,
-                isFieldFirst=False,
-                secondOperand="mode",
-                isFieldSecond=True
-            )
-        print_and_log("Test Case 20 Passed: ZeroDivisionError raised when dividing by a column with zeros")
+        # Caso 20 - División por columna que tiene ceros: resultado NaN donde divisor es 0
+        datadic = self.rest_of_dataset.copy()
+        expected_df = datadic.copy()
+        expected_df['result'] = 10.0 / datadic['mode']
+        expected_df['result'] = expected_df['result'].replace([np.inf, -np.inf], np.nan)
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic,
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand=10.0,
+            isFieldFirst=False,
+            secondOperand="mode",
+            isFieldSecond=True
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 20 Passed: division by column with zeros returns NaN for zero divisors")
 
-        # Case 21 - Division by zero integer - ZeroDivisionError raised
-        expected_exception = ZeroDivisionError
-        with self.assertRaises(expected_exception):
-            self.data_transformations.transform_math_operation(
-                data_dictionary=self.rest_of_dataset.copy(),
-                math_op=MathOperator.DIVIDE,
-                field_out='result',
-                firstOperand="mode",
-                isFieldFirst=True,
-                secondOperand=0,
-                isFieldSecond=False
-            )
-        print_and_log("Test Case 21 Passed: ZeroDivisionError raised when dividing by zero integer")
+        # Caso 21 - División por cero entero: resultado NaN en toda la columna
+        datadic = self.rest_of_dataset.copy()
+        expected_df = datadic.copy()
+        expected_df['result'] = datadic['mode'] / 0
+        expected_df['result'] = expected_df['result'].replace([np.inf, -np.inf], np.nan)
+        result_df = self.data_transformations.transform_math_operation(
+            data_dictionary=datadic,
+            math_op=MathOperator.DIVIDE,
+            field_out='result',
+            firstOperand="mode",
+            isFieldFirst=True,
+            secondOperand=0,
+            isFieldSecond=False
+        )
+        pd.testing.assert_frame_equal(expected_df, result_df)
+        print_and_log("Test Case 21 Passed: division by zero integer returns NaN")
 
     def execute_transform_join(self):
         """
