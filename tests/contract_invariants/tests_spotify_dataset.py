@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 import functions.contract_invariants as invariants
 import functions.data_transformations as data_transformations
-from helpers.enumerations import Closure, DataType, SpecialType, Belong, MathOperator, MapOperation
+from helpers.enumerations import Closure, DataType, SpecialType, Belong, MathOperator, MapOperation, FilterType
 from helpers.enumerations import DerivedType, Operation
 from helpers.logger import print_and_log
 
@@ -9751,13 +9751,537 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_SmallBatchTests_checkInv_filter_rows_primitive(self):
-        # Caso 1
-        pass
+        main_col = 'track_name'
+        # Columna para pruebas numéricas
+        numeric_col = 'energy'
+
+        # Caso 1: Filtro INCLUDE en main_col (ej. track_name)
+        print_and_log(f"Test Case 1: INCLUDE filter on column '{main_col}'")
+        df_in_c1 = self.small_batch_dataset.copy()
+        unique_values_c1 = df_in_c1[main_col].dropna().unique()
+
+        if len(unique_values_c1) >= 2:
+            filter_values_c1 = [unique_values_c1[0], unique_values_c1[1]]
+        elif len(unique_values_c1) == 1:
+            filter_values_c1 = [unique_values_c1[0]]
+        else:
+            filter_values_c1 = ["dummy_val_1", "dummy_val_2"]  # Fallback si no hay valores únicos
+
+        expected_df_c1 = df_in_c1[df_in_c1[main_col].isin(filter_values_c1)].copy()
+
+        result_c1 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c1.copy(),
+            data_dictionary_out=expected_df_c1.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c1,
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_include_main_col'
+        )
+        assert result_c1 is True, f"Test Case 1 Small Batch Failed (INCLUDE {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 1 Small Batch Passed (INCLUDE {main_col}): Expected True, got True")
+
+        # Caso 2: Filtro EXCLUDE en main_col (ej. track_name)
+        print_and_log(f"Test Case 2: EXCLUDE filter on column '{main_col}'")
+        df_in_c2 = self.small_batch_dataset.copy()
+        unique_values_c2 = df_in_c2[main_col].dropna().unique()
+
+        if len(unique_values_c2) >= 1:
+            filter_values_c2 = [unique_values_c2[0]]
+        else:
+            filter_values_c2 = ["dummy_val_3"]  # Fallback
+
+        expected_df_c2 = df_in_c2[~df_in_c2[main_col].isin(filter_values_c2)].copy()
+
+        result_c2 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c2.copy(),
+            data_dictionary_out=expected_df_c2.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c2,
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_sBatch_exclude_main_col'
+        )
+        assert result_c2 is True, f"Test Case 2 Small Batch Failed (EXCLUDE {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 2 Small Batch Passed (EXCLUDE {main_col}): Expected True, got True")
+
+        # Caso 3: Error: Columna no existe en data_dictionary_in
+        print_and_log("Test Case 3: Error - Column does not exist")
+        df_in_c3 = self.small_batch_dataset.copy()
+        # expected_df_c3 no es crucial aquí ya que se espera un error antes de su uso completo.
+        expected_df_c3 = df_in_c3.copy()
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c3.copy(),
+                data_dictionary_out=expected_df_c3.copy(),  # Puede ser cualquier DataFrame válido
+                columns=['Z_NonExistentColumn'],
+                filter_fix_value_list=['a'],
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_sBatch_invalid_column'
+            )
+        print_and_log("Test Case 3 Small Batch Passed: Expected ValueError for non-existent column, got ValueError")
+
+        # Caso 4: Error: Parámetro filter_fix_value_list es None
+        print_and_log("Test Case 4: Error - filter_fix_value_list is None")
+        df_in_c4 = self.small_batch_dataset.copy()
+        expected_df_c4 = df_in_c4.copy()  # No es crucial para la comprobación del error
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c4.copy(),
+                data_dictionary_out=expected_df_c4.copy(),
+                columns=[main_col],
+                filter_fix_value_list=None,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_sBatch_none_filter_list'
+            )
+        print_and_log(
+            "Test Case 4 Small Batch Passed: Expected ValueError for None filter_fix_value_list, got ValueError")
+
+        # Caso 5: EXCLUDE single value (similar a Caso 2 pero puede usar un valor diferente si es necesario)
+        print_and_log(f"Test Case 5: EXCLUDE single specific value from '{main_col}'")
+        df_in_c5 = self.small_batch_dataset.copy()
+        unique_values_c5 = df_in_c5[main_col].dropna().unique()
+
+        if len(unique_values_c5) >= 1:
+            # Intentar tomar un valor diferente al de Caso 2 si es posible, o el primero.
+            filter_values_c5 = [unique_values_c5[0 if len(unique_values_c5) == 1 else 1]] if len(
+                unique_values_c5) > 0 else ["dummy_val_4"]
+        else:
+            filter_values_c5 = ["dummy_val_4"]
+
+        expected_df_c5 = df_in_c5[~df_in_c5[main_col].isin(filter_values_c5)].copy()
+        result_c5 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c5.copy(),
+            data_dictionary_out=expected_df_c5.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c5,
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_sBatch_exclude_single_specific_value'
+        )
+        assert result_c5 is True, f"Test Case 5 Small Batch Failed (EXCLUDE specific {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 5 Small Batch Passed (EXCLUDE specific {main_col}): Expected True, got True")
+
+        # Caso 6: Filtro INCLUDE en columna numérica (ej. energy)
+        print_and_log(f"Test Case 6: INCLUDE filter on numeric column '{numeric_col}'")
+        df_in_c6 = self.small_batch_dataset.copy()
+        # Asegurarse de que la columna es numérica para la prueba, la función invariante debe manejar tipos mixtos si es necesario.
+        # Aquí asumimos que la función puede manejar una lista de filtros numéricos contra una columna que puede ser object pero contener números.
+        # O que la columna 'energy' ya es numérica.
+        df_in_c6[numeric_col] = pd.to_numeric(df_in_c6[numeric_col],
+                                              errors='coerce')  # Para asegurar comparaciones numéricas
+
+        unique_numeric_values_c6 = df_in_c6[numeric_col].dropna().unique()
+        if len(unique_numeric_values_c6) >= 2:
+            numeric_filter_values_c6 = [unique_numeric_values_c6[0], unique_numeric_values_c6[1]]
+        elif len(unique_numeric_values_c6) == 1:
+            numeric_filter_values_c6 = [unique_numeric_values_c6[0]]
+        else:
+            numeric_filter_values_c6 = [-999.99, -888.88]  # Fallback
+
+        expected_df_c6 = df_in_c6[df_in_c6[numeric_col].isin(numeric_filter_values_c6)].copy()
+
+        result_c6 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c6.copy(),  # Pasamos la copia con la columna ya numérica
+            data_dictionary_out=expected_df_c6.copy(),
+            columns=[numeric_col],
+            filter_fix_value_list=numeric_filter_values_c6,
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_include_numeric'
+        )
+        assert result_c6 is True, f"Test Case 6 Small Batch Failed (INCLUDE numeric {numeric_col}): Expected True, but got False"
+        print_and_log(f"Test Case 6 Small Batch Passed (INCLUDE numeric {numeric_col}): Expected True, got True")
+
+        # Caso 7: Filtro INCLUDE en main_col con manejo de NaNs (isin por defecto no incluye NaNs a menos que NaN esté en la lista de filtros)
+        print_and_log(f"Test Case 7: INCLUDE filter on '{main_col}' (NaN handling by isin)")
+        df_in_c7 = self.small_batch_dataset.copy()
+        # Para este test, nos aseguramos que los valores de filtro no son NaN.
+        # La función isin no tratará los NaN en la columna como una coincidencia a menos que np.nan esté en filter_fix_value_list.
+        unique_values_c7 = df_in_c7[main_col].dropna().unique()
+        if len(unique_values_c7) >= 1:
+            filter_values_c7 = [unique_values_c7[0]]
+        else:
+            filter_values_c7 = ["dummy_val_5"]  # Fallback
+
+        # expected_df_c7 NO incluirá filas donde main_col es NaN, porque filter_values_c7 no contiene NaN.
+        expected_df_c7 = df_in_c7[df_in_c7[main_col].isin(filter_values_c7)].copy()
+
+        result_c7 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c7.copy(),
+            data_dictionary_out=expected_df_c7.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c7,  # No incluye NaN
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_include_nan_handling'
+        )
+        assert result_c7 is True, f"Test Case 7 Small Batch Failed (INCLUDE {main_col} NaN handling): Expected True, but got False"
+        print_and_log(f"Test Case 7 Small Batch Passed (INCLUDE {main_col} NaN handling): Expected True, got True")
+
+        # Caso 8: Filtro EXCLUDE en main_col con un valor a eliminar inexistente
+        print_and_log(f"Test Case 8: EXCLUDE non-existent value from '{main_col}'")
+        df_in_c8 = self.small_batch_dataset.copy()
+        filter_values_c8 = ["THIS_VALUE_SHOULD_NOT_EXIST_IN_DATASET_123XYZ"]
+        # Se espera que no se filtre nada, expected_df es igual a df_in
+        expected_df_c8 = df_in_c8.copy()
+
+        result_c8 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c8.copy(),
+            data_dictionary_out=expected_df_c8.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c8,
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_sBatch_exclude_nonexistent'
+        )
+        assert result_c8 is True, f"Test Case 8 Small Batch Failed (EXCLUDE non-existent {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 8 Small Batch Passed (EXCLUDE non-existent {main_col}): Expected True, got True")
+
+        # Caso 9: Filtro INCLUDE que coincide con un único valor existente (adaptado de "única fila")
+        print_and_log(f"Test Case 9: INCLUDE filter for a single existing value in '{main_col}'")
+        df_in_c9 = self.small_batch_dataset.copy()
+        unique_values_c9 = df_in_c9[main_col].dropna().unique()
+        if len(unique_values_c9) >= 1:
+            filter_values_c9 = [unique_values_c9[0]]
+            expected_df_c9 = df_in_c9[df_in_c9[main_col].isin(filter_values_c9)].copy()
+
+            result_c9 = self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c9.copy(),
+                data_dictionary_out=expected_df_c9.copy(),
+                columns=[main_col],
+                filter_fix_value_list=filter_values_c9,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_sBatch_include_single_existing_value'
+            )
+            assert result_c9 is True, f"Test Case 9 Small Batch Failed (INCLUDE single existing {main_col}): Expected True, but got False"
+            print_and_log(
+                f"Test Case 9 Small Batch Passed (INCLUDE single existing {main_col}): Expected True, got True")
+        else:
+            print_and_log(
+                f"Test Case 9 Small Batch Skipped: No unique non-NaN values in '{main_col}' to test single value include.")
+
+        # Caso 10: Error: Parámetro filter_fix_value_list es None (similar a Caso 4, mantenido por completitud del original)
+        print_and_log("Test Case 10: Error - filter_fix_value_list is None (repeat)")
+        df_in_c10 = self.small_batch_dataset.copy()
+        expected_df_c10 = df_in_c10.copy()
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c10.copy(),
+                data_dictionary_out=expected_df_c10.copy(),
+                columns=[main_col],
+                filter_fix_value_list=None,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_sBatch_none_filter_list_repeat'
+            )
+        print_and_log(
+            "Test Case 10 Small Batch Passed: Expected ValueError for None filter_fix_value_list (repeat), got ValueError")
+
+        # Caso 11: Resultado False esperado debido a discrepancia en data_dictionary_out
+        print_and_log(f"Test Case 11: False result expected due to mismatch on '{main_col}' filter")
+        df_in_c11 = self.small_batch_dataset.copy()
+        unique_values_c11 = df_in_c11[main_col].dropna().unique()
+
+        if len(unique_values_c11) >= 1:
+            filter_values_c11 = [unique_values_c11[0]]
+            correctly_filtered_df_c11 = df_in_c11[df_in_c11[main_col].isin(filter_values_c11)].copy()
+
+            mismatched_expected_df_c11 = correctly_filtered_df_c11.copy()
+            if not mismatched_expected_df_c11.empty:
+                # Introducir una discrepancia: eliminar una fila si hay más de una, o alterar si solo hay una.
+                if len(mismatched_expected_df_c11) > 1:
+                    mismatched_expected_df_c11 = mismatched_expected_df_c11.iloc[:-1].copy()
+                else:  # Si solo hay una fila o ninguna tras el filtro correcto, crear una discrepancia clara.
+                    # Por ejemplo, si correctly_filtered_df_c11 tiene 1 fila, mismatched_expected_df_c11 podría ser vacía.
+                    # O si correctly_filtered_df_c11 está vacía, mismatched_expected_df_c11 podría tener una fila.
+                    if not df_in_c11.empty and df_in_c11.index.equals(
+                            mismatched_expected_df_c11.index):  # Si el filtro resultó en todo el df y es 1 fila
+                        mismatched_expected_df_c11 = pd.DataFrame(columns=df_in_c11.columns)  # Hacerlo vacío
+                    elif not df_in_c11.empty:  # Si no, añadir una fila que no debería estar o una diferente
+                        # Tomar una fila que NO cumpla el filtro, si es posible, o una cualquiera si todas cumplen
+                        non_matching_rows = df_in_c11[~df_in_c11[main_col].isin(filter_values_c11)]
+                        if not non_matching_rows.empty:
+                            mismatched_expected_df_c11 = pd.concat(
+                                [mismatched_expected_df_c11, non_matching_rows.head(1)], ignore_index=True)
+                        elif not df_in_c11.empty:  # Si todas las filas coinciden, eliminar la única fila para crear el mismatch
+                            mismatched_expected_df_c11 = pd.DataFrame(columns=df_in_c11.columns)
+
+            # Asegurar que mismatched_expected_df_c11 es realmente diferente
+            if correctly_filtered_df_c11.equals(mismatched_expected_df_c11) and not correctly_filtered_df_c11.empty:
+                mismatched_expected_df_c11 = mismatched_expected_df_c11.iloc[:-1].copy() if len(
+                    mismatched_expected_df_c11) > 0 else pd.DataFrame({main_col: ['ensure_mismatch']})
+            elif correctly_filtered_df_c11.equals(
+                    mismatched_expected_df_c11) and correctly_filtered_df_c11.empty and not df_in_c11.empty:
+                mismatched_expected_df_c11 = df_in_c11.head(1).copy()
+
+            result_c11 = self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c11.copy(),
+                data_dictionary_out=mismatched_expected_df_c11.copy(),
+                columns=[main_col],
+                filter_fix_value_list=filter_values_c11,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_sBatch_include_false_mismatch'
+            )
+            assert result_c11 is False, f"Test Case 11 Small Batch Failed (Mismatch {main_col}): Expected False, but got True"
+            print_and_log(f"Test Case 11 Small Batch Passed (Mismatch {main_col}): Expected False, got False")
+        else:
+            print_and_log(
+                f"Test Case 11 Small Batch Skipped: No unique non-NaN values in '{main_col}' to test mismatch.")
 
 
     def execute_WholeDatasetTests_checkInv_filter_rows_primitive(self):
-        # Caso 1
-        pass
+        # Columna principal para pruebas de cadena y genéricas
+        main_col = 'track_name'
+        # Columna para pruebas numéricas
+        numeric_col = 'energy'
+
+        # Caso 1: Filtro INCLUDE en main_col (ej. track_name)
+        print_and_log(f"Test Case 1 (Whole Dataset): INCLUDE filter on column '{main_col}'")
+        df_in_c1 = self.rest_of_dataset.copy()
+        unique_values_c1 = df_in_c1[main_col].dropna().unique()
+
+        if len(unique_values_c1) >= 2:
+            filter_values_c1 = [unique_values_c1[0], unique_values_c1[1]]
+        elif len(unique_values_c1) == 1:
+            filter_values_c1 = [unique_values_c1[0]]
+        else:
+            # Fallback si no hay valores únicos (poco probable en un dataset grande)
+            filter_values_c1 = ["dummy_val_wd_1", "dummy_val_wd_2"]
+
+        expected_df_c1 = df_in_c1[df_in_c1[main_col].isin(filter_values_c1)].copy()
+
+        result_c1 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c1.copy(),
+            data_dictionary_out=expected_df_c1.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c1,
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_include_main_col'
+        )
+        assert result_c1 is True, f"Test Case 1 Whole Dataset Failed (INCLUDE {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 1 Whole Dataset Passed (INCLUDE {main_col}): Expected True, got True")
+
+        # Caso 2: Filtro EXCLUDE en main_col (ej. track_name)
+        print_and_log(f"Test Case 2 (Whole Dataset): EXCLUDE filter on column '{main_col}'")
+        df_in_c2 = self.rest_of_dataset.copy()
+        unique_values_c2 = df_in_c2[main_col].dropna().unique()
+
+        if len(unique_values_c2) >= 1:
+            filter_values_c2 = [unique_values_c2[0]]
+        else:
+            filter_values_c2 = ["dummy_val_wd_3"]  # Fallback
+
+        expected_df_c2 = df_in_c2[~df_in_c2[main_col].isin(filter_values_c2)].copy()
+
+        result_c2 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c2.copy(),
+            data_dictionary_out=expected_df_c2.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c2,
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_wDataset_exclude_main_col'
+        )
+        assert result_c2 is True, f"Test Case 2 Whole Dataset Failed (EXCLUDE {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 2 Whole Dataset Passed (EXCLUDE {main_col}): Expected True, got True")
+
+        # Caso 3: Error: Columna no existe en data_dictionary_in
+        print_and_log("Test Case 3 (Whole Dataset): Error - Column does not exist")
+        df_in_c3 = self.rest_of_dataset.copy()
+        expected_df_c3 = df_in_c3.copy()  # No es crucial aquí
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c3.copy(),
+                data_dictionary_out=expected_df_c3.copy(),
+                columns=['Z_NonExistentColumn_WD'],
+                filter_fix_value_list=['a'],
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_wDataset_invalid_column'
+            )
+        print_and_log("Test Case 3 Whole Dataset Passed: Expected ValueError for non-existent column, got ValueError")
+
+        # Caso 4: Error: Parámetro filter_fix_value_list es None
+        print_and_log("Test Case 4 (Whole Dataset): Error - filter_fix_value_list is None")
+        df_in_c4 = self.rest_of_dataset.copy()
+        expected_df_c4 = df_in_c4.copy()  # No es crucial
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c4.copy(),
+                data_dictionary_out=expected_df_c4.copy(),
+                columns=[main_col],
+                filter_fix_value_list=None,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_wDataset_none_filter_list'
+            )
+        print_and_log(
+            "Test Case 4 Whole Dataset Passed: Expected ValueError for None filter_fix_value_list, got ValueError")
+
+        # Caso 5: EXCLUDE single value
+        print_and_log(f"Test Case 5 (Whole Dataset): EXCLUDE single specific value from '{main_col}'")
+        df_in_c5 = self.rest_of_dataset.copy()
+        unique_values_c5 = df_in_c5[main_col].dropna().unique()
+
+        if len(unique_values_c5) >= 1:
+            filter_values_c5 = [unique_values_c5[0 if len(unique_values_c5) == 1 else (
+                        1 % len(unique_values_c5))]]  # Tomar el segundo si existe, sino el primero
+        else:
+            filter_values_c5 = ["dummy_val_wd_4"]
+
+        expected_df_c5 = df_in_c5[~df_in_c5[main_col].isin(filter_values_c5)].copy()
+        result_c5 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c5.copy(),
+            data_dictionary_out=expected_df_c5.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c5,
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_wDataset_exclude_single_specific_value'
+        )
+        assert result_c5 is True, f"Test Case 5 Whole Dataset Failed (EXCLUDE specific {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 5 Whole Dataset Passed (EXCLUDE specific {main_col}): Expected True, got True")
+
+        # Caso 6: Filtro INCLUDE en columna numérica (ej. energy)
+        print_and_log(f"Test Case 6 (Whole Dataset): INCLUDE filter on numeric column '{numeric_col}'")
+        df_in_c6 = self.rest_of_dataset.copy()
+        df_in_c6[numeric_col] = pd.to_numeric(df_in_c6[numeric_col], errors='coerce')
+
+        unique_numeric_values_c6 = df_in_c6[numeric_col].dropna().unique()
+        if len(unique_numeric_values_c6) >= 2:
+            numeric_filter_values_c6 = [unique_numeric_values_c6[0], unique_numeric_values_c6[1]]
+        elif len(unique_numeric_values_c6) == 1:
+            numeric_filter_values_c6 = [unique_numeric_values_c6[0]]
+        else:
+            numeric_filter_values_c6 = [-9999.99, -8888.88]  # Fallback
+
+        expected_df_c6 = df_in_c6[df_in_c6[numeric_col].isin(numeric_filter_values_c6)].copy()
+
+        result_c6 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c6.copy(),
+            data_dictionary_out=expected_df_c6.copy(),
+            columns=[numeric_col],
+            filter_fix_value_list=numeric_filter_values_c6,
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_include_numeric'
+        )
+        assert result_c6 is True, f"Test Case 6 Whole Dataset Failed (INCLUDE numeric {numeric_col}): Expected True, but got False"
+        print_and_log(f"Test Case 6 Whole Dataset Passed (INCLUDE numeric {numeric_col}): Expected True, got True")
+
+        # Caso 7: Filtro INCLUDE en main_col con manejo de NaNs
+        print_and_log(f"Test Case 7 (Whole Dataset): INCLUDE filter on '{main_col}' (NaN handling by isin)")
+        df_in_c7 = self.rest_of_dataset.copy()
+        unique_values_c7 = df_in_c7[main_col].dropna().unique()
+        if len(unique_values_c7) >= 1:
+            filter_values_c7 = [unique_values_c7[0]]
+        else:
+            filter_values_c7 = ["dummy_val_wd_5"]
+
+        expected_df_c7 = df_in_c7[df_in_c7[main_col].isin(filter_values_c7)].copy()
+
+        result_c7 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c7.copy(),
+            data_dictionary_out=expected_df_c7.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c7,
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_include_nan_handling'
+        )
+        assert result_c7 is True, f"Test Case 7 Whole Dataset Failed (INCLUDE {main_col} NaN handling): Expected True, but got False"
+        print_and_log(f"Test Case 7 Whole Dataset Passed (INCLUDE {main_col} NaN handling): Expected True, got True")
+
+        # Caso 8: Filtro EXCLUDE en main_col con un valor a eliminar inexistente
+        print_and_log(f"Test Case 8 (Whole Dataset): EXCLUDE non-existent value from '{main_col}'")
+        df_in_c8 = self.rest_of_dataset.copy()
+        filter_values_c8 = ["THIS_VALUE_SHOULD_NOT_EXIST_IN_WHOLE_DATASET_XYZ123"]
+        expected_df_c8 = df_in_c8.copy()  # No se filtra nada
+
+        result_c8 = self.invariants.check_inv_filter_rows_primitive(
+            data_dictionary_in=df_in_c8.copy(),
+            data_dictionary_out=expected_df_c8.copy(),
+            columns=[main_col],
+            filter_fix_value_list=filter_values_c8,
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_wDataset_exclude_nonexistent'
+        )
+        assert result_c8 is True, f"Test Case 8 Whole Dataset Failed (EXCLUDE non-existent {main_col}): Expected True, but got False"
+        print_and_log(f"Test Case 8 Whole Dataset Passed (EXCLUDE non-existent {main_col}): Expected True, got True")
+
+        # Caso 9: Filtro INCLUDE que coincide con un único valor existente
+        print_and_log(f"Test Case 9 (Whole Dataset): INCLUDE filter for a single existing value in '{main_col}'")
+        df_in_c9 = self.rest_of_dataset.copy()
+        unique_values_c9 = df_in_c9[main_col].dropna().unique()
+        if len(unique_values_c9) >= 1:
+            filter_values_c9 = [unique_values_c9[0]]
+            expected_df_c9 = df_in_c9[df_in_c9[main_col].isin(filter_values_c9)].copy()
+
+            result_c9 = self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c9.copy(),
+                data_dictionary_out=expected_df_c9.copy(),
+                columns=[main_col],
+                filter_fix_value_list=filter_values_c9,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_wDataset_include_single_existing_value'
+            )
+            assert result_c9 is True, f"Test Case 9 Whole Dataset Failed (INCLUDE single existing {main_col}): Expected True, but got False"
+            print_and_log(
+                f"Test Case 9 Whole Dataset Passed (INCLUDE single existing {main_col}): Expected True, got True")
+        else:
+            print_and_log(
+                f"Test Case 9 Whole Dataset Skipped: No unique non-NaN values in '{main_col}' to test single value include.")
+
+        # Caso 10: Error: Parámetro filter_fix_value_list es None (repetido)
+        print_and_log("Test Case 10 (Whole Dataset): Error - filter_fix_value_list is None (repeat)")
+        df_in_c10 = self.rest_of_dataset.copy()
+        expected_df_c10 = df_in_c10.copy()
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c10.copy(),
+                data_dictionary_out=expected_df_c10.copy(),
+                columns=[main_col],
+                filter_fix_value_list=None,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_wDataset_none_filter_list_repeat'
+            )
+        print_and_log(
+            "Test Case 10 Whole Dataset Passed: Expected ValueError for None filter_fix_value_list (repeat), got ValueError")
+
+        # Caso 11: Resultado False esperado debido a discrepancia en data_dictionary_out
+        print_and_log(f"Test Case 11 (Whole Dataset): False result expected due to mismatch on '{main_col}' filter")
+        df_in_c11 = self.rest_of_dataset.copy()
+        unique_values_c11 = df_in_c11[main_col].dropna().unique()
+
+        if len(unique_values_c11) >= 1:
+            filter_values_c11 = [unique_values_c11[0]]
+            correctly_filtered_df_c11 = df_in_c11[df_in_c11[main_col].isin(filter_values_c11)].copy()
+
+            mismatched_expected_df_c11 = correctly_filtered_df_c11.copy()
+            if not mismatched_expected_df_c11.empty:
+                if len(mismatched_expected_df_c11) > 1:
+                    mismatched_expected_df_c11 = mismatched_expected_df_c11.iloc[:-1].copy()  # Eliminar la última fila
+                elif len(mismatched_expected_df_c11) == 1:
+                    # Alterar un valor si solo hay una fila
+                    if main_col in mismatched_expected_df_c11.columns:
+                        mismatched_expected_df_c11.loc[
+                            mismatched_expected_df_c11.index[0], main_col] = "mismatch_value_WD"
+                    else:  # Si main_col no existe (improbable), añadir una columna para asegurar la diferencia
+                        mismatched_expected_df_c11['mismatch_col_WD'] = "mismatch_value_WD"
+
+            # Asegurar que mismatched_expected_df_c11 es realmente diferente
+            # Si después de las manipulaciones, aún son iguales (ej. correctly_filtered_df_c11 estaba vacío)
+            if correctly_filtered_df_c11.equals(mismatched_expected_df_c11):
+                if correctly_filtered_df_c11.empty and not df_in_c11.empty:
+                    # Si el filtro correcto da vacío, pero el df original no, el df "mismatched" puede ser una parte del original
+                    mismatched_expected_df_c11 = df_in_c11.head(1).copy() if not df_in_c11.empty else pd.DataFrame(
+                        {main_col: ['ensure_mismatch_WD']})
+                elif not correctly_filtered_df_c11.empty:
+                    # Si no está vacío y son iguales, eliminar una fila si es posible, o añadir una columna de error
+                    mismatched_expected_df_c11 = mismatched_expected_df_c11.iloc[:-1].copy() if len(
+                        mismatched_expected_df_c11) > 0 else pd.DataFrame({main_col: ['ensure_mismatch_WD_alt']})
+
+            result_c11 = self.invariants.check_inv_filter_rows_primitive(
+                data_dictionary_in=df_in_c11.copy(),
+                data_dictionary_out=mismatched_expected_df_c11.copy(),
+                columns=[main_col],
+                filter_fix_value_list=filter_values_c11,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_wDataset_include_false_mismatch'
+            )
+            assert result_c11 is False, f"Test Case 11 Whole Dataset Failed (Mismatch {main_col}): Expected False, but got True"
+            print_and_log(f"Test Case 11 Whole Dataset Passed (Mismatch {main_col}): Expected False, got False")
+        else:
+            print_and_log(
+                f"Test Case 11 Whole Dataset Skipped: No unique non-NaN values in '{main_col}' to test mismatch.")
 
 
     def execute_checkInv_filter_rows_range(self):
