@@ -61,8 +61,8 @@ class InvariantsSimpleTest(unittest.TestCase):
             # self.execute_checkInv_MathOperation,
             # self.execute_checkInv_CastType,
             # self.execute_checkInv_Join,
-            self.execute_checkInv_filter_rows_primitive#,
-            # self.execute_checkInv_filter_rows_range,
+            # self.execute_checkInv_filter_rows_primitive,
+            self.execute_checkInv_filter_rows_range,
             # self.execute_checkInv_filter_rows_special_values,
             # self.execute_checkInv_filter_columns
         ]
@@ -6253,9 +6253,156 @@ class InvariantsSimpleTest(unittest.TestCase):
         assert result is False, "Test Failed: Expected False, but got True"
         print_and_log("Test Case 11 Passed: Expected False, got False")
 
-
     def execute_checkInv_filter_rows_range(self):
-        pass
+        # Test Case 1: Single column, INCLUDE, should pass
+        data_in_1 = pd.DataFrame({
+            'col1': [10, 20, 30, 40, 50, np.nan],
+            'col2': ['a', 'b', 'c', 'd', 'e', 'f']
+        })
+        # Condition: col1 in (15, 45] (i.e., 15 < col1 <= 45) -> values 20, 30, 40
+        # Rows with col1 = 20, 30, 40. Indices 1, 2, 3
+        # For Closure.OPEN_RIGHT (assuming (left, right]):
+        mask_1 = (data_in_1['col1'] > 15) & (data_in_1['col1'] <= 45)
+        data_out_1 = data_in_1[mask_1].copy()
+
+        result_1 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_1,
+            columns=['col1'],
+            left_margin_list=[15],
+            right_margin_list=[45],
+            closure_type_list=[Closure.openClosed],  # (15, 45]
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_1"
+        )
+        self.assertTrue(result_1, "Test Case 1 Failed: Single column, INCLUDE, Closure.OPEN_RIGHT")
+
+        # Test Case 2: Single column, EXCLUDE, should pass
+        # Condition: col1 NOT in (15, 45] -> values 10, 50, np.nan
+        # Rows with col1 = 10, 50, np.nan. Indices 0, 4, 5
+        data_out_2 = data_in_1[~mask_1].copy()
+        result_2 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_2,
+            columns=['col1'],
+            left_margin_list=[15],
+            right_margin_list=[45],
+            closure_type_list=[Closure.openClosed],  # (15, 45]
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_filter_rows_range_2"
+        )
+        self.assertTrue(result_2, "Test Case 2 Failed: Single column, EXCLUDE, Closure.OPEN_RIGHT")
+
+        # Test Case 3: Multiple columns, conditions select same rows, INCLUDE, should pass
+        data_in_3 = pd.DataFrame({
+            'A': [1, 2, 3, 4, 5, 6],
+            'B': [10, 20, 30, 40, 50, 60],
+            'C': [100, 101, 102, 103, 104, 105]
+        })
+        # CondA: A in (1, 4) -> A is 2, 3. Indices 1, 2
+        # CondB: B in (10, 40) -> B is 20, 30. Indices 1, 2
+        # Both conditions select rows with index 1 and 2.
+        mask_A_3 = (data_in_3['A'] > 1) & (data_in_3['A'] < 4)
+        mask_B_3 = (data_in_3['B'] > 10) & (data_in_3['B'] < 40)
+        # For the test to pass, the data_out must be formed by rows that satisfy *both*
+        # and this combined filter must be what the invariant effectively checks for each column.
+        # The invariant checks each column's condition independently against data_in vs data_out.
+        # So data_out must be data_in[mask_A_3] AND data_in[mask_B_3] effectively.
+        # This means mask_A_3 and mask_B_3 must select the same rows.
+        self.assertTrue(all(mask_A_3 == mask_B_3), "Prerequisite for TC3: masks must be identical")
+        data_out_3 = data_in_3[mask_A_3].copy()  # or mask_B_3
+
+        result_3 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_3,
+            data_dictionary_out=data_out_3,
+            columns=['A', 'B'],
+            left_margin_list=[1, 10],
+            right_margin_list=[4, 40],
+            closure_type_list=[Closure.openOpen, Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_3"
+        )
+        self.assertTrue(result_3, "Test Case 3 Failed: Multiple columns, same row selection")
+
+        # Test Case 4: Single column, INCLUDE, should fail (incorrect data_out)
+        data_out_4_fail = data_in_1.iloc[[0, 1]].copy()  # Incorrectly filtered for (15, 45]
+        result_4 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_4_fail,
+            columns=['col1'],
+            left_margin_list=[15],
+            right_margin_list=[45],
+            closure_type_list=[Closure.openClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_4_fail"
+        )
+        self.assertFalse(result_4, "Test Case 4 Succeeded: Incorrect output, should fail")
+
+        # Test Case 5: Different closure types - CLOSED_LEFT [left, right)
+        # col1 in [20, 40) -> 20, 30. Indices 1, 2 of data_in_1
+        mask_5 = (data_in_1['col1'] >= 20) & (data_in_1['col1'] < 40)
+        data_out_5 = data_in_1[mask_5].copy()
+        result_5 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_5,
+            columns=['col1'],
+            left_margin_list=[20],
+            right_margin_list=[40],
+            closure_type_list=[Closure.closedOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_5"
+        )
+        self.assertTrue(result_5, "Test Case 5 Failed: Closure.CLOSED_LEFT")
+
+        # Test Case 6: Different closure types - CLOSED [left, right]
+        # col1 in [20, 40] -> 20, 30, 40. Indices 1, 2, 3 of data_in_1
+        mask_6 = (data_in_1['col1'] >= 20) & (data_in_1['col1'] <= 40)
+        data_out_6 = data_in_1[mask_6].copy()
+        result_6 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_6,
+            columns=['col1'],
+            left_margin_list=[20],
+            right_margin_list=[40],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_6"
+        )
+        self.assertTrue(result_6, "Test Case 6 Failed: Closure.CLOSED")
+
+        # Test Case 7: Empty result from filter
+        data_in_7 = pd.DataFrame({'col1': [1, 2, 3], 'col2': ['x', 'y', 'z']})
+        # Condition: col1 in (10, 20) -> empty
+        mask_7 = (data_in_7['col1'] > 10) & (data_in_7['col1'] < 20)
+        data_out_7 = data_in_7[mask_7].copy()
+
+        result_7 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_7,
+            data_dictionary_out=data_out_7,
+            columns=['col1'],
+            left_margin_list=[10],
+            right_margin_list=[20],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_7"
+        )
+        self.assertTrue(result_7, "Test Case 7 Failed: Empty filter result")
+
+        # Test Case 8: All items included by filter
+        # Condition: col1 in [1,3] for data_in_7
+        mask_8 = (data_in_7['col1'] >= 1) & (data_in_7['col1'] <= 3)
+        data_out_8 = data_in_7[mask_8].copy()
+        result_8 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_7,
+            data_dictionary_out=data_out_8,
+            columns=['col1'],
+            left_margin_list=[1],
+            right_margin_list=[3],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_8"
+        )
+        self.assertTrue(result_8, "Test Case 8 Failed: All items included")
 
     def execute_checkInv_filter_rows_special_values(self):
         pass
