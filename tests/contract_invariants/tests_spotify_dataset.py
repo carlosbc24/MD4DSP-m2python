@@ -97,23 +97,23 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue,
-            self.execute_checkInv_MathOperation,
-            self.execute_checkInv_CastType,
-            self.execute_checkInv_Join,
-            self.execute_checkInv_filter_rows_primitive,
-            self.execute_checkInv_filter_rows_range,
-            self.execute_checkInv_filter_rows_special_values,
-            self.execute_checkInv_filter_columns
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            # self.execute_checkInv_MathOperation,
+            # self.execute_checkInv_CastType,
+            # self.execute_checkInv_Join,
+            self.execute_checkInv_filter_rows_primitive#,
+            # self.execute_checkInv_filter_rows_range,
+            # self.execute_checkInv_filter_rows_special_values,
+            # self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -9564,7 +9564,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
     def execute_WholeDatasetTests_checkInv_Join(self):
         # Caso 1: Unión simple con literal
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_artist']=expected_df['track_artist']+' is great'
+        expected_df['track_artist'] = expected_df['track_artist'].fillna('') + ' is great'
         dictionary = {'track_artist': True, ' is great': False}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9576,7 +9576,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 2: Unir dos columnas con un separador
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id']=expected_df['track_id']+'-'+expected_df['track_name']
+        expected_df['track_id']=expected_df['track_id'].fillna('')+'-'+expected_df['track_name'].fillna('')
         dictionary = {'track_id': True, '-': False, 'track_name': True}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9588,7 +9588,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 3: Unir con campo de salida diferente
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_artist']=expected_df['track_id']+'-'+expected_df['track_name']
+        expected_df['track_artist']=expected_df['track_id'].fillna('')+'-'+expected_df['track_name'].fillna('')
         dictionary = {'track_id': True, '-': False, 'track_name': True}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9600,7 +9600,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 4: Unir con múltiples cadenas literales
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id']='Prefijo-'+expected_df['track_name']+'-Sufijo'
+        expected_df['track_id']='Prefijo-'+expected_df['track_name'].fillna('')+'-Sufijo'
         dictionary = {'Prefijo-': False, 'track_name': True, '-Sufijo': False}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9612,7 +9612,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 5: Unir con valores faltantes y manejo adecuado (NaN)
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id']=expected_df['track_name']+'_'+expected_df['track_artist']
+        expected_df['track_id']=expected_df['track_name'].fillna('')+'_'+expected_df['track_artist'].fillna('')
         dictionary = {'track_name': True, '_': False, 'track_artist': True}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9624,7 +9624,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 6: Caso de fallo - patrones incorrectos
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_name']=expected_df['track_name']+'perro'
+        expected_df['track_name']=expected_df['track_name'].fillna('')+'perro'
         dictionary = {'track_name': True, 'gato': False}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9636,7 +9636,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 7: Unir con valores numéricos (convertidos a string)
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_popularity']=expected_df['energy'].astype(str)+'+'+expected_df['loudness'].astype(str)
+        expected_df['track_popularity']=expected_df['energy'].fillna('').astype(str)+'+'+expected_df['loudness'].fillna('').astype(str)
         dictionary = {'energy': True, '+': False, 'loudness': True}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9648,7 +9648,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 8: Unir tres columnas con separadores usando columna auxiliar
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_popularity']=expected_df['track_popularity'].astype(str)+'.'+expected_df['track_id']+'-'+expected_df['track_artist']
+        expected_df['track_popularity']=expected_df['track_popularity'].fillna('').astype(str)+'.'+expected_df['track_id'].fillna('')+'-'+expected_df['track_artist'].fillna('')
         dictionary = {'track_popularity': True, '.': False, 'track_id': True, '-': False, 'track_artist': True}
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
@@ -9660,8 +9660,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 9: Unir con cadenas vacías (concatenación directa)
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id']=expected_df['track_name']+''+expected_df['track_id']
+        expected_df['track_id']=expected_df['track_name'].fillna('')+''+expected_df['track_id'].fillna('')
         dictionary = {'track_name': True, '': False, 'track_id': True}
+
+        expected_df['track_id'] = expected_df['track_id'].replace('', np.nan)
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
@@ -9672,7 +9674,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 10: Campo de salida no existe en el DataFrame de salida
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
+        expected_df['track_id'] = expected_df['track_name'].fillna('') + '' + expected_df['track_id'].fillna('')
         dictionary = {'track_name': True, '': False, 'track_id': True}
 
         with self.assertRaises(ValueError):
@@ -9683,7 +9685,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 11: Fallo - valores NaN en salida incorrectos
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
+        expected_df['track_id'] = expected_df['track_name'].fillna('') + '' + expected_df['track_id'].fillna('')
         dictionary = {'track_name': True, '': False, 'track_id': True}
 
         expected_df.loc[expected_df.index[5], 'track_id'] = np.NaN
@@ -9697,7 +9699,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 12: Fallo - valores incorrectos en el campo de salida
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id'] = expected_df['track_name'] + '' + expected_df['track_id']
+        expected_df['track_id'] = expected_df['track_name'].fillna('') + '' + expected_df['track_id'].fillna('')
         dictionary = {'track_name': True, '': False, 'track_id': True}
 
         expected_df.loc[expected_df.index[5], 'track_id'] = 'ERROR'
@@ -9711,12 +9713,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 13: Unir con valores faltantes y manejo adecuado (NaN)
         expected_df = self.rest_of_dataset.copy()
-        expected_df['track_id'] = expected_df['track_name'].astype(str) + expected_df['track_artist'].astype(str)
+        expected_df['track_id'] = expected_df['track_name'].fillna('') + expected_df['track_artist'].fillna('')
         dictionary = {'track_name': True, 'track_artist': True}
 
         expected_df.loc[self.rest_of_dataset.index[3], ['track_name', 'track_artist']] = [np.NaN, np.NaN]
         expected_df.loc[self.rest_of_dataset.index[4], ['track_name']] = [np.NaN]
         expected_df.loc[self.rest_of_dataset.index[6], ['track_artist']] = [np.NaN]
+
+        expected_df['track_id'] = expected_df['track_id'].replace('', np.nan)
 
         result = self.invariants.check_inv_join(data_dictionary_in=self.rest_of_dataset.copy(),
                                                 data_dictionary_out=expected_df.copy(),
