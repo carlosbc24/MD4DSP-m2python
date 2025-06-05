@@ -6402,7 +6402,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         mask_10_2 = ~((data_in_10['col2'] > 10) & (data_in_10['col2'] <= 40)) | data_in_10['col2'].isna()
         mask_10 = mask_10_1 & mask_10_2
         data_out_10 = data_in_10[mask_10].copy()
-        print(data_out_10)
 
         result_10 = self.invariants.check_inv_filter_rows_range(
             data_dictionary_in=data_in_10,

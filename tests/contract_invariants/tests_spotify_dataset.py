@@ -10305,13 +10305,436 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_SmallBatchTests_checkInv_filter_rows_range(self):
-        # Caso 1
-        pass
+        """
+        Execute check_inv_filter_rows_range tests using small batch dataset
+        """
+        df = self.small_batch_dataset.copy()
+        numeric_col = 'energy'
+        other_numeric_col = 'danceability'
+
+        # Ensure numeric columns are properly typed
+        df[numeric_col] = pd.to_numeric(df[numeric_col], errors='coerce')
+        df[other_numeric_col] = pd.to_numeric(df[other_numeric_col], errors='coerce')
+
+        # Get valid range for tests from actual data
+        valid_min = df[numeric_col].min()
+        valid_max = df[numeric_col].max()
+        mid_point = valid_min + (valid_max - valid_min)/2
+        quarter_point = valid_min + (valid_max - valid_min)/4
+
+        # Caso 1: Single column, INCLUDE, open interval
+        mask_1 = (df[numeric_col] > quarter_point) & (df[numeric_col] < valid_max)
+        expected_df_1 = df[mask_1].copy()
+
+        result_1 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_1,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[valid_max],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_1"
+        )
+        assert result_1 is True, "Test Case 1 Failed: Single column, INCLUDE, open interval"
+        print_and_log("Test Case 1 Passed: Single column, INCLUDE, open interval")
+
+        # Caso 2: Single column, EXCLUDE, open interval 
+        expected_df_2 = df[~mask_1].copy()
+        
+        result_2 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_2,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[valid_max],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_sBatch_filter_rows_range_2"
+        )
+        assert result_2 is True, "Test Case 2 Failed: Single column, EXCLUDE, open interval"
+        print_and_log("Test Case 2 Passed: Single column, EXCLUDE, open interval")
+
+        # Test Case 3: Multiple columns, INCLUDE, both must match
+        df_test = df.copy()
+
+        # Get medians for scaling
+        numeric_col_median = df_test[numeric_col].median() 
+        other_numeric_col_median = df_test[other_numeric_col].median()
+
+        # Create wider ranges to ensure some overlap
+        range_width = 0.2  # Wider range width
+        mask_3_1 = (df_test[numeric_col] > numeric_col_median - range_width) & (df_test[numeric_col] < numeric_col_median + range_width)
+        mask_3_2 = (df_test[other_numeric_col] > other_numeric_col_median - range_width) & (df_test[other_numeric_col] < other_numeric_col_median + range_width)
+
+        # Combine masks and apply both conditions
+        mask_3 = mask_3_1 & mask_3_2  
+        expected_df_3 = df_test[mask_3].copy()
+
+        # Use the actual range values that were used to create the masks
+        result_3 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_3,
+            columns=[numeric_col, other_numeric_col],
+            left_margin_list=[numeric_col_median - range_width, other_numeric_col_median - range_width],
+            right_margin_list=[numeric_col_median + range_width, other_numeric_col_median + range_width], 
+            closure_type_list=[Closure.openOpen, Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_3"
+        )
+
+        # Caso 4: Single column, INCLUDE, should fail (incorrect data_out)
+        incorrect_df_4 = df.iloc[[0, 1]].copy()  # Deliberately wrong output
+        
+        result_4 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=incorrect_df_4,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.openClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_4"
+        )
+        assert result_4 is False, "Test Case 4 Failed: Should return False for incorrect output"
+        print_and_log("Test Case 4 Passed: Correctly identified incorrect output")
+
+        # Caso 5: Single column, INCLUDE, closedOpen interval
+        mask_5 = (df[numeric_col] >= quarter_point) & (df[numeric_col] < mid_point)
+        expected_df_5 = df[mask_5].copy()
+
+        result_5 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_5,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.closedOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_5"
+        )
+        assert result_5 is True, "Test Case 5 Failed: closedOpen interval"
+        print_and_log("Test Case 5 Passed: closedOpen interval")
+
+        # Caso 6: Single column, INCLUDE, closedClosed interval
+        mask_6 = (df[numeric_col] >= quarter_point) & (df[numeric_col] <= mid_point)
+        expected_df_6 = df[mask_6].copy()
+
+        result_6 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_6,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_6"
+        )
+        assert result_6 is True, "Test Case 6 Failed: closedClosed interval"
+        print_and_log("Test Case 6 Passed: closedClosed interval")
+
+        # Caso 7: Empty result with valid range
+        # Use a range where we know there's no data
+        empty_min = df[numeric_col].max() + 1
+        empty_max = empty_min + 1
+        mask_7 = (df[numeric_col] > empty_min) & (df[numeric_col] < empty_max)
+        expected_df_7 = df[mask_7].copy()
+
+        result_7 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_7,
+            columns=[numeric_col],
+            left_margin_list=[empty_min],
+            right_margin_list=[empty_max],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_7"
+        )
+        assert result_7 is True, "Test Case 7 Failed: Empty result with valid range"
+        print_and_log("Test Case 7 Passed: Empty result with valid range")
+
+        # Caso 8: Include all values in range
+        mask_8 = (df[numeric_col] >= valid_min) & (df[numeric_col] <= valid_max)
+        expected_df_8 = df[mask_8].copy()
+
+        result_8 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_8,
+            columns=[numeric_col],
+            left_margin_list=[valid_min],
+            right_margin_list=[valid_max],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_8"
+        )
+        assert result_8 is True, "Test Case 8 Failed: Include all values in range"
+        print_and_log("Test Case 8 Passed: Include all values in range")
+
+        # Caso 9: Test with null values, INCLUDE
+        df_with_nulls = df.copy()
+        df_with_nulls.loc[df_with_nulls.index[0:2], numeric_col] = np.nan
+        
+        mask_9 = (df_with_nulls[numeric_col] >= quarter_point) & (df_with_nulls[numeric_col] <= mid_point)
+        expected_df_9 = df_with_nulls[mask_9].copy()
+
+        result_9 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df_with_nulls.copy(),
+            data_dictionary_out=expected_df_9,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_sBatch_filter_rows_range_9"
+        )
+        assert result_9 is True, "Test Case 9 Failed: Handle null values, INCLUDE"
+        print_and_log("Test Case 9 Passed: Handle null values, INCLUDE")
+
+        # Test Case 10: Test with null values, EXCLUDE with multiple columns
+        df_with_nulls_2 = df.copy()
+        # Add some null values to both columns
+        df_with_nulls_2.loc[df_with_nulls_2.index[0:2], numeric_col] = np.nan
+        df_with_nulls_2.loc[df_with_nulls_2.index[3:4], other_numeric_col] = np.nan
+
+        # For EXCLUDE operation, we want to keep rows that:
+        # 1. Are outside both ranges
+        # 2. Have NaN values in either column
+        mask_10_1 = ~((df_with_nulls_2[numeric_col] > quarter_point) & (df_with_nulls_2[numeric_col] <= mid_point)) | df_with_nulls_2[numeric_col].isna()
+        mask_10_2 = ~((df_with_nulls_2[other_numeric_col] > quarter_point) & (df_with_nulls_2[other_numeric_col] <= mid_point)) | df_with_nulls_2[other_numeric_col].isna()
+        mask_10 = mask_10_1 & mask_10_2
+        expected_df_10 = df_with_nulls_2[mask_10].copy()
+
+        result_10 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df_with_nulls_2.copy(),
+            data_dictionary_out=expected_df_10,
+            columns=[numeric_col, other_numeric_col],
+            left_margin_list=[quarter_point, quarter_point],
+            right_margin_list=[mid_point, mid_point],
+            closure_type_list=[Closure.openClosed, Closure.openClosed],
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_sBatch_filter_rows_range_10"
+        )
+        assert result_10 is True, "Test Case 10 Failed: Handle null values, EXCLUDE"
+        print_and_log("Test Case 10 Passed: Handle null values, EXCLUDE")
 
 
     def execute_WholeDatasetTests_checkInv_filter_rows_range(self):
-        # Caso 1
-        pass
+        """
+        Execute check_inv_filter_rows_range tests using whole dataset
+        """
+        df = self.rest_of_dataset.copy()
+        numeric_col = 'energy'
+        other_numeric_col = 'danceability'
+
+        # Ensure numeric columns are properly typed
+        df[numeric_col] = pd.to_numeric(df[numeric_col], errors='coerce')
+        df[other_numeric_col] = pd.to_numeric(df[other_numeric_col], errors='coerce')
+
+        # Get valid range for tests from actual data
+        valid_min = df[numeric_col].min()
+        valid_max = df[numeric_col].max()
+        mid_point = valid_min + (valid_max - valid_min)/2
+        quarter_point = valid_min + (valid_max - valid_min)/4
+
+        # Caso 1: Single column, INCLUDE, open interval
+        mask_1 = (df[numeric_col] > quarter_point) & (df[numeric_col] < valid_max)
+        expected_df_1 = df[mask_1].copy()
+
+        result_1 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_1,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[valid_max],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_1"
+        )
+        assert result_1 is True, "Test Case 1 Whole Dataset Failed: Single column, INCLUDE, open interval"
+        print_and_log("Test Case 1 Whole Dataset Passed: Single column, INCLUDE, open interval")
+
+        # Caso 2: Single column, EXCLUDE, open interval with null handling
+        # Para EXCLUDE con nulos, necesitamos:
+        # 1. Mantener filas fuera del rango
+        # 2. Excluir los valores nulos también
+        condition_outside_interval_and_not_null = ~mask_1 & ~df[numeric_col].isna()
+        expected_df_2 = df[condition_outside_interval_and_not_null].copy()
+
+        result_2 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_2,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[valid_max],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_wDataset_filter_rows_range_2"
+        )
+        # Actualiza el mensaje de assert para reflejar la exclusión de NaNs
+        assert result_2 is True, "Test Case 2 Whole Dataset Failed: Single column, EXCLUDE, open interval (excluding NaNs)"
+        print_and_log("Test Case 2 Whole Dataset Passed: Single column, EXCLUDE, open interval (excluding NaNs)")
+
+        # Test Case 3: Multiple columns, INCLUDE, both must match
+        df_test = df.copy()
+
+        # Get medians for scaling
+        numeric_col_median = df_test[numeric_col].median() 
+        other_numeric_col_median = df_test[other_numeric_col].median()
+
+        # Create wider ranges to ensure some overlap
+        range_width = 0.2  # Wider range width
+        mask_3_1 = (df_test[numeric_col] > numeric_col_median - range_width) & (df_test[numeric_col] < numeric_col_median + range_width)
+        mask_3_2 = (df_test[other_numeric_col] > other_numeric_col_median - range_width) & (df_test[other_numeric_col] < other_numeric_col_median + range_width)
+
+        # Combine masks and apply both conditions
+        mask_3 = mask_3_1 & mask_3_2  
+        expected_df_3 = df_test[mask_3].copy()
+
+        result_3 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_3,
+            columns=[numeric_col, other_numeric_col],
+            left_margin_list=[numeric_col_median - range_width, other_numeric_col_median - range_width],
+            right_margin_list=[numeric_col_median + range_width, other_numeric_col_median + range_width],
+            closure_type_list=[Closure.openOpen, Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_3"
+        )
+        assert result_3 is True, "Test Case 3 Whole Dataset Failed: Multiple columns, both must match"
+        print_and_log("Test Case 3 Whole Dataset Passed: Multiple columns, both must match")
+
+        # Caso 4: Single column, INCLUDE, should fail (incorrect data_out)
+        incorrect_df_4 = df.iloc[[0, 1]].copy()  # Deliberately wrong output
+        
+        result_4 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=incorrect_df_4,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.openClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_4"
+        )
+        assert result_4 is False, "Test Case 4 Whole Dataset Failed: Should return False for incorrect output"
+        print_and_log("Test Case 4 Whole Dataset Passed: Correctly identified incorrect output")
+
+        # Caso 5: Single column, INCLUDE, closedOpen interval
+        mask_5 = (df[numeric_col] >= quarter_point) & (df[numeric_col] < mid_point)
+        expected_df_5 = df[mask_5].copy()
+
+        result_5 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_5,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.closedOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_5"
+        )
+        assert result_5 is True, "Test Case 5 Whole Dataset Failed: closedOpen interval"
+        print_and_log("Test Case 5 Whole Dataset Passed: closedOpen interval")
+
+        # Caso 6: Single column, INCLUDE, closedClosed interval
+        mask_6 = (df[numeric_col] >= quarter_point) & (df[numeric_col] <= mid_point)
+        expected_df_6 = df[mask_6].copy()
+
+        result_6 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_6,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_6"
+        )
+        assert result_6 is True, "Test Case 6 Whole Dataset Failed: closedClosed interval"
+        print_and_log("Test Case 6 Whole Dataset Passed: closedClosed interval")
+
+        # Caso 7: Empty result with valid range
+        empty_min = df[numeric_col].max() + 1
+        empty_max = empty_min + 1
+        mask_7 = (df[numeric_col] > empty_min) & (df[numeric_col] < empty_max)
+        expected_df_7 = df[mask_7].copy()
+
+        result_7 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_7,
+            columns=[numeric_col],
+            left_margin_list=[empty_min],
+            right_margin_list=[empty_max],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_7"
+        )
+        assert result_7 is True, "Test Case 7 Whole Dataset Failed: Empty result with valid range"
+        print_and_log("Test Case 7 Whole Dataset Passed: Empty result with valid range")
+
+        # Caso 8: Include all values in range
+        mask_8 = (df[numeric_col] >= valid_min) & (df[numeric_col] <= valid_max)
+        expected_df_8 = df[mask_8].copy()
+
+        result_8 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_8,
+            columns=[numeric_col],
+            left_margin_list=[valid_min],
+            right_margin_list=[valid_max],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_8"
+        )
+        assert result_8 is True, "Test Case 8 Whole Dataset Failed: Include all values in range"
+        print_and_log("Test Case 8 Whole Dataset Passed: Include all values in range")
+
+        # Caso 9: Test with null values, INCLUDE
+        df_with_nulls = df.copy()
+        df_with_nulls.loc[df_with_nulls.index[0:2], numeric_col] = np.nan
+        
+        mask_9 = (df_with_nulls[numeric_col] >= quarter_point) & (df_with_nulls[numeric_col] <= mid_point)
+        expected_df_9 = df_with_nulls[mask_9].copy()
+
+        result_9 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df_with_nulls.copy(),
+            data_dictionary_out=expected_df_9,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[mid_point],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_wDataset_filter_rows_range_9"
+        )
+        assert result_9 is True, "Test Case 9 Whole Dataset Failed: Handle null values, INCLUDE"
+        print_and_log("Test Case 9 Whole Dataset Passed: Handle null values, INCLUDE")
+
+        # Test Case 10: Test with null values, EXCLUDE with multiple columns
+        df_with_nulls_2 = df.copy()
+        # Add some null values to both columns
+        df_with_nulls_2.loc[df_with_nulls_2.index[0:2], numeric_col] = np.nan
+        df_with_nulls_2.loc[df_with_nulls_2.index[3:4], other_numeric_col] = np.nan
+
+        # For EXCLUDE operation, we want to keep rows that:
+        # 1. Are outside both ranges
+        # 2. Have NaN values in either column
+        mask_10_1 = ~((df_with_nulls_2[numeric_col] > quarter_point) & (df_with_nulls_2[numeric_col] <= mid_point)) | df_with_nulls_2[numeric_col].isna()
+        mask_10_2 = ~((df_with_nulls_2[other_numeric_col] > quarter_point) & (df_with_nulls_2[other_numeric_col] <= mid_point)) | df_with_nulls_2[other_numeric_col].isna()
+        mask_10 = mask_10_1 & mask_10_2
+        expected_df_10 = df_with_nulls_2[mask_10].copy()
+
+        result_10 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df_with_nulls_2.copy(),
+            data_dictionary_out=expected_df_10,
+            columns=[numeric_col, other_numeric_col],
+            left_margin_list=[quarter_point, quarter_point],
+            right_margin_list=[mid_point, mid_point],
+            closure_type_list=[Closure.openClosed, Closure.openClosed],
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_wDataset_filter_rows_range_10"
+        )
+        assert result_10 is True, "Test Case 10 Whole Dataset Failed: Handle null values, EXCLUDE"
+        print_and_log("Test Case 10 Whole Dataset Passed: Handle null values, EXCLUDE")
 
 
     def execute_checkInv_filter_rows_special_values(self):
