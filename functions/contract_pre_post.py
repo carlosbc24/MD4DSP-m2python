@@ -40,13 +40,14 @@ def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Be
         return True  # Case 4
 
 
-def check_fix_value_range(value: Union[str, float, datetime, int], data_dictionary: pd.DataFrame, belong_op: Belong,
-                          field: str = None, quant_abs: int = None, quant_rel: float = None,
-                          quant_op: Operator = None, origin_function: str = None) -> bool:
+def check_fix_value_range(value: Union[str, float, datetime, int], data_dictionary: pd.DataFrame,
+                          belong_op: Belong, is_substring: bool = False, field: str = None, quant_abs: int = None,
+                          quant_rel: float = None, quant_op: Operator = None, origin_function: str = None) -> bool:
     """
     Check if fields meets the condition of belong_op in data_dictionary
 
     :param value: float value to check
+    :param is_substring boolean to indicate weather str value is a complete value to check or a substring one
     :param data_dictionary: data dictionary
     :param belong_op: enum operator which can be Belong.BELONG or Belong.NOTBELONG
     :param field: dataset column in which value will be checked
@@ -91,6 +92,7 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
                     print_and_log("Could not convert the value to a numeric type.")
 
     if field is None:
+        # Cannot apply substring to the whole dataframe, just to columns
         if belong_op == Belong.BELONG:
             if quant_op is None:  # Check if value is in data_dictionary
                 return True if value in data_dictionary.values else False  # Case 1 y 2
@@ -120,45 +122,53 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
                 raise ValueError(
                     "Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 10
     else:
-        if field is not None:
-            if field not in data_dictionary.columns:  # It checks that the column exists in the dataframe
-                raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 10.5
-            if belong_op == Belong.BELONG:  # If the value should belong to the column
-                if quant_op is None:
-                    if value in data_dictionary[field].values:
-                        return True  # Case 11
-                    else:
-                        print_and_log(f"Origin function: {origin_function} value {value} not in column {field}")
-                        return False  # Case 12
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Column '{field}' not found in data_dictionary.")
+        col = data_dictionary[field]
+
+        if value is None:
+            mask = col.isnull()
+        elif is_substring and isinstance(value, str) and pd.api.types.is_string_dtype(col):
+            mask = col.fillna("").astype(str).str.contains(value, na=False)
+        else:
+            mask = col == value
+
+        if belong_op == Belong.BELONG:
+            if quant_op is None:
+                if mask.any():
+                    return True
                 else:
-                    if quant_rel is not None and quant_abs is None:
-                        return True if value in data_dictionary[field].values and compare_numbers(  # Case 13 y 14
-                            data_dictionary[field].value_counts(dropna=False).get(value, 0)
-                            / data_dictionary.size, quant_rel,
-                            quant_op) else False  # It is important to highlight that it is necessary to use dropna=False to count the NaN values in case value is None
-                    elif quant_rel is not None and quant_abs is not None:
-                        # If both are provided, a ValueError is raised
-                        raise ValueError(  # Case 14.5
-                            "quant_rel and quant_abs can't have different values than None at the same time")
-                    elif quant_abs is not None:
-                        return True if value in data_dictionary[field].values and compare_numbers(
-                            data_dictionary[field].value_counts(dropna=False).get(value, 0),
-                            quant_abs, quant_op) else False  # Case 15 y 16
-                    else:  # quant_rel is None and quant_abs is None
-                        raise ValueError(  # Case 17
-                            "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")
+                    print_and_log(f"Origin function: {origin_function} value {value} not in column {field}")
+                    return False
             else:
-                if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                    if value not in data_dictionary[field].values:
-                        return True
-                    else:
-                        if origin_function:
-                            for idx, val in data_dictionary[field].items():
-                                if val == value:
-                                    print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
-                        return False  # Case 18 y 19
-                else:  # Case 20
-                    raise ValueError("Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")
+                count = mask.sum()
+                if quant_rel is not None and quant_abs is None:
+                    return True if value in data_dictionary[field].values and compare_numbers(count / len(col),
+                                                                                              quant_rel,
+                                                                                              quant_op) else False
+                elif quant_rel is not None and quant_abs is not None:
+                    raise ValueError("quant_rel and quant_abs can't have different values than None at the same time")
+                elif quant_abs is not None:
+                    return True if value in data_dictionary[field].values and count > 0 and compare_numbers(count,
+                                                                                                          quant_abs,
+                                                                                                            quant_op)\
+                        else False
+                else:
+                    raise ValueError("Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")
+        else:
+            if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                if not mask.any():
+                    return True
+                else:
+                    if origin_function:
+                        for idx, val in col.items():
+                            if (value is None and pd.isnull(val)) or \
+                               (is_substring and isinstance(value, str) and pd.api.types.is_string_dtype(col) and value in str(val)) or \
+                               (not is_substring and val == value):
+                                print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
+                    return False
+            else:
+                raise ValueError("Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")
 
 
 def check_interval_range_float(left_margin: float, right_margin: float, data_dictionary: pd.DataFrame,

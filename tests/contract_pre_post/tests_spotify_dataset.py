@@ -184,7 +184,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -357,7 +357,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -370,7 +370,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_op=Operator(quant_op))
@@ -381,7 +381,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong_op = 1  # Not Belong
         quant_op = 3  # less
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                          belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -441,7 +441,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -614,7 +614,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -627,7 +627,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_op=Operator(quant_op))
@@ -638,7 +638,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong_op = 1  # Not Belong
         quant_op = 3  # less
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=self.data_dictionary,
                                                          belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -701,7 +701,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -881,7 +881,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -894,7 +894,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_op=Operator(quant_op))
@@ -905,7 +905,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong_op = 1  # Not Belong
         quant_op = 3  # less
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=preprocessed_data_dictionary,
                                                          belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -1646,7 +1646,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         quant_abs = 2
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        quant_rel=quant_rel, quant_abs=quant_abs)
@@ -1657,7 +1657,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -1667,7 +1667,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quan_abs = 5
         field = None
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
                                                        quant_abs=quan_abs,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op))
@@ -1679,7 +1679,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        quant_rel=quant_rel)
@@ -1693,7 +1693,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_rel = 0.5
         quant_abs = 2
         expected_exception = ValueError  # Error due to quant_abs and quant_op are not None at the same time
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        quant_rel=quant_rel, quant_abs=quant_abs,
@@ -1706,7 +1706,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         missing_values = [-1]
         quant_op = 2  # lessEqual
         expected_exception = ValueError  # Error due to quant_op is not None and quant_abs/quant_rel are both None
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        missing_values=missing_values)
@@ -1719,7 +1719,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 2
         quant_op = 0  # greaterEqual
         expected_exception = ValueError  # Error due to quant_abs, quant_op or quant_rel are not None when belong_op is 1
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_missing_range(data_dictionary=self.data_dictionary, field=field,
                                                        belong_op=Belong(belong), missing_values=missing_values,
                                                        quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -2011,7 +2011,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 2
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_abs=quant_abs, quant_rel=quant_rel,
@@ -2024,7 +2024,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         invalid_values = [-1, 0]
         quant_op = 0
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         belong_op=Belong(belong))
@@ -2037,7 +2037,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_rel=quant_rel, belong_op=Belong(belong))
@@ -2050,7 +2050,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_rel=quant_rel, belong_op=Belong(belong))
@@ -2064,7 +2064,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 3
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_abs=quant_abs, quant_rel=quant_rel,
@@ -2077,7 +2077,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         field = 'track_name'
         quant_op = 0  # GreaterEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         belong_op=Belong(belong))
@@ -2090,7 +2090,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 1  # Greater
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_invalid_values(data_dictionary=self.data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_rel=quant_rel, belong_op=Belong(belong))
@@ -2173,7 +2173,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.03
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_abs=quant_abs, quant_rel=quant_rel, quant_op=Operator(quant_op))
@@ -2184,7 +2184,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_op = 1
         expected_exception = ValueError
         belong_op = 0
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_op=Operator(quant_op))
@@ -2195,7 +2195,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 1
         quant_op = 1  # greater
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
                                                   field='instrumentalness',
                                                   quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
@@ -2266,7 +2266,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 1
         quant_rel = 0.01
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_op=Operator(quant_op), quant_abs=quant_abs, quant_rel=quant_rel)
@@ -2277,7 +2277,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         belong_op = 0
         quant_op = 1  # greater
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_op=Operator(quant_op))
@@ -2303,7 +2303,7 @@ class ContractExternalDatasetTests(unittest.TestCase):
         quant_abs = 1
         quant_op = 1  # greater
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=self.data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))

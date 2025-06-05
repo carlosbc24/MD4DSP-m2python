@@ -201,7 +201,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -385,7 +385,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                 quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -398,7 +398,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                 belong_op=Belong(belong_op), field=field,
                                                 quant_op=Operator(quant_op))
@@ -410,7 +410,7 @@ class PrePostSimpleTest(unittest.TestCase):
         belong_op = 1  # Not Belong
         quant_op = 3  # less
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                 belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -422,7 +422,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                 belong_op=Belong(belong_op), field=field, quant_op=Operator(quant_op))
         print_and_log("Test Case 17 Passed: Expected ValueError, got ValueError")
@@ -434,7 +434,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 3  # less
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary, field=field,
                                                 belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
@@ -503,7 +503,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                          quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -689,7 +689,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field, quant_rel=quant_rel,
                                                          quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -702,7 +702,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_op=Operator(quant_op))
@@ -714,7 +714,7 @@ class PrePostSimpleTest(unittest.TestCase):
         belong_op = 1  # Not Belong
         quant_op = 3
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -726,7 +726,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_op=Operator(quant_op))
@@ -739,7 +739,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 3
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary, field=field,
                                                          belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
@@ -807,7 +807,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             result = self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_rel=quant_rel,
@@ -981,7 +981,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.4
         quant_abs = 50
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_rel=quant_rel,
@@ -994,7 +994,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_op=Operator(quant_op))
@@ -1005,7 +1005,7 @@ class PrePostSimpleTest(unittest.TestCase):
         belong_op = 1  # Not Belong
         quant_op = 3
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -1016,7 +1016,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary,
                                                          belong_op=Belong(belong_op), field=field,
                                                          quant_op=Operator(quant_op))
@@ -1028,7 +1028,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'c1'
         quant_op = 3
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_fix_value_range(value=value, data_dictionary=data_dictionary, field=field,
                                                          belong_op=Belong(belong_op), quant_op=Operator(quant_op))
         print_and_log("Test Case 20 Passed: Expected ValueError, got ValueError")
@@ -1722,7 +1722,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.5
         quant_abs = 2
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        quant_rel=quant_rel, quant_abs=quant_abs)
@@ -1734,7 +1734,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = None
         quant_op = 2  # lessEqual
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op))
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
@@ -1745,7 +1745,7 @@ class PrePostSimpleTest(unittest.TestCase):
         data_dictionary = pd.DataFrame(data={'colour': [4, 5, 'Blue', 'Green', 'Green']})
         field = None
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field, quant_abs=quan_abs,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op))
         print_and_log("Test Case 14 Passed: Expected ValueError, got ValueError")
@@ -1758,7 +1758,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 2  # lessEqual
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        quant_rel=quant_rel)
@@ -1774,7 +1774,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_rel = 0.5
         quant_abs = 2
         expected_exception = ValueError  # Error due to quant_abs and quant_op are not None at the same time
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        quant_rel=quant_rel, quant_abs=quant_abs,
@@ -1789,7 +1789,7 @@ class PrePostSimpleTest(unittest.TestCase):
         missing_values = [-1]
         quant_op = 2  # lessEqual
         expected_exception = ValueError  # Error due to quant_op is not None and quant_abs/quant_rel are both None
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                        belong_op=Belong(belong), quant_op=Operator(quant_op),
                                                        missing_values=missing_values)
@@ -1804,7 +1804,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_abs = 2
         quant_op = 0  # greaterEqual
         expected_exception = ValueError  # Error due to quant_abs, quant_op or quant_rel are not None when belong_op is 1
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_missing_range(data_dictionary=data_dictionary, field=field,
                                                        belong_op=Belong(belong), missing_values=missing_values,
                                                        quant_abs=quant_abs, quant_op=Operator(quant_op))
@@ -2135,7 +2135,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_abs = 2
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_invalid_values(data_dictionary=data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_abs=quant_abs, quant_rel=quant_rel,
@@ -2149,7 +2149,7 @@ class PrePostSimpleTest(unittest.TestCase):
         invalid_values = [-1, 0]
         quant_op = 0
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_invalid_values(data_dictionary=data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         belong_op=Belong(belong))
@@ -2163,7 +2163,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 2
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_invalid_values(data_dictionary=data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_rel=quant_rel, belong_op=Belong(belong))
@@ -2178,7 +2178,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 2
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_invalid_values(data_dictionary=data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_rel=quant_rel, belong_op=Belong(belong))
@@ -2194,7 +2194,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_abs = 3
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_invalid_values(data_dictionary=data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_abs=quant_abs, quant_rel=quant_rel,
@@ -2209,7 +2209,7 @@ class PrePostSimpleTest(unittest.TestCase):
         field = 'colour'
         quant_op = 0
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_invalid_values(data_dictionary=data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         belong_op=Belong(belong))
@@ -2224,7 +2224,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 1
         quant_rel = 0.5
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_invalid_values(data_dictionary=data_dictionary, field=field,
                                                         invalid_values=invalid_values, quant_op=Operator(quant_op),
                                                         quant_rel=quant_rel, belong_op=Belong(belong))
@@ -2320,7 +2320,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 1  # greater
         quant_rel = 0.01
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_abs=quant_abs, quant_rel=quant_rel, quant_op=Operator(quant_op))
@@ -2333,7 +2333,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_op = 1
         expected_exception = ValueError
         belong_op = 0
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_op=Operator(quant_op))
@@ -2362,7 +2362,7 @@ class PrePostSimpleTest(unittest.TestCase):
                                              'names': ['John', 'Mary', None, np.NaN, None, None]})
         quant_op = 1  # greater
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op), field=None,
                                                   quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
         print_and_log("Test Case 11 Passed: Expected ValueError, got ValueError")
@@ -2373,7 +2373,7 @@ class PrePostSimpleTest(unittest.TestCase):
                                              'names': ['John', 'Mary', None, np.NaN, None, None]})
         belong_op = 0
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op),
                                                   field=field)
         print_and_log("Test Case 12 Passed: Expected ValueError, got ValueError")
@@ -2457,7 +2457,7 @@ class PrePostSimpleTest(unittest.TestCase):
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
                                              'names': ['John', 'Mary', None, np.NaN, None, None]})
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_op=Operator(quant_op), quant_abs=quant_abs, quant_rel=quant_rel)
@@ -2470,7 +2470,7 @@ class PrePostSimpleTest(unittest.TestCase):
         data_dictionary = pd.DataFrame(data={'colour': [-15, 0, 1.25, 0.25, 1.25, 1],
                                              'names': ['John', 'Mary', None, np.NaN, None, None]})
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_op=Operator(quant_op))
@@ -2500,7 +2500,7 @@ class PrePostSimpleTest(unittest.TestCase):
         quant_abs = 1
         quant_op = 1  # greater
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_outliers(data_dictionary=data_dictionary, belong_op=Belong(belong_op),
                                                   field=field,
                                                   quant_abs=quant_abs, quant_rel=None, quant_op=Operator(quant_op))
@@ -2597,7 +2597,7 @@ class PrePostSimpleTest(unittest.TestCase):
                                              'names': ['John', 'Mary', None, np.NaN, None, None]})
         field = None
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=DataType.INTEGER,
                                            origin_function="String To Number")
         print_and_log("Test Case 9 Passed: Expected ValueError, got ValueError")
@@ -2607,7 +2607,7 @@ class PrePostSimpleTest(unittest.TestCase):
                                              'names': ['John', 'Mary', None, np.NaN, None, None]})
         field = 'names'
         expected_exception = ValueError
-        with self.assertRaises(expected_exception) as context:
+        with self.assertRaises(expected_exception):
             self.pre_post.check_field_type(data_dictionary=data_dictionary, field=field, field_type=None,
                                            origin_function="String To Number")
         print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
