@@ -1701,25 +1701,52 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
         if col not in data_dictionary_out.columns:
             raise ValueError(f"Column {col} does not exist in the output dataframe.")
 
-    # For each column, apply the filter and compare the frequency counts
+    kept_row_indices = []
+
+    # Iterate row by row using the DataFrame's index
+    for row_actual_index in data_dictionary_in.index:
+        current_row_should_be_kept = True  # Assume the row will be kept, unless a condition fails
+
+        # For the current row, check conditions for all specified columns
+        for col_list_idx, col_name in enumerate(columns):
+            left_margin = left_margin_list[col_list_idx]
+            right_margin = right_margin_list[col_list_idx]
+            closure = closure_type_list[col_list_idx]
+            
+            # Access the cell value using the current row's actual index and the column name
+            value_in_cell = data_dictionary_in.loc[row_actual_index, col_name]
+            
+            condition_met_for_cell = check_interval_condition(value_in_cell, left_margin, right_margin, closure)
+
+            if filter_type == FilterType.INCLUDE:
+                if not condition_met_for_cell:
+                    current_row_should_be_kept = False
+                    break  # Stop checking other columns for this row; it won't be included
+            elif filter_type == FilterType.EXCLUDE:
+                if condition_met_for_cell: # If condition is met, the value is IN the interval to be excluded
+                    current_row_should_be_kept = False
+                    break  # Stop checking other columns for this row; it will be excluded
+            else:
+                raise ValueError(f"Unknown filter type: {filter_type}")
+        
+        if current_row_should_be_kept:
+            kept_row_indices.append(row_actual_index)
+
+    # Create the DataFrame that is expected after filtering data_dictionary_in
+    expected_filtered_df = data_dictionary_in.loc[kept_row_indices]
+
     for idx, col in enumerate(columns):
-        left_margin = left_margin_list[idx]
-        right_margin = right_margin_list[idx]
-        closure = closure_type_list[idx]
-
-        # Generate a mask based on the filter type
-        if filter_type == FilterType.INCLUDE:
-            mask = data_dictionary_in[col].apply(lambda x: check_interval_condition(x, left_margin, right_margin, closure))
-        elif filter_type == FilterType.EXCLUDE:
-            mask = ~data_dictionary_in[col].apply(lambda x: check_interval_condition(x, left_margin, right_margin, closure))
-        else:
-            raise ValueError(f"Unknown filter type: {filter_type}")
-
-        # Filter the input column using the generated mask
-        filtered_in = data_dictionary_in.loc[mask, col]
-        # Get the frequency counts for each non-null value in both the filtered input and output columns
-        counts_in = filtered_in.value_counts(dropna=False).to_dict()
+        # Get the frequency counts for each value in both the filtered input and output columns
+        counts_in = expected_filtered_df[col].value_counts(dropna=False).to_dict()
         counts_out = data_dictionary_out[col].value_counts(dropna=False).to_dict()
+
+        for key in list(counts_in.keys()):  # iterate over a copy of keys
+            if pd.isna(key):
+                counts_in['NaN'] = counts_in.pop(key)
+
+        for key in list(counts_out.keys()):  # iterate over a copy of keys
+            if pd.isna(key):
+                counts_out['NaN'] = counts_out.pop(key)
 
         # Compare the frequency counts; if they don't match, the invariant is not satisfied.
         if counts_in != counts_out:
