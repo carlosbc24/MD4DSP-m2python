@@ -62,8 +62,8 @@ class InvariantsSimpleTest(unittest.TestCase):
             # self.execute_checkInv_CastType,
             # self.execute_checkInv_Join,
             # self.execute_checkInv_filter_rows_primitive,
-            self.execute_checkInv_filter_rows_range,
-            # self.execute_checkInv_filter_rows_special_values,
+            # self.execute_checkInv_filter_rows_range,
+            self.execute_checkInv_filter_rows_special_values,
             # self.execute_checkInv_filter_columns
         ]
 
@@ -6415,7 +6415,6 @@ class InvariantsSimpleTest(unittest.TestCase):
         )
         self.assertTrue(result_10, "Test Case 10 Failed: Filtering with null values - exclude case")
         
-
     def execute_checkInv_filter_rows_special_values(self):
         pass
 
