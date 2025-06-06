@@ -10554,20 +10554,20 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 1 Whole Dataset Passed: Single column, INCLUDE, open interval")
 
         # Caso 2: Single column, EXCLUDE, open interval 
-    expected_df_2 = df[~mask_1].copy()
-            
-    result_2 = self.invariants.check_inv_filter_rows_range(
-        data_dictionary_in=df.copy(),
-        data_dictionary_out=expected_df_2,
-        columns=[numeric_col],
-        left_margin_list=[quarter_point],
-        right_margin_list=[valid_max],
-        closure_type_list=[Closure.openOpen],
-        filter_type=FilterType.EXCLUDE,
-        origin_function="test_sBatch_filter_rows_range_2"
-    )
-    assert result_2 is True, "Test Case 2 Failed: Single column, EXCLUDE, open interval"
-    print_and_log("Test Case 2 Passed: Single column, EXCLUDE, open interval")
+        expected_df_2 = df[~mask_1].copy()
+                
+        result_2 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=df.copy(),
+            data_dictionary_out=expected_df_2,
+            columns=[numeric_col],
+            left_margin_list=[quarter_point],
+            right_margin_list=[valid_max],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_sBatch_filter_rows_range_2"
+        )
+        assert result_2 is True, "Test Case 2 Failed: Single column, EXCLUDE, open interval"
+        print_and_log("Test Case 2 Passed: Single column, EXCLUDE, open interval")
 
         # Test Case 3: Multiple columns, INCLUDE, both must match
         df_test = df.copy()
