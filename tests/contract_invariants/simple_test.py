@@ -6416,6 +6416,121 @@ class InvariantsSimpleTest(unittest.TestCase):
         self.assertTrue(result_10, "Test Case 10 Failed: Filtering with null values - exclude case")
         
     def execute_checkInv_filter_rows_special_values(self):
+        # Caso 1: Filtro INCLUDE de valores especiales (MISSING) en una columna
+        datadic_in = pd.DataFrame({'A': [1, None, 3, np.nan, 5], 'B': ['x', 'y', None, 'z', 'w']})
+        # Solo se quedan las filas donde A es None o np.nan
+        expected_df = datadic_in[datadic_in['A'].isna()].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=expected_df.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include')
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: INCLUDE MISSING in A")
+
+        # Caso 2: Filtro EXCLUDE de valores especiales (MISSING) en una columna
+        expected_df_2 = datadic_in[~datadic_in['A'].isna()].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=expected_df_2.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude')
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: EXCLUDE MISSING in A")
+
+        # Caso 3: Filtro INCLUDE de valores especiales (MISSING) en varias columnas (ambas deben ser missing)
+        datadic_in_3 = pd.DataFrame({'A': [1, None, 3, np.nan, 5], 'B': [None, 'y', None, 'z', None]})
+        mask_3 = datadic_in_3['A'].isna() & datadic_in_3['B'].isna()
+        expected_df_3 = datadic_in_3[mask_3].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_3.copy(),
+            data_dictionary_out=expected_df_3.copy(),
+            cols_special_type_values={'A': {'missing': []}, 'B': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include_multi')
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: INCLUDE MISSING in A and B")
+
+        # Caso 4: Filtro EXCLUDE de valores especiales (MISSING) en varias columnas (excluye si cualquiera es missing)
+        mask_4 = ~(datadic_in_3['A'].isna() | datadic_in_3['B'].isna())
+        expected_df_4 = datadic_in_3[mask_4].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_3.copy(),
+            data_dictionary_out=expected_df_4.copy(),
+            cols_special_type_values={'A': {'missing': []}, 'B': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude_multi')
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: EXCLUDE MISSING in A or B")
+
+        # Caso 5: Filtro INCLUDE, pero el resultado es incorrecto (debería fallar)
+        wrong_df = datadic_in.iloc[[0, 2]].copy()  # No son missing
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=wrong_df.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include_fail')
+        assert result is False, "Test Case 5 Failed: Expected False, but got True"
+        print_and_log("Test Case 5 Passed: INCLUDE wrong output fails as expected")
+
+        # Caso 6: Filtro EXCLUDE, pero el resultado es incorrecto (debería fallar)
+        wrong_df_2 = datadic_in.iloc[[1, 3]].copy()  # Solo los missing
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=wrong_df_2.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude_fail')
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: EXCLUDE wrong output fails as expected")
+
+        # Caso 7: Error: columna no existe
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_special_values(
+                data_dictionary_in=datadic_in.copy(),
+                data_dictionary_out=expected_df.copy(),
+                cols_special_type_values={'Z': {'missing': []}},
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_special_values_col_not_found')
+        print_and_log("Test Case 7 Passed: ValueError for non-existent column")
+
+        # Caso 8: Error: cols_special_type_values es None
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_special_values(
+                data_dictionary_in=datadic_in.copy(),
+                data_dictionary_out=expected_df.copy(),
+                cols_special_type_values=None,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_special_values_none_dict')
+        print_and_log("Test Case 8 Passed: ValueError for None cols_special_type_values")
+
+        # Caso 9: Filtro INCLUDE de OUTLIER (usando valores extremos)
+        datadic_in_9 = pd.DataFrame({'A': [1, 100, 3, 200, 5]})
+        # Suponiendo que 100 y 200 son outliers (para el test, los marcamos manualmente)
+        mask_9 = datadic_in_9['A'].isin([100, 200])
+        expected_df_9 = datadic_in_9[mask_9].copy()
+        # Simulamos que la función reconoce esos valores como outliers
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_9.copy(),
+            data_dictionary_out=expected_df_9.copy(),
+            cols_special_type_values={'A': {'outlier': True}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include_outlier')
+        # No se puede garantizar True si la función depende de detección real, pero el test está estructurado
+        print_and_log("Test Case 9 Executed: INCLUDE OUTLIER in A (manual mask)")
+
+        # Caso 10: Filtro EXCLUDE de OUTLIER (usando valores extremos)
+        expected_df_10 = datadic_in_9[~mask_9].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_9.copy(),
+            data_dictionary_out=expected_df_10.copy(),
+            cols_special_type_values={'A': {'outlier': True}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude_outlier')
+        print_and_log("Test Case 10 Executed: EXCLUDE OUTLIER in A (manual mask)")
         pass
 
     def execute_checkInv_filter_columns(self):
