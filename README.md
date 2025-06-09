@@ -48,7 +48,7 @@
    conda remove --name md4dsp --all --yes
    ```
 
-## Data transformation tests execution
+## Tests execution for data transformations
 
 To run the data transformation tests, follow the next steps:
 
@@ -61,7 +61,7 @@ To run the data transformation tests, follow the next steps:
 
 Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
    
-## Contract tests execution
+## Tests execution for contracts
 
 To run the contract tests, follow the next steps:
 
@@ -150,7 +150,7 @@ MD4DSP-m2python/
 - **`test_datasets/`**: contains the external datasets used in the tests. The datasets are divided into directories, and each directory contains the dataset and a readme file with the description of the dataset.
 
 
-- **`tests/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into 5 directories: `transformations`, `contracts`, `dataProcessing`, `test_contracts` and `test_data_transformations`. The first directory contains the execution logs of the transformations generated file. The second directory contains the execution logs of the contracts generated file. The third directory contains the execution logs of the dataProcessing generated file. The fourth directory contains the execution logs of the contract tests, and the fifth directory contains the execution logs of the data transformation tests.
+- **`tests/`**: contains the tests to make exhaustive evaluations of the functions. The tests are divided into five directories: `transformations`, `contracts`, `dataProcessing`, `test_contracts` and `test_data_transformations`. The first directory contains the execution logs of the transformations generated file. The second directory contains the execution logs of the contracts generated file. The third directory contains the execution logs of the dataProcessing generated file. The fourth directory contains the execution logs of the contract tests, and the fifth directory contains the execution logs of the data transformation tests.
 
 
 - **`.gitignore`**: file that contains the files and directories to be ignored by Git.
@@ -176,4 +176,4 @@ The external documentation of the project is available in the following link: ht
 - Carlos Cambero Rojas
 
 ## Questions
-If you have any questions, please contact to any of the authors.
+If you have any questions, please contact any of the authors.
