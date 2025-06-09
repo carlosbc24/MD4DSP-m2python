@@ -138,7 +138,7 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
                 if mask.any():
                     return True
                 else:
-                    print_and_log(f"Origin function: {origin_function} value {value} not in column {field}")
+                    print_and_log(f"Error - Origin function: {origin_function} - value {value} not in column {field}")
                     return False
             else:
                 count = mask.sum()
@@ -233,7 +233,8 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
                 print_and_log(f"Origin function: {origin_function} - value in column {column} is in the interval [{left_margin}, {right_margin}] with closure type {closure_type}")
                 return False
     if belong_op == Belong.BELONG:
-        print_and_log(f"Origin function: {origin_function} - value not in column {field}.")
+        print_and_log(f"Origin function: {origin_function} - there aren't data values in the interval [{left_margin},"
+                      f" {right_margin}] with closure type {closure_type}")
         return False
     elif belong_op == Belong.NOTBELONG:
         return True
@@ -657,19 +658,19 @@ def check_field_type(data_dictionary: pd.DataFrame, field_type: DataType, field:
     else:
         if field_type == DataType.STRING:
             if data_dictionary[field].dtype != object and data_dictionary[field].dtype != str:
-                print_and_log(f"Origin function: {origin_function} field {field} is not of type {field_type}")
+                print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False
         elif field_type == DataType.INTEGER:
             if data_dictionary[field].dtype != int and data_dictionary[field].dtype != np.int64 and data_dictionary[field].dtype != 'Int64':
-                print_and_log(f"Origin function: {origin_function} field {field} is not of type {field_type}")
+                print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False  # Case 1
         elif field_type == DataType.FLOAT or field_type == DataType.DOUBLE:
             if data_dictionary[field].dtype != float and data_dictionary[field].dtype != np.float64:
-                print_and_log(f"Origin function: {origin_function} field {field} is not of type {field_type}")
+                print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False
         elif field_type == DataType.BOOLEAN:
             if data_dictionary[field].dtype != bool and data_dictionary[field].dtype != pd.bool_:
-                print_and_log(f"Origin function: {origin_function} field {field} is not of type {field_type}")
+                print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False
         else:
             raise ValueError(f"Error: field_type {field_type} is not a valid type")
