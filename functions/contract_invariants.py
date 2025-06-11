@@ -1651,9 +1651,17 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
         counts_in = filtered_in.value_counts(dropna=False).to_dict()
         counts_out = data_dictionary_out[col].value_counts(dropna=False).to_dict()
 
-        if counts_in != counts_out:
-            print_and_log(f"Error in function:  {origin_function} Error in column: {col} ")
-            return False
+        for key in list(counts_in.keys()):  # iterate over a copy of keys
+            if pd.isna(key):
+                counts_in['NaN'] = counts_in.pop(key)
+
+        for key in list(counts_out.keys()):  # iterate over a copy of keys
+            if pd.isna(key):
+                counts_out['NaN'] = counts_out.pop(key)
+
+            if counts_in != counts_out:
+                print_and_log(f"Error in function:  {origin_function} Error in column: {col} ")
+                return False
 
     return True
 
