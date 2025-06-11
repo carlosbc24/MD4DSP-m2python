@@ -6420,6 +6420,7 @@ class InvariantsSimpleTest(unittest.TestCase):
         datadic_in = pd.DataFrame({'A': [1, None, 3, np.nan, 5], 'B': ['x', 'y', None, 'z', 'w']})
         # Solo se quedan las filas donde A es None o np.nan
         expected_df = datadic_in[datadic_in['A'].isna()].copy()
+
         result = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=datadic_in.copy(),
             data_dictionary_out=expected_df.copy(),
