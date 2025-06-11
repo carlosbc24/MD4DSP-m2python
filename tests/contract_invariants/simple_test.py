@@ -6532,7 +6532,6 @@ class InvariantsSimpleTest(unittest.TestCase):
             filter_type=FilterType.EXCLUDE,
             origin_function='test_special_values_exclude_outlier')
         print_and_log("Test Case 10 Executed: EXCLUDE OUTLIER in A (manual mask)")
-        pass
 
     def execute_checkInv_filter_columns(self):
         pass
