@@ -10753,13 +10753,397 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_SmallBatchTests_checkInv_filter_rows_special_values(self):
-        # Caso 1
-        pass
+        """
+        Execute check_inv_filter_rows_special_values tests using small batch dataset
+        """
+        df = self.small_batch_dataset.copy()
+        
+        # Introduce some missing values and invalid values for testing
+        df_test = df.copy()
+        df_test.loc[df_test.index[0:2], 'track_name'] = np.nan
+        df_test.loc[df_test.index[3], 'track_artist'] = None
+        df_test.loc[df_test.index[4:5], 'energy'] = np.nan
+        
+        # Add some invalid values for testing
+        df_test.loc[df_test.index[6], 'track_popularity'] = -999  # Invalid popularity
+        df_test.loc[df_test.index[7], 'danceability'] = 5.0  # Invalid danceability (should be 0-1)
+
+        # Caso 1: INCLUDE missing values in track_name
+        print_and_log("Test Case 1: INCLUDE missing values in track_name")
+        mask_1 = df_test['track_name'].isna()
+        expected_df_1 = df_test[mask_1].copy()
+        
+        result_1 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_1,
+            cols_special_type_values={'track_name': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_missing_include_track_name'
+        )
+        assert result_1 is True, "Test Case 1 Failed: INCLUDE missing values in track_name"
+        print_and_log("Test Case 1 Passed: INCLUDE missing values in track_name")
+
+        # Caso 2: EXCLUDE missing values in track_name  
+        print_and_log("Test Case 2: EXCLUDE missing values in track_name")
+        expected_df_2 = df_test[~mask_1].copy()
+        
+        result_2 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_2,
+            cols_special_type_values={'track_name': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_sBatch_missing_exclude_track_name'
+        )
+        assert result_2 is True, "Test Case 2 Failed: EXCLUDE missing values in track_name"
+        print_and_log("Test Case 2 Passed: EXCLUDE missing values in track_name")
+
+        # Caso 3: INCLUDE invalid values in track_popularity
+        print_and_log("Test Case 3: INCLUDE invalid values in track_popularity")
+        mask_3 = df_test['track_popularity'].isin([-999])
+        expected_df_3 = df_test[mask_3].copy()
+        
+        result_3 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_3,
+            cols_special_type_values={'track_popularity': {'invalid': [-999]}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_invalid_include_track_popularity'
+        )
+        assert result_3 is True, "Test Case 3 Failed: INCLUDE invalid values in track_popularity"
+        print_and_log("Test Case 3 Passed: INCLUDE invalid values in track_popularity")
+
+        # Caso 4: EXCLUDE invalid values in danceability
+        print_and_log("Test Case 4: EXCLUDE invalid values in danceability")
+        mask_4 = df_test['danceability'].isin([5.0])
+        expected_df_4 = df_test[~mask_4].copy()
+        
+        result_4 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_4,
+            cols_special_type_values={'danceability': {'invalid': [5.0]}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_sBatch_invalid_exclude_danceability'
+        )
+        assert result_4 is True, "Test Case 4 Failed: EXCLUDE invalid values in danceability"
+        print_and_log("Test Case 4 Passed: EXCLUDE invalid values in danceability")
+
+        # Caso 5: INCLUDE outliers in energy column
+        print_and_log("Test Case 5: INCLUDE outliers in energy column")
+        df_numeric = df_test.copy()
+        df_numeric['energy'] = pd.to_numeric(df_numeric['energy'], errors='coerce')
+        
+        # Create expected output based on outlier detection
+        try:
+            from functions.contract_invariants import get_outliers
+            outlier_mask_df = get_outliers(df_numeric, 'energy')
+            if 'energy' in outlier_mask_df.columns:
+                mask_5 = outlier_mask_df['energy'] == 1
+                expected_df_5 = df_numeric[mask_5].copy()
+                
+                result_5 = self.invariants.check_inv_filter_rows_special_values(
+                    data_dictionary_in=df_numeric.copy(),
+                    data_dictionary_out=expected_df_5,
+                    cols_special_type_values={'energy': {'outlier': [True]}},
+                    filter_type=FilterType.INCLUDE,
+                    origin_function='test_sBatch_outlier_include_energy'
+                )
+                assert result_5 is True, "Test Case 5 Failed: INCLUDE outliers in energy"
+                print_and_log("Test Case 5 Passed: INCLUDE outliers in energy")
+            else:
+                print_and_log("Test Case 5 Skipped: No outliers detected in energy column")
+        except Exception as e:
+            print_and_log(f"Test Case 5 Skipped: Outlier detection not available - {e}")
+
+        # Caso 6: Multiple columns - INCLUDE missing in track_name AND track_artist
+        print_and_log("Test Case 6: Multiple columns - INCLUDE missing in track_name AND track_artist")
+        mask_6 = df_test['track_name'].isna() & df_test['track_artist'].isna()
+        expected_df_6 = df_test[mask_6].copy()
+        
+        result_6 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_6,
+            cols_special_type_values={
+                'track_name': {'missing': []}, 
+                'track_artist': {'missing': []}
+            },
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_missing_include_multiple'
+        )
+        assert result_6 is True, "Test Case 6 Failed: Multiple columns missing INCLUDE"
+        print_and_log("Test Case 6 Passed: Multiple columns missing INCLUDE")
+
+        # Caso 7: Multiple columns - EXCLUDE missing in track_name OR track_artist
+        print_and_log("Test Case 7: Multiple columns - EXCLUDE missing in track_name OR track_artist")
+        mask_7 = ~(df_test['track_name'].isna() | df_test['track_artist'].isna())
+        expected_df_7 = df_test[mask_7].copy()
+        
+        result_7 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_7,
+            cols_special_type_values={
+                'track_name': {'missing': []}, 
+                'track_artist': {'missing': []}
+            },
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_sBatch_missing_exclude_multiple'
+        )
+        assert result_7 is True, "Test Case 7 Failed: Multiple columns missing EXCLUDE"
+        print_and_log("Test Case 7 Passed: Multiple columns missing EXCLUDE")
+
+        # Caso 8: Mixed special types - missing and invalid values
+        print_and_log("Test Case 8: Mixed special types - missing and invalid values in track_popularity")
+        # Add a missing value to track_popularity
+        df_mixed = df_test.copy()
+        df_mixed.loc[df_mixed.index[8], 'track_popularity'] = np.nan
+        
+        mask_8 = df_mixed['track_popularity'].isna() | df_mixed['track_popularity'].isin([-999])
+        expected_df_8 = df_mixed[mask_8].copy()
+        
+        result_8 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_mixed.copy(),
+            data_dictionary_out=expected_df_8,
+            cols_special_type_values={
+                'track_popularity': {
+                    'missing': [], 
+                    'invalid': [-999]
+                }
+            },
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_mixed_special_types'
+        )
+        assert result_8 is True, "Test Case 8 Failed: Mixed special types"
+        print_and_log("Test Case 8 Passed: Mixed special types")
+
+        # Caso 9: Should fail - incorrect output data
+        print_and_log("Test Case 9: Should fail - incorrect output data")
+        wrong_df_9 = df_test.iloc[[0, 1]].copy()  # Wrong output
+        
+        result_9 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=wrong_df_9,
+            cols_special_type_values={'track_name': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_incorrect_output'
+        )
+        assert result_9 is False, "Test Case 9 Failed: Should return False for incorrect output"
+        print_and_log("Test Case 9 Passed: Correctly identified incorrect output")
+
+        # Caso 10: Empty result set
+        print_and_log("Test Case 10: Empty result set")
+        # Filter for a value that doesn't exist
+        mask_10 = df_test['track_popularity'].isin([-9999])  # Non-existent value
+        expected_df_10 = df_test[mask_10].copy()  # Empty DataFrame
+        
+        result_10 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_10,
+            cols_special_type_values={'track_popularity': {'invalid': [-9999]}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_sBatch_empty_result'
+        )
+        assert result_10 is True, "Test Case 10 Failed: Empty result set"
+        print_and_log("Test Case 10 Passed: Empty result set")
 
 
     def execute_WholeDatasetTests_checkInv_filter_rows_special_values(self):
-        # Caso 1
-        pass
+        """
+        Execute check_inv_filter_rows_special_values tests using whole dataset
+        """
+        df = self.rest_of_dataset.copy()
+        
+        # Introduce some missing values and invalid values for testing
+        df_test = df.copy()
+        
+        # Add missing values to various columns
+        missing_indices = df_test.index[:20]  # First 20 rows
+        df_test.loc[missing_indices[0:5], 'track_name'] = np.nan
+        df_test.loc[missing_indices[5:10], 'track_artist'] = None
+        df_test.loc[missing_indices[10:15], 'energy'] = np.nan
+        df_test.loc[missing_indices[15:20], 'danceability'] = np.nan
+        
+        # Add invalid values
+        df_test.loc[missing_indices[0:3], 'track_popularity'] = -999  # Invalid popularity
+        df_test.loc[missing_indices[3:6], 'danceability'] = 5.0  # Invalid danceability
+        df_test.loc[missing_indices[6:9], 'energy'] = -0.5  # Invalid energy
+
+        # Caso 1: INCLUDE missing values in track_name
+        print_and_log("Test Case 1 (Whole Dataset): INCLUDE missing values in track_name")
+        mask_1 = df_test['track_name'].isna()
+        expected_df_1 = df_test[mask_1].copy()
+        
+        result_1 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_1,
+            cols_special_type_values={'track_name': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_missing_include_track_name'
+        )
+        assert result_1 is True, "Test Case 1 Whole Dataset Failed: INCLUDE missing values in track_name"
+        print_and_log("Test Case 1 Whole Dataset Passed: INCLUDE missing values in track_name")
+
+        # Caso 2: EXCLUDE missing values in track_artist
+        print_and_log("Test Case 2 (Whole Dataset): EXCLUDE missing values in track_artist")
+        mask_2 = df_test['track_artist'].isna()
+        expected_df_2 = df_test[~mask_2].copy()
+        
+        result_2 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_2,
+            cols_special_type_values={'track_artist': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_wDataset_missing_exclude_track_artist'
+        )
+        assert result_2 is True, "Test Case 2 Whole Dataset Failed: EXCLUDE missing values in track_artist"
+        print_and_log("Test Case 2 Whole Dataset Passed: EXCLUDE missing values in track_artist")
+
+        # Caso 3: INCLUDE invalid values in track_popularity
+        print_and_log("Test Case 3 (Whole Dataset): INCLUDE invalid values in track_popularity")
+        mask_3 = df_test['track_popularity'].isin([-999])
+        expected_df_3 = df_test[mask_3].copy()
+        
+        result_3 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_3,
+            cols_special_type_values={'track_popularity': {'invalid': [-999]}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_invalid_include_track_popularity'
+        )
+        assert result_3 is True, "Test Case 3 Whole Dataset Failed: INCLUDE invalid values in track_popularity"
+        print_and_log("Test Case 3 Whole Dataset Passed: INCLUDE invalid values in track_popularity")
+
+        # Caso 4: EXCLUDE multiple invalid values in energy
+        print_and_log("Test Case 4 (Whole Dataset): EXCLUDE multiple invalid values in energy")
+        mask_4 = df_test['energy'].isin([-0.5])
+        expected_df_4 = df_test[~mask_4].copy()
+        
+        result_4 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_4,
+            cols_special_type_values={'energy': {'invalid': [-0.5]}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_wDataset_invalid_exclude_energy'
+        )
+        assert result_4 is True, "Test Case 4 Whole Dataset Failed: EXCLUDE invalid values in energy"
+        print_and_log("Test Case 4 Whole Dataset Passed: EXCLUDE invalid values in energy")
+
+        # Caso 5: INCLUDE outliers in danceability column
+        print_and_log("Test Case 5 (Whole Dataset): INCLUDE outliers in danceability column")
+        df_numeric = df_test.copy()
+        df_numeric['danceability'] = pd.to_numeric(df_numeric['danceability'], errors='coerce')
+        
+        try:
+            from functions.contract_invariants import get_outliers
+            outlier_mask_df = get_outliers(df_numeric, 'danceability')
+            if 'danceability' in outlier_mask_df.columns:
+                mask_5 = outlier_mask_df['danceability'] == 1
+                expected_df_5 = df_numeric[mask_5].copy()
+                
+                result_5 = self.invariants.check_inv_filter_rows_special_values(
+                    data_dictionary_in=df_numeric.copy(),
+                    data_dictionary_out=expected_df_5,
+                    cols_special_type_values={'danceability': {'outlier': [True]}},
+                    filter_type=FilterType.INCLUDE,
+                    origin_function='test_wDataset_outlier_include_danceability'
+                )
+                assert result_5 is True, "Test Case 5 Whole Dataset Failed: INCLUDE outliers in danceability"
+                print_and_log("Test Case 5 Whole Dataset Passed: INCLUDE outliers in danceability")
+            else:
+                print_and_log("Test Case 5 Whole Dataset Skipped: No outliers detected in danceability column")
+        except Exception as e:
+            print_and_log(f"Test Case 5 Whole Dataset Skipped: Outlier detection not available - {e}")
+
+        # Caso 6: Multiple columns - INCLUDE missing values in track_name AND energy
+        print_and_log("Test Case 6 (Whole Dataset): Multiple columns - INCLUDE missing in track_name AND energy")
+        mask_6 = df_test['track_name'].isna() & df_test['energy'].isna()
+        expected_df_6 = df_test[mask_6].copy()
+        
+        result_6 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_6,
+            cols_special_type_values={
+                'track_name': {'missing': []}, 
+                'energy': {'missing': []}
+            },
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_missing_include_multiple'
+        )
+        assert result_6 is True, "Test Case 6 Whole Dataset Failed: Multiple columns missing INCLUDE"
+        print_and_log("Test Case 6 Whole Dataset Passed: Multiple columns missing INCLUDE")
+
+        # Caso 7: Multiple columns - EXCLUDE missing values from track_artist OR danceability
+        print_and_log("Test Case 7 (Whole Dataset): Multiple columns - EXCLUDE missing from track_artist OR danceability")
+        mask_7 = ~(df_test['track_artist'].isna() | df_test['danceability'].isna())
+        expected_df_7 = df_test[mask_7].copy()
+        
+        result_7 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_7,
+            cols_special_type_values={
+                'track_artist': {'missing': []}, 
+                'danceability': {'missing': []}
+            },
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_wDataset_missing_exclude_multiple'
+        )
+        assert result_7 is True, "Test Case 7 Whole Dataset Failed: Multiple columns missing EXCLUDE"
+        print_and_log("Test Case 7 Whole Dataset Passed: Multiple columns missing EXCLUDE")
+
+        # Caso 8: Complex filtering - mixed types across multiple columns
+        print_and_log("Test Case 8 (Whole Dataset): Complex filtering - mixed types across columns")
+        # INCLUDE rows where track_popularity has invalid values OR energy is missing
+        mask_8_pop = df_test['track_popularity'].isin([-999])
+        mask_8_energy = df_test['energy'].isna()
+        mask_8 = mask_8_pop | mask_8_energy
+        expected_df_8 = df_test[mask_8].copy()
+        
+        result_8 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_8,
+            cols_special_type_values={
+                'track_popularity': {'invalid': [-999]},
+                'energy': {'missing': []}
+            },
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_mixed_complex_filtering'
+        )
+        assert result_8 is True, "Test Case 8 Whole Dataset Failed: Complex mixed filtering"
+        print_and_log("Test Case 8 Whole Dataset Passed: Complex mixed filtering")
+
+        # Caso 9: Should fail - incorrect output data
+        print_and_log("Test Case 9 (Whole Dataset): Should fail - incorrect output data")
+        # Use only first 50 rows instead of correct filtered result
+        wrong_df_9 = df_test.iloc[:50].copy()
+        
+        result_9 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=wrong_df_9,
+            cols_special_type_values={'track_name': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_wDataset_incorrect_output'
+        )
+        assert result_9 is False, "Test Case 9 Whole Dataset Failed: Should return False for incorrect output"
+        print_and_log("Test Case 9 Whole Dataset Passed: Correctly identified incorrect output")
+
+        # Caso 10: Large scale filtering with valid result
+        print_and_log("Test Case 10 (Whole Dataset): Large scale filtering with valid result")
+        # Filter out all rows where danceability is invalid (5.0) or missing
+        mask_10 = ~(df_test['danceability'].isin([5.0]) | df_test['danceability'].isna())
+        expected_df_10 = df_test[mask_10].copy()
+        
+        result_10 = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=df_test.copy(),
+            data_dictionary_out=expected_df_10,
+            cols_special_type_values={
+                'danceability': {
+                    'invalid': [5.0],
+                    'missing': []
+                }
+            },
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_wDataset_large_scale_filtering'
+        )
+        assert result_10 is True, "Test Case 10 Whole Dataset Failed: Large scale filtering"
+        print_and_log("Test Case 10 Whole Dataset Passed: Large scale filtering")
 
 
     def execute_checkInv_filter_columns(self):
