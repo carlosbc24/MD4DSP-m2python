@@ -112,8 +112,8 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             # self.execute_checkInv_Join,
             # self.execute_checkInv_filter_rows_primitive,
             # self.execute_checkInv_filter_rows_range,
-            self.execute_checkInv_filter_rows_special_values,
-            # self.execute_checkInv_filter_columns
+            # self.execute_checkInv_filter_rows_special_values,
+            self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -10916,7 +10916,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 9: Should fail - incorrect output data
         print_and_log("Test Case 9: Should fail - incorrect output data")
-        wrong_df_9 = df_test.iloc[[0, 1]].copy()  # Wrong output
+        wrong_df_9 = df_test.iloc[[2, 4]].copy()  # These rows don't have missing track_name values
         
         result_9 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
@@ -11088,20 +11088,24 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert result_7 is True, "Test Case 7 Whole Dataset Failed: Multiple columns missing EXCLUDE"
         print_and_log("Test Case 7 Whole Dataset Passed: Multiple columns missing EXCLUDE")
 
-        # Caso 8: Complex filtering - mixed types across multiple columns
-        print_and_log("Test Case 8 (Whole Dataset): Complex filtering - mixed types across columns")
-        # INCLUDE rows where track_popularity has invalid values OR energy is missing
-        mask_8_pop = df_test['track_popularity'].isin([-999])
-        mask_8_energy = df_test['energy'].isna()
-        mask_8 = mask_8_pop | mask_8_energy
-        expected_df_8 = df_test[mask_8].copy()
+        # Caso 8: Complex filtering - single column with mixed special types
+        print_and_log("Test Case 8 (Whole Dataset): Complex filtering - single column with mixed special types")
+        # INCLUDE rows where track_popularity has invalid values AND missing values
+        df_test_8 = df_test.copy()
+        # Add some missing values to track_popularity to test mixed types
+        df_test_8.loc[missing_indices[18:20], 'track_popularity'] = np.nan
+        
+        mask_8 = df_test_8['track_popularity'].isin([-999]) | df_test_8['track_popularity'].isna()
+        expected_df_8 = df_test_8[mask_8].copy()
         
         result_8 = self.invariants.check_inv_filter_rows_special_values(
-            data_dictionary_in=df_test.copy(),
+            data_dictionary_in=df_test_8.copy(),
             data_dictionary_out=expected_df_8,
             cols_special_type_values={
-                'track_popularity': {'invalid': [-999]},
-                'energy': {'missing': []}
+                'track_popularity': {
+                    'invalid': [-999],
+                    'missing': []
+                }
             },
             filter_type=FilterType.INCLUDE,
             origin_function='test_wDataset_mixed_complex_filtering'
