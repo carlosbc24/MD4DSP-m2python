@@ -1588,10 +1588,10 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
                                          origin_function: str = None) -> bool:
     """
     Validates the invariant for the FilterRows relation using special values.
-    For each column, a combined mask is built using the conditions for each special type
-    (missing, invalid, and outlier). Then, the frequency counts (value_counts) of the filtered
-    input column (using the mask or its complement according to filter_type) and the output column
-    are compared.
+    For each row, checks if any of the specified columns meet the special value conditions.
+    The entire row is removed if the condition is met for any column (similar to check_inv_filter_rows_range).
+    Then, the frequency counts (value_counts) of the filtered input DataFrame and the output DataFrame
+    are compared for each column.
 
     Parameters:
       data_dictionary_in (pd.DataFrame): Input dataframe.
@@ -1616,52 +1616,80 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
         if col not in data_dictionary_out.columns:
             raise ValueError(f"The column {col} does not exist in the output dataframe.")
 
-    # Build the combined mask for each column.
+    # Build condition masks for each column using vectorized operations
+    overall_condition_mask = pd.Series(True, index=data_dictionary_in.index)
+
+    # Pre-compute outlier masks for all columns that need them (to avoid repeated calculations)
+    outlier_masks = {}
     for col, special_dict in cols_special_type_values.items():
-        mask = pd.Series(False, index=data_dictionary_in.index)
+        if 'outlier' in special_dict and special_dict['outlier']:
+            outlier_mask_df = get_outliers(data_dictionary_in, col)
+            if col in outlier_mask_df.columns:
+                outlier_masks[col] = outlier_mask_df[col] == 1
+            else:
+                raise ValueError(f"Outlier mask for {col} does not contain column {col}")
+
+    # For each column, create a condition mask using vectorized operations
+    for col, special_dict in cols_special_type_values.items():
+        col_condition_mask = pd.Series(False, index=data_dictionary_in.index)
+        
+        # Process each special type for this column
         for special_type, values in special_dict.items():
             if special_type == 'missing':
-                # Combine the condition of being in the provided list and being null.
-                current_mask = data_dictionary_in[col].isin(values) | data_dictionary_in[col].isnull()
-                mask = mask | current_mask
-            elif special_type == 'invalid':
-                current_mask = data_dictionary_in[col].isin(values)
-                mask = mask | current_mask
-            elif special_type == 'outlier':
+                # Vectorized operation: check if value is null or in values list
                 if values:
-                    outlier_mask_df = get_outliers(data_dictionary_in, col)
-                    if col in outlier_mask_df.columns:
-                        current_mask = outlier_mask_df[col] == 1
-                    else:
-                        raise ValueError(f"Outlier mask for {col} does not contain column {col}")
-                    mask = mask | current_mask
+                    current_mask = data_dictionary_in[col].isin(values) | data_dictionary_in[col].isnull()
+                else:
+                    current_mask = data_dictionary_in[col].isnull()
+                col_condition_mask = col_condition_mask | current_mask
+                
+            elif special_type == 'invalid':
+                # Vectorized operation: check if value is in invalid values list
+                if values:
+                    current_mask = data_dictionary_in[col].isin(values)
+                    col_condition_mask = col_condition_mask | current_mask
+                    
+            elif special_type == 'outlier':
+                # Use pre-computed outlier mask
+                if values and col in outlier_masks:
+                    col_condition_mask = col_condition_mask | outlier_masks[col]
+                    
             else:
                 raise ValueError(f"Unknown special type: {special_type}")
 
-        # Determine the final mask based on the filter type.
+        # Apply the filter logic based on INCLUDE/EXCLUDE
         if filter_type == FilterType.INCLUDE:
-            final_mask = mask
+            # For INCLUDE: keep rows where ALL specified columns meet their conditions
+            overall_condition_mask = overall_condition_mask & col_condition_mask
         elif filter_type == FilterType.EXCLUDE:
-            final_mask = ~mask
+            # For EXCLUDE: keep rows where NO specified column meets its condition
+            overall_condition_mask = overall_condition_mask & (~col_condition_mask)
         else:
             raise ValueError(f"Unknown filter type: {filter_type}")
 
-        # Filter the input column using the final mask and compare value frequency counts.
-        filtered_in = data_dictionary_in.loc[final_mask, col]
-        counts_in = filtered_in.value_counts(dropna=False).to_dict()
+    # Apply the final mask to get the expected filtered DataFrame
+    expected_filtered_df = data_dictionary_in.loc[overall_condition_mask]
+
+    # Compare value counts for each column between filtered input and output
+    for col in cols_special_type_values.keys():
+        counts_in = expected_filtered_df[col].value_counts(dropna=False).to_dict()
         counts_out = data_dictionary_out[col].value_counts(dropna=False).to_dict()
 
-        for key in list(counts_in.keys()):  # iterate over a copy of keys
+        # Handle NaN keys for comparison
+        for key in list(counts_in.keys()):
             if pd.isna(key):
                 counts_in['NaN'] = counts_in.pop(key)
 
-        for key in list(counts_out.keys()):  # iterate over a copy of keys
+        for key in list(counts_out.keys()):
             if pd.isna(key):
                 counts_out['NaN'] = counts_out.pop(key)
 
-            if counts_in != counts_out:
-                print_and_log(f"Error in function:  {origin_function} Error in column: {col} ")
-                return False
+        # Compare the frequency counts; if they don't match, the invariant is not satisfied.
+        if counts_in != counts_out:
+            print_and_log(f"Error in function: {origin_function} Error in column: {col}")
+            print_and_log(f"Expected counts: {counts_out}")
+            print_and_log(f"Actual counts: {counts_in}")
+            return False
 
     return True
 
