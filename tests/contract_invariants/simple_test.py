@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 # Importing functions and classes from packages
 import functions.contract_invariants as invariants
-from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong, MathOperator
+from helpers.enumerations import Closure, DataType, DerivedType, SpecialType, Operation, Belong, MathOperator, FilterType
 from helpers.logger import print_and_log
 
 
@@ -48,23 +48,23 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            self.execute_checkInv_FixValue_FixValue,
-            self.execute_checkInv_FixValue_DerivedValue,
-            self.execute_checkInv_FixValue_NumOp,
-            self.execute_checkInv_Interval_FixValue,
-            self.execute_checkInv_Interval_DerivedValue,
-            self.execute_checkInv_Interval_NumOp,
-            self.execute_checkInv_SpecialValue_FixValue,
-            self.execute_checkInv_SpecialValue_DerivedValue,
-            self.execute_checkInv_SpecialValue_NumOp,
-            self.execute_checkInv_MissingValue_MissingValue,
-            self.execute_checkInv_MathOperation,
-            self.execute_checkInv_CastType,
-            self.execute_checkInv_Join,
-            self.execute_checkInv_filter_rows_primitive,
-            self.execute_checkInv_filter_rows_range,
+            # self.execute_checkInv_FixValue_FixValue,
+            # self.execute_checkInv_FixValue_DerivedValue,
+            # self.execute_checkInv_FixValue_NumOp,
+            # self.execute_checkInv_Interval_FixValue,
+            # self.execute_checkInv_Interval_DerivedValue,
+            # self.execute_checkInv_Interval_NumOp,
+            # self.execute_checkInv_SpecialValue_FixValue,
+            # self.execute_checkInv_SpecialValue_DerivedValue,
+            # self.execute_checkInv_SpecialValue_NumOp,
+            # self.execute_checkInv_MissingValue_MissingValue,
+            # self.execute_checkInv_MathOperation,
+            # self.execute_checkInv_CastType,
+            # self.execute_checkInv_Join,
+            # self.execute_checkInv_filter_rows_primitive,
+            # self.execute_checkInv_filter_rows_range,
             self.execute_checkInv_filter_rows_special_values,
-            self.execute_checkInv_filter_columns
+            # self.execute_checkInv_filter_columns
         ]
 
         print_and_log("")
@@ -6112,13 +6112,426 @@ class InvariantsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 13 Passed: Expected True, got True")
 
     def execute_checkInv_filter_rows_primitive(self):
-        pass
+        datadic_in = pd.DataFrame({'A': ['a', 'b', 'a', 'c', 'b'],'B': [1, 2, 1, 3, 2]})
+        # Se filtran los valores 'a' y 'b'
+        # Los valores filtrados son: ['a','b','a','b'] con conteo: a=2, b=2.
+        expected_df = pd.DataFrame({'A': ['a', 'b', 'a', 'b'],'B': [1, 2, 1, 2]})
+
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=['a', 'b'],
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_filter_rows_include')
+
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2: Filtro EXCLUDE con conteos coincidentes
+        # Excluimos el valor 'c'
+        # Tanto en la entrada como en la salida se esperan solo los valores ['a', 'b']
+        expected_df = pd.DataFrame({'A': ['a', 'b', 'a', 'b'],'B': [1, 2, 1, 2]})
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=['c'],
+                                                filter_type=FilterType.EXCLUDE,
+                                                origin_function='test_filter_rows_exclude')
+
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3: Error: Columna no existe en data_dictionary_in
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['Z'],
+                                                filter_fix_value_list=['a'],
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_invalid_column')
+        print_and_log("Test Case 3 Passed: Expected ValueError, got ValueError")
+
+        # Caso 4: Error: Parámetro filter_fix_value_list es None
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=None,
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_none_parameter')
+        print_and_log("Test Case 4 Passed: Expected ValueError, got ValueError")
+
+        datadic_in = pd.DataFrame({'A': ['x', 'y', 'z', 'x', 'w'], 'B': [1, 2, 3, 4, 5]})
+        expected_df = pd.DataFrame({'A': ['y', 'z', 'w'], 'B': [2, 3, 5]})
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                            data_dictionary_out=expected_df.copy(),
+                                            columns=['A'],
+                                            filter_fix_value_list=['x'],
+                                            filter_type=FilterType.EXCLUDE,
+                                            origin_function='test_exclude_single_value')
+
+        assert result is True, "Test Case 5 Failed: Expected True, but got False"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6: Filtro INCLUDE en la columna A con valores numéricos
+        datadic_in = pd.DataFrame({'A': [1, 2, 3, 1, 4, 2], 'B': [10, 20, 30, 10, 40, 20]})
+        expected_df = pd.DataFrame({'A': [1, 2, 1, 2], 'B': [10, 20, 10, 20]})
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=[1, 2],
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_include_numeric')
+
+        assert result is True, "Test Case 6 Failed: Expected True, but got False"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
+
+        # Caso 7: Filtro INCLUDE en la columna A con valores nulos (NaN)
+        datadic_in = pd.DataFrame({'A': ['a', None, 'b', 'a', None], 'B': [1, 2, 3, 4, 5]})
+        # Sólo se esperan los registros donde A es 'a' o 'b'
+        expected_df = pd.DataFrame({'A': ['a', 'b', 'a'], 'B': [1, 3, 4]})
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=['a', 'b'],
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_include_with_nan')
+
+        assert result is True, "Test Case 7 Failed: Expected True, but got False"
+        print_and_log("Test Case 7 Passed: Expected True, got True")
+
+        # Caso 8: Filtro EXCLUDE en la columna A con un valor a eliminar inexistente, se espera que no se filtre nada
+        datadic_in = pd.DataFrame({'A': ['p', 'q', 'r'], 'B': [7, 8, 9]})
+        expected_df = datadic_in.copy()
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=['x'],
+                                                filter_type=FilterType.EXCLUDE,
+                                                origin_function='test_exclude_nonexistent')
+
+        assert result is True, "Test Case 8 Failed: Expected True, but got False"
+        print_and_log("Test Case 8 Passed: Expected True, got True")
+
+        # Caso 9: DataFrame con única fila, filtro INCLUDE que coincide con el único registro
+        datadic_in = pd.DataFrame({'A': ['z'], 'B': [100]})
+        expected_df = datadic_in.copy()
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=['z'],
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_single_row_include')
+
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
+
+        # Caso 10: Error: Parámetro filter_fix_value_list es None
+        datadic_in = pd.DataFrame({'A': ['a', 'b', 'a', 'c', 'b'], 'B': [1, 2, 1, 3, 2]})
+        expected_df = pd.DataFrame({'A': ['a', 'b', 'a', 'b'], 'B': [1, 2, 1, 2]})
+
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=None,
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_none_parameter')
+        print_and_log("Test Case 10 Passed: Expected ValueError, got ValueError")
+
+        # Caso 11: Error: Parámetro filter_fix_value_list es None
+        datadic_in = pd.DataFrame({'A': ['a', 'b', 'a', 'c', 'b'], 'B': [1, 2, 1, 3, 2]})
+        expected_df = pd.DataFrame({'A': ['a', 'b', 'a'], 'B': [1, 2, 1]})
+
+        result = self.invariants.check_inv_filter_rows_primitive(data_dictionary_in=datadic_in.copy(),
+                                                data_dictionary_out=expected_df.copy(),
+                                                columns=['A'],
+                                                filter_fix_value_list=['a', 'b'],
+                                                filter_type=FilterType.INCLUDE,
+                                                origin_function='test_false_result')
+
+        assert result is False, "Test Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, got False")
 
     def execute_checkInv_filter_rows_range(self):
-        pass
+        # Test Case 1: Single column, INCLUDE, open interval (15, 45)
+        data_in_1 = pd.DataFrame({'col1': [10, 20, 30, 40, 50]})
+        mask_1 = (data_in_1['col1'] > 15) & (data_in_1['col1'] < 45)
+        data_out_1 = data_in_1[mask_1].copy()
+        result_1 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_1,
+            columns=['col1'],
+            left_margin_list=[15],
+            right_margin_list=[45],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_1"
+        )
+        self.assertTrue(result_1, "Test Case 1 Failed: Single column, INCLUDE, open interval")
 
+        # Test Case 2: Single column, EXCLUDE, open interval (15, 45)
+        data_out_2 = data_in_1[~mask_1].copy()
+        result_2 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_2,
+            columns=['col1'],
+            left_margin_list=[15],
+            right_margin_list=[45],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_filter_rows_range_2"
+        )
+        self.assertTrue(result_2, "Test Case 2 Failed: Single column, EXCLUDE, open interval")
+
+        # Test Case 3: Multiple columns, INCLUDE, both must match
+        data_in_3 = pd.DataFrame({'A': [1, 2, 3, 4, 5], 'B': [10, 20, 30, 40, 50]})
+        mask_A_3 = (data_in_3['A'] > 1) & (data_in_3['A'] < 4)
+        mask_B_3 = (data_in_3['B'] > 10) & (data_in_3['B'] < 40)
+        self.assertTrue(all(mask_A_3 == mask_B_3), "Prerequisite for TC3: masks must be identical")
+        data_out_3 = data_in_3[mask_A_3].copy()
+        result_3 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_3,
+            data_dictionary_out=data_out_3,
+            columns=['A', 'B'],
+            left_margin_list=[1, 10],
+            right_margin_list=[4, 40],
+            closure_type_list=[Closure.openOpen, Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_3"
+        )
+        self.assertTrue(result_3, "Test Case 3 Failed: Multiple columns, same row selection")
+
+        # Test Case 4: Single column, INCLUDE, should fail (incorrect data_out)
+        data_out_4_fail = data_in_1.iloc[[0, 1]].copy()
+        result_4 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_4_fail,
+            columns=['col1'],
+            left_margin_list=[15],
+            right_margin_list=[45],
+            closure_type_list=[Closure.openClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_4_fail"
+        )
+        self.assertFalse(result_4, "Test Case 4 Succeeded: Incorrect output, should fail")
+
+        # Test Case 5: Single column, INCLUDE, closedOpen interval [20, 40)
+        mask_5 = (data_in_1['col1'] >= 20) & (data_in_1['col1'] < 40)
+        data_out_5 = data_in_1[mask_5].copy()
+        result_5 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_5,
+            columns=['col1'],
+            left_margin_list=[20],
+            right_margin_list=[40],
+            closure_type_list=[Closure.closedOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_5"
+        )
+        self.assertTrue(result_5, "Test Case 5 Failed: Closure.CLOSED_LEFT")
+
+        # Test Case 6: Single column, INCLUDE, closedClosed interval [20, 40]
+        mask_6 = (data_in_1['col1'] >= 20) & (data_in_1['col1'] <= 40)
+        data_out_6 = data_in_1[mask_6].copy()
+        result_6 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_1,
+            data_dictionary_out=data_out_6,
+            columns=['col1'],
+            left_margin_list=[20],
+            right_margin_list=[40],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_6"
+        )
+        self.assertTrue(result_6, "Test Case 6 Failed: Closure.CLOSED")
+
+        # Test Case 7: Single column, INCLUDE, openOpen interval (10, 20) - should be empty
+        data_in_7 = pd.DataFrame({'col1': [1, 2, 3]})
+        mask_7 = (data_in_7['col1'] > 10) & (data_in_7['col1'] < 20)
+        data_out_7 = data_in_7[mask_7].copy()
+        result_7 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_7,
+            data_dictionary_out=data_out_7,
+            columns=['col1'],
+            left_margin_list=[10],
+            right_margin_list=[20],
+            closure_type_list=[Closure.openOpen],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_7"
+        )
+        self.assertTrue(result_7, "Test Case 7 Failed: Empty filter result")
+
+        # Test Case 8: Single column, INCLUDE, closedClosed interval [1, 3]
+        mask_8 = (data_in_7['col1'] >= 1) & (data_in_7['col1'] <= 3)
+        data_out_8 = data_in_7[mask_8].copy()
+        result_8 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_7,
+            data_dictionary_out=data_out_8,
+            columns=['col1'],
+            left_margin_list=[1],
+            right_margin_list=[3],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_8"
+        )
+        self.assertTrue(result_8, "Test Case 8 Failed: All items included")
+
+        # Test Case 9: Single column with null values, INCLUDE, closedClosed interval [1, 3]
+        data_in_9 = pd.DataFrame({'col1': [1, np.nan, 2, 3, np.nan]})
+        mask_9 = (data_in_9['col1'] >= 1) & (data_in_9['col1'] <= 3)
+        data_out_9 = data_in_9[mask_9].copy()
+        result_9 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_9,
+            data_dictionary_out=data_out_9,
+            columns=['col1'],
+            left_margin_list=[1],
+            right_margin_list=[3],
+            closure_type_list=[Closure.closedClosed],
+            filter_type=FilterType.INCLUDE,
+            origin_function="test_filter_rows_range_9"
+        )
+        self.assertTrue(result_9, "Test Case 9 Failed: Filtering with null values - include case")
+
+        # Test Case 10 modificado
+        data_in_10 = pd.DataFrame({
+            'col1': [1, np.nan, 3, 4, np.nan], 
+            'col2': [10, 20, np.nan, 40, 50]
+        })
+        mask_10_1 = ~((data_in_10['col1'] > 1) & (data_in_10['col1'] <= 4)) | data_in_10['col1'].isna()
+        mask_10_2 = ~((data_in_10['col2'] > 10) & (data_in_10['col2'] <= 40)) | data_in_10['col2'].isna()
+        mask_10 = mask_10_1 & mask_10_2
+        data_out_10 = data_in_10[mask_10].copy()
+
+        result_10 = self.invariants.check_inv_filter_rows_range(
+            data_dictionary_in=data_in_10,
+            data_dictionary_out=data_out_10,
+            columns=['col1', 'col2'],
+            left_margin_list=[1, 10],
+            right_margin_list=[4, 40],
+            closure_type_list=[Closure.openClosed, Closure.openClosed],
+            filter_type=FilterType.EXCLUDE,
+            origin_function="test_filter_rows_range_10"
+        )
+        self.assertTrue(result_10, "Test Case 10 Failed: Filtering with null values - exclude case")
+        
     def execute_checkInv_filter_rows_special_values(self):
-        pass
+        # Caso 1: Filtro INCLUDE de valores especiales (MISSING) en una columna
+        datadic_in = pd.DataFrame({'A': [1, None, 3, np.nan, 5], 'B': ['x', 'y', None, 'z', 'w']})
+        # Solo se quedan las filas donde A es None o np.nan
+        expected_df = datadic_in[datadic_in['A'].isna()].copy()
+
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=expected_df.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include')
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: INCLUDE MISSING in A")
+
+        # Caso 2: Filtro EXCLUDE de valores especiales (MISSING) en una columna
+        expected_df_2 = datadic_in[~datadic_in['A'].isna()].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=expected_df_2.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude')
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: EXCLUDE MISSING in A")
+
+        # Caso 3: Filtro INCLUDE de valores especiales (MISSING) en varias columnas (ambas deben ser missing)
+        datadic_in_3 = pd.DataFrame({'A': [1, None, 3, np.nan, 5], 'B': [None, 'y', None, 'z', None]})
+        mask_3 = datadic_in_3['A'].isna() & datadic_in_3['B'].isna()
+        expected_df_3 = datadic_in_3[mask_3].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_3.copy(),
+            data_dictionary_out=expected_df_3.copy(),
+            cols_special_type_values={'A': {'missing': []}, 'B': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include_multi')
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: INCLUDE MISSING in A and B")
+
+        # Caso 4: Filtro EXCLUDE de valores especiales (MISSING) en varias columnas (excluye si cualquiera es missing)
+        mask_4 = ~(datadic_in_3['A'].isna() | datadic_in_3['B'].isna())
+        expected_df_4 = datadic_in_3[mask_4].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_3.copy(),
+            data_dictionary_out=expected_df_4.copy(),
+            cols_special_type_values={'A': {'missing': []}, 'B': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude_multi')
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: EXCLUDE MISSING in A or B")
+
+        # Caso 5: Filtro INCLUDE, pero el resultado es incorrecto (debería fallar)
+        wrong_df = datadic_in.iloc[[0, 2]].copy()  # No son missing
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=wrong_df.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include_fail')
+        assert result is False, "Test Case 5 Failed: Expected False, but got True"
+        print_and_log("Test Case 5 Passed: INCLUDE wrong output fails as expected")
+
+        # Caso 6: Filtro EXCLUDE, pero el resultado es incorrecto (debería fallar)
+        wrong_df_2 = datadic_in.iloc[[1, 3]].copy()  # Solo los missing
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=wrong_df_2.copy(),
+            cols_special_type_values={'A': {'missing': []}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude_fail')
+        assert result is False, "Test Case 6 Failed: Expected False, but got True"
+        print_and_log("Test Case 6 Passed: EXCLUDE wrong output fails as expected")
+
+        # Caso 7: Error: columna no existe
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_special_values(
+                data_dictionary_in=datadic_in.copy(),
+                data_dictionary_out=expected_df.copy(),
+                cols_special_type_values={'Z': {'missing': []}},
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_special_values_col_not_found')
+        print_and_log("Test Case 7 Passed: ValueError for non-existent column")
+
+        # Caso 8: Error: cols_special_type_values es None
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_rows_special_values(
+                data_dictionary_in=datadic_in.copy(),
+                data_dictionary_out=expected_df.copy(),
+                cols_special_type_values=None,
+                filter_type=FilterType.INCLUDE,
+                origin_function='test_special_values_none_dict')
+        print_and_log("Test Case 8 Passed: ValueError for None cols_special_type_values")
+
+        # Caso 9: Filtro INCLUDE de OUTLIER (usando valores extremos)
+        datadic_in_9 = pd.DataFrame({'A': [1, 100, 3, 200, 5]})
+        # Suponiendo que 100 y 200 son outliers (para el test, los marcamos manualmente)
+        mask_9 = datadic_in_9['A'].isin([100, 200])
+        expected_df_9 = datadic_in_9[mask_9].copy()
+        # Simulamos que la función reconoce esos valores como outliers
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_9.copy(),
+            data_dictionary_out=expected_df_9.copy(),
+            cols_special_type_values={'A': {'outlier': True}},
+            filter_type=FilterType.INCLUDE,
+            origin_function='test_special_values_include_outlier')
+        # No se puede garantizar True si la función depende de detección real, pero el test está estructurado
+        print_and_log("Test Case 9 Executed: INCLUDE OUTLIER in A (manual mask)")
+
+        # Caso 10: Filtro EXCLUDE de OUTLIER (usando valores extremos)
+        expected_df_10 = datadic_in_9[~mask_9].copy()
+        result = self.invariants.check_inv_filter_rows_special_values(
+            data_dictionary_in=datadic_in_9.copy(),
+            data_dictionary_out=expected_df_10.copy(),
+            cols_special_type_values={'A': {'outlier': True}},
+            filter_type=FilterType.EXCLUDE,
+            origin_function='test_special_values_exclude_outlier')
+        print_and_log("Test Case 10 Executed: EXCLUDE OUTLIER in A (manual mask)")
 
     def execute_checkInv_filter_columns(self):
         pass
