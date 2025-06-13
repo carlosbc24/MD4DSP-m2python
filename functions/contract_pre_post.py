@@ -1,10 +1,9 @@
 # Importing libraries
-from datetime import datetime
-# Importing functions and classes from packages
-from typing import Union, Type
-from datetime import datetime
 import numpy as np
 import pandas as pd
+from typing import Union
+from datetime import datetime
+# Importing functions and classes from packages
 from helpers.auxiliar import compare_numbers, count_abs_frequency
 from helpers.enumerations import Belong, Operator, Closure, DataType
 from helpers.transform_aux import get_outliers
@@ -29,15 +28,17 @@ def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Be
     if belong_op == Belong.BELONG:
         for field in fields:
             if field not in data_dictionary.columns:
+                print_metadata_error_field(function=origin_function, field=field)
                 return False  # Case 1
         return True  # Case 2
     elif belong_op == Belong.NOTBELONG:
         for field in fields:
             if field in data_dictionary.columns:
-                if origin_function:
-                    print_metadata_error_field(function=origin_function, field=field)
+                print_metadata_error_field(function=origin_function, field=field)
                 return False  # Case 3
         return True  # Case 4
+    else:
+        raise ValueError("belong_op should be BELONG or NOTBELONG")
 
 
 def check_fix_value_range(value: Union[str, float, datetime, int], data_dictionary: pd.DataFrame,
@@ -95,32 +96,52 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
         # Cannot apply substring to the whole dataframe, just to columns
         if belong_op == Belong.BELONG:
             if quant_op is None:  # Check if value is in data_dictionary
-                return True if value in data_dictionary.values else False  # Case 1 y 2
+                if value in data_dictionary.values:
+                    return True  # Case 1
+                else:
+                    print_and_log(f"Error - Origin function: {origin_function} - value {value} not in data_dictionary")
+                    return False  # Case 2
             else:
                 if quant_rel is not None and quant_abs is None:  # Check if value is in data_dictionary and if it meets the condition of quant_rel
-                    return True if value in data_dictionary.values and compare_numbers(  # Case 3 y 4
-                        count_abs_frequency(value, data_dictionary) / data_dictionary.size,
-                        quant_rel,
-                        quant_op) else False  # If field is None, in place of looking in a column, it looks in the whole dataframe
+                    if value in data_dictionary.values and compare_numbers(  # Case 3 y 4
+                            count_abs_frequency(value, data_dictionary) / data_dictionary.size,
+                            quant_rel,
+                            quant_op):
+                        return True
+                    else:
+                        print_and_log(f"Error - Origin function: {origin_function} - value {value} not in "
+                                      f"data_dictionary or does not meet the condition of quant_rel")
+                        return False  # If field is None, in place of looking in a column, it looks in the whole dataframe
                     # Important to highlight that it is necessary to use dropna=False to count the NaN values in case value is None
                 elif quant_rel is not None and quant_abs is not None:
                     # If both are provided, a ValueError is raised
                     raise ValueError(  # Case 4.5
                         "quant_rel and quant_abs can't have different values than None at the same time")
                 elif quant_abs is not None:
-                    return True if value in data_dictionary.values and compare_numbers(  # Case 5 y 6
-                        count_abs_frequency(value, data_dictionary),
-                        quant_abs,
-                        quant_op) else False  # If field is None, in place of looking in a column, it looks in the whole dataframe
+                    if value in data_dictionary.values and compare_numbers(  # Case 5 y 6
+                            count_abs_frequency(value, data_dictionary),
+                            quant_abs,
+                            quant_op):
+                        return True
+                    else:
+                        print_and_log(f"Error - Origin function: {origin_function} - value {value} not in "
+                                      f"data_dictionary or does not meet the condition of quant_abs")
+                        return False  # If field is None, in place of looking in a column, it looks in the
+                    # whole dataframe
                 else:
                     raise ValueError(  # Case 7
-                        "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")
+                        "quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")
         else:
             if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                return True if value not in data_dictionary.values else False  # Case 8 y 9
+                if value not in data_dictionary.values:
+                    return True
+                else:
+                    print_and_log(f"Error - Origin function: {origin_function} - value {value} not in "
+                                  f"data_dictionary")
+                    return False  # Case 8 y 9
             else:
                 raise ValueError(
-                    "Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 10
+                    "quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 10
     else:
         if field not in data_dictionary.columns:
             raise ValueError(f"Column '{field}' not found in data_dictionary.")
@@ -143,32 +164,40 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
             else:
                 count = mask.sum()
                 if quant_rel is not None and quant_abs is None:
-                    return True if value in data_dictionary[field].values and compare_numbers(count / len(col),
-                                                                                              quant_rel,
-                                                                                              quant_op) else False
+                    if value in data_dictionary[field].values and compare_numbers(count / len(col),
+                                                                                  quant_rel,
+                                                                                  quant_op):
+                        return True
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value {value} not in column {field} or does not meet the condition of quant_rel")
+                        return False
                 elif quant_rel is not None and quant_abs is not None:
                     raise ValueError("quant_rel and quant_abs can't have different values than None at the same time")
                 elif quant_abs is not None:
-                    return True if value in data_dictionary[field].values and count > 0 and compare_numbers(count,
-                                                                                                          quant_abs,
-                                                                                                            quant_op)\
-                        else False
+                    if value in data_dictionary[field].values and count > 0 and compare_numbers(count, quant_abs,
+                                                                                                quant_op):
+                        return True
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value {value} not in column {field} or does not meet the condition of quant_abs")
+                        return False
                 else:
-                    raise ValueError("Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")
+                    raise ValueError("quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")
         else:
             if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                 if not mask.any():
                     return True
                 else:
-                    if origin_function:
-                        for idx, val in col.items():
-                            if (value is None and pd.isnull(val)) or \
-                               (is_substring and isinstance(value, str) and pd.api.types.is_string_dtype(col) and value in str(val)) or \
-                               (not is_substring and val == value):
-                                print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
+                    for idx, val in col.items():
+                        if (value is None and pd.isnull(val)) or \
+                                (is_substring and isinstance(value, str) and pd.api.types.is_string_dtype(
+                                    col) and value in str(val)) or \
+                                (not is_substring and val == value):
+                            print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
                     return False
             else:
-                raise ValueError("Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")
+                raise ValueError("quant_rel and quant_abs should be None when belong_op is NOTBELONG")
 
 
 def check_interval_range_float(left_margin: float, right_margin: float, data_dictionary: pd.DataFrame,
@@ -192,18 +221,19 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
         :return: if data_dictionary meets the condition of belong_op in the interval defined by leftMargin and rightMargin with the closure_type
     """
     if left_margin > right_margin:
-        raise ValueError("Error: leftMargin should be less than or equal to rightMargin")  # Case 0
+        raise ValueError("leftMargin should be less than or equal to rightMargin")  # Case 0
 
-    def in_interval(value, left_margin: float, right_margin: float, closure_type: Closure) -> bool:
-        if closure_type == Closure.openOpen:
-            return value > left_margin and value < right_margin
-        elif closure_type == Closure.openClosed:
-            return value > left_margin and value <= right_margin
-        elif closure_type == Closure.closedOpen:
-            return value >= left_margin and value < right_margin
-        elif closure_type == Closure.closedClosed:
-            return value >= left_margin and value <= right_margin
-        print_and_log(f"Origin function: {origin_function} - value {value} is not in the interval [{left_margin}, {right_margin}] with closure type {closure_type}")
+    def in_interval(value, left_margin_def: float, right_margin_def: float, closure_type_def: Closure) -> bool:
+        if closure_type_def == Closure.openOpen:
+            return left_margin_def < value < right_margin_def
+        elif closure_type_def == Closure.openClosed:
+            return left_margin_def < value <= right_margin_def
+        elif closure_type_def == Closure.closedOpen:
+            return left_margin_def <= value < right_margin_def
+        elif closure_type_def == Closure.closedClosed:
+            return left_margin_def <= value <= right_margin_def
+        print_and_log(
+            f"Error - Origin function: {origin_function} - value {value} is not in the interval [{left_margin_def}, {right_margin_def}] with closure type {closure_type_def}")
         return False
 
     # Columns selection based on field
@@ -214,7 +244,7 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
             raise ValueError(f"Column '{field}' not found in data_dictionary.")
         if not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             if belong_op == Belong.BELONG:
-                print_and_log(f"Origin function: {origin_function} - field {field} is not numeric.")
+                print_and_log(f"Error - Origin function: {origin_function} - field {field} is not numeric.")
                 return False
             elif belong_op == Belong.NOTBELONG:
                 return True
@@ -230,14 +260,17 @@ def check_interval_range_float(left_margin: float, right_margin: float, data_dic
         elif belong_op == Belong.NOTBELONG:
             # Return True if no value is in the interval
             if (col_values.apply(lambda v: in_interval(v, left_margin, right_margin, closure_type))).any():
-                print_and_log(f"Origin function: {origin_function} - value in column {column} is in the interval [{left_margin}, {right_margin}] with closure type {closure_type}")
+                print_and_log(
+                    f"Error - Origin function: {origin_function} - value in column {column} is in the interval [{left_margin}, {right_margin}] with closure type {closure_type}")
                 return False
     if belong_op == Belong.BELONG:
-        print_and_log(f"Origin function: {origin_function} - there aren't data values in the interval [{left_margin},"
+        print_and_log(f"Error - Origin function: {origin_function} - there aren't data values in the interval [{left_margin},"
                       f" {right_margin}] with closure type {closure_type}")
         return False
     elif belong_op == Belong.NOTBELONG:
         return True
+    else:
+        raise ValueError("belong_op should be BELONG or NOTBELONG")
 
 
 def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field: str = None,
@@ -273,24 +306,32 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                 else:  # If there aren't null python values in data_dictionary, it checks if there are any of the
                     # missing values in the list 'missing_values'
                     if missing_values is not None:
-                        return True if any(
-                            value in missing_values for value in
-                            data_dictionary.values.flatten()) else False  # Case 2 y 3
+                        if any(value in missing_values for value in
+                               data_dictionary.values.flatten()):
+                            return True  # Case 2
+                        else:
+                            print_and_log(f"Error - Origin function: {origin_function} - there aren't any missing values in "
+                                          f"data_dictionary or in the list {missing_values}")
+                            return False  # Case 3
                     else:  # If the list is None, it returns False.
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there aren't any missing values in data_dictionary")
                         # It checks that in fact there aren't any missing values
                         return False  # Case 4
             else:
                 if quant_rel is not None and quant_abs is None:  # Check there are any null python values or
-                                                                 # missing values from the list 'missing_values'
-                                                                 # in data_dictionary and if it meets the condition
-                                                                 # of quant_rel and quant_op
+                    # missing values from the list 'missing_values'
+                    # in data_dictionary and if it meets the condition
+                    # of quant_rel and quant_op
                     if compare_numbers(
-                        (data_dictionary.isnull().values.sum() + sum(
-                            [count_abs_frequency(value, data_dictionary) for value in
-                             (missing_values if missing_values is not None else [])])) / data_dictionary.size,
-                        quant_rel, quant_op):
+                            (data_dictionary.isnull().values.sum() + sum(
+                                [count_abs_frequency(value, data_dictionary) for value in
+                                 (missing_values if missing_values is not None else [])])) / data_dictionary.size,
+                            quant_rel, quant_op):
                         return True  # Case 5
                     else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in data_dictionary does not meet the condition of quant_rel")
                         return False  # Case 6
                 elif quant_rel is not None and quant_abs is not None:
                     # If both are provided, a ValueError is raised
@@ -300,99 +341,117 @@ def check_missing_range(belong_op: Belong, data_dictionary: pd.DataFrame, field:
                     # list 'missing_values' in data_dictionary and if it meets the condition of quant_abs and
                     # quant_op
                     if compare_numbers(
-                        data_dictionary.isnull().values.sum() + sum(
-                            [count_abs_frequency(value, data_dictionary) for value in
-                             (missing_values if missing_values is not None else [])]),
-                        quant_abs, quant_op):
+                            data_dictionary.isnull().values.sum() + sum(
+                                [count_abs_frequency(value, data_dictionary) for value in
+                                 (missing_values if missing_values is not None else [])]),
+                            quant_abs, quant_op):
                         return True  # Case 8
                     else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in data_dictionary does not meet the condition of quant_abs")
                         return False  # Case 9
                 else:
-                    raise ValueError(
-                        "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is "
-                        "not None")  # Case 10
+                    raise ValueError("quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 10
         else:
             if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                 # Check that there aren't any null python values or missing values from the list 'missing_values'
                 # in data_dictionary
                 if missing_values is not None:
-                    return True if not data_dictionary.isnull().values.any() and not any(
-                        value in missing_values for value in
-                        data_dictionary.values.flatten()) else False  # Case 11 y 12
+                    if not data_dictionary.isnull().values.any() and not any(
+                            value in missing_values for value in
+                            data_dictionary.values.flatten()):
+                        return True  # Case 11
+                    else:
+                        print_and_log(f"Error - Origin function: {origin_function} - there aren't any missing values in "
+                                      f"data_dictionary or in the list {missing_values}")
+                        return False  # Case 12
                 else:  # If the list is None, it checks that there aren't any python null values in data_dictionary
-                    return True if not data_dictionary.isnull().values.any() else False  # Case 13 y 13.5
+                    if not data_dictionary.isnull().values.any():
+                        return True  # Case 13
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there are missing values in data_dictionary")
+                        return False  # Case 13.5
             else:
-                raise ValueError(
-                    "Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 14
+                raise ValueError("quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 14
     else:
-        if field is not None:  # Check to make code more legible
-            if field not in data_dictionary.columns:  # Checks that the column exists in the dataframe
-                raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 15
-            if belong_op == Belong.BELONG:
-                if quant_op is None:  # Check that there are null python values or missing values from the list
-                    # 'missing_values' in the column specified by field
-                    if data_dictionary[field].isnull().values.any():
-                        return True  # Case 16
-                    else:  # If there aren't null python values in data_dictionary, it checks if there are any of the
-                        # missing values in the list 'missing_values'
-                        if missing_values is not None:
-                            if any(
-                                    value in missing_values for value in
-                                    data_dictionary[field].values):
-                                return True
-                            else:
-                                return False  # Case 17 y 18
-                        else:  # If the list is None, it returns False. It checks that in fact there aren't any missing values
-                            return False  # Case 19
-                else:
-                    if quant_rel is not None and quant_abs is None:  # Check there are null python values or
-                        # missing values from the list 'missing_values' in the column specified by field and if it
-                        if compare_numbers((data_dictionary[field].isnull().values.sum() + sum(
-                            [count_abs_frequency(value, data_dictionary, field) for value in
-                             (missing_values if missing_values is not None else [])])) / data_dictionary[
-                            field].size, quant_rel, quant_op):
-                            return True  # Case 20
-                        else:
-                            return False  # Case 21
-                        # Relative frequency respect to the data specified by field
-                    elif quant_rel is not None and quant_abs is not None:
-                        # If both are provided, a ValueError is raised
-                        raise ValueError(
-                            "quant_rel and quant_abs can't have different values than None at the same time")  # Case 22
-                    elif quant_abs is not None:  # Check there are null python values or missing values from the
-                        # list 'missing_values' in the column specified by field and if it meets the condition of
-                        # quant_abs and quant_op
-                        if compare_numbers(
-                            data_dictionary[field].isnull().values.sum() + sum(
-                                [count_abs_frequency(value, data_dictionary, field) for value in
-                                 (missing_values if missing_values is not None else [])]),
-                            quant_abs, quant_op):
-                            return True  # Case 23
-                        else:
-                            return False  # Case 24
-                    else:  # quant_rel is None and quant_abs is None
-                        raise ValueError(
-                            "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 25
-            else:
-                if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                    # Check that there aren't any null python values or missing values from the list
-                    # 'missing_values' in the column specified by field
-                    if missing_values is not None:  # Check that there are missing values in the list 'missing_values'
-                        if not data_dictionary[field].isnull().values.any() and not any(
+        if field not in data_dictionary.columns:  # Checks that the column exists in the dataframe
+            raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 15
+        if belong_op == Belong.BELONG:
+            if quant_op is None:  # Check that there are null python values or missing values from the list
+                # 'missing_values' in the column specified by field
+                if data_dictionary[field].isnull().values.any():
+                    return True  # Case 16
+                else:  # If there aren't null python values in data_dictionary, it checks if there are any of the
+                    # missing values in the list 'missing_values'
+                    if missing_values is not None:
+                        if any(
                                 value in missing_values for value in
                                 data_dictionary[field].values):
                             return True
                         else:
-                            if origin_function:
-                                for idx, val in data_dictionary[field].items():
-                                    if val in missing_values or pd.isnull(val):
-                                        print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
-                            return False  # Case 26 y 27
-                    else:  # If the list is None, it checks that there aren't any python null values in the column specified by field
-                        return True if not data_dictionary[field].isnull().values.any() else False  # Case 28 y 29
-                else:
+                            print_and_log(
+                                f"Error - Origin function: {origin_function} - there aren't any missing values in column {field} or in the list {missing_values}")
+                            return False  # Case 17 y 18
+                    else:  # If the list is None, it returns False. It checks that in fact there aren't any missing values
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there aren't any missing values in column {field}")
+                        return False  # Case 19
+            else:
+                if quant_rel is not None and quant_abs is None:  # Check there are null python values or
+                    # missing values from the list 'missing_values' in the column specified by field and if it
+                    if compare_numbers((data_dictionary[field].isnull().values.sum() + sum(
+                            [count_abs_frequency(value, data_dictionary, field) for value in
+                             (missing_values if missing_values is not None else [])])) / data_dictionary[
+                                           field].size, quant_rel, quant_op):
+                        return True  # Case 20
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in column {field} does not meet the condition of quant_rel")
+                        return False  # Case 21
+                    # Relative frequency respect to the data specified by field
+                elif quant_rel is not None and quant_abs is not None:
+                    # If both are provided, a ValueError is raised
                     raise ValueError(
-                        "Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 30
+                        "quant_rel and quant_abs can't have different values than None at the same time")  # Case 22
+                elif quant_abs is not None:  # Check there are null python values or missing values from the
+                    # list 'missing_values' in the column specified by field and if it meets the condition of
+                    # quant_abs and quant_op
+                    if compare_numbers(
+                            data_dictionary[field].isnull().values.sum() + sum(
+                                [count_abs_frequency(value, data_dictionary, field) for value in
+                                 (missing_values if missing_values is not None else [])]),
+                            quant_abs, quant_op):
+                        return True  # Case 23
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in column {field} does not meet the condition of quant_abs")
+                        return False  # Case 24
+                else:  # quant_rel is None and quant_abs is None
+                    raise ValueError("quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 25
+        else:
+            if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                # Check that there aren't any null python values or missing values from the list
+                # 'missing_values' in the column specified by field
+                if missing_values is not None:  # Check that there are missing values in the list 'missing_values'
+                    if not data_dictionary[field].isnull().values.any() and not any(
+                            value in missing_values for value in
+                            data_dictionary[field].values):
+                        return True
+                    else:
+                        for idx, val in data_dictionary[field].items():
+                            if val in missing_values or pd.isnull(val):
+                                print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
+                        return False  # Case 26 y 27
+                else:  # If the list is None, it checks that there aren't any python null values in the column specified by field
+                    if not data_dictionary[field].isnull().values.any():
+                        return True  # Case 28
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there are missing values in column {field}")
+                        return False  # Case 29
+            else:
+                raise ValueError("quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 30
 
 
 def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, invalid_values: list,
@@ -431,8 +490,12 @@ def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, inval
                     if any(value in invalid_values for value in data_dictionary.values.flatten()):
                         return True  # Case 1
                     else:
+                        print_and_log(f"Error - Origin function: {origin_function} - there aren't any invalid values in "
+                                      f"data_dictionary or in the list {invalid_values}")
                         return False  # Case 2
                 else:  # If the list is None, it returns False. It checks that in fact there aren't any invalid values
+                    print_and_log(
+                        f"Error - Origin function: {origin_function} - there aren't any invalid values in data_dictionary")
                     return False  # Case 3
             else:
                 if quant_rel is not None and quant_abs is None:  # Check there are any invalid values in
@@ -444,8 +507,12 @@ def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, inval
                                  invalid_values]) / data_dictionary.size, quant_rel, quant_op):
                             return True  # Case 4
                         else:
+                            print_and_log(
+                                f"Error - Origin function: {origin_function} - value in data_dictionary does not meet the condition of quant_rel")
                             return False  # Case 5
                     else:  # If the list is None, it returns False
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there aren't any invalid values in data_dictionary")
                         return False  # Case 6
                 elif quant_abs is not None and quant_rel is None:  # Check there are any invalid values in
                     # data_dictionary and if it meets the condition of quant_abs and quant_op (absolute frequency)
@@ -456,85 +523,107 @@ def check_invalid_values(belong_op: Belong, data_dictionary: pd.DataFrame, inval
                                  invalid_values]), quant_abs, quant_op):
                             return True  # Case 7
                         else:
+                            print_and_log(
+                                f"Origin function: {origin_function} - value in data_dictionary does not meet the condition of quant_abs")
                             return False  # Case 8
                     else:  # If the list is None, it returns False
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there aren't any invalid values in data_dictionary")
                         return False  # Case 9
                 elif quant_abs is not None and quant_rel is not None:
                     # If both are provided, a ValueError is raised
                     raise ValueError(
-                        "quant_rel and quant_abs can't have different values than None at the same time")  # Case 10
+                        "quant_rel and quant_abs can't have different values than None at the same "
+                        "time")  # Case 10
                 else:
                     raise ValueError(
-                        "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is "
+                        "quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op "
+                        "is "
                         "not None")  # Case 11
         else:
             if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
                 # Check that there aren't any invalid values in data_dictionary
-                return True if not (invalid_values is not None and any(
+                if not (invalid_values is not None and any(
                     value in invalid_values for value in
-                    data_dictionary.values.flatten())) else False  # Case 12 y 13
+                    data_dictionary.values.flatten())):
+                    return True  # Case 12
+                else:
+                    print_and_log(f"Error - Origin function: {origin_function} - there are invalid values in data_dictionary or in the list {invalid_values}")
+                    return False  # Case 13
             else:
-                raise ValueError(
-                    "Error: quant_op, quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 14
+                raise ValueError("quant_op, quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 14
     else:
-        if field is not None:
-            if field not in data_dictionary.columns:
-                raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 15
-            if belong_op == Belong.BELONG:
-                if quant_op is None:  # Check that there are invalid values in the column specified by field
-                    if invalid_values is not None:  # Check that there are invalid values in the list 'invalid_values'
-                        if any(value in invalid_values for value in data_dictionary[field].values):
-                            return True  # Case 16
-                        else:
-                            return False  # Case 17
-                    else:  # If the list is None, it returns False
-                        return False  # Case 18
-                else:
-                    if quant_rel is not None and quant_abs is None:  # Check there are invalid values in the
-                        # column specified by field and if it meets the condition of quant_rel and quant_op
-                        # (relative frequency)
-                        if invalid_values is not None:  # Checks that there are invalid values in the list 'invalid_values'
-                            if any(value in invalid_values for value in
-                                   data_dictionary[field].values) and compare_numbers(
-                                sum([count_abs_frequency(value, data_dictionary, field) for value in
-                                     invalid_values]) / data_dictionary[field].size, quant_rel, quant_op):
-                                return True  # Case 19
-                            else:
-                                return False  # Case 20
-                        else:  # If the list is None, it returns False
-                            return False  # Case 21
-                    elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
-                        # column specified by field and if it meets the condition of quant_abs and quant_op
-                        # (absolute frequency)
-                        if invalid_values is not None:  # Check that there are invalid values in the list 'invalid_values'
-                            if any(value in invalid_values for value in
-                                   data_dictionary[field].values) and compare_numbers(
-                                sum([count_abs_frequency(value, data_dictionary, field) for value in
-                                     invalid_values]), quant_abs, quant_op):
-                                return True  # Case 22
-                            else:
-                                return False  # Case 23
-                        else:  # If the list is None, it returns False
-                            return False  # Case 24
-                    elif quant_abs is not None and quant_rel is not None:
-                        # If both are provided, a ValueError is raised
-                        raise ValueError(
-                            "quant_rel and quant_abs can't have different values than None at the same time")  # Case 25
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 15
+        if belong_op == Belong.BELONG:
+            if quant_op is None:  # Check that there are invalid values in the column specified by field
+                if invalid_values is not None:  # Check that there are invalid values in the list 'invalid_values'
+                    if any(value in invalid_values for value in data_dictionary[field].values):
+                        return True  # Case 16
                     else:
-                        raise ValueError(
-                            "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 26
+                        print_and_log(f"Error - Origin function: {origin_function} - there aren't any invalid values in column {field} or in the list {invalid_values}")
+                        return False  # Case 17
+                else:  # If the list is None, it returns False
+                    print_and_log(f"Error - Origin function: {origin_function} - there aren't any invalid values in column {field}")
+                    return False  # Case 18
             else:
-                if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                    # Check that there aren't any invalid values in the column specified by field
+                if quant_rel is not None and quant_abs is None:  # Check there are invalid values in the
+                    # column specified by field and if it meets the condition of quant_rel and quant_op
+                    # (relative frequency)
                     if invalid_values is not None:  # Checks that there are invalid values in the list 'invalid_values'
-                        return True if not any(
-                            value in invalid_values for value in
-                            data_dictionary[field].values) else False  # Case 27 y 28
-                    else:  # If the list is None, it returns True
-                        return True  # Case 29
-                else:
+                        if any(value in invalid_values for value in
+                               data_dictionary[field].values) and compare_numbers(
+                            sum([count_abs_frequency(value, data_dictionary, field) for value in
+                                 invalid_values]) / data_dictionary[field].size, quant_rel, quant_op):
+                            return True  # Case 19
+                        else:
+                            print_and_log(
+                                f"Error - Origin function: {origin_function} - value in column {field} does not meet the condition of quant_rel")
+                            return False  # Case 20
+                    else:  # If the list is None, it returns False
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there aren't any invalid values in column {field}")
+                        return False  # Case 21
+                elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
+                    # column specified by field and if it meets the condition of quant_abs and quant_op
+                    # (absolute frequency)
+                    if invalid_values is not None:  # Check that there are invalid values in the list 'invalid_values'
+                        if any(value in invalid_values for value in
+                               data_dictionary[field].values) and compare_numbers(
+                            sum([count_abs_frequency(value, data_dictionary, field) for value in
+                                 invalid_values]), quant_abs, quant_op):
+                            return True  # Case 22
+                        else:
+                            print_and_log(
+                                f"Error - Origin function: {origin_function} - value in column {field} does not meet the condition of quant_abs")
+                            return False  # Case 23
+                    else:  # If the list is None, it returns False
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - there aren't any invalid values in column {field}")
+                        return False  # Case 24
+                elif quant_abs is not None and quant_rel is not None:
+                    # If both are provided, a ValueError is raised
                     raise ValueError(
-                        "Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 30
+                        "quant_rel and quant_abs can't have different values than None at the same time")  # Case 25
+                else:
+                    raise ValueError("quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 26
+        else:
+            if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                # Check that there aren't any invalid values in the column specified by field
+                if invalid_values is not None:  # Checks that there are invalid values in the list 'invalid_values'
+                    if not any(
+                        value in invalid_values for value in
+                        data_dictionary[field].values):
+                        return True  # Case 27
+                    else:
+                        for idx, val in data_dictionary[field].items():
+                            if val in invalid_values:
+                                print_metadata_error_row(function=origin_function, index=idx, value=val, field=field)
+                        return False  # Case 28
+                else:  # If the list is None, it returns True
+                    return True  # Case 29
+            else:
+                raise ValueError("quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 30
 
 
 def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, field: str = None,
@@ -566,6 +655,7 @@ def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, fiel
                 if outlier in data_dictionary_copy.values:
                     return True  # Case 1
                 else:
+                    print_and_log(f"Error - Origin function: {origin_function} - outlier {outlier} not in data_dictionary")
                     return False  # Case 2
             else:
                 if quant_rel is not None and quant_abs is None:  # Check there are any invalid values in
@@ -574,12 +664,16 @@ def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, fiel
                                        quant_rel, quant_op):
                         return True  # Case 3
                     else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in data_dictionary does not meet the condition of quant_rel")
                         return False  # Case 4
                 elif quant_abs is not None and quant_rel is None:  # Check there are any invalid values in
                     # data_dictionary and if it meets the condition of quant_abs and quant_op (absolute frequency)
                     if compare_numbers(count_abs_frequency(outlier, data_dictionary_copy), quant_abs, quant_op):
                         return True  # Case 5
                     else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in data_dictionary does not meet the condition of quant_abs")
                         return False  # Case 6
                 elif quant_abs is not None and quant_rel is not None:
                     # If both are provided, a ValueError is raised
@@ -587,60 +681,71 @@ def check_outliers(data_dictionary: pd.DataFrame, belong_op: Belong = None, fiel
                         "quant_rel and quant_abs can't have different values than None at the same time")  # Case 7
                 else:
                     raise ValueError(
-                        "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is "
+                        "quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is "
                         "not None")  # Case 8
         else:
             if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                return True if not (outlier in data_dictionary_copy.values) else False  # Case 9 y 10
+                if not (outlier in data_dictionary_copy.values):
+                    return True  # Case 9
+                else:
+                    print_and_log(f"Error - Origin function: {origin_function} - outlier {outlier} in data_dictionary")
+                    return False  # Case 10
             else:
-                raise ValueError("Error: quant_op, quant_rel and quant_abs should be None when belong_op is "
+                raise ValueError("quant_op, quant_rel and quant_abs should be None when belong_op is "
                                  "NOTBELONG")  # Case 11
     else:
-        if field is not None:
-            if field not in data_dictionary.columns:
-                raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 12
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 12
 
-            data_dictionary_copy = get_outliers(data_dictionary=data_dictionary_copy, field=field, axis_param=None)
-            if belong_op == Belong.BELONG:
-                if quant_op is None:  # Check that there are invalid values in the column specified by field
-                    if outlier in data_dictionary_copy[field].values:
-                        return True  # Case 13
-                    else:
-                        return False  # Case 14
+        data_dictionary_copy = get_outliers(data_dictionary=data_dictionary_copy, field=field, axis_param=None)
+        if belong_op == Belong.BELONG:
+            if quant_op is None:  # Check that there are invalid values in the column specified by field
+                if outlier in data_dictionary_copy[field].values:
+                    return True  # Case 13
                 else:
-                    if quant_rel is not None and quant_abs is None:  # Check there are invalid values in the
-                        # column specified by field and if it meets the condition of quant_rel and quant_op
-                        # (relative frequency)
-                        if compare_numbers(
-                                count_abs_frequency(outlier, data_dictionary_copy) / data_dictionary_copy[field].size,
-                                quant_rel, quant_op):
-                            return True  # Case 15
-                        else:
-                            return False  # Case 16
-                    elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
-                        # column specified by field and if it meets the condition of quant_abs and quant_op
-                        # (absolute frequency)
-                        if compare_numbers(count_abs_frequency(outlier, data_dictionary_copy), quant_abs, quant_op):
-                            return True  # Case 17
-                        else:
-                            return False  # Case 18
-                    elif quant_abs is not None and quant_rel is not None:
-                        # If both are provided, a ValueError is raised
-                        raise ValueError(
-                            "quant_rel and quant_abs can't have different values than None at the same time")  # Case 19
-                    else:
-                        raise ValueError(
-                            "Error: quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 20
+                    print_and_log(f"Error - Origin function: {origin_function} - outlier {outlier} not in column {field}")
+                    return False  # Case 14
             else:
-                if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
-                    # Check that there aren't any invalid values in the column specified by field
-                    return True if not (outlier in data_dictionary_copy[field].values) else False  # Case 21 y 22
-                else:
+                if quant_rel is not None and quant_abs is None:  # Check there are invalid values in the
+                    # column specified by field and if it meets the condition of quant_rel and quant_op
+                    # (relative frequency)
+                    if compare_numbers(
+                            count_abs_frequency(outlier, data_dictionary_copy) / data_dictionary_copy[field].size,
+                            quant_rel, quant_op):
+                        return True  # Case 15
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in column {field} does not meet the condition of quant_rel")
+                        return False  # Case 16
+                elif quant_abs is not None and quant_rel is None:  # Check there are invalid values in the
+                    # column specified by field and if it meets the condition of quant_abs and quant_op
+                    # (absolute frequency)
+                    if compare_numbers(count_abs_frequency(outlier, data_dictionary_copy), quant_abs, quant_op):
+                        return True  # Case 17
+                    else:
+                        print_and_log(
+                            f"Error - Origin function: {origin_function} - value in column {field} does not meet the condition of quant_abs")
+                        return False  # Case 18
+                elif quant_abs is not None and quant_rel is not None:
+                    # If both are provided, a ValueError is raised
                     raise ValueError(
-                        "Error: quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 23
+                        "quant_rel and quant_abs can't have different values than None at the same time")  # Case 19
+                else:
+                    raise ValueError("quant_rel or quant_abs should be provided when belong_op is BELONG and quant_op is not None")  # Case 20
+        else:
+            if belong_op == Belong.NOTBELONG and quant_op is None and quant_rel is None and quant_abs is None:
+                # Check that there aren't any invalid values in the column specified by field
+                if not (outlier in data_dictionary_copy[field].values):
+                    return True  # Case 21
+                else:
+                    print_and_log(f"Error - Origin function: {origin_function} - outlier {outlier} in column {field}")
+                    return False  # Case 22
+            else:
+                raise ValueError("quant_rel and quant_abs should be None when belong_op is NOTBELONG")  # Case 23
 
 
-def check_field_type(data_dictionary: pd.DataFrame, field_type: DataType, field: str, origin_function: str = None) -> bool:
+def check_field_type(data_dictionary: pd.DataFrame, field_type: DataType, field: str,
+                     origin_function: str = None) -> bool:
     """
     Check if the field is of the specified type
 
@@ -654,14 +759,15 @@ def check_field_type(data_dictionary: pd.DataFrame, field_type: DataType, field:
     if field not in data_dictionary.columns:
         raise ValueError(f"Column '{field}' not found in data_dictionary.")  # Case 0.5
     if field_type is None:
-        raise ValueError("Error: field_type should be provided")
+        raise ValueError("field_type should be provided")
     else:
         if field_type == DataType.STRING:
             if data_dictionary[field].dtype != object and data_dictionary[field].dtype != str:
                 print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False
         elif field_type == DataType.INTEGER:
-            if data_dictionary[field].dtype != int and data_dictionary[field].dtype != np.int64 and data_dictionary[field].dtype != 'Int64':
+            if data_dictionary[field].dtype != int and data_dictionary[field].dtype != np.int64 and data_dictionary[
+                field].dtype != 'Int64':
                 print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False  # Case 1
         elif field_type == DataType.FLOAT or field_type == DataType.DOUBLE:
@@ -669,10 +775,10 @@ def check_field_type(data_dictionary: pd.DataFrame, field_type: DataType, field:
                 print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False
         elif field_type == DataType.BOOLEAN:
-            if data_dictionary[field].dtype != bool and data_dictionary[field].dtype != pd.bool_:
+            if data_dictionary[field].dtype != bool and data_dictionary[field].dtype != np.bool_:
                 print_and_log(f"Error - Origin function: {origin_function} field {field} is not of type {field_type}")
                 return False
         else:
-            raise ValueError(f"Error: field_type {field_type} is not a valid type")
+            raise ValueError(f"field_type {field_type} is not a valid type")
 
     return True  # Case 2

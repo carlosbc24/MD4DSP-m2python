@@ -97,22 +97,22 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute all the invariants with external dataset tests
         """
         test_methods = [
-            # self.execute_checkInv_FixValue_FixValue,
-            # self.execute_checkInv_FixValue_DerivedValue,
-            # self.execute_checkInv_FixValue_NumOp,
-            # self.execute_checkInv_Interval_FixValue,
-            # self.execute_checkInv_Interval_DerivedValue,
-            # self.execute_checkInv_Interval_NumOp,
-            # self.execute_checkInv_SpecialValue_FixValue,
-            # self.execute_checkInv_SpecialValue_DerivedValue,
-            # self.execute_checkInv_SpecialValue_NumOp,
-            # self.execute_checkInv_MissingValue_MissingValue,
-            # self.execute_checkInv_MathOperation,
-            # self.execute_checkInv_CastType,
-            # self.execute_checkInv_Join,
-            # self.execute_checkInv_filter_rows_primitive,
-            # self.execute_checkInv_filter_rows_range,
-            # self.execute_checkInv_filter_rows_special_values,
+            self.execute_checkInv_FixValue_FixValue,
+            self.execute_checkInv_FixValue_DerivedValue,
+            self.execute_checkInv_FixValue_NumOp,
+            self.execute_checkInv_Interval_FixValue,
+            self.execute_checkInv_Interval_DerivedValue,
+            self.execute_checkInv_Interval_NumOp,
+            self.execute_checkInv_SpecialValue_FixValue,
+            self.execute_checkInv_SpecialValue_DerivedValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_MathOperation,
+            self.execute_checkInv_CastType,
+            self.execute_checkInv_Join,
+            self.execute_checkInv_filter_rows_primitive,
+            self.execute_checkInv_filter_rows_range,
+            self.execute_checkInv_filter_rows_special_values,
             self.execute_checkInv_filter_columns
         ]
 
@@ -10339,9 +10339,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert result_1 is True, "Test Case 1 Failed: Single column, INCLUDE, open interval"
         print_and_log("Test Case 1 Passed: Single column, INCLUDE, open interval")
 
-        # Caso 2: Single column, EXCLUDE, open interval 
+        # Caso 2: Single column, EXCLUDE, open interval
         expected_df_2 = df[~mask_1].copy()
-        
+
         result_2 = self.invariants.check_inv_filter_rows_range(
             data_dictionary_in=df.copy(),
             data_dictionary_out=expected_df_2,
@@ -10359,7 +10359,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         df_test = df.copy()
 
         # Get medians for scaling
-        numeric_col_median = df_test[numeric_col].median() 
+        numeric_col_median = df_test[numeric_col].median()
         other_numeric_col_median = df_test[other_numeric_col].median()
 
         # Create wider ranges to ensure some overlap
@@ -10368,7 +10368,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         mask_3_2 = (df_test[other_numeric_col] > other_numeric_col_median - range_width) & (df_test[other_numeric_col] < other_numeric_col_median + range_width)
 
         # Combine masks and apply both conditions
-        mask_3 = mask_3_1 & mask_3_2  
+        mask_3 = mask_3_1 & mask_3_2
         expected_df_3 = df_test[mask_3].copy()
 
         # Use the actual range values that were used to create the masks
@@ -10377,7 +10377,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             data_dictionary_out=expected_df_3,
             columns=[numeric_col, other_numeric_col],
             left_margin_list=[numeric_col_median - range_width, other_numeric_col_median - range_width],
-            right_margin_list=[numeric_col_median + range_width, other_numeric_col_median + range_width], 
+            right_margin_list=[numeric_col_median + range_width, other_numeric_col_median + range_width],
             closure_type_list=[Closure.openOpen, Closure.openOpen],
             filter_type=FilterType.INCLUDE,
             origin_function="test_sBatch_filter_rows_range_3"
@@ -10385,7 +10385,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 4: Single column, INCLUDE, should fail (incorrect data_out)
         incorrect_df_4 = df.iloc[[0, 1]].copy()  # Deliberately wrong output
-        
+
         result_4 = self.invariants.check_inv_filter_rows_range(
             data_dictionary_in=df.copy(),
             data_dictionary_out=incorrect_df_4,
@@ -10473,7 +10473,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 9: Test with null values, INCLUDE
         df_with_nulls = df.copy()
         df_with_nulls.loc[df_with_nulls.index[0:2], numeric_col] = np.nan
-        
+
         mask_9 = (df_with_nulls[numeric_col] >= quarter_point) & (df_with_nulls[numeric_col] <= mid_point)
         expected_df_9 = df_with_nulls[mask_9].copy()
 
@@ -10553,9 +10553,9 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert result_1 is True, "Test Case 1 Whole Dataset Failed: Single column, INCLUDE, open interval"
         print_and_log("Test Case 1 Whole Dataset Passed: Single column, INCLUDE, open interval")
 
-        # Caso 2: Single column, EXCLUDE, open interval 
+        # Caso 2: Single column, EXCLUDE, open interval
         expected_df_2 = df[~mask_1].copy()
-                
+
         result_2 = self.invariants.check_inv_filter_rows_range(
             data_dictionary_in=df.copy(),
             data_dictionary_out=expected_df_2,
@@ -10573,7 +10573,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         df_test = df.copy()
 
         # Get medians for scaling
-        numeric_col_median = df_test[numeric_col].median() 
+        numeric_col_median = df_test[numeric_col].median()
         other_numeric_col_median = df_test[other_numeric_col].median()
 
         # Create wider ranges to ensure some overlap
@@ -10582,7 +10582,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         mask_3_2 = (df_test[other_numeric_col] > other_numeric_col_median - range_width) & (df_test[other_numeric_col] < other_numeric_col_median + range_width)
 
         # Combine masks and apply both conditions
-        mask_3 = mask_3_1 & mask_3_2  
+        mask_3 = mask_3_1 & mask_3_2
         expected_df_3 = df_test[mask_3].copy()
 
         result_3 = self.invariants.check_inv_filter_rows_range(
@@ -10600,7 +10600,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
         # Caso 4: Single column, INCLUDE, should fail (incorrect data_out)
         incorrect_df_4 = df.iloc[[0, 1]].copy()  # Deliberately wrong output
-        
+
         result_4 = self.invariants.check_inv_filter_rows_range(
             data_dictionary_in=df.copy(),
             data_dictionary_out=incorrect_df_4,
@@ -10687,7 +10687,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 9: Test with null values, INCLUDE
         df_with_nulls = df.copy()
         df_with_nulls.loc[df_with_nulls.index[0:2], numeric_col] = np.nan
-        
+
         mask_9 = (df_with_nulls[numeric_col] >= quarter_point) & (df_with_nulls[numeric_col] <= mid_point)
         expected_df_9 = df_with_nulls[mask_9].copy()
 
@@ -10757,13 +10757,13 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute check_inv_filter_rows_special_values tests using small batch dataset
         """
         df = self.small_batch_dataset.copy()
-        
+
         # Introduce some missing values and invalid values for testing
         df_test = df.copy()
         df_test.loc[df_test.index[0:2], 'track_name'] = np.nan
         df_test.loc[df_test.index[3], 'track_artist'] = None
         df_test.loc[df_test.index[4:5], 'energy'] = np.nan
-        
+
         # Add some invalid values for testing
         df_test.loc[df_test.index[6], 'track_popularity'] = -999  # Invalid popularity
         df_test.loc[df_test.index[7], 'danceability'] = 5.0  # Invalid danceability (should be 0-1)
@@ -10772,7 +10772,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 1: INCLUDE missing values in track_name")
         mask_1 = df_test['track_name'].isna()
         expected_df_1 = df_test[mask_1].copy()
-        
+
         result_1 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_1,
@@ -10783,10 +10783,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         assert result_1 is True, "Test Case 1 Failed: INCLUDE missing values in track_name"
         print_and_log("Test Case 1 Passed: INCLUDE missing values in track_name")
 
-        # Caso 2: EXCLUDE missing values in track_name  
+        # Caso 2: EXCLUDE missing values in track_name
         print_and_log("Test Case 2: EXCLUDE missing values in track_name")
         expected_df_2 = df_test[~mask_1].copy()
-        
+
         result_2 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_2,
@@ -10801,7 +10801,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3: INCLUDE invalid values in track_popularity")
         mask_3 = df_test['track_popularity'].isin([-999])
         expected_df_3 = df_test[mask_3].copy()
-        
+
         result_3 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_3,
@@ -10816,7 +10816,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4: EXCLUDE invalid values in danceability")
         mask_4 = df_test['danceability'].isin([5.0])
         expected_df_4 = df_test[~mask_4].copy()
-        
+
         result_4 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_4,
@@ -10831,7 +10831,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 5: INCLUDE outliers in energy column")
         df_numeric = df_test.copy()
         df_numeric['energy'] = pd.to_numeric(df_numeric['energy'], errors='coerce')
-        
+
         # Create expected output based on outlier detection
         try:
             from functions.contract_invariants import get_outliers
@@ -10839,7 +10839,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
             if 'energy' in outlier_mask_df.columns:
                 mask_5 = outlier_mask_df['energy'] == 1
                 expected_df_5 = df_numeric[mask_5].copy()
-                
+
                 result_5 = self.invariants.check_inv_filter_rows_special_values(
                     data_dictionary_in=df_numeric.copy(),
                     data_dictionary_out=expected_df_5,
@@ -10858,12 +10858,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 6: Multiple columns - INCLUDE missing in track_name AND track_artist")
         mask_6 = df_test['track_name'].isna() & df_test['track_artist'].isna()
         expected_df_6 = df_test[mask_6].copy()
-        
+
         result_6 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_6,
             cols_special_type_values={
-                'track_name': {'missing': []}, 
+                'track_name': {'missing': []},
                 'track_artist': {'missing': []}
             },
             filter_type=FilterType.INCLUDE,
@@ -10876,12 +10876,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 7: Multiple columns - EXCLUDE missing in track_name OR track_artist")
         mask_7 = ~(df_test['track_name'].isna() | df_test['track_artist'].isna())
         expected_df_7 = df_test[mask_7].copy()
-        
+
         result_7 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_7,
             cols_special_type_values={
-                'track_name': {'missing': []}, 
+                'track_name': {'missing': []},
                 'track_artist': {'missing': []}
             },
             filter_type=FilterType.EXCLUDE,
@@ -10895,16 +10895,16 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Add a missing value to track_popularity
         df_mixed = df_test.copy()
         df_mixed.loc[df_mixed.index[8], 'track_popularity'] = np.nan
-        
+
         mask_8 = df_mixed['track_popularity'].isna() | df_mixed['track_popularity'].isin([-999])
         expected_df_8 = df_mixed[mask_8].copy()
-        
+
         result_8 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_mixed.copy(),
             data_dictionary_out=expected_df_8,
             cols_special_type_values={
                 'track_popularity': {
-                    'missing': [], 
+                    'missing': [],
                     'invalid': [-999]
                 }
             },
@@ -10917,7 +10917,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Caso 9: Should fail - incorrect output data
         print_and_log("Test Case 9: Should fail - incorrect output data")
         wrong_df_9 = df_test.iloc[[2, 4]].copy()  # These rows don't have missing track_name values
-        
+
         result_9 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=wrong_df_9,
@@ -10933,7 +10933,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Filter for a value that doesn't exist
         mask_10 = df_test['track_popularity'].isin([-9999])  # Non-existent value
         expected_df_10 = df_test[mask_10].copy()  # Empty DataFrame
-        
+
         result_10 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_10,
@@ -10950,17 +10950,17 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         Execute check_inv_filter_rows_special_values tests using whole dataset
         """
         df = self.rest_of_dataset.copy()
-        
+
         # Introduce some missing values and invalid values for testing
         df_test = df.copy()
-        
+
         # Add missing values to various columns
         missing_indices = df_test.index[:20]  # First 20 rows
         df_test.loc[missing_indices[0:5], 'track_name'] = np.nan
         df_test.loc[missing_indices[5:10], 'track_artist'] = None
         df_test.loc[missing_indices[10:15], 'energy'] = np.nan
         df_test.loc[missing_indices[15:20], 'danceability'] = np.nan
-        
+
         # Add invalid values
         df_test.loc[missing_indices[0:3], 'track_popularity'] = -999  # Invalid popularity
         df_test.loc[missing_indices[3:6], 'danceability'] = 5.0  # Invalid danceability
@@ -10970,7 +10970,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 1 (Whole Dataset): INCLUDE missing values in track_name")
         mask_1 = df_test['track_name'].isna()
         expected_df_1 = df_test[mask_1].copy()
-        
+
         result_1 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_1,
@@ -10985,7 +10985,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 2 (Whole Dataset): EXCLUDE missing values in track_artist")
         mask_2 = df_test['track_artist'].isna()
         expected_df_2 = df_test[~mask_2].copy()
-        
+
         result_2 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_2,
@@ -11000,7 +11000,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 3 (Whole Dataset): INCLUDE invalid values in track_popularity")
         mask_3 = df_test['track_popularity'].isin([-999])
         expected_df_3 = df_test[mask_3].copy()
-        
+
         result_3 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_3,
@@ -11015,7 +11015,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 4 (Whole Dataset): EXCLUDE multiple invalid values in energy")
         mask_4 = df_test['energy'].isin([-0.5])
         expected_df_4 = df_test[~mask_4].copy()
-        
+
         result_4 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_4,
@@ -11030,14 +11030,14 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 5 (Whole Dataset): INCLUDE outliers in danceability column")
         df_numeric = df_test.copy()
         df_numeric['danceability'] = pd.to_numeric(df_numeric['danceability'], errors='coerce')
-        
+
         try:
             from functions.contract_invariants import get_outliers
             outlier_mask_df = get_outliers(df_numeric, 'danceability')
             if 'danceability' in outlier_mask_df.columns:
                 mask_5 = outlier_mask_df['danceability'] == 1
                 expected_df_5 = df_numeric[mask_5].copy()
-                
+
                 result_5 = self.invariants.check_inv_filter_rows_special_values(
                     data_dictionary_in=df_numeric.copy(),
                     data_dictionary_out=expected_df_5,
@@ -11056,12 +11056,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 6 (Whole Dataset): Multiple columns - INCLUDE missing in track_name AND energy")
         mask_6 = df_test['track_name'].isna() & df_test['energy'].isna()
         expected_df_6 = df_test[mask_6].copy()
-        
+
         result_6 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_6,
             cols_special_type_values={
-                'track_name': {'missing': []}, 
+                'track_name': {'missing': []},
                 'energy': {'missing': []}
             },
             filter_type=FilterType.INCLUDE,
@@ -11074,12 +11074,12 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 7 (Whole Dataset): Multiple columns - EXCLUDE missing from track_artist OR danceability")
         mask_7 = ~(df_test['track_artist'].isna() | df_test['danceability'].isna())
         expected_df_7 = df_test[mask_7].copy()
-        
+
         result_7 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_7,
             cols_special_type_values={
-                'track_artist': {'missing': []}, 
+                'track_artist': {'missing': []},
                 'danceability': {'missing': []}
             },
             filter_type=FilterType.EXCLUDE,
@@ -11094,10 +11094,10 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         df_test_8 = df_test.copy()
         # Add some missing values to track_popularity to test mixed types
         df_test_8.loc[missing_indices[18:20], 'track_popularity'] = np.nan
-        
+
         mask_8 = df_test_8['track_popularity'].isin([-999]) | df_test_8['track_popularity'].isna()
         expected_df_8 = df_test_8[mask_8].copy()
-        
+
         result_8 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test_8.copy(),
             data_dictionary_out=expected_df_8,
@@ -11117,7 +11117,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 9 (Whole Dataset): Should fail - incorrect output data")
         # Use only first 50 rows instead of correct filtered result
         wrong_df_9 = df_test.iloc[:50].copy()
-        
+
         result_9 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=wrong_df_9,
@@ -11133,7 +11133,7 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
         # Filter out all rows where danceability is invalid (5.0) or missing
         mask_10 = ~(df_test['danceability'].isin([5.0]) | df_test['danceability'].isna())
         expected_df_10 = df_test[mask_10].copy()
-        
+
         result_10 = self.invariants.check_inv_filter_rows_special_values(
             data_dictionary_in=df_test.copy(),
             data_dictionary_out=expected_df_10,
@@ -11178,4 +11178,3 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
     def execute_WholeDatasetTests_checkInv_filter_columns(self):
         # Caso 1
         pass
-

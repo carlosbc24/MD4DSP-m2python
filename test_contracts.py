@@ -3,6 +3,7 @@ import time
 
 from helpers.auxiliar import format_duration
 from helpers.logger import set_logger
+
 from tests.contract_invariants.simple_test import InvariantsSimpleTest
 from tests.contract_invariants.tests_spotify_dataset import InvariantsExternalDatasetTests
 from tests.contract_pre_post.simple_test import PrePostSimpleTest
@@ -79,8 +80,8 @@ if __name__ == "__main__":
 
     # FINAL TESTS
     # Calculate execution time for each test block (pre-post)
-    # execute_prepost_simple_tests()
-    # execute_prepost_external_dataset_tests()
+    execute_prepost_simple_tests()
+    execute_prepost_external_dataset_tests()
 
     # Calculate execution time for each test block (invariants)
     execute_invariants_simple_tests()

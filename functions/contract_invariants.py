@@ -86,7 +86,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                 if key in mapping_values:
                     val_mapped = str(mapping_values[key][0]).strip()
                 # Check if the value is equal to fix_value_input
-                if value in mapping_values and mapping_values[value][1] == False:
+                if value in mapping_values and mapping_values[value][1] is False:
                     if (not pd.isna(val_out) and type(
                             val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
@@ -98,7 +98,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped.strip()} and is: {val_out.strip()}")
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped.strip()} and is: {val_out.strip()}")
                     else:
                         # Check if the corresponding value in data_dictionary_out matches fix_value_output
                         if val_mapped and val_out != val_mapped:
@@ -109,13 +109,12 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
-                elif value in mapping_values and mapping_values[value][1] == True:
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
+                elif value in mapping_values and mapping_values[value][1] is True:
                     if (not pd.isna(val_out) and type(
                             val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
-                        if val_mapped and val_out != data_dictionary_in.loc[
-                            row_index, column_name].replace(value, val_mapped):
+                        if val_mapped and val_out != data_dictionary_in.loc[row_index, column_name].replace(value, val_mapped):
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
@@ -123,10 +122,9 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
                     else:
-                        if val_mapped and val_out != data_dictionary_in.loc[
-                            row_index, column_name].replace(value, val_mapped):
+                        if val_mapped and val_out != data_dictionary_in.loc[row_index, column_name].replace(value, val_mapped):
                             if belong_op_out == Belong.BELONG:
                                 result = False
                                 print_and_log(
@@ -134,7 +132,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {column_name} value should be: {val_mapped} and is: {val_out}")
     elif field_in is not None:
         if field_in in data_dictionary_in.columns and field_out in data_dictionary_out.columns:
             for row_index, value in data_dictionary_in[field_in].items():
@@ -147,7 +145,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                     val_mapped = str(mapping_values[key][0]).strip()
 
                 # Check if the value is equal to fix_value_input
-                if value in mapping_values and mapping_values[value][1] == False:
+                if value in mapping_values and mapping_values[value][1] is False:
                     if (not pd.isna(val_out) and type(val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
                         if val_mapped and val_out != val_mapped:
@@ -158,7 +156,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {val_mapped.strip()} and is: {val_out.strip()}")
+                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {val_mapped.strip()} and is: {val_out.strip()}")
                     else:
                         # Check if the corresponding value in data_dictionary_out matches fix_value_output
                         if val_mapped and val_out != val_mapped:
@@ -169,8 +167,8 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {val_mapped} and is: {val_out}")
-                elif value in mapping_values and mapping_values[value][1] == True:
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {val_mapped} and is: {val_out}")
+                elif value in mapping_values and mapping_values[value][1] is True:
                     if (not pd.isna(val_out) and type(
                             val_out) == str
                             and (type(mapping_values[value]) == str or type(mapping_values[value]) == object)):
@@ -183,7 +181,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {val_mapped} and is: {val_out}")
+                                    f"Error in function:  {origin_function} Row: {row_index} and column: {field_out} value should be: {val_mapped} and is: {val_out}")
                     else:
                         if val_mapped and val_out != data_dictionary_in.loc[
                             row_index, field_in].replace(value, val_mapped):
@@ -194,7 +192,7 @@ def check_inv_fix_value_fix_value(data_dictionary_in: pd.DataFrame, data_diction
                             elif belong_op_out == Belong.NOTBELONG:
                                 result = True
                                 print_and_log(
-                                    f"Origin function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} and is: {val_out}")
+                                    f"Error in function:  {origin_function} row: {row_index} and column: {field_out} value should be: {mapping_values[value]} and is: {val_out}")
 
         elif field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
             raise ValueError("The field does not exist in the dataframe")
@@ -362,6 +360,7 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
                                     f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {fix_value_output.strip()} but is: {data_dictionary_out.loc[row_index, column_name].strip()}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
+                                print_and_log(f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {fix_value_output.strip()} and is: {data_dictionary_out.loc[row_index, column_name].strip()}")
                     else:
                         if data_dictionary_out.loc[row_index, column_name] != fix_value_output:
                             if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -370,6 +369,8 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
                                     f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, column_name]}")
                             elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                                 result = True
+                                print_and_log(
+                                    f"Error in function:  {origin_function} row: {row_index} and column: {column_name} value should be: {fix_value_output} and is: {data_dictionary_out.loc[row_index, column_name]}")
 
     elif field_in is not None:
         if field_in not in data_dictionary_in.columns or field_out not in data_dictionary_out.columns:
@@ -392,6 +393,8 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
                                 f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output.strip()} but is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
+                            print_and_log(
+                                f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output.strip()} and is: {data_dictionary_out.loc[row_index, field_out].strip()}")
                 else:
                     if data_dictionary_out.loc[row_index, field_out] != fix_value_output:
                         if belong_op_in == Belong.BELONG and belong_op_out == Belong.BELONG:
@@ -400,6 +403,7 @@ def check_inv_interval_fix_value(data_dictionary_in: pd.DataFrame, data_dictiona
                                 f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output} but is: {data_dictionary_out.loc[row_index, field_out]}")
                         elif belong_op_in == Belong.BELONG and belong_op_out == Belong.NOTBELONG:
                             result = True
+                            print_and_log(f"Error in row: {row_index} and column: {field_out} value should be: {fix_value_output} and is: {data_dictionary_out.loc[row_index, field_out]}")
 
     # Checks that the not transformed cells are not modified
     if not keep_no_trans_result:
@@ -1640,7 +1644,7 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
     # For each column, create a condition mask using vectorized operations
     for col, special_dict in cols_special_type_values.items():
         col_condition_mask = pd.Series(False, index=data_dictionary_in.index)
-        
+
         # Process each special type for this column
         for special_type, values in special_dict.items():
             if special_type == 'missing':
@@ -1650,18 +1654,18 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
                 else:
                     current_mask = data_dictionary_in[col].isnull()
                 col_condition_mask = col_condition_mask | current_mask
-                
+
             elif special_type == 'invalid':
                 # Vectorized operation: check if value is in invalid values list
                 if values:
                     current_mask = data_dictionary_in[col].isin(values)
                     col_condition_mask = col_condition_mask | current_mask
-                    
+
             elif special_type == 'outlier':
                 # Use pre-computed outlier mask
                 if values and col in outlier_masks:
                     col_condition_mask = col_condition_mask | outlier_masks[col]
-                    
+
             else:
                 raise ValueError(f"Unknown special type: {special_type}")
 
@@ -1756,10 +1760,10 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
             left_margin = left_margin_list[col_list_idx]
             right_margin = right_margin_list[col_list_idx]
             closure = closure_type_list[col_list_idx]
-            
+
             # Access the cell value using the current row's actual index and the column name
             value_in_cell = data_dictionary_in.loc[row_actual_index, col_name]
-            
+
             condition_met_for_cell = check_interval_condition(value_in_cell, left_margin, right_margin, closure)
 
             if filter_type == FilterType.INCLUDE:
@@ -1772,7 +1776,7 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
                     break  # Stop checking other columns for this row; it will be excluded
             else:
                 raise ValueError(f"Unknown filter type: {filter_type}")
-        
+
         if current_row_should_be_kept:
             kept_row_indices.append(row_actual_index)
 

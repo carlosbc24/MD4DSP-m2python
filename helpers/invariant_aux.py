@@ -1183,8 +1183,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 print_and_log(f"Row: {i} and column: {j} value should be: {closest_value} but is: {data_dictionary_out.loc[i, j]}")
                     else:
                         if pd.isnull(data_dictionary_in.iloc[i, j]):
-                            raise ValueError(
-                                "Error: it's not possible to apply the closest operation to the null values")
+                            raise ValueError("it's not possible to apply the closest operation to the null values")
                         if (data_dictionary_out.loc[i, j] != data_dictionary_in.loc[i, j]) and not (
                                 pd.isnull(data_dictionary_in.loc[i, j]) or pd.isnull(data_dictionary_out.loc[i, j])):
                             keep_no_trans_result = False
@@ -1209,8 +1208,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                                 print_and_log(f"Row: {i} and column: {col_name} value should be: {closest_value} but is: {data_dictionary_out.loc[i, col_name]}")
                     else:
                         if pd.isnull(data_dictionary_in[col_name].iloc[i]):
-                            raise ValueError(
-                                "Error: it's not possible to apply the closest operation to the null values")
+                            raise ValueError("it's not possible to apply the closest operation to the null values")
                         if (data_dictionary_out[col_name].iloc[i] != data_dictionary_in[col_name].iloc[i]) and not (
                                 pd.isnull(data_dictionary_in[col_name].iloc[i]) or pd.isnull(
                                 data_dictionary_out[col_name].iloc[i])):
@@ -1240,8 +1238,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                     else:
                         if pd.isnull(data_dictionary_in.at[
                                          row_idx, col_name]):
-                            raise ValueError(
-                                "Error: it's not possible to apply the closest operation to the null values")
+                            raise ValueError("it's not possible to apply the closest operation to the null values")
                         if (data_dictionary_out.at[row_idx, col_name] != data_dictionary_in.at[
                             row_idx, col_name]) and not (
                                 pd.isnull(data_dictionary_in.loc[row_idx, col_name]) or pd.isnull(
@@ -1273,8 +1270,7 @@ def check_fix_value_closest(data_dictionary_in: pd.DataFrame, data_dictionary_ou
                         print_and_log(f"Row: {i} and column: {field_out} value should be: {closest_value} but is: {data_dictionary_out.loc[i, field_out]}")
             else:
                 if pd.isnull(data_dictionary_in[field_in].iloc[i]):
-                    raise ValueError(
-                        "Error: it's not possible to apply the closest operation to the null values")
+                    raise ValueError("it's not possible to apply the closest operation to the null values")
                 if (data_dictionary_out[field_out].iloc[i] != data_dictionary_in[field_in].iloc[i]) and not (
                         pd.isnull(data_dictionary_in[field_in].iloc[i]) or pd.isnull(
                         data_dictionary_out[field_out].iloc[i])):
@@ -3451,6 +3447,7 @@ def check_special_type_closest(data_dictionary_in: pd.DataFrame, data_dictionary
 
     return True if result else False
 
+
 def check_special_type_most_frequent(data_dictionary_in: pd.DataFrame, data_dictionary_out: pd.DataFrame,
                                      special_type_input: SpecialType, belong_op_out: Belong,
                                      missing_values: list = None, axis_param: int = None, field_in: str = None,
@@ -4395,7 +4392,7 @@ def check_derived_type_col_row_outliers(derivedTypeOutput: DerivedType, data_dic
                             keep_no_trans_result = False
                             print_and_log(f"Error in function:  {origin_function} row: {idx} and column: {field_out} value should be: {data_dictionary_in.at[idx, field_in]} but is: {data_dictionary_out.at[idx, field_out]}")
 
-    if keep_no_trans_result == False:
+    if keep_no_trans_result is False:
         return False
     else:
         return True if result else False

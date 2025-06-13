@@ -48,22 +48,22 @@ class InvariantsSimpleTest(unittest.TestCase):
         Method to execute all simple tests of the functions of the class
         """
         simple_test_methods = [
-            # self.execute_checkInv_FixValue_FixValue,
-            # self.execute_checkInv_FixValue_DerivedValue,
-            # self.execute_checkInv_FixValue_NumOp,
-            # self.execute_checkInv_Interval_FixValue,
-            # self.execute_checkInv_Interval_DerivedValue,
-            # self.execute_checkInv_Interval_NumOp,
-            # self.execute_checkInv_SpecialValue_FixValue,
-            # self.execute_checkInv_SpecialValue_DerivedValue,
-            # self.execute_checkInv_SpecialValue_NumOp,
-            # self.execute_checkInv_MissingValue_MissingValue,
-            # self.execute_checkInv_MathOperation,
-            # self.execute_checkInv_CastType,
-            # self.execute_checkInv_Join,
-            # self.execute_checkInv_filter_rows_primitive,
-            # self.execute_checkInv_filter_rows_range,
-            # self.execute_checkInv_filter_rows_special_values,
+            self.execute_checkInv_FixValue_FixValue,
+            self.execute_checkInv_FixValue_DerivedValue,
+            self.execute_checkInv_FixValue_NumOp,
+            self.execute_checkInv_Interval_FixValue,
+            self.execute_checkInv_Interval_DerivedValue,
+            self.execute_checkInv_Interval_NumOp,
+            self.execute_checkInv_SpecialValue_FixValue,
+            self.execute_checkInv_SpecialValue_DerivedValue,
+            self.execute_checkInv_SpecialValue_NumOp,
+            self.execute_checkInv_MissingValue_MissingValue,
+            self.execute_checkInv_MathOperation,
+            self.execute_checkInv_CastType,
+            self.execute_checkInv_Join,
+            self.execute_checkInv_filter_rows_primitive,
+            self.execute_checkInv_filter_rows_range,
+            self.execute_checkInv_filter_rows_special_values,
             self.execute_checkInv_filter_columns
         ]
 
@@ -6395,7 +6395,7 @@ class InvariantsSimpleTest(unittest.TestCase):
 
         # Test Case 10 modificado
         data_in_10 = pd.DataFrame({
-            'col1': [1, np.nan, 3, 4, np.nan], 
+            'col1': [1, np.nan, 3, 4, np.nan],
             'col2': [10, 20, np.nan, 40, 50]
         })
         mask_10_1 = ~((data_in_10['col1'] > 1) & (data_in_10['col1'] <= 4)) | data_in_10['col1'].isna()
@@ -6414,7 +6414,7 @@ class InvariantsSimpleTest(unittest.TestCase):
             origin_function="test_filter_rows_range_10"
         )
         self.assertTrue(result_10, "Test Case 10 Failed: Filtering with null values - exclude case")
-        
+
     def execute_checkInv_filter_rows_special_values(self):
         # Caso 1: Filtro INCLUDE de valores especiales (MISSING) en una columna
         datadic_in = pd.DataFrame({'A': [1, None, 3, np.nan, 5], 'B': ['x', 'y', None, 'z', 'w']})

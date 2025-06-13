@@ -71,6 +71,8 @@ def check_interval_condition(x: Union[int, float], left_margin: float,
         return True if np.issubdtype(type(x), np.number) and ((x >= left_margin) & (x < right_margin)) else False
     elif closure_type == Closure.closedClosed:
         return True if np.issubdtype(type(x), np.number) and ((x >= left_margin) & (x <= right_margin)) else False
+    else:
+        raise ValueError("No valid closure type")
 
 
 def count_abs_frequency(value, data_dictionary: pd.DataFrame, field: str = None) -> int:

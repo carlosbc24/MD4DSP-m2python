@@ -950,8 +950,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                             data_dictionary_copy.at[i, col] = closest_values[current_value]
                         else:
                             if pd.isnull(data_dictionary_copy.at[i, col]) and special_type_input == SpecialType.MISSING:
-                                raise ValueError(
-                                    "Error: it's not possible to apply the closest operation to the null values")
+                                raise ValueError("it's not possible to apply the closest operation to the null values")
 
             elif axis_param == 0:
                 # Iterate over each column
@@ -976,8 +975,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                             data_dictionary_copy.at[i, col_name] = closest_values[current_value]
                         else:
                             if pd.isnull(data_dictionary_copy.at[i, col_name]) and special_type_input == SpecialType.MISSING:
-                                raise ValueError(
-                                    "Error: it's not possible to apply the closest operation to the null values")
+                                raise ValueError("it's not possible to apply the closest operation to the null values")
             elif axis_param == 1:
                 # Iterate over each row
                 for row_idx in data_dictionary_copy.index:
@@ -1002,7 +1000,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                             data_dictionary_copy.at[row_idx, col_name] = closest_values[current_value]
                         else:
                             if pd.isnull(data_dictionary_copy.at[row_idx, col_name]) and special_type_input == SpecialType.MISSING:
-                                raise ValueError("Error: it's not possible to apply the closest operation to the null values")
+                                raise ValueError("it's not possible to apply the closest operation to the null values")
 
         if special_type_input == SpecialType.OUTLIER:
             if axis_param is None:
@@ -1070,7 +1068,7 @@ def special_type_closest(data_dictionary_copy: pd.DataFrame, special_type_input:
                         data_dictionary_copy.at[i, field_out] = closest_values[current_value]
                     else:
                         if pd.isnull(data_dictionary_copy.at[i, field_in]) and special_type_input == SpecialType.MISSING:
-                            raise ValueError("Error: it's not possible to apply the closest operation to the null values")
+                            raise ValueError("it's not possible to apply the closest operation to the null values")
 
         if special_type_input == SpecialType.OUTLIER:
             minimum_valid, maximum_valid = outlier_closest(data_dictionary=data_dictionary_copy,
