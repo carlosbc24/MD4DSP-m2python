@@ -11171,10 +11171,362 @@ class InvariantsExternalDatasetTests(unittest.TestCase):
 
 
     def execute_SmallBatchTests_checkInv_filter_columns(self):
-        # Caso 1
-        pass
+        """
+        Execute the invariant test using a small batch of the dataset for the function check_inv_filter_columns
+        """
+
+        # Caso 1: BELONG operation - Remove specified columns (keep all others)
+        print_and_log("Test Case 1: BELONG operation - Remove track_name and energy columns")
+        df_in_c1 = self.small_batch_dataset.copy()
+        columns_to_remove = ['track_name', 'energy']
+        expected_df_c1 = df_in_c1.drop(columns=columns_to_remove)
+
+        result_c1 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c1.copy(),
+            data_dictionary_out=expected_df_c1.copy(),
+            columns=columns_to_remove,
+            belong_op=Belong.BELONG,
+            origin_function='test_sBatch_belong_remove_columns'
+        )
+        assert result_c1 is True, "Test Case 1 Failed: Expected True for BELONG operation"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2: NOTBELONG operation - Keep only specified columns
+        print_and_log("Test Case 2: NOTBELONG operation - Keep only track_artist and danceability columns")
+        df_in_c2 = self.small_batch_dataset.copy()
+        columns_to_keep = ['track_artist', 'danceability']
+        expected_df_c2 = df_in_c2[columns_to_keep]
+
+        result_c2 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c2.copy(),
+            data_dictionary_out=expected_df_c2.copy(),
+            columns=columns_to_keep,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_sBatch_notbelong_keep_columns'
+        )
+        assert result_c2 is True, "Test Case 2 Failed: Expected True for NOTBELONG operation"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3: Error case - None columns parameter
+        print_and_log("Test Case 3: Error - columns parameter is None")
+        df_in_c3 = self.small_batch_dataset.copy()
+        expected_df_c3 = df_in_c3.copy()
+
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_c3.copy(),
+                data_dictionary_out=expected_df_c3.copy(),
+                columns=None,
+                belong_op=Belong.BELONG,
+                origin_function='test_sBatch_none_columns'
+            )
+        print_and_log("Test Case 3 Passed: Expected ValueError for None columns, got ValueError")
+
+        # Caso 4: Error case - Non-existent column
+        print_and_log("Test Case 4: Error - Non-existent column in list")
+        df_in_c4 = self.small_batch_dataset.copy()
+        expected_df_c4 = df_in_c4.copy()
+
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_c4.copy(),
+                data_dictionary_out=expected_df_c4.copy(),
+                columns=['non_existent_column'],
+                belong_op=Belong.BELONG,
+                origin_function='test_sBatch_nonexistent_column'
+            )
+        print_and_log("Test Case 4 Passed: Expected ValueError for non-existent column, got ValueError")
+
+        # Caso 5: BELONG operation with single column
+        print_and_log("Test Case 5: BELONG operation - Remove single column (track_popularity)")
+        df_in_c5 = self.small_batch_dataset.copy()
+        columns_to_remove = ['track_popularity']
+        expected_df_c5 = df_in_c5.drop(columns=columns_to_remove)
+
+        result_c5 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c5.copy(),
+            data_dictionary_out=expected_df_c5.copy(),
+            columns=columns_to_remove,
+            belong_op=Belong.BELONG,
+            origin_function='test_sBatch_belong_single_column'
+        )
+        assert result_c5 is True, "Test Case 5 Failed: Expected True for single column BELONG"
+        print_and_log("Test Case 5 Passed: Expected True, got True")
+
+        # Caso 6: NOTBELONG operation with single column
+        print_and_log("Test Case 6: NOTBELONG operation - Keep only track_name column")
+        df_in_c6 = self.small_batch_dataset.copy()
+        columns_to_keep = ['track_name']
+        expected_df_c6 = df_in_c6[columns_to_keep]
+
+        result_c6 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c6.copy(),
+            data_dictionary_out=expected_df_c6.copy(),
+            columns=columns_to_keep,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_sBatch_notbelong_single_column'
+        )
+        assert result_c6 is True, "Test Case 6 Failed: Expected True for single column NOTBELONG"
+        print_and_log("Test Case 6 Passed: Expected True, got True")
+
+        # Caso 7: False result - BELONG with incorrect output (column not removed)
+        print_and_log("Test Case 7: False result - BELONG with incorrect output")
+        df_in_c7 = self.small_batch_dataset.copy()
+        columns_to_remove = ['energy']
+        # Incorrect: don't actually remove the column
+        incorrect_df_c7 = df_in_c7.copy()  # Keep all columns
+
+        result_c7 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c7.copy(),
+            data_dictionary_out=incorrect_df_c7.copy(),
+            columns=columns_to_remove,
+            belong_op=Belong.BELONG,
+            origin_function='test_sBatch_belong_incorrect'
+        )
+        assert result_c7 is False, "Test Case 7 Failed: Expected False for incorrect BELONG output"
+        print_and_log("Test Case 7 Passed: Expected False, got False")
+
+        # Caso 8: False result - NOTBELONG with incorrect output (extra columns)
+        print_and_log("Test Case 8: False result - NOTBELONG with incorrect output")
+        df_in_c8 = self.small_batch_dataset.copy()
+        columns_to_keep = ['track_artist']
+        # Incorrect: keep extra columns
+        incorrect_df_c8 = df_in_c8[['track_artist', 'energy']].copy()  # Extra column
+
+        result_c8 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c8.copy(),
+            data_dictionary_out=incorrect_df_c8.copy(),
+            columns=columns_to_keep,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_sBatch_notbelong_incorrect'
+        )
+        assert result_c8 is False, "Test Case 8 Failed: Expected False for incorrect NOTBELONG output"
+        print_and_log("Test Case 8 Passed: Expected False, got False")
+
+        # Caso 9: BELONG operation with multiple columns (remove most columns)
+        print_and_log("Test Case 9: BELONG operation - Remove multiple columns")
+        df_in_c9 = self.small_batch_dataset.copy()
+        columns_to_remove = ['track_name', 'track_artist', 'energy', 'danceability']
+        expected_df_c9 = df_in_c9.drop(columns=columns_to_remove)
+
+        result_c9 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c9.copy(),
+            data_dictionary_out=expected_df_c9.copy(),
+            columns=columns_to_remove,
+            belong_op=Belong.BELONG,
+            origin_function='test_sBatch_belong_multiple'
+        )
+        assert result_c9 is True, "Test Case 9 Failed: Expected True for multiple column BELONG"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
+
+        # Caso 10: NOTBELONG operation with multiple columns
+        print_and_log("Test Case 10: NOTBELONG operation - Keep multiple columns")
+        df_in_c10 = self.small_batch_dataset.copy()
+        columns_to_keep = ['track_name', 'track_popularity', 'energy']
+        expected_df_c10 = df_in_c10[columns_to_keep]
+
+        result_c10 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_c10.copy(),
+            data_dictionary_out=expected_df_c10.copy(),
+            columns=columns_to_keep,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_sBatch_notbelong_multiple'
+        )
+        assert result_c10 is True, "Test Case 10 Failed: Expected True for multiple column NOTBELONG"
+        print_and_log("Test Case 10 Passed: Expected True, got True")
 
 
     def execute_WholeDatasetTests_checkInv_filter_columns(self):
-        # Caso 1
-        pass
+        """
+        Execute the invariant test using the whole dataset for the function check_inv_filter_columns
+        """
+
+        # Caso 1: BELONG operation on whole dataset - Remove string columns
+        print_and_log("Test Case 1 Whole Dataset: BELONG operation - Remove string columns")
+        df_in_w1 = self.data_dictionary.copy()
+        string_columns = ['track_name', 'track_artist', 'playlist_name', 'playlist_genre', 'playlist_subgenre']
+        # Check which columns actually exist in the dataset
+        existing_string_columns = [col for col in string_columns if col in df_in_w1.columns]
+        expected_df_w1 = df_in_w1.drop(columns=existing_string_columns)
+
+        result_w1 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_w1.copy(),
+            data_dictionary_out=expected_df_w1.copy(),
+            columns=existing_string_columns,
+            belong_op=Belong.BELONG,
+            origin_function='test_wDataset_belong_remove_strings'
+        )
+        assert result_w1 is True, "Test Case 1 Whole Dataset Failed: Expected True for BELONG operation"
+        print_and_log("Test Case 1 Whole Dataset Passed: Expected True, got True")
+
+        # Caso 2: NOTBELONG operation on whole dataset - Keep only numeric columns
+        print_and_log("Test Case 2 Whole Dataset: NOTBELONG operation - Keep only numeric columns")
+        df_in_w2 = self.data_dictionary.copy()
+        numeric_columns = ['track_popularity', 'danceability', 'energy', 'valence', 'tempo']
+        # Check which columns actually exist
+        existing_numeric_columns = [col for col in numeric_columns if col in df_in_w2.columns]
+        expected_df_w2 = df_in_w2[existing_numeric_columns]
+
+        result_w2 = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=df_in_w2.copy(),
+            data_dictionary_out=expected_df_w2.copy(),
+            columns=existing_numeric_columns,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_wDataset_notbelong_keep_numeric'
+        )
+        assert result_w2 is True, "Test Case 2 Whole Dataset Failed: Expected True for NOTBELONG operation"
+        print_and_log("Test Case 2 Whole Dataset Passed: Expected True, got True")
+
+        # Caso 3: BELONG operation - Remove single column from whole dataset
+        print_and_log("Test Case 3 Whole Dataset: BELONG operation - Remove single column")
+        df_in_w3 = self.data_dictionary.copy()
+        # Use the first column that exists
+        if len(df_in_w3.columns) > 0:
+            column_to_remove = [df_in_w3.columns[0]]
+            expected_df_w3 = df_in_w3.drop(columns=column_to_remove)
+
+            result_w3 = self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w3.copy(),
+                data_dictionary_out=expected_df_w3.copy(),
+                columns=column_to_remove,
+                belong_op=Belong.BELONG,
+                origin_function='test_wDataset_belong_single'
+            )
+            assert result_w3 is True, "Test Case 3 Whole Dataset Failed: Expected True for single column BELONG"
+            print_and_log("Test Case 3 Whole Dataset Passed: Expected True, got True")
+        else:
+            print_and_log("Test Case 3 Whole Dataset Skipped: No columns available")
+
+        # Caso 4: NOTBELONG operation - Keep single column from whole dataset
+        print_and_log("Test Case 4 Whole Dataset: NOTBELONG operation - Keep single column")
+        df_in_w4 = self.data_dictionary.copy()
+        if len(df_in_w4.columns) > 0:
+            column_to_keep = [df_in_w4.columns[-1]]  # Use last column
+            expected_df_w4 = df_in_w4[column_to_keep]
+
+            result_w4 = self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w4.copy(),
+                data_dictionary_out=expected_df_w4.copy(),
+                columns=column_to_keep,
+                belong_op=Belong.NOTBELONG,
+                origin_function='test_wDataset_notbelong_single'
+            )
+            assert result_w4 is True, "Test Case 4 Whole Dataset Failed: Expected True for single column NOTBELONG"
+            print_and_log("Test Case 4 Whole Dataset Passed: Expected True, got True")
+        else:
+            print_and_log("Test Case 4 Whole Dataset Skipped: No columns available")
+
+        # Caso 5: Error case with whole dataset - Non-existent column
+        print_and_log("Test Case 5 Whole Dataset: Error - Non-existent column")
+        df_in_w5 = self.data_dictionary.copy()
+        expected_df_w5 = df_in_w5.copy()
+
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w5.copy(),
+                data_dictionary_out=expected_df_w5.copy(),
+                columns=['definitely_not_a_column_name_123'],
+                belong_op=Belong.BELONG,
+                origin_function='test_wDataset_nonexistent'
+            )
+        print_and_log("Test Case 5 Whole Dataset Passed: Expected ValueError for non-existent column, got ValueError")
+
+        # Caso 6: False result with whole dataset - BELONG incorrect output
+        print_and_log("Test Case 6 Whole Dataset: False result - BELONG incorrect output")
+        df_in_w6 = self.data_dictionary.copy()
+        if 'track_popularity' in df_in_w6.columns:
+            columns_to_remove = ['track_popularity']
+            # Incorrect: don't remove the column
+            incorrect_df_w6 = df_in_w6.copy()
+
+            result_w6 = self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w6.copy(),
+                data_dictionary_out=incorrect_df_w6.copy(),
+                columns=columns_to_remove,
+                belong_op=Belong.BELONG,
+                origin_function='test_wDataset_belong_incorrect'
+            )
+            assert result_w6 is False, "Test Case 6 Whole Dataset Failed: Expected False for incorrect output"
+            print_and_log("Test Case 6 Whole Dataset Passed: Expected False, got False")
+        else:
+            print_and_log("Test Case 6 Whole Dataset Skipped: track_popularity column not found")
+
+        # Caso 7: False result with whole dataset - NOTBELONG incorrect output
+        print_and_log("Test Case 7 Whole Dataset: False result - NOTBELONG incorrect output")
+        df_in_w7 = self.data_dictionary.copy()
+        if len(df_in_w7.columns) >= 2:
+            columns_to_keep = [df_in_w7.columns[0]]
+            # Incorrect: include extra columns
+            incorrect_df_w7 = df_in_w7[df_in_w7.columns[:2]].copy()  # Keep 2 columns instead of 1
+
+            result_w7 = self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w7.copy(),
+                data_dictionary_out=incorrect_df_w7.copy(),
+                columns=columns_to_keep,
+                belong_op=Belong.NOTBELONG,
+                origin_function='test_wDataset_notbelong_incorrect'
+            )
+            assert result_w7 is False, "Test Case 7 Whole Dataset Failed: Expected False for incorrect output"
+            print_and_log("Test Case 7 Whole Dataset Passed: Expected False, got False")
+        else:
+            print_and_log("Test Case 7 Whole Dataset Skipped: Not enough columns")
+
+        # Caso 8: BELONG operation - Remove half of the columns
+        print_and_log("Test Case 8 Whole Dataset: BELONG operation - Remove half of columns")
+        df_in_w8 = self.data_dictionary.copy()
+        if len(df_in_w8.columns) >= 4:
+            num_cols_to_remove = len(df_in_w8.columns) // 2
+            columns_to_remove = df_in_w8.columns[:num_cols_to_remove].tolist()
+            expected_df_w8 = df_in_w8.drop(columns=columns_to_remove)
+
+            result_w8 = self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w8.copy(),
+                data_dictionary_out=expected_df_w8.copy(),
+                columns=columns_to_remove,
+                belong_op=Belong.BELONG,
+                origin_function='test_wDataset_belong_half'
+            )
+            assert result_w8 is True, "Test Case 8 Whole Dataset Failed: Expected True for half column removal"
+            print_and_log("Test Case 8 Whole Dataset Passed: Expected True, got True")
+        else:
+            print_and_log("Test Case 8 Whole Dataset Skipped: Not enough columns")
+
+        # Caso 9: NOTBELONG operation - Keep half of the columns
+        print_and_log("Test Case 9 Whole Dataset: NOTBELONG operation - Keep half of columns")
+        df_in_w9 = self.data_dictionary.copy()
+        if len(df_in_w9.columns) >= 4:
+            num_cols_to_keep = len(df_in_w9.columns) // 2
+            columns_to_keep = df_in_w9.columns[-num_cols_to_keep:].tolist()  # Keep last half
+            expected_df_w9 = df_in_w9[columns_to_keep]
+
+            result_w9 = self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w9.copy(),
+                data_dictionary_out=expected_df_w9.copy(),
+                columns=columns_to_keep,
+                belong_op=Belong.NOTBELONG,
+                origin_function='test_wDataset_notbelong_half'
+            )
+            assert result_w9 is True, "Test Case 9 Whole Dataset Failed: Expected True for half column keep"
+            print_and_log("Test Case 9 Whole Dataset Passed: Expected True, got True")
+        else:
+            print_and_log("Test Case 9 Whole Dataset Skipped: Not enough columns")
+
+        # Caso 10: Edge case - Empty columns list handling
+        print_and_log("Test Case 10 Whole Dataset: Edge case - Empty columns list")
+        df_in_w10 = self.data_dictionary.copy()
+
+        try:
+            # Test with empty list - this might be handled differently
+            result_w10 = self.invariants.check_inv_filter_columns(
+                data_dictionary_in=df_in_w10.copy(),
+                data_dictionary_out=df_in_w10.copy(),  # No change expected for empty list
+                columns=[],
+                belong_op=Belong.BELONG,
+                origin_function='test_wDataset_empty_list'
+            )
+            # If it doesn't raise an error, it should return True (no columns to remove/keep)
+            assert result_w10 is True, "Test Case 10 Whole Dataset Failed: Expected True for empty columns list"
+            print_and_log("Test Case 10 Whole Dataset Passed: Expected True for empty list, got True")
+        except ValueError:
+            # If it raises ValueError for empty list, that's also acceptable behavior
+            print_and_log("Test Case 10 Whole Dataset Passed: Expected ValueError for empty list, got ValueError")

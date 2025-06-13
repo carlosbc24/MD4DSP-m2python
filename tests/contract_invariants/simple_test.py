@@ -6534,4 +6534,202 @@ class InvariantsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 10 Executed: EXCLUDE OUTLIER in A (manual mask)")
 
     def execute_checkInv_filter_columns(self):
-        pass
+        """
+        Execute simple tests for the check_inv_filter_columns function
+        """
+        
+        # Caso 1: BELONG operation - Remove specified columns (basic case)
+        print_and_log("Test Case 1: BELONG operation - Remove columns 'B' and 'C'")
+        datadic_in = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9], 'D': [10, 11, 12]})
+        expected_df = pd.DataFrame({'A': [1, 2, 3], 'D': [10, 11, 12]})
+        columns_to_remove = ['B', 'C']
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in.copy(),
+            data_dictionary_out=expected_df.copy(),
+            columns=columns_to_remove,
+            belong_op=Belong.BELONG,
+            origin_function='test_belong_remove_columns'
+        )
+        assert result is True, "Test Case 1 Failed: Expected True, but got False"
+        print_and_log("Test Case 1 Passed: Expected True, got True")
+
+        # Caso 2: NOTBELONG operation - Keep only specified columns
+        print_and_log("Test Case 2: NOTBELONG operation - Keep only columns 'A' and 'C'")
+        datadic_in_2 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9], 'D': [10, 11, 12]})
+        expected_df_2 = pd.DataFrame({'A': [1, 2, 3], 'C': [7, 8, 9]})
+        columns_to_keep = ['A', 'C']
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_2.copy(),
+            data_dictionary_out=expected_df_2.copy(),
+            columns=columns_to_keep,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_notbelong_keep_columns'
+        )
+        assert result is True, "Test Case 2 Failed: Expected True, but got False"
+        print_and_log("Test Case 2 Passed: Expected True, got True")
+
+        # Caso 3: BELONG operation - Remove single column
+        print_and_log("Test Case 3: BELONG operation - Remove single column 'B'")
+        datadic_in_3 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
+        expected_df_3 = pd.DataFrame({'A': [1, 2, 3], 'C': [7, 8, 9]})
+        columns_to_remove_3 = ['B']
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_3.copy(),
+            data_dictionary_out=expected_df_3.copy(),
+            columns=columns_to_remove_3,
+            belong_op=Belong.BELONG,
+            origin_function='test_belong_single_column'
+        )
+        assert result is True, "Test Case 3 Failed: Expected True, but got False"
+        print_and_log("Test Case 3 Passed: Expected True, got True")
+
+        # Caso 4: NOTBELONG operation - Keep single column
+        print_and_log("Test Case 4: NOTBELONG operation - Keep only column 'A'")
+        datadic_in_4 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
+        expected_df_4 = pd.DataFrame({'A': [1, 2, 3]})
+        columns_to_keep_4 = ['A']
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_4.copy(),
+            data_dictionary_out=expected_df_4.copy(),
+            columns=columns_to_keep_4,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_notbelong_single_column'
+        )
+        assert result is True, "Test Case 4 Failed: Expected True, but got False"
+        print_and_log("Test Case 4 Passed: Expected True, got True")
+
+        # Caso 5: Error case - None columns parameter
+        print_and_log("Test Case 5: Error - columns parameter is None")
+        datadic_in_5 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+        expected_df_5 = datadic_in_5.copy()
+        
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_columns(
+                data_dictionary_in=datadic_in_5.copy(),
+                data_dictionary_out=expected_df_5.copy(),
+                columns=None,
+                belong_op=Belong.BELONG,
+                origin_function='test_none_columns'
+            )
+        print_and_log("Test Case 5 Passed: Expected ValueError for None columns, got ValueError")
+
+        # Caso 6: Error case - Non-existent column
+        print_and_log("Test Case 6: Error - Non-existent column in list")
+        datadic_in_6 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+        expected_df_6 = datadic_in_6.copy()
+        
+        with self.assertRaises(ValueError):
+            self.invariants.check_inv_filter_columns(
+                data_dictionary_in=datadic_in_6.copy(),
+                data_dictionary_out=expected_df_6.copy(),
+                columns=['non_existent_column'],
+                belong_op=Belong.BELONG,
+                origin_function='test_nonexistent_column'
+            )
+        print_and_log("Test Case 6 Passed: Expected ValueError for non-existent column, got ValueError")
+
+        # Caso 7: False result - BELONG with incorrect output (column not removed)
+        print_and_log("Test Case 7: False result - BELONG with incorrect output")
+        datadic_in_7 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
+        # Incorrect: don't actually remove the column B
+        incorrect_df_7 = datadic_in_7.copy()  # Keep all columns
+        columns_to_remove_7 = ['B']
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_7.copy(),
+            data_dictionary_out=incorrect_df_7.copy(),
+            columns=columns_to_remove_7,
+            belong_op=Belong.BELONG,
+            origin_function='test_belong_incorrect'
+        )
+        assert result is False, "Test Case 7 Failed: Expected False, but got True"
+        print_and_log("Test Case 7 Passed: Expected False, got False")
+
+        # Caso 8: False result - NOTBELONG with incorrect output (extra columns)
+        print_and_log("Test Case 8: False result - NOTBELONG with incorrect output")
+        datadic_in_8 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
+        columns_to_keep_8 = ['A']
+        # Incorrect: keep extra columns
+        incorrect_df_8 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})  # Extra column B
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_8.copy(),
+            data_dictionary_out=incorrect_df_8.copy(),
+            columns=columns_to_keep_8,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_notbelong_incorrect'
+        )
+        assert result is False, "Test Case 8 Failed: Expected False, but got True"
+        print_and_log("Test Case 8 Passed: Expected False, got False")
+
+        # Caso 9: BELONG operation with all columns except one
+        print_and_log("Test Case 9: BELONG operation - Remove all columns except one")
+        datadic_in_9 = pd.DataFrame({'A': [1, 2], 'B': [3, 4], 'C': [5, 6], 'D': [7, 8]})
+        expected_df_9 = pd.DataFrame({'D': [7, 8]})
+        columns_to_remove_9 = ['A', 'B', 'C']
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_9.copy(),
+            data_dictionary_out=expected_df_9.copy(),
+            columns=columns_to_remove_9,
+            belong_op=Belong.BELONG,
+            origin_function='test_belong_multiple_remove'
+        )
+        assert result is True, "Test Case 9 Failed: Expected True, but got False"
+        print_and_log("Test Case 9 Passed: Expected True, got True")
+
+        # Caso 10: NOTBELONG operation with multiple columns to keep
+        print_and_log("Test Case 10: NOTBELONG operation - Keep multiple columns")
+        datadic_in_10 = pd.DataFrame({'A': [1, 2], 'B': [3, 4], 'C': [5, 6], 'D': [7, 8], 'E': [9, 10]})
+        expected_df_10 = pd.DataFrame({'B': [3, 4], 'D': [7, 8], 'E': [9, 10]})
+        columns_to_keep_10 = ['B', 'D', 'E']
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_10.copy(),
+            data_dictionary_out=expected_df_10.copy(),
+            columns=columns_to_keep_10,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_notbelong_multiple_keep'
+        )
+        assert result is True, "Test Case 10 Failed: Expected True, but got False"
+        print_and_log("Test Case 10 Passed: Expected True, got True")
+
+        # Caso 11: Edge case - NOTBELONG with missing column in output
+        print_and_log("Test Case 11: False result - NOTBELONG with missing required column")
+        datadic_in_11 = pd.DataFrame({'A': [1, 2], 'B': [3, 4], 'C': [5, 6]})
+        columns_to_keep_11 = ['A', 'B']
+        # Incorrect: missing column A that should be kept
+        incorrect_df_11 = pd.DataFrame({'B': [3, 4]})  # Missing column A
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_11.copy(),
+            data_dictionary_out=incorrect_df_11.copy(),
+            columns=columns_to_keep_11,
+            belong_op=Belong.NOTBELONG,
+            origin_function='test_notbelong_missing_required'
+        )
+        assert result is False, "Test Case 11 Failed: Expected False, but got True"
+        print_and_log("Test Case 11 Passed: Expected False, got False")
+
+        # Caso 12: Edge case - BELONG with column that should be removed still present
+        print_and_log("Test Case 12: False result - BELONG with column that should be removed")
+        datadic_in_12 = pd.DataFrame({'A': [1, 2], 'B': [3, 4], 'C': [5, 6]})
+        columns_to_remove_12 = ['A', 'C']
+        # Incorrect: column A is still present
+        incorrect_df_12 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})  # Column A should be removed
+        
+        result = self.invariants.check_inv_filter_columns(
+            data_dictionary_in=datadic_in_12.copy(),
+            data_dictionary_out=incorrect_df_12.copy(),
+            columns=columns_to_remove_12,
+            belong_op=Belong.BELONG,
+            origin_function='test_belong_column_not_removed'
+        )
+        assert result is False, "Test Case 12 Failed: Expected False, but got True"
+        print_and_log("Test Case 12 Passed: Expected False, got False")
+
+        print_and_log("All filter_columns tests completed successfully!")
