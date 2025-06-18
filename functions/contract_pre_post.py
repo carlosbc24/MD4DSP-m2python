@@ -149,7 +149,7 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
         col = data_dictionary[field]
 
         # DataSmell - Precision Inconsistency - Check if the number of decimals in the column matches the expected number
-        if pd.api.types.is_float_dtype(data_dictionary[field]):
+        if pd.api.types.is_float_dtype(data_dictionary[field]) and numDecimals is not None:
             decimals_in_column = data_dictionary[field].dropna().apply(
                 lambda x: len(str(x).split(".")[1]) if "." in str(x) else 0
             )
