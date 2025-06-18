@@ -43,7 +43,8 @@ def check_field_range(fields: list, data_dictionary: pd.DataFrame, belong_op: Be
 
 def check_fix_value_range(value: Union[str, float, datetime, int], data_dictionary: pd.DataFrame,
                           belong_op: Belong, is_substring: bool = False, field: str = None, quant_abs: int = None,
-                          quant_rel: float = None, quant_op: Operator = None, origin_function: str = None) -> bool:
+                          quant_rel: float = None, quant_op: Operator = None, numDecimals = None,
+                          origin_function: str = None) -> bool:
     """
     Check if fields meets the condition of belong_op in data_dictionary
 
@@ -146,6 +147,16 @@ def check_fix_value_range(value: Union[str, float, datetime, int], data_dictiona
         if field not in data_dictionary.columns:
             raise ValueError(f"Column '{field}' not found in data_dictionary.")
         col = data_dictionary[field]
+
+        # DataSmell - Precision Inconsistency - Check if the number of decimals in the column matches the expected number
+        if pd.api.types.is_float_dtype(data_dictionary[field]):
+            decimals_in_column = data_dictionary[field].dropna().apply(
+                lambda x: len(str(x).split(".")[1]) if "." in str(x) else 0
+            )
+            if not decimals_in_column.nunique() == 1 or decimals_in_column.iloc[0] != expected_decimals:
+                print_and_log(
+                    f"Warning - The number of decimals in column {field} does not match the expected {expected_decimals}."
+                )
 
         if value is None:
             mask = col.isnull()
