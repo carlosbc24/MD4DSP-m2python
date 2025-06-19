@@ -35,7 +35,7 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
             raise ValueError(f"Field '{field}' does not exist in the DataFrame. Skipping precision check.")
         elif not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             # Case 1: The field is not numeric
-            print_and_log(f"Warning - Field {field} is not numeric. Skipping precision check.", level=logging.WARN)
+            print(f"Warning - Field {field} is not numeric. Skipping precision check.")
             return False
 
         # DataSmell - Precision Inconsistency
@@ -50,14 +50,14 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
 
             if num_unique_decimals > 1:
                 # Case 2: Inconsistent decimal places
-                print_and_log(
+                print(
                     f"Warning - Column {field} has inconsistent number of decimal places. Found {unique_decimals} "
-                    f"different decimal lengths.", level=logging.WARN)
+                    f"different decimal lengths.")
                 return False
             elif num_unique_decimals == 1 and unique_decimals[0] != expected_decimals:
                 # Case 3: Wrong number of decimals
-                print_and_log(
-                    f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were expected.", level=logging.WARN)
+                print(
+                    f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were expected.")
                 return False
 
         return True
