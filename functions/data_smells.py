@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 from helpers.logger import print_and_log
@@ -15,30 +17,47 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
     """
     # Check if the expected_decimals is a non-negative integer
     if not isinstance(expected_decimals, int) or expected_decimals < 0:
-        print("Warning - Expected decimals must be a non-negative integer. Skipping precision check.")
-        return
+        raise TypeError("Expected number of decimals must be a positive integer")
 
     # Check precision consistency for all numeric fields
     if field is None:
         # If no specific field is provided, check all numeric fields
         numeric_fields = data_dictionary.select_dtypes(include=['float64', 'Int64', 'int64']).columns
+        results = []
         for numeric_field in numeric_fields:
-            check_precision_consistency(data_dictionary, expected_decimals, numeric_field)
+            result = check_precision_consistency(data_dictionary, expected_decimals, numeric_field)
+            results.append(result)
+        return all(results)
 
     # If a specific field is provided, check that field
     else:
-        if field not in data_dictionary.columns:  # Check if the field exists in the DataFrame
-            print(f"Warning - Field {field} does not exist in the data dictionary.")
-            return
-        elif not pd.api.types.is_numeric_dtype(data_dictionary[field]):  # Check if the field is numeric
-            print(f"Warning - Field {field} is not numeric. Skipping precision check.")
-            return
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame. Skipping precision check.")
+        elif not pd.api.types.is_numeric_dtype(data_dictionary[field]):
+            # Case 1: The field is not numeric
+            print_and_log(f"Warning - Field {field} is not numeric. Skipping precision check.", level=logging.WARN)
+            return False
 
-        # DataSmell - Precision Inconsistency - Check if the number of decimals in the column matches the expected number
-        if pd.api.types.is_float_dtype(data_dictionary[field]):
+        # DataSmell - Precision Inconsistency
+        if pd.api.types.is_numeric_dtype(data_dictionary[field]):
             decimals_in_column = data_dictionary[field].dropna().apply(
-                lambda x: len(str(x).split(".")[1]) if "." in str(x) else 0)
+                lambda x: len(str(float(x)).split(".")[1].rstrip('0')) if '.' in str(float(x)) else 0
+            )
 
-            if not decimals_in_column.nunique() == 1 or decimals_in_column.iloc[0] != expected_decimals:
+            # Count unique decimal lengths in the column
+            unique_decimals = decimals_in_column.unique()
+            num_unique_decimals = len(unique_decimals)
+
+            if num_unique_decimals > 1:
+                # Case 2: Inconsistent decimal places
                 print_and_log(
-                    f"Warning - The number of decimals in column {field} does not match the expected {expected_decimals}.")
+                    f"Warning - Column {field} has inconsistent number of decimal places. Found {unique_decimals} "
+                    f"different decimal lengths.", level=logging.WARN)
+                return False
+            elif num_unique_decimals == 1 and unique_decimals[0] != expected_decimals:
+                # Case 3: Wrong number of decimals
+                print_and_log(
+                    f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were expected.", level=logging.WARN)
+                return False
+
+        return True
