@@ -51,7 +51,7 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
             if num_unique_decimals > 1:
                 # Case 2: Inconsistent decimal places
                 print(
-                    f"Warning - Column {field} has inconsistent number of decimal places. Found {unique_decimals} "
+                    f"Warning - Column {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
                     f"different decimal lengths.")
                 return False
             elif num_unique_decimals == 1 and unique_decimals[0] != expected_decimals:
