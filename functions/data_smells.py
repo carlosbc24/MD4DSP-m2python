@@ -107,9 +107,6 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
 
         # Find values that are in common list but not in model definition
         undefined_values = unique_values.intersection(common_set) - missing_invalid_set
-        print("Common values in the field:", common_set)
-        print("Missing or invalid values defined in the data model:", missing_invalid_set)
-        print("Undefined values found:", undefined_values)
 
         if undefined_values:
             message = (f"Warning - Possible data smell: The missing or invalid values {list(undefined_values)} in "
