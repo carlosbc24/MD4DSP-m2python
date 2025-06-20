@@ -40,6 +40,7 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         """
         test_methods = [
             self.execute_check_precision_consistency_ExternalDatasetTests,
+            self.execute_check_missing_invalid_value_consistency_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -197,4 +198,150 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 20 Passed: Expected False, got False")
 
         print_and_log("\nFinished testing check_precision_consistency function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_missing_invalid_value_consistency_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_missing_invalid_value_consistency function
+        Tests various scenarios with the Spotify dataset
+        """
+        print_and_log("Testing check_missing_invalid_value_consistency Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Common test values
+        invalid_common = ['inf', '-inf', 'nan']
+        missing_common = ['', '?', '.', 'null', 'none', 'na']
+
+        # Test 1: Check track_name column (should be clean)
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], missing_common, 'track_name')
+        assert result is False, "Test Case 1 Failed"
+        print_and_log("Test Case 1 Passed: track_name column check successful")
+
+        # Test 2: Modify track_name to include missing values
+        test_df.loc[0:10, 'track_name'] = 'na'
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], missing_common, 'track_name')
+        assert result is False, "Test Case 2 Failed"
+        print_and_log("Test Case 2 Passed: Modified track_name with missing values detected")
+
+        # Test 3: Check danceability column with invalid values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'danceability')
+        assert result is True, "Test Case 3 Failed"
+        print_and_log("Test Case 3 Passed: danceability column check successful")
+
+        # Test 4: Modify danceability to include invalid values
+        test_df.loc[0:5, 'danceability'] = 'inf'
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'danceability')
+        assert result is False, "Test Case 4 Failed"
+        print_and_log("Test Case 4 Passed: Modified danceability with invalid values detected")
+
+        # Test 5: Check energy column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'energy')
+        assert result is True, "Test Case 5 Failed"
+        print_and_log("Test Case 5 Passed: energy column check successful")
+
+        # Test 6: Check key column with custom missing values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, ['-1'], missing_common, 'key')
+        assert result is True, "Test Case 6 Failed"
+        print_and_log("Test Case 6 Passed: key column with custom missing values check successful")
+
+        # Test 7: Check loudness column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'loudness')
+        assert result is True, "Test Case 7 Failed"
+        print_and_log("Test Case 7 Passed: loudness column check successful")
+
+        # Test 8: Modify loudness to include invalid values
+        test_df.loc[0:5, 'loudness'] = 'nan'
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'loudness')
+        assert result is False, "Test Case 8 Failed"
+        print_and_log("Test Case 8 Passed: Modified loudness with invalid values detected")
+
+        # Test 9: Check mode column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], missing_common, 'mode')
+        assert result is True, "Test Case 9 Failed"
+        print_and_log("Test Case 9 Passed: mode column check successful")
+
+        # Test 10: Check speechiness column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'speechiness')
+        assert result is True, "Test Case 10 Failed"
+        print_and_log("Test Case 10 Passed: speechiness column check successful")
+
+        # Test 11: Check acousticness with mixed invalid values
+        test_df.loc[0:3, 'acousticness'] = 'inf'
+        test_df.loc[4:7, 'acousticness'] = '-inf'
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'acousticness')
+        assert result is False, "Test Case 11 Failed"
+        print_and_log("Test Case 11 Passed: acousticness with mixed invalid values detected")
+
+        # Test 12: Check instrumentalness column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'instrumentalness')
+        assert result is True, "Test Case 12 Failed"
+        print_and_log("Test Case 12 Passed: instrumentalness column check successful")
+
+        # Test 13: Check liveness column with custom invalid values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, ['999'], invalid_common, 'liveness')
+        assert result is True, "Test Case 13 Failed"
+        print_and_log("Test Case 13 Passed: liveness with custom invalid values check successful")
+
+        # Test 14: Check valence column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'valence')
+        assert result is True, "Test Case 14 Failed"
+        print_and_log("Test Case 14 Passed: valence column check successful")
+
+        # Test 15: Check tempo column with modified values
+        test_df.loc[0:5, 'tempo'] = 'null'
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], missing_common, 'tempo')
+        assert result is False, "Test Case 15 Failed"
+        print_and_log("Test Case 15 Passed: Modified tempo with missing values detected")
+
+        # Test 16: Check duration_ms column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, 'duration_ms')
+        assert result is True, "Test Case 16 Failed"
+        print_and_log("Test Case 16 Passed: duration_ms column check successful")
+
+        # Test 17: Check all numeric columns at once
+        numeric_columns = test_df.select_dtypes(include=['float64', 'Int64']).columns
+        all_valid = all(self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], invalid_common, col) for col in numeric_columns)
+        assert all_valid, "Test Case 17 Failed"
+        print_and_log("Test Case 17 Passed: All numeric columns check successful")
+
+        # Test 18: Check all string columns with missing values
+        string_columns = test_df.select_dtypes(include=['object']).columns
+        all_valid = all(self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], missing_common, col) for col in string_columns)
+        assert not all_valid, "Test Case 18 Failed"
+        print_and_log("Test Case 18 Passed: All string columns check successful")
+
+        # Test 19: Check with empty model definitions
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], [], 'track_name')
+        assert result is True, "Test Case 19 Failed"
+        print_and_log("Test Case 19 Passed: Empty model definitions check successful")
+
+        # Test 20: Check with all columns at once
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            test_df, [], missing_common + invalid_common)
+        assert result is False, "Test Case 20 Failed"
+        print_and_log("Test Case 20 Passed: All columns simultaneous check successful")
+
+        print_and_log("\nFinished testing check_missing_invalid_value_consistency function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")

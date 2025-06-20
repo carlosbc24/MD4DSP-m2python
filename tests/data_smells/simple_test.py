@@ -39,6 +39,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
         """
         simple_test_methods = [
             self.execute_check_precision_consistency_SimpleTests,
+            self.execute_check_missing_invalid_value_consistency_SimpleTests
         ]
 
         print_and_log("")
@@ -156,3 +157,162 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         print_and_log("\nFinished testing check_precision_consistency function")
         print_and_log("")
+
+    def execute_check_missing_invalid_value_consistency_SimpleTests(self):
+        """
+        Execute simple tests for check_missing_invalid_value_consistency function.
+        Tests various scenarios with simple test data.
+        """
+        print_and_log("")
+        print_and_log("Testing check_missing_invalid_value_consistency function...")
+
+        # Create test data with various cases - All arrays must have the same length (5)
+        data = {
+            'clean_column': ['value1', 'value2', 'value3', 'value4', 'value5'],
+            'missing_values': ['value1', '', 'null', 'none', 'na'],
+            'invalid_values': ['1.5', 'inf', '-inf', 'nan', '2.5'],
+            'mixed_values': ['value1', 'inf', 'na', 'none', '-inf'],
+            'custom_missing': ['MISSING', 'N/A', 'undefined', 'MISSING', 'N/A'],
+            'custom_invalid': ['ERROR', 'INFINITY', 'NOT_NUMBER', 'ERROR', 'INFINITY'],
+            'empty_column': ['', '', '', '', ''],
+            'all_valid': ['1', '2', '3', '4', '5'],
+            'case_sensitive': ['NA', 'Null', 'None', 'NA', 'Null'],
+            'mixed_cases': ['INF', 'NaN', 'NULL', 'inf', 'nan']
+        }
+        df = pd.DataFrame(data)
+
+        # Test cases
+        print_and_log("\nStarting individual test cases...")
+
+        # Test 1: Clean column with no missing/invalid values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, ['MISSING'], ['', '?', '.', 'null', 'none', 'na'], 'clean_column')
+        assert result is True, "Test Case 1 Failed"
+        print_and_log("Test Case 1 Passed: Clean column check successful")
+
+        # Test 2: Column with common missing values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, ['value1'], ['', '?', '.', 'null', 'none', 'na'], 'missing_values')
+        assert result is False, "Test Case 2 Failed"
+        print_and_log("Test Case 2 Passed: Missing values detected correctly")
+
+        # Test 3: Column with invalid values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, ['1.5'], ['inf', '-inf', 'nan'], 'invalid_values')
+        assert result is False, "Test Case 3 Failed"
+        print_and_log("Test Case 3 Passed: Invalid values detected correctly")
+
+        # Test 4: Column with mixed values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, ['value1'], ['inf', '-inf', 'nan', 'na', 'none'], 'mixed_values')
+        assert result is False, "Test Case 4 Failed"
+        print_and_log("Test Case 4 Passed: Mixed values detected correctly")
+
+        # Test 5: Custom missing values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, ['MISSING', 'N/A', 'undefined'], [''], 'custom_missing')
+        assert result is True, "Test Case 5 Failed"
+        print_and_log("Test Case 5 Passed: Custom missing values handled correctly")
+
+        # Test 6: Custom invalid values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, ['ERROR', 'INFINITY', 'NOT_NUMBER'], ['inf'], 'custom_invalid')
+        assert result is True, "Test Case 6 Failed"
+        print_and_log("Test Case 6 Passed: Custom invalid values handled correctly")
+
+        # Test 7: Empty column
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, [''], ['', '?', '.'], 'empty_column')
+        assert result is True, "Test Case 7 Failed"
+        print_and_log("Test Case 7 Passed: Empty column handled correctly")
+
+        # Test 8: All valid values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, [], ['', 'null'], 'all_valid')
+        assert result is True, "Test Case 8 Failed"
+        print_and_log("Test Case 8 Passed: All valid values handled correctly")
+
+        # Test 9: Case sensitive values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, [], ['na', 'null', 'none'], 'case_sensitive')
+        assert result is True, "Test Case 9 Failed"
+        print_and_log("Test Case 9 Passed: Case sensitivity handled correctly")
+
+        # Test 10: Mixed case values
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, [], ['inf', 'nan', 'null'], 'mixed_cases')
+        assert result is False, "Test Case 10 Failed"
+        print_and_log("Test Case 10 Passed: Mixed case values handled correctly")
+
+        # Test 11: Non-existent column
+        with self.assertRaises(ValueError):
+            self.data_smells.check_missing_invalid_value_consistency(
+                df, [], [''], 'non_existent_column')
+        print_and_log("Test Case 11 Passed: Non-existent column handled correctly")
+
+        # Test 12: Empty DataFrame
+        empty_df = pd.DataFrame()
+        with self.assertRaises(ValueError):
+            self.data_smells.check_missing_invalid_value_consistency(
+                empty_df, [], [''], 'any_column')
+        print_and_log("Test Case 12 Passed: Empty DataFrame handled correctly")
+
+        # Test 13: None in lists
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, [None], ['none'], 'missing_values')
+        assert result is False, "Test Case 13 Failed"
+        print_and_log("Test Case 13 Passed: None in lists handled correctly")
+
+        # Test 14: Empty lists
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df, [], [], 'clean_column')
+        assert result is True, "Test Case 14 Failed"
+        print_and_log("Test Case 14 Passed: Empty lists handled correctly")
+
+        # Test 15: Invalid input types
+        with self.assertRaises(TypeError):
+            self.data_smells.check_missing_invalid_value_consistency(
+                df, "not_a_list", [''], 'clean_column')
+        print_and_log("Test Case 15 Passed: Invalid input types handled correctly")
+
+        # Test 16: Numeric values as strings
+        data_numeric = {'numeric_column': ['1', '2', 'inf', '4', '5']}
+        df_numeric = pd.DataFrame(data_numeric)
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df_numeric, [], ['inf'], 'numeric_column')
+        assert result is False, "Test Case 16 Failed"
+        print_and_log("Test Case 16 Passed: Numeric values as strings handled correctly")
+
+        # Test 17: Special characters
+        data_special = {'special_column': ['#N/A', '@@', '##', '@@', '#N/A']}
+        df_special = pd.DataFrame(data_special)
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df_special, ['#N/A'], ['@@'], 'special_column')
+        assert result is False, "Test Case 17 Failed"
+        print_and_log("Test Case 17 Passed: Special characters handled correctly")
+
+        # Test 18: Whitespace values
+        data_whitespace = {'whitespace_column': [' ', '  ', '\t', '\n', ' ']}
+        df_whitespace = pd.DataFrame(data_whitespace)
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df_whitespace, [' ', '  '], ['\t', '\n'], 'whitespace_column')
+        assert result is False, "Test Case 18 Failed"
+
+        # Test 19: Unicode characters
+        data_unicode = {'unicode_column': ['á', 'é', 'í', 'ó', 'ú']}
+        df_unicode = pd.DataFrame(data_unicode)
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df_unicode, ['á'], ['ñ'], 'unicode_column')
+        assert result is True, "Test Case 19 Failed"
+        print_and_log("Test Case 19 Passed: Unicode characters handled correctly")
+
+        # Test 20: Large number of unique values
+        large_data = {'large_column': ['val' + str(i) for i in range(4)] + ['inf']}
+        df_large = pd.DataFrame(large_data)
+        result = self.data_smells.check_missing_invalid_value_consistency(
+            df_large, [], ['inf'], 'large_column')
+        assert result is False, "Test Case 20 Failed"
+        print_and_log("Test Case 20 Passed: Large number of unique values handled correctly")
+
+        print_and_log("\nFinished testing check_missing_invalid_value_consistency function")
+        print_and_log("-----------------------------------------------------------")

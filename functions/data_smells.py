@@ -1,3 +1,4 @@
+import logging
 
 import pandas as pd
 from helpers.logger import print_and_log
@@ -12,6 +13,8 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param expected_decimals: (int) Expected number of decimal places
     :param field: (str) Optional field to check; if None, checks all numeric fields
+
+    :return: bool indicating if the precision is consistent
     """
     # Check if the expected_decimals is a non-negative integer
     if not isinstance(expected_decimals, int) or expected_decimals < 0:
@@ -33,7 +36,7 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
             raise ValueError(f"Field '{field}' does not exist in the DataFrame. Skipping precision check.")
         elif not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             # Case 1: The field is not numeric
-            print_and_log(f"Warning - Field {field} is not numeric. Skipping precision check.")
+            print_and_log(f"Warning - Field {field} is not numeric. Skipping precision check.", level=logging.WARN)
             print(f"Warning - Field {field} is not numeric. Skipping precision check.")
             return False
 
@@ -51,15 +54,74 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
                 # Case 2: Inconsistent decimal places
                 print_and_log(
                     f"Warning - Column {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
+                    f"different decimal lengths.", level=logging.WARN)
+                print(
+                    f"Warning - Column {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
                     f"different decimal lengths.")
-                print(f"Warning - Column {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
-                      f"different decimal lengths.")
                 return False
             elif num_unique_decimals == 1 and unique_decimals[0] != expected_decimals:
                 # Case 3: Wrong number of decimals
                 print_and_log(
+                    f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were "
+                    f"expected.", level=logging.WARN)
+                print(
                     f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were expected.")
-                print(f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were expected.")
                 return False
 
         return True
+
+
+def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missing_invalid_list: list,
+                                            common_missing_invalid_list: list, field: str = None):
+    """
+    Check if there are any missing or invalid values in the DataFrame that are not aligned with the data model definitions.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param missing_invalid_list: (list) List of values defined as missing or invalid in the data model
+    :param common_missing_invalid_list: (list) List of common missing or invalid values to compare against
+    :param field: (str) Optional field to check; if None, checks all fields
+
+    :return: bool indicating if the field values are consistent with the data model
+    """
+    if not isinstance(missing_invalid_list, list) or not isinstance(common_missing_invalid_list, list):
+        raise TypeError("Both missing_invalid_list and common_missing_invalid_list must be lists")
+
+    # Convert all values list to sets for efficient comparison
+    missing_invalid_set = set(missing_invalid_list)
+    common_set = set(common_missing_invalid_list)
+
+    def check_field_values(field_name: str):
+        """
+        Helper function to check values in a single field
+
+        :param field_name: (str) Name of the field to check
+
+        :return: bool indicating if the field values are consistent with the data model
+        """
+        # Error case: Field does not exist in the DataFrame
+        if field_name not in data_dictionary.columns:
+            raise ValueError(f"Field '{field_name}' does not exist in the DataFrame. Skipping check.")
+
+        # Convert column values to string and get unique values
+        unique_values = set(data_dictionary[field_name].unique())
+
+        # Find values that are in common list but not in model definition
+        undefined_values = unique_values.intersection(common_set) - missing_invalid_set
+        print("Common values in the field:", common_set)
+        print("Missing or invalid values defined in the data model:", missing_invalid_set)
+        print("Undefined values found:", undefined_values)
+
+        if undefined_values:
+            message = (f"Warning - Possible data smell: The missing or invalid values {list(undefined_values)} in "
+                       f"the dataField {field_name} "
+                       f"do not align with the definitions in the data model: {list(missing_invalid_set)}")
+            print_and_log(message, level=logging.WARN)
+            print(message)
+            # Case 1: Values in the field are not aligned with the data model definitions
+            return False
+        # Case 2: All values in the field are aligned with the data model definitions
+        return True
+
+    # Check either all fields or a specific field
+    fields_to_check = [field] if field is not None else data_dictionary.columns
+    return all(check_field_values(f) for f in fields_to_check)
