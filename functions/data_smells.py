@@ -125,17 +125,15 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
     return all(check_field_values(f) for f in fields_to_check)
 
 
-def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = None):
+def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = None) -> bool:
     """
     Checks if any float column in the DataFrame contains only integer values (decimals always .00).
     If so, logs a warning indicating a possible data smell.
 
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param field: (str) Optional field to check; if None, checks all float columns
-    :return: (str) Warning message if a smell is detected, None otherwise.
+    :return: (bool) False if a smell is detected, True otherwise.
     """
-    if data_dictionary.empty:
-        return None
 
     def check_column(col_name):
         # First, check if the column is of a float type
@@ -146,17 +144,21 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
                 if np.all((col.values == np.floor(col.values))):
                     message = f"Warning - Column '{col_name}' may be an integer disguised as a float."
                     print_and_log(message, level=logging.WARN)
-                    return message
-        return None
+                    print(message)
+                    return False
+        return True
 
     if field is not None:
         if field not in data_dictionary.columns:
             raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
         float_fields = data_dictionary.select_dtypes(include=['float', 'float64', 'float32']).columns
         for col in float_fields:
             result = check_column(col)
-            if result:
+            if not result:
                 return result  # Return on the first smell found
-    return None
+    return True
