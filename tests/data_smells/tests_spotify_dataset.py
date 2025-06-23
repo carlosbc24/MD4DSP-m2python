@@ -40,7 +40,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         """
         test_methods = [
             self.execute_check_precision_consistency_ExternalDatasetTests,
-            self.execute_check_missing_invalid_value_consistency_ExternalDatasetTests
+            self.execute_check_missing_invalid_value_consistency_ExternalDatasetTests,
+            self.execute_check_integer_as_floating_point_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -344,4 +345,51 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 20 Passed: All columns simultaneous check successful")
 
         print_and_log("\nFinished testing check_missing_invalid_value_consistency function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_integer_as_floating_point_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_integer_as_floating_point function
+        Tests various scenarios with the Spotify dataset
+        """
+        print_and_log("Testing check_integer_as_floating_point Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Check a genuine float field (danceability)
+        print_and_log("\nTest 1: Check a genuine float field (danceability)")
+        result = self.data_smells.check_integer_as_floating_point(test_df, 'danceability')
+        self.assertIsNone(result, "Test Case 1 Failed: Expected no smell for a float column")
+        print_and_log("Test Case 1 Passed: Expected no smell, got no smell")
+
+        # Test 2: Check a genuine integer field (duration_ms)
+        print_and_log("\nTest 2: Check a genuine integer field (duration_ms)")
+        result = self.data_smells.check_integer_as_floating_point(test_df, 'duration_ms')
+        self.assertIsNotNone(result, "Test Case 2 Failed: Expected a smell for an integer column stored as float")
+        print_and_log("Test Case 2 Passed: Expected smell, got smell")
+
+        # Test 3: Create an integer-as-float column and check for the smell
+        print_and_log("\nTest 3: Check an integer-as-float column")
+        test_df['duration_ms_float'] = test_df['duration_ms'].astype(float)
+        result = self.data_smells.check_integer_as_floating_point(test_df, 'duration_ms_float')
+        self.assertIsNotNone(result, "Test Case 3 Failed: Expected a smell for an integer-as-float column")
+        print_and_log("Test Case 3 Passed: Expected smell, got smell")
+
+        # Test 4: Check a non-numeric field (track_name)
+        print_and_log("\nTest 4: Check a non-numeric field (track_name)")
+        result = self.data_smells.check_integer_as_floating_point(test_df, 'track_name')
+        self.assertIsNone(result, "Test Case 4 Failed: Expected no smell for a non-numeric column")
+        print_and_log("Test Case 4 Passed: Expected no smell, got no smell")
+
+        # Test 5: Check a column with NaNs and integers-as-floats
+        print_and_log("\nTest 5: Check a column with NaNs and integers-as-floats")
+        test_df['int_as_float_with_nan'] = test_df['duration_ms'].astype(float)
+        test_df.loc[0:10, 'int_as_float_with_nan'] = np.nan
+        result = self.data_smells.check_integer_as_floating_point(test_df, 'int_as_float_with_nan')
+        self.assertIsNotNone(result, "Test Case 5 Failed: Expected a smell for a column with NaNs and int-as-float")
+        print_and_log("Test Case 5 Passed: Expected smell, got smell")
+
+        print_and_log("\nFinished testing check_integer_as_floating_point function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")
