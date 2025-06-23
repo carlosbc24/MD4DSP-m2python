@@ -39,7 +39,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
         """
         simple_test_methods = [
             self.execute_check_precision_consistency_SimpleTests,
-            self.execute_check_missing_invalid_value_consistency_SimpleTests
+            self.execute_check_missing_invalid_value_consistency_SimpleTests,
+            self.execute_check_integer_as_floating_point_SimpleTests
         ]
 
         print_and_log("")
@@ -316,3 +317,73 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         print_and_log("\nFinished testing check_missing_invalid_value_consistency function")
         print_and_log("-----------------------------------------------------------")
+
+    def execute_check_integer_as_floating_point_SimpleTests(self):
+        """
+        Execute simple tests for check_integer_as_floating_point function.
+        Tests the following cases:
+        1. Non-existent field
+        2. Non-numeric field
+        3. Integer field represented as float (smell)
+        4. Float field (no smell)
+        5. Integer field (no smell)
+        6. Empty DataFrame
+        7. Column with all NaN values
+        8. Mixed integer and float values (smell)
+        """
+        print_and_log("")
+        print_and_log("Testing check_integer_as_floating_point function...")
+
+        # Create test data
+        data = {
+            'int_as_float': [1.0, 2.0, 3.0],
+            'float_field': [1.1, 2.5, 3.8],
+            'integer_field': [1, 2, 3],
+            'non_numeric': ['a', 'b', 'c'],
+            'all_nan': [np.nan, np.nan, np.nan],
+            'mixed_int_float': [1.0, 2.5, 3.0]
+        }
+        df = pd.DataFrame(data)
+        empty_df = pd.DataFrame()
+
+        # Test Case 1: Non-existent field
+        expected_exception = ValueError
+        with self.assertRaises(expected_exception):
+            self.data_smells.check_integer_as_floating_point(df, 'non_existent_field')
+        print_and_log("Test Case 1 Passed: Expected ValueError, got ValueError")
+
+        # Test Case 2: Non-numeric field
+        # Assuming the function handles non-numeric gracefully
+        result = self.data_smells.check_integer_as_floating_point(df, 'non_numeric')
+        self.assertIsNone(result)
+        print_and_log("Test Case 2 Passed: Expected no smell for non-numeric, got no smell")
+
+        # Test Case 3: Integer field represented as float (smell)
+        result = self.data_smells.check_integer_as_floating_point(df, 'int_as_float')
+        self.assertIsNotNone(result)
+        print_and_log("Test Case 3 Passed: Expected smell detection, got smell detection")
+
+        # Test Case 4: Float field (no smell)
+        result = self.data_smells.check_integer_as_floating_point(df, 'float_field')
+        self.assertIsNone(result)
+        print_and_log("Test Case 4 Passed: Expected no smell, got no smell")
+
+        # Test Case 5: Integer field (no smell)
+        result = self.data_smells.check_integer_as_floating_point(df, 'integer_field')
+        self.assertIsNone(result)
+        print_and_log("Test Case 5 Passed: Expected no smell, got no smell")
+
+        # Test Case 6: Empty DataFrame
+        result = self.data_smells.check_integer_as_floating_point(empty_df, 'any_column')
+        self.assertIsNone(result)
+        print_and_log("Test Case 6 Passed: Expected no smell for empty DataFrame, got no smell")
+
+        # Test Case 7: Column with all NaN values
+        result = self.data_smells.check_integer_as_floating_point(df, 'all_nan')
+        self.assertIsNone(result)
+        print_and_log("Test Case 7 Passed: Expected no smell for all NaN column, got no smell")
+
+        # Test Case 8: Mixed integer and float values (no smell)
+        result = self.data_smells.check_integer_as_floating_point(df, 'mixed_int_float')
+        self.assertIsNone(result)
+        print_and_log("Test Case 8 Passed: Expected no smell detection for mixed types, got no smell detection")
