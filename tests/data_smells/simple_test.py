@@ -355,35 +355,88 @@ class DataSmellsSimpleTest(unittest.TestCase):
         # Test Case 2: Non-numeric field
         # Assuming the function handles non-numeric gracefully
         result = self.data_smells.check_integer_as_floating_point(df, 'non_numeric')
-        self.assertIsNone(result)
+        self.assertTrue(result)
         print_and_log("Test Case 2 Passed: Expected no smell for non-numeric, got no smell")
 
         # Test Case 3: Integer field represented as float (smell)
         result = self.data_smells.check_integer_as_floating_point(df, 'int_as_float')
-        self.assertIsNotNone(result)
+        self.assertFalse(result)
         print_and_log("Test Case 3 Passed: Expected smell detection, got smell detection")
 
         # Test Case 4: Float field (no smell)
         result = self.data_smells.check_integer_as_floating_point(df, 'float_field')
-        self.assertIsNone(result)
+        self.assertTrue(result)
         print_and_log("Test Case 4 Passed: Expected no smell, got no smell")
 
         # Test Case 5: Integer field (no smell)
         result = self.data_smells.check_integer_as_floating_point(df, 'integer_field')
-        self.assertIsNone(result)
+        self.assertTrue(result)
         print_and_log("Test Case 5 Passed: Expected no smell, got no smell")
 
-        # Test Case 6: Empty DataFrame
-        result = self.data_smells.check_integer_as_floating_point(empty_df, 'any_column')
-        self.assertIsNone(result)
-        print_and_log("Test Case 6 Passed: Expected no smell for empty DataFrame, got no smell")
+        # Test Case 6: Empty DataFrame with specific column (should raise ValueError)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_integer_as_floating_point(empty_df, 'any_column')
+        print_and_log("Test Case 6 Passed: Expected ValueError for empty DataFrame with specific column, got ValueError")
 
         # Test Case 7: Column with all NaN values
         result = self.data_smells.check_integer_as_floating_point(df, 'all_nan')
-        self.assertIsNone(result)
+        self.assertTrue(result)
         print_and_log("Test Case 7 Passed: Expected no smell for all NaN column, got no smell")
 
         # Test Case 8: Mixed integer and float values (no smell)
         result = self.data_smells.check_integer_as_floating_point(df, 'mixed_int_float')
-        self.assertIsNone(result)
+        self.assertTrue(result)
         print_and_log("Test Case 8 Passed: Expected no smell detection for mixed types, got no smell detection")
+
+        # Test Case 9: Float column with very small decimals (considered float, no smell)
+        data_9 = {'float_with_small_decimals': [1.0001, 2.0002, 3.0003]}
+        df_9 = pd.DataFrame(data_9)
+        result = self.data_smells.check_integer_as_floating_point(df_9, 'float_with_small_decimals')
+        self.assertTrue(result)
+        print_and_log("Test Case 9 Passed: Expected no smell for float with small decimals, got no smell")
+
+        # Test Case 10: Single value integer as float (smell)
+        data_10 = {'single_int_as_float': [42.0]}
+        df_10 = pd.DataFrame(data_10)
+        result = self.data_smells.check_integer_as_floating_point(df_10, 'single_int_as_float')
+        self.assertFalse(result)
+        print_and_log("Test Case 10 Passed: Expected smell for single integer as float, got smell")
+
+        # Test Case 11: Large integer values as float (smell)
+        data_11 = {'large_int_as_float': [1000000.0, 2000000.0, 3000000.0]}
+        df_11 = pd.DataFrame(data_11)
+        result = self.data_smells.check_integer_as_floating_point(df_11, 'large_int_as_float')
+        self.assertFalse(result)
+        print_and_log("Test Case 11 Passed: Expected smell for large integers as float, got smell")
+
+        # Test Case 12: Negative integers as float (smell)
+        data_12 = {'negative_int_as_float': [-1.0, -2.0, -3.0]}
+        df_12 = pd.DataFrame(data_12)
+        result = self.data_smells.check_integer_as_floating_point(df_12, 'negative_int_as_float')
+        self.assertFalse(result)
+        print_and_log("Test Case 12 Passed: Expected smell for negative integers as float, got smell")
+
+        # Test Case 13: Zero values as float (smell)
+        data_13 = {'zeros_as_float': [0.0, 0.0, 0.0]}
+        df_13 = pd.DataFrame(data_13)
+        result = self.data_smells.check_integer_as_floating_point(df_13, 'zeros_as_float')
+        self.assertFalse(result)
+        print_and_log("Test Case 13 Passed: Expected smell for zeros as float, got smell")
+
+        # Test Case 14: String column (no smell)
+        data_14 = {'string_column': ['hello', 'world', 'test']}
+        df_14 = pd.DataFrame(data_14)
+        result = self.data_smells.check_integer_as_floating_point(df_14, 'string_column')
+        self.assertTrue(result)
+        print_and_log("Test Case 14 Passed: Expected no smell for string column, got no smell")
+
+        # Test Case 15: Check all columns at once (smell present)
+        data_15 = {
+            'good_float': [1.1, 2.2, 3.3],
+            'bad_float': [1.0, 2.0, 3.0],
+            'string_col': ['a', 'b', 'c']
+        }
+        df_15 = pd.DataFrame(data_15)
+        result = self.data_smells.check_integer_as_floating_point(df_15)  # Check all columns
+        self.assertFalse(result)
+        print_and_log("Test Case 15 Passed: Expected smell when checking all columns, got smell")
