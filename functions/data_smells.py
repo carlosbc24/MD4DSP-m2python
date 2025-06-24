@@ -4,6 +4,7 @@ import re
 
 import numpy as np
 import pandas as pd
+from joblib import PrintTime
 
 from helpers.auxiliar import is_time_string, is_date_string, is_datetime_string, is_float_string, is_integer_string
 from helpers.logger import print_and_log
@@ -193,23 +194,33 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
 
         # Detect if the original column is numeric (int or float)
         if pd.api.types.is_integer_dtype(col_dtype) or values.apply(is_integer_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Integer, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(
+                f"Warning - Possible data smell: all values in {field} are of type Integer, but the field is defined as String in the data model",
+                level=logging.WARN)
             print(f"DATA SMELL DETECTED: Integer as String in field {field}")
             return False
         elif pd.api.types.is_float_dtype(col_dtype) or values.apply(is_float_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Float, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(
+                f"Warning - Possible data smell: all values in {field} are of type Float, but the field is defined as String in the data model",
+                level=logging.WARN)
             print(f"DATA SMELL DETECTED: Float as String in field {field}")
             return False
         elif values.apply(is_time_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Time, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(
+                f"Warning - Possible data smell: all values in {field} are of type Time, but the field is defined as String in the data model",
+                level=logging.WARN)
             print(f"DATA SMELL DETECTED: Time as String in field {field}")
             return False
         elif values.apply(is_date_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Date, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(
+                f"Warning - Possible data smell: all values in {field} are of type Date, but the field is defined as String in the data model",
+                level=logging.WARN)
             print(f"DATA SMELL DETECTED: Date as String in field {field}")
             return False
         elif values.apply(is_datetime_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type DateTime, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(
+                f"Warning - Possible data smell: all values in {field} are of type DateTime, but the field is defined as String in the data model",
+                level=logging.WARN)
             print(f"DATA SMELL DETECTED: DateTime as String in field {field}")
             return False
         # No data smell detected, values are not all of a single other type
@@ -222,7 +233,7 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
         # Type checkers for each expected type
         type_checkers = {
             DataType.INTEGER: lambda v: pd.api.types.is_integer_dtype(data_dictionary[field]) or (
-                        pd.api.types.is_numeric_dtype(v) and v.apply(lambda x: float(x).is_integer()).all()),
+                    pd.api.types.is_numeric_dtype(v) and v.apply(lambda x: float(x).is_integer()).all()),
             DataType.FLOAT: lambda v: pd.api.types.is_float_dtype(
                 data_dictionary[field]) or pd.api.types.is_numeric_dtype(v),
             DataType.DOUBLE: lambda v: pd.api.types.is_float_dtype(
@@ -266,7 +277,8 @@ def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = 
         # Convert to string in case it's not
         text = str(text)
         # Remove accents, special characters, normalize spaces and convert to lowercase
-        return re.sub(r'\s+', ' ', re.sub(r'[^A-Za-z0-9\s]', '', ''.join([c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn'])).lower()).strip()
+        return re.sub(r'\s+', ' ', re.sub(r'[^A-Za-z0-9\s]', '', ''.join(
+            [c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn'])).lower()).strip()
 
     def check_column(col_name):
         # Only check string columns
@@ -298,4 +310,81 @@ def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = 
             result = check_column(col)
             if not result:
                 return result  # Return on the first smell found
+    return True
+
+
+def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+    """
+    Check if float columns contain non-significant digits (suspect precision).
+    This function validates if the values in float columns remain the same after removing non-significant digits
+    using the 'g' format specifier. For example:
+    - 1.0000 -> 1 (has non-significant digits)
+    - 1.2300 -> 1.23 (has non-significant digits)
+    - 1.23 -> 1.23 (no non-significant digits)
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param field: (str) Optional field to check; if None, checks all float columns
+    :return: (bool) False if a smell is detected, True otherwise
+    """
+    def has_suspect_precision(value):
+        """Check if a value has suspect precision"""
+        try:
+            # Skip NaN values
+            if pd.isna(value):
+                return False
+
+            # Convert to string and check for decimal point
+            str_val = str(value)
+            if '.' not in str_val:
+                return False
+
+            # Check for trailing zeros in decimal part
+            decimal_part = str_val.split('.')[1]
+            print("Decimal part:", decimal_part)
+            if decimal_part.endswith('0'):
+                return True
+
+            # Compare with minimal representation
+            simplified = format(float(value), 'g')
+            return len(simplified) < len(str_val)
+        except (ValueError, TypeError):
+            return False
+
+    def check_column(col_name):
+        """Check a column for suspect precision"""
+        print("Type column:", data_dictionary[col_name].dtype)
+        if (not pd.api.types.is_float_dtype(data_dictionary[col_name]) and
+                not data_dictionary[col_name].dtype =='object'):
+            return True
+
+        # Get all values including NaN
+        values = data_dictionary[col_name]
+        if values.empty:
+            return True
+
+        # Check each value for suspect precision
+        for val in values:
+            print("Value:", val)
+            if has_suspect_precision(val):
+                message = f"Warning - Possible data smell: The dataField {col_name} contains non-significant digits."
+                print_and_log(message, level=logging.WARN)
+                print(f"DATA SMELL DETECTED: Suspect Precision in field {col_name}")
+                return False
+        return True
+
+    if field is not None:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        return check_column(field)
+
+    # If DataFrame is empty, return True (no smell)
+    if data_dictionary.empty:
+        return True
+
+    # Check all float columns
+    float_fields = data_dictionary.select_dtypes(include=['float', 'float64', 'float32']).columns
+    for col in float_fields:
+        result = check_column(col)
+        if not result:
+            return False
     return True
