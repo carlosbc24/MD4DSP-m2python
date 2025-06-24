@@ -184,7 +184,7 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
     # Convert values to string, remove NaN and strip whitespace
     values = data_dictionary[field].replace('nan', np.nan).dropna().astype(str).str.strip()
     # Filter out common invalid values
-    values = values[~values.isin(['nan', 'NA', 'NaN', 'null', 'NULL', 'None', '', null, None])]
+    values = values[~values.isin(['nan', 'NA', 'NaN', 'null', 'NULL', 'None', '', None])]
     col_dtype = data_dictionary[field].dtype
 
     # If the expected type is String, check if all values are actually another type (integer, float, time, date, datetime)
