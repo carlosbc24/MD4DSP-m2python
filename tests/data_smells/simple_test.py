@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import functions.data_smells as data_smells
+from helpers.enumerations import DataType
 
 # Importing functions and classes from packages
 from helpers.logger import print_and_log
@@ -40,7 +41,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
         simple_test_methods = [
             self.execute_check_precision_consistency_SimpleTests,
             self.execute_check_missing_invalid_value_consistency_SimpleTests,
-            self.execute_check_integer_as_floating_point_SimpleTests
+            self.execute_check_integer_as_floating_point_SimpleTests,
+            self.execute_check_types_as_string_SimpleTests
         ]
 
         print_and_log("")
@@ -440,3 +442,138 @@ class DataSmellsSimpleTest(unittest.TestCase):
         result = self.data_smells.check_integer_as_floating_point(df_15)  # Check all columns
         self.assertFalse(result)
         print_and_log("Test Case 15 Passed: Expected smell when checking all columns, got smell")
+
+    def execute_check_types_as_string_SimpleTests(self):
+        """
+        Execute simple tests for check_types_as_string function.
+        Tests the following cases:
+        1. All values are integer strings (should warn)
+        2. All values are float strings (should warn)
+        3. All values are date strings (should warn)
+        4. All values are time strings (should warn)
+        5. All values are datetime strings (should warn)
+        6. Mixed string values (should not warn)
+        7. Type mismatch (should raise TypeError)
+        8. Non-existent field (should raise ValueError)
+        9. Unknown expected_type (should raise ValueError)
+        """
+        print_and_log("")
+        print_and_log("Testing check_types_as_string function...")
+
+        # Test data
+        df = pd.DataFrame({
+            'int_str': ['1', '2', '-3'],
+            'float_str': ['1.1', '-2.2', '+3.3'],
+            'date_str': ['2024-06-24', '2023-01-01', '2022-12-31'],
+            'time_str': ['12:34', '23:59:59', '11:11 AM'],
+            'datetime_str': ['2024-06-24 12:34:56', '2023-01-01 23:59', 'March 8, 2024 11:59 PM'],
+            'mixed_str': ['abc', '123', '2024-06-24'],
+            'true_int': [1, 2, 3]
+        })
+
+        # 1. All integer strings
+        result = self.data_smells.check_types_as_string(df, 'int_str', DataType.STRING)
+        assert result is False, "Test Case 1 Failed: Should warn for integer as string"
+        print_and_log("Test Case 1 Passed: Integer as string detected")
+
+        # 2. All float strings
+        result = self.data_smells.check_types_as_string(df, 'float_str', DataType.STRING)
+        assert result is False, "Test Case 2 Failed: Should warn for float as string"
+        print_and_log("Test Case 2 Passed: Float as string detected")
+
+        # 3. All date strings
+        result = self.data_smells.check_types_as_string(df, 'date_str', DataType.STRING)
+        assert result is False, "Test Case 3 Failed: Should warn for date as string"
+        print_and_log("Test Case 3 Passed: Date as string detected")
+
+        # 4. All time strings
+        result = self.data_smells.check_types_as_string(df, 'time_str', DataType.STRING)
+        assert result is False, "Test Case 4 Failed: Should warn for time as string"
+        print_and_log("Test Case 4 Passed: Time as string detected")
+
+        # 5. All datetime strings
+        result = self.data_smells.check_types_as_string(df, 'datetime_str', DataType.STRING)
+        assert result is False, "Test Case 5 Failed: Should warn for datetime as string"
+        print_and_log("Test Case 5 Passed: Datetime as string detected")
+
+        # 6. Mixed string values (should not warn)
+        result = self.data_smells.check_types_as_string(df, 'mixed_str', DataType.STRING)
+        assert result is True, "Test Case 6 Failed: Should not warn for mixed string values"
+        print_and_log("Test Case 6 Passed: Mixed string values handled correctly")
+
+        # 7. Type mismatch (should raise TypeError)
+        with self.assertRaises(TypeError):
+            self.data_smells.check_types_as_string(df, 'int_str', DataType.FLOAT)
+        print_and_log("Test Case 7 Passed: TypeError raised for type mismatch")
+
+        # 8. Non-existent field (should raise ValueError)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_types_as_string(df, 'no_field', DataType.STRING)
+        print_and_log("Test Case 8 Passed: ValueError raised for non-existent field")
+
+        # 9. Unknown expected_type (should raise ValueError)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_types_as_string(df, 'int_str', "CustomType")
+        print_and_log("Test Case 9 Passed: ValueError raised for unknown expected_type")
+
+        # 10. Column true_int with expected_type String (should warn)
+        result = self.data_smells.check_types_as_string(df, 'true_int', DataType.STRING)
+        assert result is False, "Test Case 10 Failed: Should warn for integer column as string"
+        print_and_log("Test Case 10 Passed: Integer column as string detected")
+
+        # 11. Empty column (should not warn, just return True)
+        df['empty'] = [''] * len(df)
+        result = self.data_smells.check_types_as_string(df, 'empty', DataType.STRING)
+        assert result is True, "Test Case 11 Failed: Should not warn for empty column"
+        print_and_log("Test Case 11 Passed: Empty column handled correctly")
+
+        # 12. Column with boolean strings (should not warn)
+        df['bool_str'] = ['True', 'False', 'True']
+        result = self.data_smells.check_types_as_string(df, 'bool_str', DataType.STRING)
+        assert result is True, "Test Case 12 Failed: Should not warn for boolean strings"
+        print_and_log("Test Case 12 Passed: Boolean strings handled correctly")
+
+        # 13. Column with only spaces (should not warn)
+        df['spaces'] = ['   ', ' ', '  ']
+        result = self.data_smells.check_types_as_string(df, 'spaces', DataType.STRING)
+        assert result is True, "Test Case 13 Failed: Should not warn for spaces only"
+        print_and_log("Test Case 13 Passed: Spaces only handled correctly")
+
+        # 14. Column with special characters (should not warn)
+        df['special'] = ['@', '#', '$']
+        result = self.data_smells.check_types_as_string(df, 'special', DataType.STRING)
+        assert result is True, "Test Case 14 Failed: Should not warn for special characters"
+        print_and_log("Test Case 14 Passed: Special characters handled correctly")
+
+        # 15. Column with single value (should not warn)
+        df['single'] = ['unique'] * len(df)
+        result = self.data_smells.check_types_as_string(df, 'single', DataType.STRING)
+        assert result is True, "Test Case 15 Failed: Should not warn for single value column"
+        print_and_log("Test Case 15 Passed: Single value column handled correctly")
+
+        # 16. Column with repeated integer strings (should warn)
+        df['repeated_int'] = ['7'] * len(df)
+        result = self.data_smells.check_types_as_string(df, 'repeated_int', DataType.STRING)
+        assert result is False, "Test Case 16 Failed: Should warn for repeated integer strings"
+        print_and_log("Test Case 16 Passed: Repeated integer strings detected")
+
+        # 17. Column with repeated float strings (should warn)
+        df['repeated_float'] = ['3.14'] * len(df)
+        result = self.data_smells.check_types_as_string(df, 'repeated_float', DataType.STRING)
+        assert result is False, "Test Case 17 Failed: Should warn for repeated float strings"
+        print_and_log("Test Case 17 Passed: Repeated float strings detected")
+
+        # 18. Column con fechas en formato alternativo (debería advertir)
+        df['alt_date'] = ['08/03/2024', '07/07/2023', '25/12/2022']
+        result = self.data_smells.check_types_as_string(df, 'alt_date', DataType.STRING)
+        assert result is False, "Test Case 18 Failed: Should warn for alternative date format as string"
+        print_and_log("Test Case 18 Passed: Alternative date format as string detected")
+
+        # 19. Column con horas en formato alternativo (debería advertir)
+        df['alt_time'] = ['11:59 PM', '10:00 AM', '01:23 PM']
+        result = self.data_smells.check_types_as_string(df, 'alt_time', DataType.STRING)
+        assert result is False, "Test Case 19 Failed: Should warn for alternative time format as string"
+        print_and_log("Test Case 19 Passed: Alternative time format as string detected")
+
+        print_and_log("\nFinished testing check_types_as_string function")
+        print_and_log("")

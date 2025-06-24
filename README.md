@@ -59,7 +59,7 @@ To run the data transformation tests, follow the next steps:
 
 2. Check the results in the logs:
 
-Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
+Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test_data_transformations` directory. By default, the logs are named as follows: `test_data_transformations_log_<number>.log`.
    
 ## Tests execution for contracts
 
@@ -73,7 +73,20 @@ To run the contract tests, follow the next steps:
 
 2. Check the results in the logs:
 
-Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test` directory. By default, the logs are named as follows: `testLog_<number>.log`.
+Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test_contracts` directory. By default, the logs are named as follows: `test_contracts_log_<number>.log`.
+
+## Tests execution for Data Smells
+
+To run the data smell tests, follow the next steps:
+
+1. Run the data smell tests:
+   ```bash
+    python3 test_data_smells.py
+    ```
+   
+2. Check the results in the logs:
+
+Once the tests have finished, one log will be created for each execution of the python script. The test logs are located in the `logs/test_data_smells` directory. By default, the logs are named as follows: `test_data_smells_log_<number>.log`.
 
 
 ## Project Structure

@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import functions.data_smells as data_smells
+from helpers.enumerations import DataType
 
 # Importing functions and classes from packages
 from helpers.logger import print_and_log
@@ -41,7 +42,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         test_methods = [
             self.execute_check_precision_consistency_ExternalDatasetTests,
             self.execute_check_missing_invalid_value_consistency_ExternalDatasetTests,
-            self.execute_check_integer_as_floating_point_ExternalDatasetTests
+            self.execute_check_integer_as_floating_point_ExternalDatasetTests,
+            self.execute_check_types_as_string_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -468,3 +470,61 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
 
         print_and_log("\nFinished testing check_integer_as_floating_point function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")
+
+    def execute_check_types_as_string_ExternalDatasetTests(self):
+        """
+        Execute external dataset tests for check_types_as_string function using the Spotify dataset.
+        Tests the following cases:
+        1. All values in a column are integer strings (should warn)
+        2. All values in a column are float strings (should warn)
+        3. All values in a column are date strings (should warn)
+        4. Mixed string values (should not warn)
+        5. Type mismatch (should raise TypeError)
+        6. Non-existent field (should raise ValueError)
+        7. Unknown expected_type (should raise ValueError)
+        """
+        print_and_log("")
+        print_and_log("Testing check_types_as_string function with Spotify Dataset...")
+        test_df = self.data_dictionary.copy()
+
+        # 1. All integer strings (create a string version of 'key')
+        test_df['key_str'] = test_df['key'].astype(str)
+        result = self.data_smells.check_types_as_string(test_df, 'key_str', DataType.STRING)
+        assert result is False, "Test Case 1 Failed: Should warn for integer as string in key_str"
+        print_and_log("Test Case 1 Passed: Integer as string detected in key_str")
+
+        # 2. All float strings (create a string version of 'danceability')
+        test_df['danceability_str'] = test_df['danceability'].astype(str)
+        result = self.data_smells.check_types_as_string(test_df, 'danceability_str', DataType.STRING)
+        assert result is False, "Test Case 2 Failed: Should warn for float as string in danceability_str"
+        print_and_log("Test Case 2 Passed: Float as string detected in danceability_str")
+
+        # 3. All date strings (simulate a date column as string)
+        test_df['date_str'] = ['2024-06-24'] * len(test_df)
+        result = self.data_smells.check_types_as_string(test_df, 'date_str', DataType.STRING)
+        assert result is False, "Test Case 3 Failed: Should warn for date as string in date_str"
+        print_and_log("Test Case 3 Passed: Date as string detected in date_str")
+
+        # 4. Mixed string values (should not warn)
+        test_df['mixed_str'] = ['abc', '123', '2024-06-24'] * (len(test_df) // 3) + ['abc'] * (len(test_df) % 3)
+        result = self.data_smells.check_types_as_string(test_df, 'mixed_str', DataType.STRING)
+        assert result is True, "Test Case 4 Failed: Should not warn for mixed string values in mixed_str"
+        print_and_log("Test Case 4 Passed: Mixed string values handled correctly in mixed_str")
+
+        # 5. Type mismatch (should raise TypeError)
+        with self.assertRaises(TypeError):
+            self.data_smells.check_types_as_string(test_df, 'key_str', DataType.INTEGER)
+        print_and_log("Test Case 5 Passed: TypeError raised for type mismatch in key_str")
+
+        # 6. Non-existent field (should raise ValueError)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_types_as_string(test_df, 'no_field', DataType.STRING)
+        print_and_log("Test Case 6 Passed: ValueError raised for non-existent field")
+
+        # 7. Unknown expected_type (should raise ValueError)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_types_as_string(test_df, 'key_str', 'UnknownType')
+        print_and_log("Test Case 7 Passed: ValueError raised for unknown expected_type")
+
+        print_and_log("\nFinished testing check_types_as_string function with Spotify Dataset")
+        print_and_log("")

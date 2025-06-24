@@ -57,6 +57,7 @@ class DataType(Enum):
     BOOLEAN: Boolean
     DOUBLE: Double
     FLOAT: Float
+    DATE: Date
     """
     STRING = 0
     TIME = 1
@@ -65,6 +66,7 @@ class DataType(Enum):
     BOOLEAN = 4
     DOUBLE = 5
     FLOAT = 6
+    DATE = 7
 
 
 class DerivedType(Enum):
@@ -141,4 +143,3 @@ class MapOperation(Enum):
     """
     VALUE_MAPPING = 0
     SUBSTRING = 1
-
