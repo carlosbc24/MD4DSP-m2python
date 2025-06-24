@@ -1,11 +1,14 @@
 import logging
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+
+from helpers.auxiliar import is_time_string, is_date_string, is_datetime_string, is_float_string, is_integer_string
 from helpers.logger import print_and_log
+from helpers.enumerations import DataType
 
 
-def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals: int, field: str = None):
+def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals: int, field: str = None) -> bool:
     """
     Check if the precision of the data is consistent with the expected precision.
     This function checks if the number of decimal places in a numeric field matches the expected number of decimals.
@@ -38,7 +41,7 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
         elif not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             # Case 1: The field is not numeric
             print_and_log(f"Warning - Field {field} is not numeric. Skipping precision check.", level=logging.WARN)
-            print(f"Warning - Field {field} is not numeric. Skipping precision check.")
+            print("DATA SMELL DETECTED: Precision Inconsistency")
             return False
 
         # DataSmell - Precision Inconsistency
@@ -56,24 +59,21 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
                 print_and_log(
                     f"Warning - Column {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
                     f"different decimal lengths.", level=logging.WARN)
-                print(
-                    f"Warning - Column {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
-                    f"different decimal lengths.")
+                print("DATA SMELL DETECTED: Precision Inconsistency")
                 return False
             elif num_unique_decimals == 1 and unique_decimals[0] != expected_decimals:
                 # Case 3: Wrong number of decimals
                 print_and_log(
                     f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were "
                     f"expected.", level=logging.WARN)
-                print(
-                    f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were expected.")
+                print("DATA SMELL DETECTED: Precision Inconsistency")
                 return False
 
         return True
 
 
 def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missing_invalid_list: list,
-                                            common_missing_invalid_list: list, field: str = None):
+                                            common_missing_invalid_list: list, field: str = None) -> bool:
     """
     Check if there are any missing or invalid values in the DataFrame that are not aligned with the data model definitions.
 
@@ -114,8 +114,8 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
                        f"the dataField {field_name} "
                        f"do not align with the definitions in the data model: {list(missing_invalid_set)}")
             print_and_log(message, level=logging.WARN)
-            print(message)
             # Case 1: Values in the field are not aligned with the data model definitions
+            print("DATA SMELL DETECTED: Missing or Invalid Value Inconsistency")
             return False
         # Case 2: All values in the field are aligned with the data model definitions
         return True
@@ -132,6 +132,7 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
 
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param field: (str) Optional field to check; if None, checks all float columns
+
     :return: (bool) False if a smell is detected, True otherwise.
     """
 
@@ -144,7 +145,7 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
                 if np.all((col.values == np.floor(col.values))):
                     message = f"Warning - Column '{col_name}' may be an integer disguised as a float."
                     print_and_log(message, level=logging.WARN)
-                    print(message)
+                    print("DATA SMELL DETECTED: Integer as Floating Point")
                     return False
         return True
 
@@ -162,3 +163,66 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
             if not result:
                 return result  # Return on the first smell found
     return True
+
+
+def check_types_as_string(data_dictionary: pd.DataFrame, data_field: str, expected_type: DataType) -> bool:
+    """
+    Check if a column defined as String actually contains only integers, floats, times, dates, or datetimes as string representations.
+    If the expected type is not String, check that the values match the expected type.
+    Issues a warning if a data smell is detected, or raises an exception if the type does not match the model.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param data_field: (str) Name of the field (column) to check
+    :param expected_type: (DataType) Expected data type as defined in the data model (from helpers.enumerations.DataType)
+    :return: (bool) True if the column matches the expected type or no data smell is found, False otherwise
+    """
+
+    # Check if the field exists in the DataFrame
+    if data_field not in data_dictionary.columns:
+        raise ValueError(f"Field '{data_field}' does not exist in the DataFrame.")
+
+    # Convert values to string, remove NaN and strip whitespace
+    values = data_dictionary[data_field].replace('nan', np.nan).dropna().astype(str).str.strip()
+    col_dtype = data_dictionary[data_field].dtype
+
+    # If the expected type is String, check if all values are actually another type (integer, float, time, date, datetime)
+    if expected_type == DataType.STRING:
+        # Detect if the original column is numeric (int or float)
+        if pd.api.types.is_integer_dtype(col_dtype) or values.apply(is_integer_string).all():
+            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Integer, but the field is defined as String in the data model", level=logging.WARN)
+            print("DATA SMELL DETECTED: Integer as String")
+            return False
+        elif pd.api.types.is_float_dtype(col_dtype) or values.apply(is_float_string).all():
+            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Float, but the field is defined as String in the data model", level=logging.WARN)
+            print("DATA SMELL DETECTED: Float as String")
+            return False
+        elif values.apply(is_time_string).all():
+            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Time, but the field is defined as String in the data model", level=logging.WARN)
+            print("DATA SMELL DETECTED: Time as String")
+            return False
+        elif values.apply(is_date_string).all():
+            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Date, but the field is defined as String in the data model", level=logging.WARN)
+            print("DATA SMELL DETECTED: Date as String")
+            return False
+        elif values.apply(is_datetime_string).all():
+            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type DateTime, but the field is defined as String in the data model", level=logging.WARN)
+            print("DATA SMELL DETECTED: DateTime as String")
+            return False
+        # No data smell detected, values are not all of a single other type
+        return True
+    else:
+        # If the expected type is not String, check that the values match the expected type
+        type_checkers = {
+            DataType.INTEGER: lambda v: pd.api.types.is_integer_dtype(data_dictionary[data_field]) or values.apply(is_integer_string).all(),
+            DataType.FLOAT: lambda v: pd.api.types.is_float_dtype(data_dictionary[data_field]) or values.apply(is_float_string).all(),
+            DataType.TIME: lambda v: values.apply(is_time_string).all(),
+            DataType.DATE: lambda v: values.apply(is_date_string).all(),
+            DataType.DATETIME: lambda v: values.apply(is_datetime_string).all(),
+            DataType.STRING: lambda v: True  # Already checked above
+        }
+        checker = type_checkers.get(expected_type)
+        if checker is None:
+            raise ValueError(f"Unknown expected_type '{expected_type}' for field '{data_field}'")
+        if not checker(values):
+            raise TypeError(f"Expected data for dataField {data_field} is {expected_type.name}, but got different type")
+        return True

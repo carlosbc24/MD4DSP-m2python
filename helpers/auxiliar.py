@@ -1,11 +1,12 @@
 # Importing enumerations from packages
+import re
 import math
-from typing import Union
-
-# Importing libraries
 import numpy as np
 import pandas as pd
+from typing import Union
+from datetime import datetime
 
+# Importing libraries
 from helpers.enumerations import Operator, DataType, Closure
 
 
@@ -223,3 +224,94 @@ def truncate(number: Union[int, float], decimals: int = 0) -> Union[int, float]:
         return float('nan')
 
     return math.trunc(number * factor) / factor
+
+
+def is_integer_string(value):
+    """
+    Check if a string value represents an integer (positive or negative whole number).
+
+    :param value: (str) Value to check
+    :return: (bool) True if value is an integer string, False otherwise
+    """
+    return re.fullmatch(r"[+-]?\d+", value) is not None
+
+
+def is_float_string(value):
+    """
+    Check if a string value represents a floating-point number (decimal).
+
+    :param value: (str) Value to check
+    :return: (bool) True if value is a float string, False otherwise
+    """
+    return re.fullmatch(r"[+-]?\d*\.\d+", value) is not None
+
+
+def is_time_string(value):
+    """
+    Check if a string value represents a time in common formats (HH:MM, HH:MM:SS, 12-hour with AM/PM).
+
+    :param value: (str) Value to check
+    :return: (bool) True if value is a time string, False otherwise
+    """
+    time_formats = [
+        "%H:%M",
+        "%H:%M:%S",
+        "%I:%M %p",
+        "%I:%M:%S %p"
+    ]
+    for fmt in time_formats:
+        try:
+            datetime.strptime(value, fmt)
+            return True
+        except (ValueError, TypeError):
+            continue
+    return False
+
+
+def is_date_string(value):
+    """
+    Check if a string value represents a date in common formats (YYYY-MM-DD, DD/MM/YYYY, etc.).
+
+    :param value: (str) Value to check
+    :return: (bool) True if value is a date string, False otherwise
+    """
+    date_formats = [
+        "%Y-%m-%d",
+        "%d/%m/%Y",
+        "%m/%d/%Y",
+        "%d-%m-%Y",
+        "%m-%d-%Y",
+        "%d %B %Y",
+        "%B %d, %Y"
+    ]
+    for fmt in date_formats:
+        try:
+            datetime.strptime(value, fmt)
+            return True
+        except (ValueError, TypeError):
+            continue
+    return False
+
+
+def is_datetime_string(value):
+    """
+    Check if a string value represents a datetime in common formats (date and time combined).
+
+    :param value: (str) Value to check
+    :return: (bool) True if value is a datetime string, False otherwise
+    """
+    datetime_formats = [
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%d/%m/%Y %H:%M:%S",
+        "%m/%d/%Y %I:%M %p",
+        "%d-%m-%Y %H:%M:%S",
+        "%B %d, %Y %I:%M %p"
+    ]
+    for fmt in datetime_formats:
+        try:
+            datetime.strptime(value, fmt)
+            return True
+        except (ValueError, TypeError):
+            continue
+    return False
