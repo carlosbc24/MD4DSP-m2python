@@ -5,7 +5,7 @@ import numpy as np
 from helpers.logger import print_and_log
 
 
-def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals: int, field: str = None):
+def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals: int, field: str = None) -> bool:
     """
     Check if the precision of the data is consistent with the expected precision.
     This function checks if the number of decimal places in a numeric field matches the expected number of decimals.
@@ -73,7 +73,7 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
 
 
 def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missing_invalid_list: list,
-                                            common_missing_invalid_list: list, field: str = None):
+                                            common_missing_invalid_list: list, field: str = None) -> bool:
     """
     Check if there are any missing or invalid values in the DataFrame that are not aligned with the data model definitions.
 
