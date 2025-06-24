@@ -1,4 +1,6 @@
 import logging
+import unicodedata
+import re
 
 import numpy as np
 import pandas as pd
@@ -242,3 +244,55 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
         if not checker(values):
             raise TypeError(f"Expected data for column {field} is {expected_type.name}, but got {col_dtype.name}")
         return True
+
+
+def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+    """
+    Checks if string columns contain accents, uppercase letters, extra spaces, or special characters
+    that do not align with the recommended data format for string operations.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param field: (str) Optional field to check; if None, checks all string columns
+    :return: (bool) False if a smell is detected, True otherwise.
+    """
+
+    def clean_text(text):
+        """Helper function to clean text by removing accents, special characters, extra spaces and converting to lowercase"""
+        if pd.isna(text) or text == '':
+            return text
+        # Convert to string in case it's not
+        text = str(text)
+        # Remove accents, special characters, normalize spaces and convert to lowercase
+        return re.sub(r'\s+', ' ', re.sub(r'[^A-Za-z0-9\s]', '', ''.join([c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn'])).lower()).strip()
+
+    def check_column(col_name):
+        # Only check string columns
+        if pd.api.types.is_string_dtype(data_dictionary[col_name]) or data_dictionary[col_name].dtype == 'object':
+            col = data_dictionary[col_name].dropna()
+            if not col.empty:
+                # Apply cleaning function to all values
+                cleaned_values = col.apply(clean_text)
+
+                # Check if any value changed after cleaning (indicating presence of special chars, spaces, etc.)
+                if not (col == cleaned_values).all():
+                    message = f"Warning - Possible data smell: the values in {col_name} contain accents, uppercase letters, extra spaces, or special characters that do not align with the recommended data format for string operations."
+                    print_and_log(message, level=logging.WARN)
+                    print(f"DATA SMELL DETECTED: Special Character/Spacing in field {col_name}")
+                    return False
+        return True
+
+    if field is not None:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        return check_column(field)
+    else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
+        # Check all string/object columns
+        string_fields = data_dictionary.select_dtypes(include=['object', 'string']).columns
+        for col in string_fields:
+            result = check_column(col)
+            if not result:
+                return result  # Return on the first smell found
+    return True
