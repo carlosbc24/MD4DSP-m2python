@@ -215,9 +215,11 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
         type_checkers = {
             DataType.INTEGER: lambda v: pd.api.types.is_integer_dtype(data_dictionary[field]) or values.apply(is_integer_string).all(),
             DataType.FLOAT: lambda v: pd.api.types.is_float_dtype(data_dictionary[field]) or values.apply(is_float_string).all(),
+            DataType.DOUBLE: lambda v: pd.api.types.is_float_dtype(data_dictionary[field]) or values.apply(is_float_string).all(),
             DataType.TIME: lambda v: values.apply(is_time_string).all(),
             DataType.DATE: lambda v: values.apply(is_date_string).all(),
             DataType.DATETIME: lambda v: values.apply(is_datetime_string).all(),
+            DataType.BOOLEAN: lambda v: values.apply(lambda x: x.lower() in ['true', 'false', '1', '0']).all(),
             DataType.STRING: lambda v: True  # Already checked above
         }
         checker = type_checkers.get(expected_type)
