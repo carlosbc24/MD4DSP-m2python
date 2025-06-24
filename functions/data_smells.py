@@ -240,5 +240,8 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
         if checker is None:
             raise ValueError(f"Unknown expected_type '{expected_type}' for field '{field}'")
         if not checker(values):
-            raise TypeError(f"Expected data for column {field} is {expected_type.name}, but got {col_dtype.name}")
+            print_and_log(f"Warning: Expected data for column {field} is {expected_type.name}, "
+                          f"but got {col_dtype.name}", level=logging.WARN)
+            print(f"Warning: Type mismatch in field {field} (expected {expected_type.name}, got {col_dtype.name})")
+            return False
         return True
