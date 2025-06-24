@@ -165,47 +165,47 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
     return True
 
 
-def check_types_as_string(data_dictionary: pd.DataFrame, data_field: str, expected_type: DataType) -> bool:
+def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_type: DataType) -> bool:
     """
     Check if a column defined as String actually contains only integers, floats, times, dates, or datetimes as string representations.
     If the expected type is not String, check that the values match the expected type.
     Issues a warning if a data smell is detected, or raises an exception if the type does not match the model.
 
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
-    :param data_field: (str) Name of the field (column) to check
+    :param field: (str) Name of the field (column) to check
     :param expected_type: (DataType) Expected data type as defined in the data model (from helpers.enumerations.DataType)
     :return: (bool) True if the column matches the expected type or no data smell is found, False otherwise
     """
 
     # Check if the field exists in the DataFrame
-    if data_field not in data_dictionary.columns:
-        raise ValueError(f"Field '{data_field}' does not exist in the DataFrame.")
+    if field not in data_dictionary.columns:
+        raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
 
     # Convert values to string, remove NaN and strip whitespace
-    values = data_dictionary[data_field].replace('nan', np.nan).dropna().astype(str).str.strip()
-    col_dtype = data_dictionary[data_field].dtype
+    values = data_dictionary[field].replace('nan', np.nan).dropna().astype(str).str.strip()
+    col_dtype = data_dictionary[field].dtype
 
     # If the expected type is String, check if all values are actually another type (integer, float, time, date, datetime)
     if expected_type == DataType.STRING:
         # Detect if the original column is numeric (int or float)
         if pd.api.types.is_integer_dtype(col_dtype) or values.apply(is_integer_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Integer, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Integer, but the field is defined as String in the data model", level=logging.WARN)
             print("DATA SMELL DETECTED: Integer as String")
             return False
         elif pd.api.types.is_float_dtype(col_dtype) or values.apply(is_float_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Float, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Float, but the field is defined as String in the data model", level=logging.WARN)
             print("DATA SMELL DETECTED: Float as String")
             return False
         elif values.apply(is_time_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Time, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Time, but the field is defined as String in the data model", level=logging.WARN)
             print("DATA SMELL DETECTED: Time as String")
             return False
         elif values.apply(is_date_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type Date, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Date, but the field is defined as String in the data model", level=logging.WARN)
             print("DATA SMELL DETECTED: Date as String")
             return False
         elif values.apply(is_datetime_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {data_field} are of type DateTime, but the field is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning - Possible data smell: all values in {field} are of type DateTime, but the field is defined as String in the data model", level=logging.WARN)
             print("DATA SMELL DETECTED: DateTime as String")
             return False
         # No data smell detected, values are not all of a single other type
@@ -213,8 +213,8 @@ def check_types_as_string(data_dictionary: pd.DataFrame, data_field: str, expect
     else:
         # If the expected type is not String, check that the values match the expected type
         type_checkers = {
-            DataType.INTEGER: lambda v: pd.api.types.is_integer_dtype(data_dictionary[data_field]) or values.apply(is_integer_string).all(),
-            DataType.FLOAT: lambda v: pd.api.types.is_float_dtype(data_dictionary[data_field]) or values.apply(is_float_string).all(),
+            DataType.INTEGER: lambda v: pd.api.types.is_integer_dtype(data_dictionary[field]) or values.apply(is_integer_string).all(),
+            DataType.FLOAT: lambda v: pd.api.types.is_float_dtype(data_dictionary[field]) or values.apply(is_float_string).all(),
             DataType.TIME: lambda v: values.apply(is_time_string).all(),
             DataType.DATE: lambda v: values.apply(is_date_string).all(),
             DataType.DATETIME: lambda v: values.apply(is_datetime_string).all(),
@@ -222,7 +222,7 @@ def check_types_as_string(data_dictionary: pd.DataFrame, data_field: str, expect
         }
         checker = type_checkers.get(expected_type)
         if checker is None:
-            raise ValueError(f"Unknown expected_type '{expected_type}' for field '{data_field}'")
+            raise ValueError(f"Unknown expected_type '{expected_type}' for field '{field}'")
         if not checker(values):
-            raise TypeError(f"Expected data for dataField {data_field} is {expected_type.name}, but got different type")
+            raise TypeError(f"Expected data for dataField {field} is {expected_type.name}, but got different type")
         return True
