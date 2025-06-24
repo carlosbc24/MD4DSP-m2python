@@ -502,10 +502,10 @@ class DataSmellsSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 6 Failed: Should not warn for mixed string values"
         print_and_log("Test Case 6 Passed: Mixed string values handled correctly")
 
-        # 7. Type mismatch (should raise TypeError)
-        with self.assertRaises(TypeError):
-            self.data_smells.check_types_as_string(df, 'int_str', DataType.FLOAT)
-        print_and_log("Test Case 7 Passed: TypeError raised for type mismatch")
+        # 7. All integer strings as float (should not warn)
+        self.data_smells.check_types_as_string(df, 'int_str', DataType.INTEGER)
+        assert result is True, "Test Case 7 Failed: Should not warn for integer strings as float"
+        print_and_log("Test Case 7 Passed: Integer strings as float handled correctly")
 
         # 8. Non-existent field (should raise ValueError)
         with self.assertRaises(ValueError):

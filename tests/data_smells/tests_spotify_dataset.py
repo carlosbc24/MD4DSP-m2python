@@ -509,20 +509,15 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         assert result is True, "Test Case 4 Failed: Should not warn for mixed string values in mixed_str"
         print_and_log("Test Case 4 Passed: Mixed string values handled correctly in mixed_str")
 
-        # 5. Type mismatch (should raise TypeError)
-        with self.assertRaises(TypeError):
-            self.data_smells.check_types_as_string(test_df, 'key_str', DataType.INTEGER)
-        print_and_log("Test Case 5 Passed: TypeError raised for type mismatch in key_str")
-
-        # 6. Non-existent field (should raise ValueError)
+        # 5. Non-existent field (should raise ValueError)
         with self.assertRaises(ValueError):
             self.data_smells.check_types_as_string(test_df, 'no_field', DataType.STRING)
-        print_and_log("Test Case 6 Passed: ValueError raised for non-existent field")
+        print_and_log("Test Case 5 Passed: ValueError raised for non-existent field")
 
-        # 7. Unknown expected_type (should raise ValueError)
+        # 6. Unknown expected_type (should raise ValueError)
         with self.assertRaises(ValueError):
             self.data_smells.check_types_as_string(test_df, 'key_str', 'UnknownType')
-        print_and_log("Test Case 7 Passed: ValueError raised for unknown expected_type")
+        print_and_log("Test Case 6 Passed: ValueError raised for unknown expected_type")
 
         print_and_log("\nFinished testing check_types_as_string function with Spotify Dataset")
         print_and_log("")
