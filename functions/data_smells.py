@@ -1,6 +1,7 @@
 import logging
 
 import pandas as pd
+import numpy as np
 from helpers.logger import print_and_log
 
 
@@ -122,3 +123,42 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
     # Check either all fields or a specific field
     fields_to_check = [field] if field is not None else data_dictionary.columns
     return all(check_field_values(f) for f in fields_to_check)
+
+
+def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+    """
+    Checks if any float column in the DataFrame contains only integer values (decimals always .00).
+    If so, logs a warning indicating a possible data smell.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param field: (str) Optional field to check; if None, checks all float columns
+    :return: (bool) False if a smell is detected, True otherwise.
+    """
+
+    def check_column(col_name):
+        # First, check if the column is of a float type
+        if pd.api.types.is_float_dtype(data_dictionary[col_name]):
+            col = data_dictionary[col_name].dropna()
+            if not col.empty:
+                # Check if all values in the column are integers
+                if np.all((col.values == np.floor(col.values))):
+                    message = f"Warning - Column '{col_name}' may be an integer disguised as a float."
+                    print_and_log(message, level=logging.WARN)
+                    print(message)
+                    return False
+        return True
+
+    if field is not None:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        return check_column(field)
+    else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
+        float_fields = data_dictionary.select_dtypes(include=['float', 'float64', 'float32']).columns
+        for col in float_fields:
+            result = check_column(col)
+            if not result:
+                return result  # Return on the first smell found
+    return True
