@@ -43,7 +43,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_precision_consistency_ExternalDatasetTests,
             self.execute_check_missing_invalid_value_consistency_ExternalDatasetTests,
             self.execute_check_integer_as_floating_point_ExternalDatasetTests,
-            self.execute_check_types_as_string_ExternalDatasetTests
+            self.execute_check_types_as_string_ExternalDatasetTests,
+            self.execute_check_special_character_spacing_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -468,9 +469,6 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         self.assertFalse(result, "Test Case 15 Failed: Expected smell for large integers as float")
         print_and_log("Test Case 15 Passed: Expected smell, got smell")
 
-        print_and_log("\nFinished testing check_integer_as_floating_point function with Spotify Dataset")
-        print_and_log("-----------------------------------------------------------")
-
     def execute_check_types_as_string_ExternalDatasetTests(self):
         """
         Execute external dataset tests for check_types_as_string function using the Spotify dataset.
@@ -528,3 +526,136 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
 
         print_and_log("\nFinished testing check_types_as_string function with Spotify Dataset")
         print_and_log("")
+
+    def execute_check_special_character_spacing_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_special_character_spacing function
+        Tests various scenarios with the Spotify dataset
+        """
+        print_and_log("Testing check_special_character_spacing Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Check track_name field (likely has various formatting issues)
+        print_and_log("\nTest 1: Check track_name field")
+        result = self.data_smells.check_special_character_spacing(test_df, 'track_name')
+        # This will likely detect issues due to special characters, parentheses, etc.
+        self.assertFalse(result, "Test Case 1 Failed: Expected smell for track_name due to special characters")
+        print_and_log("Test Case 1 Passed: Expected smell, got smell")
+
+        # Test 2: Check track_artist field (likely has various formatting issues)
+        print_and_log("\nTest 2: Check track_artist field")
+        result = self.data_smells.check_special_character_spacing(test_df, 'track_artist')
+        # This will likely detect issues due to special characters, apostrophes, etc.
+        self.assertFalse(result, "Test Case 2 Failed: Expected smell for track_artist due to special characters")
+        print_and_log("Test Case 2 Passed: Expected smell, got smell")
+
+        # Test 3: Check a numeric field (should have no smell)
+        print_and_log("\nTest 3: Check numeric field (danceability)")
+        result = self.data_smells.check_special_character_spacing(test_df, 'danceability')
+        self.assertTrue(result, "Test Case 3 Failed: Expected no smell for numeric field")
+        print_and_log("Test Case 3 Passed: Expected no smell, got no smell")
+
+        # Test 4: Create a clean string column (no smell)
+        print_and_log("\nTest 4: Check clean string column")
+        clean_df = pd.DataFrame({
+            'clean_strings': ['clean text', 'simple words', 'normal string', 'good data', 'perfect text']
+        })
+        result = self.data_smells.check_special_character_spacing(clean_df, 'clean_strings')
+        self.assertTrue(result, "Test Case 4 Failed: Expected no smell for clean strings")
+        print_and_log("Test Case 4 Passed: Expected no smell, got no smell")
+
+        # Test 5: Create a column with uppercase issues (smell)
+        print_and_log("\nTest 5: Check uppercase issues")
+        uppercase_df = pd.DataFrame({
+            'uppercase_text': ['Hello World', 'TEST CASE', 'Simple Text', 'UPPERCASE', 'MixedCase']
+        })
+        result = self.data_smells.check_special_character_spacing(uppercase_df, 'uppercase_text')
+        self.assertFalse(result, "Test Case 5 Failed: Expected smell for uppercase text")
+        print_and_log("Test Case 5 Passed: Expected smell, got smell")
+
+        # Test 6: Create a column with accented characters (smell)
+        print_and_log("\nTest 6: Check accented characters")
+        accent_df = pd.DataFrame({
+            'accented_text': ['café', 'niño', 'résumé', 'piñata', 'naïve']
+        })
+        result = self.data_smells.check_special_character_spacing(accent_df, 'accented_text')
+        self.assertFalse(result, "Test Case 6 Failed: Expected smell for accented text")
+        print_and_log("Test Case 6 Passed: Expected smell, got smell")
+
+        # Test 7: Create a column with special characters (smell)
+        print_and_log("\nTest 7: Check special characters")
+        special_df = pd.DataFrame({
+            'special_chars': ['hello@world', 'test#case', 'data&analytics', 'file.txt', 'user:password']
+        })
+        result = self.data_smells.check_special_character_spacing(special_df, 'special_chars')
+        self.assertFalse(result, "Test Case 7 Failed: Expected smell for special characters")
+        print_and_log("Test Case 7 Passed: Expected smell, got smell")
+
+        # Test 8: Create a column with extra spacing (smell)
+        print_and_log("\nTest 8: Check extra spacing")
+        spacing_df = pd.DataFrame({
+            'extra_spaces': ['hello  world', 'test   case', 'data    analytics', '  leading', 'trailing  ']
+        })
+        result = self.data_smells.check_special_character_spacing(spacing_df, 'extra_spaces')
+        self.assertFalse(result, "Test Case 8 Failed: Expected smell for extra spacing")
+        print_and_log("Test Case 8 Passed: Expected smell, got smell")
+
+        # Test 9: Create a column with mixed formatting issues (smell)
+        print_and_log("\nTest 9: Check mixed formatting issues")
+        mixed_df = pd.DataFrame({
+            'mixed_issues': ['Café@Home  ', 'TEST#Case   ', 'Résumé!Final  ', 'USER:Pass  ', 'File.TXT@Server']
+        })
+        result = self.data_smells.check_special_character_spacing(mixed_df, 'mixed_issues')
+        self.assertFalse(result, "Test Case 9 Failed: Expected smell for mixed issues")
+        print_and_log("Test Case 9 Passed: Expected smell, got smell")
+
+        # Test 10: Check numbers as strings (no smell)
+        print_and_log("\nTest 10: Check numbers as strings")
+        numbers_df = pd.DataFrame({
+            'numbers_as_strings': ['123', '456', '789', '101112', '131415']
+        })
+        result = self.data_smells.check_special_character_spacing(numbers_df, 'numbers_as_strings')
+        self.assertTrue(result, "Test Case 10 Failed: Expected no smell for numbers as strings")
+        print_and_log("Test Case 10 Passed: Expected no smell, got no smell")
+
+        # Test 11: Check empty and null values (no smell)
+        print_and_log("\nTest 11: Check empty and null values")
+        empty_df = pd.DataFrame({
+            'empty_nulls': ['', np.nan, '', np.nan, '']
+        })
+        result = self.data_smells.check_special_character_spacing(empty_df, 'empty_nulls')
+        self.assertTrue(result, "Test Case 11 Failed: Expected no smell for empty/null values")
+        print_and_log("Test Case 11 Passed: Expected no smell, got no smell")
+
+        # Test 12: Check single characters with issues (smell)
+        print_and_log("\nTest 12: Check single character issues")
+        single_char_df = pd.DataFrame({
+            'single_chars': ['A', '@', 'É', ' ', '#']
+        })
+        result = self.data_smells.check_special_character_spacing(single_char_df, 'single_chars')
+        self.assertFalse(result, "Test Case 12 Failed: Expected smell for single character issues")
+        print_and_log("Test Case 12 Passed: Expected smell, got smell")
+
+        # Test 13: Check mixed clean and dirty data (smell)
+        print_and_log("\nTest 13: Check mixed clean and dirty data")
+        mixed_clean_dirty_df = pd.DataFrame({
+            'mixed_data': ['clean text', 'Dirty@Text  ', 'normal', 'UPPERCASE', 'café']
+        })
+        result = self.data_smells.check_special_character_spacing(mixed_clean_dirty_df, 'mixed_data')
+        self.assertFalse(result, "Test Case 13 Failed: Expected smell for mixed clean/dirty data")
+        print_and_log("Test Case 13 Passed: Expected smell, got smell")
+
+        # Test 14: Check all string columns in dataset (smell expected)
+        print_and_log("\nTest 14: Check all string columns in dataset")
+        result = self.data_smells.check_special_character_spacing(test_df)
+        self.assertFalse(result, "Test Case 14 Failed: Expected smell when checking all string columns")
+        print_and_log("Test Case 14 Passed: Expected smell when checking all columns, got smell")
+
+        # Test 15: Check playlist_name field (likely has formatting issues)
+        print_and_log("\nTest 15: Check playlist_name field")
+        result = self.data_smells.check_special_character_spacing(test_df, 'playlist_name')
+        self.assertFalse(result, "Test Case 15 Failed: Expected smell for playlist_name due to formatting")
+        print_and_log("Test Case 15 Passed: Expected smell, got smell")
