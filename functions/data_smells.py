@@ -326,65 +326,32 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
     :param field: (str) Optional field to check; if None, checks all float columns
     :return: (bool) False if a smell is detected, True otherwise
     """
-    def has_suspect_precision(value):
-        """Check if a value has suspect precision"""
-        try:
-            # Skip NaN values
-            if pd.isna(value):
-                return False
-
-            # Convert to string and check for decimal point
-            str_val = str(value)
-            if '.' not in str_val:
-                return False
-
-            # Check for trailing zeros in decimal part
-            decimal_part = str_val.split('.')[1]
-            print("Decimal part:", decimal_part)
-            if decimal_part.endswith('0'):
-                return True
-
-            # Compare with minimal representation
-            simplified = format(float(value), 'g')
-            return len(simplified) < len(str_val)
-        except (ValueError, TypeError):
-            return False
-
     def check_column(col_name):
-        """Check a column for suspect precision"""
-        print("Type column:", data_dictionary[col_name].dtype)
-        if (not pd.api.types.is_float_dtype(data_dictionary[col_name]) and
-                not data_dictionary[col_name].dtype =='object'):
-            return True
-
-        # Get all values including NaN
-        values = data_dictionary[col_name]
-        if values.empty:
-            return True
-
-        # Check each value for suspect precision
-        for val in values:
-            print("Value:", val)
-            if has_suspect_precision(val):
-                message = f"Warning - Possible data smell: The dataField {col_name} contains non-significant digits."
-                print_and_log(message, level=logging.WARN)
-                print(f"DATA SMELL DETECTED: Suspect Precision in field {col_name}")
-                return False
+        if pd.api.types.is_float_dtype(data_dictionary[col_name]):
+            col = data_dictionary[col_name]
+            for v in col:
+                if v is None or (isinstance(v, float) and np.isnan(v)):
+                    continue
+                try:
+                    if v != float(format(v, 'g')):
+                        print_and_log(f"Warning - Possible data smell: The dataField {col_name} contains "
+                                      f"non-significant digits: {v} -> {float(format(v, 'g'))}", level=logging.WARN)
+                        print(f"DATA SMELL DETECTED: Suspect Precision in field {col_name}")
+                        return False
+                except Exception:
+                    continue
         return True
 
     if field is not None:
         if field not in data_dictionary.columns:
             raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
         return check_column(field)
-
-    # If DataFrame is empty, return True (no smell)
-    if data_dictionary.empty:
-        return True
-
-    # Check all float columns
-    float_fields = data_dictionary.select_dtypes(include=['float', 'float64', 'float32']).columns
-    for col in float_fields:
-        result = check_column(col)
-        if not result:
-            return False
+    else:
+        if data_dictionary.empty:
+            return True
+        float_fields = data_dictionary.select_dtypes(include=['float', 'float64', 'float32']).columns
+        for col in float_fields:
+            result = check_column(col)
+            if not result:
+                return result
     return True

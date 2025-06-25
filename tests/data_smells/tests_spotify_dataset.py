@@ -44,7 +44,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_missing_invalid_value_consistency_ExternalDatasetTests,
             self.execute_check_integer_as_floating_point_ExternalDatasetTests,
             self.execute_check_types_as_string_ExternalDatasetTests,
-            self.execute_check_special_character_spacing_ExternalDatasetTests
+            self.execute_check_special_character_spacing_ExternalDatasetTests,
+            self.execute_check_suspect_precision_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -654,3 +655,92 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         result = self.data_smells.check_special_character_spacing(test_df, 'playlist_name')
         self.assertFalse(result, "Test Case 15 Failed: Expected smell for playlist_name due to formatting")
         print_and_log("Test Case 15 Passed: Expected smell, got smell")
+
+    def execute_check_suspect_precision_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_suspect_precision function
+        Tests various scenarios with the Spotify dataset, considering that Python floats
+        ignore trailing zeros, so no data smells should be detected.
+        """
+        print_and_log("Testing check_suspect_precision Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Check danceability field (has values between 0 and 1 with varying precision)
+        print_and_log("\nTest 1: Check danceability field")
+        result = self.data_smells.check_suspect_precision(test_df, 'danceability')
+        assert result is True, "Test Case 1 Failed: Should not detect smell in danceability"
+        print_and_log("Test Case 1 Passed: No smell detected in danceability")
+
+        # Test 2: Check energy field (similar to danceability)
+        print_and_log("\nTest 2: Check energy field")
+        result = self.data_smells.check_suspect_precision(test_df, 'energy')
+        assert result is True, "Test Case 2 Failed: Should not detect smell in energy"
+        print_and_log("Test Case 2 Passed: No smell detected in energy")
+
+        # Test 3: Check loudness field (can have many decimal places)
+        print_and_log("\nTest 3: Check loudness field")
+        result = self.data_smells.check_suspect_precision(test_df, 'loudness')
+        assert result is True, "Test Case 3 Failed: Should not detect smell in loudness"
+        print_and_log("Test Case 3 Passed: No smell detected in loudness")
+
+        # Test 4: Create a column with explicit trailing zeros
+        print_and_log("\nTest 4: Check column with explicit trailing zeros")
+        test_df['trailing_zeros'] = test_df['danceability'].apply(lambda x: float(f"{x:.4f}"))
+        result = self.data_smells.check_suspect_precision(test_df, 'trailing_zeros')
+        assert result is True, "Test Case 4 Failed: Should not detect smell with trailing zeros"
+        print_and_log("Test Case 4 Passed: No smell detected with trailing zeros")
+
+        # Test 5: Check speechiness (typically has varying precision)
+        print_and_log("\nTest 5: Check speechiness field")
+        result = self.data_smells.check_suspect_precision(test_df, 'speechiness')
+        assert result is True, "Test Case 5 Failed: Should not detect smell in speechiness"
+        print_and_log("Test Case 5 Passed: No smell detected in speechiness")
+
+        # Test 6: Create a column with scientific notation
+        print_and_log("\nTest 6: Check scientific notation")
+        test_df['scientific'] = test_df['loudness'].apply(lambda x: float(f"{x:e}"))
+        result = self.data_smells.check_suspect_precision(test_df, 'scientific')
+        assert result is True, "Test Case 6 Failed: Should not detect smell in scientific notation"
+        print_and_log("Test Case 6 Passed: No smell detected in scientific notation")
+
+        # Test 7: Create a column with very large numbers
+        print_and_log("\nTest 7: Check very large numbers")
+        test_df['large_numbers'] = test_df['duration_ms'] * 1000000
+        result = self.data_smells.check_suspect_precision(test_df, 'large_numbers')
+        assert result is True, "Test Case 7 Failed: Should not detect smell in large numbers"
+        print_and_log("Test Case 7 Passed: No smell detected in large numbers")
+
+        # Test 8: Create a column with NaN values mixed
+        print_and_log("\nTest 8: Check mixed with NaN values")
+        test_df['with_nans'] = test_df['danceability'].copy()
+        test_df.loc[0:10, 'with_nans'] = np.nan
+        result = self.data_smells.check_suspect_precision(test_df, 'with_nans')
+        assert result is True, "Test Case 8 Failed: Should not detect smell with NaN values"
+        print_and_log("Test Case 8 Passed: No smell detected with NaN values")
+
+        # Test 9: Create a column with negative numbers
+        print_and_log("\nTest 9: Check negative numbers")
+        test_df['negative_nums'] = -test_df['loudness']
+        result = self.data_smells.check_suspect_precision(test_df, 'negative_nums')
+        assert result is True, "Test Case 9 Failed: Should not detect smell in negative numbers"
+        print_and_log("Test Case 9 Passed: No smell detected in negative numbers")
+
+        # Test 10: Create a column with zeros
+        print_and_log("\nTest 10: Check column with zeros")
+        test_df['zeros'] = 0.0
+        result = self.data_smells.check_suspect_precision(test_df, 'zeros')
+        assert result is True, "Test Case 10 Failed: Should not detect smell with zeros"
+        print_and_log("Test Case 10 Passed: No smell detected with zeros")
+
+        # Test 11: Check empty DataFrame
+        print_and_log("\nTest 11: Check empty DataFrame")
+        empty_df = pd.DataFrame()
+        result = self.data_smells.check_suspect_precision(empty_df)
+        assert result is True, "Test Case 1 Failed: Should not detect smell in empty DataFrame"
+        print_and_log("Test Case 11 Passed: No smell detected in empty DataFrame")
+
+        print_and_log("\nFinished testing check_suspect_precision function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")

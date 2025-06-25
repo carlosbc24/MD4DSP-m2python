@@ -738,8 +738,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         # Test 1: Column with non-significant zeros
         result = self.data_smells.check_suspect_precision(df, 'non_significant')
-        assert result is False, "Test Case 1 Failed: Should detect non-significant zeros"
-        print_and_log("Test Case 1 Passed: Non-significant zeros detected")
+        assert result is True, "Test Case 1 Failed: Should'nt detect smell in non-significant zeros"
+        print_and_log("Test Case 1 Passed: Non-significant zeros have not been detected")
 
         # Test 2: Column with proper precision
         result = self.data_smells.check_suspect_precision(df, 'proper_precision')
@@ -748,8 +748,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         # Test 3: Column with mixed precision
         result = self.data_smells.check_suspect_precision(df, 'mixed_precision')
-        assert result is False, "Test Case 3 Failed: Should detect mixed precision"
-        print_and_log("Test Case 3 Passed: Mixed precision detected")
+        assert result is True, "Test Case 3 Failed: Should'nt detect mixed precision as right zeros aren't significant"
+        print_and_log("Test Case 3 Passed: Mixed precision have not been detected")
 
         # Test 4: Non-float column (no smell)
         result = self.data_smells.check_suspect_precision(df, 'non_float')
@@ -758,27 +758,27 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         # Test 6: Column with NaN values
         result = self.data_smells.check_suspect_precision(df, 'with_nan')
-        assert result is False, "Test Case 6 Failed: Should detect smell despite NaN values"
+        assert result is True, "Test Case 6 Failed: Should not detect smell despite NaN values"
         print_and_log("Test Case 6 Passed: NaN values handled correctly")
 
         # Test 7: Column with None values
         result = self.data_smells.check_suspect_precision(df, 'with_none')
-        assert result is False, "Test Case 7 Failed: Should detect smell despite None values"
+        assert result is True, "Test Case 7 Failed: Should not detect smell despite None values"
         print_and_log("Test Case 7 Passed: None values handled correctly")
 
         # Test 8: Column with large numbers
         result = self.data_smells.check_suspect_precision(df, 'large_numbers')
-        assert result is False, "Test Case 8 Failed: Should detect non-significant digits in large numbers"
+        assert result is True, "Test Case 8 Failed: Should not detect non-significant digits in large numbers"
         print_and_log("Test Case 8 Passed: Large numbers handled correctly")
 
         # Test 9: Column with small numbers
         result = self.data_smells.check_suspect_precision(df, 'small_numbers')
-        assert result is False, "Test Case 9 Failed: Should detect non-significant digits in small numbers"
+        assert result is True, "Test Case 9 Failed: Should not detect non-significant digits in small numbers"
         print_and_log("Test Case 9 Passed: Small numbers handled correctly")
 
         # Test 10: Column with negative numbers
         result = self.data_smells.check_suspect_precision(df, 'negative_numbers')
-        assert result is False, "Test Case 10 Failed: Should detect non-significant digits in negative numbers"
+        assert result is True, "Test Case 10 Failed: Should not detect non-significant digits in negative numbers"
         print_and_log("Test Case 10 Passed: Negative numbers handled correctly")
 
         # Test 11: Non-existent field
@@ -798,12 +798,12 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         # Test 14: Column with mixed significant and non-significant digits
         result = self.data_smells.check_suspect_precision(df, 'mixed_significant')
-        assert result is False, "Test Case 14 Failed: Should detect mixed significant digits"
+        assert result is True, "Test Case 14 Failed: Should not detect mixed significant digits"
         print_and_log("Test Case 14 Passed: Mixed significant digits detected")
 
         # Test 15: Check all float columns at once
         result = self.data_smells.check_suspect_precision(df)
-        assert result is False, "Test Case 15 Failed: Should detect smell in at least one column"
+        assert result is True, "Test Case 15 Failed: Should not detect smell in at least one column"
         print_and_log("Test Case 15 Passed: All columns check successful")
 
         print_and_log("\nFinished testing check_suspect_precision function")
