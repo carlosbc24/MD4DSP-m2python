@@ -48,7 +48,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_suspect_precision_ExternalDatasetTests,
             self.execute_check_suspect_distribution_ExternalDatasetTests,
             self.execute_check_date_as_datetime_ExternalDatasetTests,
-            self.execute_check_separating_consistency_ExternalDatasetTests
+            self.execute_check_separating_consistency_ExternalDatasetTests,
+            self.execute_check_date_time_consistency_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -1154,4 +1155,129 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 14 Passed: All columns check successful")
 
         print_and_log("\nFinished testing check_separating_consistency function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_date_time_consistency_ExternalDatasetTests(self):
+        """
+        Execute external dataset tests for check_date_time_consistency function
+        Tests scenarios with the Spotify dataset dates
+        """
+        print_and_log("Testing check_date_time_consistency Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Convertir track_album_release_date a datetime manejando diferentes formatos
+        def parse_date(date_str):
+            if pd.isna(date_str):
+                return pd.NaT
+            try:
+                # Si es solo año, convertir a 1 de enero de ese año
+                if len(str(date_str)) == 4 and str(date_str).isdigit():
+                    return pd.Timestamp(f"{date_str}-01-01")
+                # Si es año-mes, convertir a primer día del mes
+                elif len(str(date_str).split('-')) == 2:
+                    return pd.Timestamp(f"{date_str}-01")
+                # Para el resto de casos, intentar parsear directamente
+                return pd.to_datetime(date_str)
+            except:
+                return pd.NaT
+
+        test_df['track_album_release_date'] = test_df['track_album_release_date'].apply(parse_date)
+
+        # Test 1: Check release date field as Date type (should have no smell if only dates)
+        print_and_log("\nTest 1: Check release_date field as Date type")
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'track_album_release_date')
+        assert result is True, "Test Case 1 Failed: Release dates should be pure dates"
+        print_and_log("Test Case 1 Passed: Release dates verified as pure dates")
+
+        # Test 2: Create a mixed date-time column and check as Date type (should detect smell)
+        test_df['mixed_datetime'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.Timedelta(hours=np.random.randint(0, 24))
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'mixed_datetime')
+        assert result is False, "Test Case 2 Failed: Should detect smell for mixed date-time values"
+        print_and_log("Test Case 2 Passed: Mixed date-time values detected")
+
+        # Test 3: Add timezone information and check (should work same as without timezone)
+        test_df['tz_dates'] = test_df['track_album_release_date'].dt.tz_localize('UTC')
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'tz_dates')
+        assert result is True, "Test Case 3 Failed: Timezone shouldn't affect date-only values"
+        print_and_log("Test Case 3 Passed: Timezone handling verified")
+
+        # Test 4: Create a column with only midnight times (should work with Date type)
+        test_df['midnight_dates'] = test_df['track_album_release_date'].apply(
+            lambda x: pd.Timestamp(x.date())
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'midnight_dates')
+        assert result is True, "Test Case 4 Failed: Midnight times should be valid dates"
+        print_and_log("Test Case 4 Passed: Midnight times handled correctly")
+
+        # Test 5: Add millisecond precision to dates (should detect smell for Date type)
+        test_df['precise_dates'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.Timedelta(microseconds=500000)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'precise_dates')
+        assert result is False, "Test Case 5 Failed: Should detect smell for millisecond precision"
+        print_and_log("Test Case 5 Passed: Millisecond precision detected")
+
+        # Test 6: Create a column with NaT values mixed with dates
+        test_df['dates_with_nat'] = test_df['track_album_release_date'].copy()
+        test_df.loc[test_df.index[::10], 'dates_with_nat'] = pd.NaT
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'dates_with_nat')
+        assert result is True, "Test Case 6 Failed: Should handle NaT values correctly"
+        print_and_log("Test Case 6 Passed: NaT values handled correctly")
+
+        # Test 7: Create end-of-day timestamps (should detect smell for Date type)
+        test_df['end_of_day'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(hour=23, minute=59, second=59)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'end_of_day')
+        assert result is False, "Test Case 7 Failed: Should detect smell for end-of-day times"
+        print_and_log("Test Case 7 Passed: End-of-day times detected")
+
+        # Test 8: Create dates with specific time patterns
+        test_df['work_hours'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(hour=9) if x.day % 2 == 0 else x.replace(hour=17)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'work_hours')
+        assert result is False, "Test Case 8 Failed: Should detect smell for work hours pattern"
+        print_and_log("Test Case 8 Passed: Work hours pattern detected")
+
+        # Test 9: Create random time distribution
+        test_df['random_times'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.Timedelta(seconds=np.random.randint(86400))
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'random_times')
+        assert result is False, "Test Case 9 Failed: Should detect smell for random times"
+        print_and_log("Test Case 9 Passed: Random time distribution detected")
+
+        # Test 10: Create future dates (valid for both Date and DateTime)
+        test_df['future_dates'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.DateOffset(years=5)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'future_dates')
+        assert result is True, "Test Case 10 Failed: Should accept future dates"
+        print_and_log("Test Case 10 Passed: Future dates handled correctly")
+
+        # Test 11: Create dates with specific seconds
+        test_df['with_seconds'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(second=30)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'with_seconds')
+        assert result is False, "Test Case 11 Failed: Should detect smell for dates with seconds"
+        print_and_log("Test Case 11 Passed: Dates with seconds detected")
+
+        # Test 12: Create a column with leap year dates
+        test_df['leap_years'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(year=2024, month=2, day=29)
+            if x.month == 2 and x.day == 28
+            else x
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'leap_years')
+        assert result is True, "Test Case 12 Failed: Should handle leap year dates"
+        print_and_log("Test Case 12 Passed: Leap year dates handled correctly")
+
+        print_and_log("\nFinished testing check_date_time_consistency function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")

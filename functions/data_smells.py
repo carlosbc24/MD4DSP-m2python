@@ -622,3 +622,59 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
             if not result:
                 return result  # Return on the first smell found
         return True
+
+
+def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: DataType, field: str = None) -> bool:
+    """
+    Check if datetime/date fields comply with the expected format according to the data model.
+    For fields defined as Date type, it checks that no time information is present.
+    For fields defined as DateTime type, it verifies proper datetime format.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param expected_type: (DataType) Expected data type (Date or DateTime)
+    :param field: (str) Optional field to check; if None, checks all datetime fields
+
+    :return: (bool) True if format is consistent, False otherwise
+    """
+    if expected_type not in [DataType.DATE, DataType.DATETIME]:
+        raise ValueError("expected_type must be either DataType.DATE or DataType.DATETIME")
+
+    def check_column(col_name):
+        # Check if column exists
+        if col_name not in data_dictionary.columns:
+            raise ValueError(f"Field '{col_name}' does not exist in the DataFrame")
+
+        # Get column data
+        col_data = data_dictionary[col_name]
+
+        # Skip non-datetime columns
+        if not pd.api.types.is_datetime64_any_dtype(col_data):
+            return True
+
+        # Remove NaT values
+        col_data = col_data.dropna()
+        if col_data.empty:
+            return True
+
+        if expected_type == DataType.DATE:
+            # For Date type, check that no time information is present (all times should be midnight)
+            has_time = not ((col_data.dt.hour == 0) &
+                          (col_data.dt.minute == 0) &
+                          (col_data.dt.second == 0) &
+                          (col_data.dt.microsecond == 0)).all()
+
+            if has_time:
+                message = f"Warning - Possible data smell: The format of date of dataField {col_name} do not align with the definitions in the data-model (contains time information)"
+                print_and_log(message, level=logging.WARN)
+                print(f"DATA SMELL DETECTED: Date/Time Format Inconsistency in field {col_name}")
+                return False
+
+        return True
+
+    if field is not None:
+        return check_column(field)
+    else:
+        # Check all datetime columns
+        datetime_fields = data_dictionary.select_dtypes(include=['datetime64[ns]', 'datetime64[ns, UTC]']).columns
+        results = [check_column(col) for col in datetime_fields]
+        return all(results)

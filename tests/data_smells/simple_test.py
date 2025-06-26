@@ -47,7 +47,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
             self.execute_check_suspect_distribution_SimpleTests,
             self.execute_check_suspect_precision_SimpleTests,
             self.execute_check_date_as_datetime_SimpleTests,
-            self.execute_check_separating_consistency_SimpleTests
+            self.execute_check_separating_consistency_SimpleTests,
+            self.execute_check_date_time_consistency_SimpleTests
         ]
 
         print_and_log("")
@@ -616,7 +617,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
             'mixed_issues': ['Café@Home  ', 'TEST#Case   ', 'Résumé!Final  '],
             'numeric_field': [1, 2, 3],
             'all_nan': [np.nan, np.nan, np.nan],
-            'empty_strings': ['', '', ''],
+            'empty_column': ['', '', ''],
             'single_char_issues': ['A', '@', ' '],
             'numbers_as_strings': ['123', '456', '789'],
             'mixed_clean_dirty': ['clean text', 'Dirty@Text  ', 'normal']
@@ -675,7 +676,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 10 Passed: Expected no smell for all NaN column, got no smell")
 
         # Test Case 11: Column with empty strings (no smell)
-        result = self.data_smells.check_special_character_spacing(df, 'empty_strings')
+        result = self.data_smells.check_special_character_spacing(df, 'empty_column')
         self.assertTrue(result)
         print_and_log("Test Case 11 Passed: Expected no smell for empty strings, got no smell")
 
@@ -1283,4 +1284,163 @@ class DataSmellsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 15 Passed: Mixed types detected")
 
         print_and_log("\nFinished testing check_separating_consistency function")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_date_time_consistency_SimpleTests(self):
+        """
+        Execute simple tests for check_date_time_consistency function.
+        Tests the following cases:
+        1. Pure dates in Date type column (no smell)
+        2. Dates with time in Date type column (smell)
+        3. Mixed dates in DateTime type column (no smell)
+        4. Non-datetime column (no smell)
+        5. Empty DataFrame
+        6. Column with NaN values
+        7. Non-existent column
+        8. Invalid DataType
+        9. Column with timezone aware dates
+        10. Column with microsecond precision
+        11. Column with mixed timezones
+        12. Column with only midnight times
+        13. Single date value
+        14. All columns check
+        15. Dates at different times of day
+        """
+        print_and_log("")
+        print_and_log("Testing check_date_time_consistency function...")
+
+        # Test 1: Pure dates in Date type column (no smell)
+        df_pure_dates = pd.DataFrame({
+            'pure_dates': pd.date_range('2024-01-01', periods=3, freq='D')
+        })
+        result = self.data_smells.check_date_time_consistency(df_pure_dates, DataType.DATE, 'pure_dates')
+        assert result is True, "Test Case 1 Failed: Should not detect smell for pure dates with Date type"
+        print_and_log("Test Case 1 Passed: No smell detected for pure dates with Date type")
+
+        # Test 2: Dates with time in Date type column (smell)
+        df_dates_with_time = pd.DataFrame({
+            'dates_with_time': [
+                pd.Timestamp('2024-01-01 10:30:00'),
+                pd.Timestamp('2024-01-02 15:45:30'),
+                pd.Timestamp('2024-01-03 08:20:15')
+            ]
+        })
+        result = self.data_smells.check_date_time_consistency(df_dates_with_time, DataType.DATE, 'dates_with_time')
+        assert result is False, "Test Case 2 Failed: Should detect smell for dates with time in Date type"
+        print_and_log("Test Case 2 Passed: Smell detected for dates with time in Date type")
+
+        # Test 3: Mixed dates in DateTime type column (no smell)
+        df_datetime = pd.DataFrame({
+            'datetime_col': [
+                pd.Timestamp('2024-01-01 10:30:00'),
+                pd.Timestamp('2024-01-02 00:00:00'),
+                pd.Timestamp('2024-01-03 23:59:59')
+            ]
+        })
+        result = self.data_smells.check_date_time_consistency(df_datetime, DataType.DATETIME, 'datetime_col')
+        assert result is True, "Test Case 3 Failed: Should not detect smell for mixed times in DateTime type"
+        print_and_log("Test Case 3 Passed: No smell detected for mixed times in DateTime type")
+
+        # Test 4: Non-datetime column (no smell)
+        df_non_datetime = pd.DataFrame({
+            'string_dates': ['2024-01-01', '2024-01-02', '2024-01-03']
+        })
+        result = self.data_smells.check_date_time_consistency(df_non_datetime, DataType.DATE, 'string_dates')
+        assert result is True, "Test Case 4 Failed: Should not detect smell for non-datetime column"
+        print_and_log("Test Case 4 Passed: No smell detected for non-datetime column")
+
+        # Test 5: Empty DataFrame
+        df_empty = pd.DataFrame()
+        result = self.data_smells.check_date_time_consistency(df_empty, DataType.DATE)
+        assert result is True, "Test Case 5 Failed: Should not detect smell for empty DataFrame"
+        print_and_log("Test Case 5 Passed: No smell detected for empty DataFrame")
+
+        # Test 6: Column with NaN values
+        df_with_nan = pd.DataFrame({
+            'dates_with_nan': [pd.Timestamp('2024-01-01'), pd.NaT, pd.Timestamp('2024-01-03')]
+        })
+        result = self.data_smells.check_date_time_consistency(df_with_nan, DataType.DATE, 'dates_with_nan')
+        assert result is True, "Test Case 6 Failed: Should not detect smell for dates with NaN"
+        print_and_log("Test Case 6 Passed: No smell detected for dates with NaN")
+
+        # Test 7: Non-existent column
+        with self.assertRaises(ValueError):
+            self.data_smells.check_date_time_consistency(df_empty, DataType.DATE, 'non_existent')
+        print_and_log("Test Case 7 Passed: ValueError raised for non-existent column")
+
+        # Test 8: Invalid DataType
+        with self.assertRaises(ValueError):
+            self.data_smells.check_date_time_consistency(df_datetime, DataType.STRING, 'datetime_col')
+        print_and_log("Test Case 8 Passed: ValueError raised for invalid DataType")
+
+        # Test 9: Column with timezone aware dates
+        df_timezone = pd.DataFrame({
+            'timezone_dates': pd.date_range('2024-01-01', periods=3, freq='D', tz='UTC')
+        })
+        result = self.data_smells.check_date_time_consistency(df_timezone, DataType.DATE, 'timezone_dates')
+        assert result is True, "Test Case 9 Failed: Should not detect smell for timezone-aware dates"
+        print_and_log("Test Case 9 Passed: No smell detected for timezone-aware dates")
+
+        # Test 10: Column with microsecond precision
+        df_microseconds = pd.DataFrame({
+            'microseconds': [pd.Timestamp('2024-01-01 00:00:00.000001')]
+        })
+        result = self.data_smells.check_date_time_consistency(df_microseconds, DataType.DATE, 'microseconds')
+        assert result is False, "Test Case 10 Failed: Should detect smell for dates with microseconds"
+        print_and_log("Test Case 10 Passed: Smell detected for dates with microseconds")
+
+        # Test 11: Column with mixed timezones
+        df_mixed_tz = pd.DataFrame({
+            'mixed_tz': [
+                pd.Timestamp('2024-01-01', tz='UTC'),
+                pd.Timestamp('2024-01-02', tz='US/Eastern'),
+                pd.Timestamp('2024-01-03', tz='Europe/London')
+            ]
+        })
+        result = self.data_smells.check_date_time_consistency(df_mixed_tz, DataType.DATE, 'mixed_tz')
+        assert result is True, "Test Case 11 Failed: Should not detect smell for dates with mixed timezones"
+        print_and_log("Test Case 11 Passed: No smell detected for dates with mixed timezones")
+
+        # Test 12: Column with only midnight times
+        df_midnight = pd.DataFrame({
+            'midnight_times': [
+                pd.Timestamp('2024-01-01 00:00:00'),
+                pd.Timestamp('2024-01-02 00:00:00'),
+                pd.Timestamp('2024-01-03 00:00:00')
+            ]
+        })
+        result = self.data_smells.check_date_time_consistency(df_midnight, DataType.DATE, 'midnight_times')
+        assert result is True, "Test Case 12 Failed: Should not detect smell for midnight times"
+        print_and_log("Test Case 12 Passed: No smell detected for midnight times")
+
+        # Test 13: Single date value
+        df_single = pd.DataFrame({
+            'single_date': [pd.Timestamp('2024-01-01')]
+        })
+        result = self.data_smells.check_date_time_consistency(df_single, DataType.DATE, 'single_date')
+        assert result is True, "Test Case 13 Failed: Should not detect smell for single date"
+        print_and_log("Test Case 13 Passed: No smell detected for single date")
+
+        # Test 14: All columns check
+        df_multiple = pd.DataFrame({
+            'dates1': pd.date_range('2024-01-01', periods=3, freq='D'),
+            'dates2': [pd.Timestamp('2024-01-01 10:30:00')] * 3
+        })
+        result = self.data_smells.check_date_time_consistency(df_multiple, DataType.DATE)
+        assert result is False, "Test Case 14 Failed: Should detect smell in at least one column"
+        print_and_log("Test Case 14 Passed: Smell detected in multiple columns check")
+
+        # Test 15: Dates at different times of day
+        df_times = pd.DataFrame({
+            'different_times': [
+                pd.Timestamp('2024-01-01 09:00:00'),
+                pd.Timestamp('2024-01-01 12:00:00'),
+                pd.Timestamp('2024-01-01 17:00:00')
+            ]
+        })
+        result = self.data_smells.check_date_time_consistency(df_times, DataType.DATE, 'different_times')
+        assert result is False, "Test Case 15 Failed: Should detect smell for different times of day"
+        print_and_log("Test Case 15 Passed: Smell detected for different times of day")
+
+        print_and_log("\nFinished testing check_date_time_consistency function")
         print_and_log("-----------------------------------------------------------")
