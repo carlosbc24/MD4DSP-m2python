@@ -4,7 +4,6 @@ import re
 
 import numpy as np
 import pandas as pd
-from joblib import PrintTime
 
 from helpers.auxiliar import is_time_string, is_date_string, is_datetime_string, is_float_string, is_integer_string
 from helpers.logger import print_and_log
@@ -354,4 +353,55 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
             result = check_column(col)
             if not result:
                 return result
+    return True
+
+
+
+def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, max_value: float, field: str = None) -> bool:
+    """
+    Checks if continuous data fields have values outside the range defined in the data model.
+    If so, logs a warning indicating a possible data smell.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param min_value: (float) Minimum value allowed according to the data model
+    :param max_value: (float) Maximum value allowed according to the data model
+    :param field: (str) Optional field to check; if None, checks all numeric fields
+    :return: (bool) False if a smell is detected, True otherwise.
+    """
+
+    # Validate input parameters
+    if not isinstance(min_value, (int, float)) or not isinstance(max_value, (int, float)):
+        raise TypeError("min_value and max_value must be numeric")
+
+    if min_value > max_value:
+        raise ValueError("min_value cannot be greater than max_value")
+
+    def check_column(col_name):
+        # Only check numeric columns (continuous data)
+        if pd.api.types.is_numeric_dtype(data_dictionary[col_name]):
+            col = data_dictionary[col_name].dropna()
+            if not col.empty:
+                # Check if any values are outside the defined range
+                out_of_range = (col < min_value) | (col > max_value)
+                if out_of_range.any():
+                    message = f"Warning - Possible data smell: The range of values of dataField {col_name} do not align with the definitions in the data-model"
+                    print_and_log(message, level=logging.WARN)
+                    print(f"DATA SMELL DETECTED: Suspect Distribution in field {col_name}")
+                    return False
+        return True
+
+    if field is not None:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        return check_column(field)
+    else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
+        # Check all numeric columns
+        numeric_fields = data_dictionary.select_dtypes(include=['number', 'float64', 'float32', 'int64', 'int32']).columns
+        for col in numeric_fields:
+            result = check_column(col)
+            if not result:
+                return result  # Return on the first smell found
     return True

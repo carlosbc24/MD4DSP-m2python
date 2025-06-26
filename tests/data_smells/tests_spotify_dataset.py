@@ -46,6 +46,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_types_as_string_ExternalDatasetTests,
             self.execute_check_special_character_spacing_ExternalDatasetTests,
             self.execute_check_suspect_precision_ExternalDatasetTests
+            self.execute_check_special_character_spacing_ExternalDatasetTests,
+            self.execute_check_suspect_distribution_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -655,6 +657,113 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         result = self.data_smells.check_special_character_spacing(test_df, 'playlist_name')
         self.assertFalse(result, "Test Case 15 Failed: Expected smell for playlist_name due to formatting")
         print_and_log("Test Case 15 Passed: Expected smell, got smell")
+
+    def execute_check_suspect_distribution_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_suspect_distribution function
+        Tests various scenarios with the Spotify dataset
+        """
+        print_and_log("Testing check_suspect_distribution Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Check danceability field (should be 0.0-1.0, no smell expected)
+        print_and_log("\nTest 1: Check danceability field (0.0-1.0 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0.0, 1.0, 'danceability')
+        self.assertTrue(result, "Test Case 1 Failed: Expected no smell for danceability in range 0.0-1.0")
+        print_and_log("Test Case 1 Passed: Expected no smell, got no smell")
+
+        # Test 2: Check danceability with restrictive range (smell expected)
+        print_and_log("\nTest 2: Check danceability with restrictive range (0.3-0.7)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0.3, 0.7, 'danceability')
+        self.assertFalse(result, "Test Case 2 Failed: Expected smell for danceability with restrictive range")
+        print_and_log("Test Case 2 Passed: Expected smell, got smell")
+
+        # Test 3: Check track_popularity (0-100 range, no smell expected)
+        print_and_log("\nTest 3: Check track_popularity field (0-100 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0, 100, 'track_popularity')
+        self.assertTrue(result, "Test Case 3 Failed: Expected no smell for track_popularity in range 0-100")
+        print_and_log("Test Case 3 Passed: Expected no smell, got no smell")
+
+        # Test 4: Check track_popularity with restrictive range (smell expected)
+        print_and_log("\nTest 4: Check track_popularity with restrictive range (20-80)")
+        result = self.data_smells.check_suspect_distribution(test_df, 20, 80, 'track_popularity')
+        self.assertFalse(result, "Test Case 4 Failed: Expected smell for track_popularity with restrictive range")
+        print_and_log("Test Case 4 Passed: Expected smell, got smell")
+
+        # Test 5: Check duration_ms with reasonable range (no smell expected)
+        print_and_log("\nTest 5: Check duration_ms field (1000-1000000 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, 1000, 1000000, 'duration_ms')
+        self.assertTrue(result, "Test Case 5 Failed: Expected no smell for duration_ms in reasonable range")
+        print_and_log("Test Case 5 Passed: Expected no smell, got no smell")
+
+        # Test 6: Check duration_ms with restrictive range (smell expected)
+        print_and_log("\nTest 6: Check duration_ms with restrictive range (150000-250000)")
+        result = self.data_smells.check_suspect_distribution(test_df, 150000, 250000, 'duration_ms')
+        self.assertFalse(result, "Test Case 6 Failed: Expected smell for duration_ms with restrictive range")
+        print_and_log("Test Case 6 Passed: Expected smell, got smell")
+
+        # Test 7: Check tempo field with reasonable range (no smell expected)
+        print_and_log("\nTest 7: Check tempo field (0-250 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0, 250, 'tempo')
+        self.assertTrue(result, "Test Case 7 Failed: Expected no smell for tempo in reasonable range")
+        print_and_log("Test Case 7 Passed: Expected no smell, got no smell")
+
+        # Test 8: Check key field (0-11 range, no smell expected)
+        print_and_log("\nTest 8: Check key field (0-11 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0, 11, 'key')
+        self.assertTrue(result, "Test Case 8 Failed: Expected no smell for key in range 0-11")
+        print_and_log("Test Case 8 Passed: Expected no smell, got no smell")
+
+        # Test 9: Check mode field (0-1 range, no smell expected)
+        print_and_log("\nTest 9: Check mode field (0-1 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0, 1, 'mode')
+        self.assertTrue(result, "Test Case 9 Failed: Expected no smell for mode in range 0-1")
+        print_and_log("Test Case 9 Passed: Expected no smell, got no smell")
+
+        # Test 10: Check energy field (0.0-1.0 range, no smell expected)
+        print_and_log("\nTest 10: Check energy field (0.0-1.0 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0.0, 1.0, 'energy')
+        self.assertTrue(result, "Test Case 10 Failed: Expected no smell for energy in range 0.0-1.0")
+        print_and_log("Test Case 10 Passed: Expected no smell, got no smell")
+
+        # Test 11: Create custom data with out-of-range values (smell expected)
+        print_and_log("\nTest 11: Check custom data with out-of-range values")
+        custom_df = pd.DataFrame({
+            'test_values': [0.5, 0.8, 1.2, 0.3, 0.9]  # 1.2 is out of range for 0.0-1.0
+        })
+        result = self.data_smells.check_suspect_distribution(custom_df, 0.0, 1.0, 'test_values')
+        self.assertFalse(result, "Test Case 11 Failed: Expected smell for out-of-range values")
+        print_and_log("Test Case 11 Passed: Expected smell, got smell")
+
+        # Test 12: Create custom data with negative values (smell expected)
+        print_and_log("\nTest 12: Check custom data with negative values")
+        negative_df = pd.DataFrame({
+            'negative_values': [-0.1, 0.5, 0.8, 0.3, 0.9]  # -0.1 is out of range for 0.0-1.0
+        })
+        result = self.data_smells.check_suspect_distribution(negative_df, 0.0, 1.0, 'negative_values')
+        self.assertFalse(result, "Test Case 12 Failed: Expected smell for negative values")
+        print_and_log("Test Case 12 Passed: Expected smell, got smell")
+
+        # Test 13: Check string field (no smell - non-numeric)
+        print_and_log("\nTest 13: Check string field (track_name)")
+        result = self.data_smells.check_suspect_distribution(test_df, 0.0, 1.0, 'track_name')
+        self.assertTrue(result, "Test Case 13 Failed: Expected no smell for string field")
+        print_and_log("Test Case 13 Passed: Expected no smell for string field, got no smell")
+
+        # Test 14: Check all numeric columns with broad range (some smells expected)
+        print_and_log("\nTest 14: Check all numeric columns with restrictive range")
+        result = self.data_smells.check_suspect_distribution(test_df, 0.0, 1.0)  # Very restrictive range
+        self.assertFalse(result, "Test Case 14 Failed: Expected smell when checking all columns with restrictive range")
+        print_and_log("Test Case 14 Passed: Expected smell when checking all columns, got smell")
+
+        # Test 15: Check loudness field with reasonable range (no smell expected)
+        print_and_log("\nTest 15: Check loudness field (-50 to 5 range)")
+        result = self.data_smells.check_suspect_distribution(test_df, -50, 5, 'loudness')
+        self.assertTrue(result, "Test Case 15 Failed: Expected no smell for loudness in reasonable range")
+        print_and_log("Test Case 15 Passed: Expected no smell, got no smell")
 
     def execute_check_suspect_precision_ExternalDatasetTests(self):
         """

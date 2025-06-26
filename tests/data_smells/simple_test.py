@@ -45,6 +45,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
             self.execute_check_types_as_string_SimpleTests,
             self.execute_check_special_character_spacing_SimpleTests,
             self.execute_check_suspect_precision_SimpleTests
+            self.execute_check_special_character_spacing_SimpleTests,
+            self.execute_check_suspect_distribution_SimpleTests
         ]
 
         print_and_log("")
@@ -442,6 +444,242 @@ class DataSmellsSimpleTest(unittest.TestCase):
         }
         df_15 = pd.DataFrame(data_15)
         result = self.data_smells.check_integer_as_floating_point(df_15)  # Check all columns
+        self.assertFalse(result)
+        print_and_log("Test Case 15 Passed: Expected smell when checking all columns, got smell")
+
+    def execute_check_special_character_spacing_SimpleTests(self):
+        """
+        Execute simple tests for check_special_character_spacing function.
+        Tests the following cases:
+        1. Non-existent field
+        2. String field with clean text (no smell)
+        3. String field with uppercase letters (smell)
+        4. String field with accents (smell)
+        5. String field with special characters (smell)
+        6. String field with extra spaces (smell)
+        7. String field with mixed issues (smell)
+        8. Numeric field (no smell)
+        9. Empty DataFrame
+        10. Column with all NaN values
+        11. Column with empty strings (no smell)
+        12. Column with single character issues (smell)
+        13. Column with numbers as strings (no smell)
+        14. Column with mixed clean and dirty text (smell)
+        15. Check all columns at once (smell present)
+        """
+        print_and_log("")
+        print_and_log("Testing check_special_character_spacing function...")
+
+        # Create test data
+        data = {
+            'clean_text': ['hello world', 'test case', 'simple text'],
+            'uppercase_text': ['Hello World', 'TEST CASE', 'Simple Text'],
+            'accented_text': ['café', 'niño', 'résumé'],
+            'special_chars': ['hello@world', 'test#case', 'simple!text'],
+            'extra_spaces': ['hello  world', 'test   case', 'simple    text'],
+            'mixed_issues': ['Café@Home  ', 'TEST#Case   ', 'Résumé!Final  '],
+            'numeric_field': [1, 2, 3],
+            'all_nan': [np.nan, np.nan, np.nan],
+            'empty_strings': ['', '', ''],
+            'single_char_issues': ['A', '@', ' '],
+            'numbers_as_strings': ['123', '456', '789'],
+            'mixed_clean_dirty': ['clean text', 'Dirty@Text  ', 'normal']
+        }
+        df = pd.DataFrame(data)
+        empty_df = pd.DataFrame()
+
+        # Test Case 1: Non-existent field
+        with self.assertRaises(ValueError):
+            self.data_smells.check_special_character_spacing(df, 'non_existent_field')
+        print_and_log("Test Case 1 Passed: Expected ValueError, got ValueError")
+
+        # Test Case 2: String field with clean text (no smell)
+        result = self.data_smells.check_special_character_spacing(df, 'clean_text')
+        self.assertTrue(result)
+        print_and_log("Test Case 2 Passed: Expected no smell for clean text, got no smell")
+
+        # Test Case 3: String field with uppercase letters (smell)
+        result = self.data_smells.check_special_character_spacing(df, 'uppercase_text')
+        self.assertFalse(result)
+        print_and_log("Test Case 3 Passed: Expected smell for uppercase text, got smell")
+
+        # Test Case 4: String field with accents (smell)
+        result = self.data_smells.check_special_character_spacing(df, 'accented_text')
+        self.assertFalse(result)
+        print_and_log("Test Case 4 Passed: Expected smell for accented text, got smell")
+
+        # Test Case 5: String field with special characters (smell)
+        result = self.data_smells.check_special_character_spacing(df, 'special_chars')
+        self.assertFalse(result)
+        print_and_log("Test Case 5 Passed: Expected smell for special characters, got smell")
+
+        # Test Case 6: String field with extra spaces (smell)
+        result = self.data_smells.check_special_character_spacing(df, 'extra_spaces')
+        self.assertFalse(result)
+        print_and_log("Test Case 6 Passed: Expected smell for extra spaces, got smell")
+
+        # Test Case 7: String field with mixed issues (smell)
+        result = self.data_smells.check_special_character_spacing(df, 'mixed_issues')
+        self.assertFalse(result)
+        print_and_log("Test Case 7 Passed: Expected smell for mixed issues, got smell")
+
+        # Test Case 8: Numeric field (no smell)
+        result = self.data_smells.check_special_character_spacing(df, 'numeric_field')
+        self.assertTrue(result)
+        print_and_log("Test Case 8 Passed: Expected no smell for numeric field, got no smell")
+
+        # Test Case 9: Empty DataFrame with specific column (should raise ValueError)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_special_character_spacing(empty_df, 'any_column')
+        print_and_log("Test Case 9 Passed: Expected ValueError for empty DataFrame with specific column, got ValueError")
+
+        # Test Case 10: Column with all NaN values
+        result = self.data_smells.check_special_character_spacing(df, 'all_nan')
+        self.assertTrue(result)
+        print_and_log("Test Case 10 Passed: Expected no smell for all NaN column, got no smell")
+
+        # Test Case 11: Column with empty strings (no smell)
+        result = self.data_smells.check_special_character_spacing(df, 'empty_strings')
+        self.assertTrue(result)
+        print_and_log("Test Case 11 Passed: Expected no smell for empty strings, got no smell")
+
+        # Test Case 12: Column with single character issues (smell)
+        result = self.data_smells.check_special_character_spacing(df, 'single_char_issues')
+        self.assertFalse(result)
+        print_and_log("Test Case 12 Passed: Expected smell for single character issues, got smell")
+
+        # Test Case 13: Column with numbers as strings (no smell)
+        result = self.data_smells.check_special_character_spacing(df, 'numbers_as_strings')
+        self.assertTrue(result)
+        print_and_log("Test Case 13 Passed: Expected no smell for numbers as strings, got no smell")
+
+        # Test Case 14: Column with mixed clean and dirty text (smell)
+        result = self.data_smells.check_special_character_spacing(df, 'mixed_clean_dirty')
+        self.assertFalse(result)
+        print_and_log("Test Case 14 Passed: Expected smell for mixed clean/dirty text, got smell")
+
+        # Test Case 15: Check all columns at once (smell present)
+        result = self.data_smells.check_special_character_spacing(df)  # Check all columns
+        self.assertFalse(result)
+        print_and_log("Test Case 15 Passed: Expected smell when checking all columns, got smell")
+
+    def execute_check_suspect_distribution_SimpleTests(self):
+        """
+        Execute simple tests for check_suspect_distribution function.
+        Tests the following cases:
+        1. Invalid min/max parameters (non-numeric)
+        2. Invalid range (min > max)
+        3. Non-existent field
+        4. Values within range (no smell)
+        5. Values outside range - too high (smell)
+        6. Values outside range - too low (smell)
+        7. Values outside range - both ends (smell)
+        8. Non-numeric field (no smell)
+        9. Empty DataFrame
+        10. Column with all NaN values
+        11. Mixed values in and out of range (smell)
+        12. Exact boundary values (no smell)
+        13. Float precision at boundaries (no smell)
+        14. Large dataset with outliers (smell)
+        15. Check all columns at once (smell present)
+        """
+        print_and_log("")
+        print_and_log("Testing check_suspect_distribution function...")
+
+        # Test Case 1: Invalid min/max parameters (non-numeric)
+        df_dummy = pd.DataFrame({'test': [1, 2, 3]})
+        with self.assertRaises(TypeError):
+            self.data_smells.check_suspect_distribution(df_dummy, "invalid", 10.0, 'test')
+        print_and_log("Test Case 1 Passed: Expected TypeError for non-numeric parameters, got TypeError")
+
+        # Test Case 2: Invalid range (min > max)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_suspect_distribution(df_dummy, 10.0, 5.0, 'test')
+        print_and_log("Test Case 2 Passed: Expected ValueError for invalid range, got ValueError")
+
+        # Create test data
+        data = {
+            'values_in_range': [1.0, 2.5, 4.0, 3.2, 2.8],
+            'values_too_high': [1.0, 2.0, 6.0, 3.0, 2.5],
+            'values_too_low': [-1.0, 2.0, 3.0, 4.0, 2.5],
+            'values_both_ends': [-1.0, 2.0, 6.0, 3.0, 2.5],
+            'non_numeric': ['a', 'b', 'c', 'd', 'e'],
+            'all_nan': [np.nan, np.nan, np.nan, np.nan, np.nan],
+            'mixed_in_out': [1.0, 2.0, 3.0, 6.0, 2.5],
+            'boundary_values': [0.0, 2.5, 5.0, 1.0, 4.0],
+            'float_precision': [0.000001, 2.5, 4.999999, 3.0, 2.0]
+        }
+        df = pd.DataFrame(data)
+        empty_df = pd.DataFrame()
+
+        # Define range for tests: 0.0 to 5.0
+        min_val, max_val = 0.0, 5.0
+
+        # Test Case 3: Non-existent field
+        with self.assertRaises(ValueError):
+            self.data_smells.check_suspect_distribution(df, min_val, max_val, 'non_existent_field')
+        print_and_log("Test Case 3 Passed: Expected ValueError for non-existent field, got ValueError")
+
+        # Test Case 4: Values within range (no smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'values_in_range')
+        self.assertTrue(result)
+        print_and_log("Test Case 4 Passed: Expected no smell for values in range, got no smell")
+
+        # Test Case 5: Values outside range - too high (smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'values_too_high')
+        self.assertFalse(result)
+        print_and_log("Test Case 5 Passed: Expected smell for values too high, got smell")
+
+        # Test Case 6: Values outside range - too low (smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'values_too_low')
+        self.assertFalse(result)
+        print_and_log("Test Case 6 Passed: Expected smell for values too low, got smell")
+
+        # Test Case 7: Values outside range - both ends (smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'values_both_ends')
+        self.assertFalse(result)
+        print_and_log("Test Case 7 Passed: Expected smell for values at both ends, got smell")
+
+        # Test Case 8: Non-numeric field (no smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'non_numeric')
+        self.assertTrue(result)
+        print_and_log("Test Case 8 Passed: Expected no smell for non-numeric field, got no smell")
+
+        # Test Case 9: Empty DataFrame with specific column (should raise ValueError)
+        with self.assertRaises(ValueError):
+            self.data_smells.check_suspect_distribution(empty_df, min_val, max_val, 'any_column')
+        print_and_log("Test Case 9 Passed: Expected ValueError for empty DataFrame with specific column, got ValueError")
+
+        # Test Case 10: Column with all NaN values
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'all_nan')
+        self.assertTrue(result)
+        print_and_log("Test Case 10 Passed: Expected no smell for all NaN column, got no smell")
+
+        # Test Case 11: Mixed values in and out of range (smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'mixed_in_out')
+        self.assertFalse(result)
+        print_and_log("Test Case 11 Passed: Expected smell for mixed in/out values, got smell")
+
+        # Test Case 12: Exact boundary values (no smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'boundary_values')
+        self.assertTrue(result)
+        print_and_log("Test Case 12 Passed: Expected no smell for boundary values, got no smell")
+
+        # Test Case 13: Float precision at boundaries (no smell)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val, 'float_precision')
+        self.assertTrue(result)
+        print_and_log("Test Case 13 Passed: Expected no smell for float precision at boundaries, got no smell")
+
+        # Test Case 14: Large dataset with outliers (smell)
+        large_data = pd.DataFrame({
+            'large_dataset': [2.0] * 100 + [10.0]  # 100 normal values + 1 outlier
+        })
+        result = self.data_smells.check_suspect_distribution(large_data, min_val, max_val, 'large_dataset')
+        self.assertFalse(result)
+        print_and_log("Test Case 14 Passed: Expected smell for large dataset with outliers, got smell")
+
+        # Test Case 15: Check all columns at once (smell present)
+        result = self.data_smells.check_suspect_distribution(df, min_val, max_val)  # Check all columns
         self.assertFalse(result)
         print_and_log("Test Case 15 Passed: Expected smell when checking all columns, got smell")
 
