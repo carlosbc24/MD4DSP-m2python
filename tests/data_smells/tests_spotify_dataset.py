@@ -662,8 +662,7 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
     def execute_check_suspect_precision_ExternalDatasetTests(self):
         """
         Execute the external dataset tests for check_suspect_precision function
-        Tests various scenarios with the Spotify dataset, considering that Python floats
-        ignore trailing zeros, so no data smells should be detected.
+        Tests various scenarios with the Spotify dataset
         """
         print_and_log("Testing check_suspect_precision Function with Spotify Dataset")
         print_and_log("")
@@ -744,6 +743,101 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         result = self.data_smells.check_suspect_precision(empty_df)
         assert result is True, "Test Case 1 Failed: Should not detect smell in empty DataFrame"
         print_and_log("Test Case 11 Passed: No smell detected in empty DataFrame")
+
+        # Test 12: Test computations that may produce precision issues
+        test_df['computation_precision'] = test_df['duration_ms'] / 1000.0 + 0.1
+        result = self.data_smells.check_suspect_precision(test_df, 'computation_precision')
+        assert result is False, "Test Case 12 Failed: Should detect smell in computed values"
+        print_and_log("Test Case 12 Passed: Detected precision issues in computations")
+
+        # Test 13: Test periodic decimals from division
+        test_df['periodic_division'] = test_df['tempo'] / 3.0
+        result = self.data_smells.check_suspect_precision(test_df, 'periodic_division')
+        assert result is False, "Test Case 13 Failed: Should detect smell in periodic division"
+        print_and_log("Test Case 13 Passed: Detected periodic division issues")
+
+        # Test 14: Test floating point accumulation errors
+        test_df['accumulation_errors'] = test_df['danceability'].apply(lambda x: sum([x/10] * 10))
+        result = self.data_smells.check_suspect_precision(test_df, 'accumulation_errors')
+        assert result is False, "Test Case 14 Failed: Should detect smell in accumulated values"
+        print_and_log("Test Case 14 Passed: Detected accumulation errors")
+
+        # Test 15: Test irrational number computations
+        test_df['irrational_computations'] = test_df['tempo'].apply(lambda x: np.sqrt(x) * np.pi)
+        result = self.data_smells.check_suspect_precision(test_df, 'irrational_computations')
+        assert result is False, "Test Case 15 Failed: Should detect smell in irrational computations"
+        print_and_log("Test Case 15 Passed: Detected irrational computation issues")
+
+        # Test 16: Test high precision arithmetic
+        test_df['high_precision'] = test_df['loudness'].apply(lambda x: np.exp(x/10) * np.log10(abs(x) + 1))
+        result = self.data_smells.check_suspect_precision(test_df, 'high_precision')
+        assert result is False, "Test Case 16 Failed: Should detect smell in high precision arithmetic"
+        print_and_log("Test Case 16 Passed: Detected high precision arithmetic issues")
+
+        # Test 17: Test trigonometric calculations
+        test_df['trig_calculations'] = test_df['tempo'].apply(lambda x: np.sin(x * np.pi/180))
+        result = self.data_smells.check_suspect_precision(test_df, 'trig_calculations')
+        assert result is False, "Test Case 17 Failed: Should detect smell in trigonometric calculations"
+        print_and_log("Test Case 17 Passed: Detected trigonometric calculation issues")
+
+        # Test 18: Test percentage calculations
+        test_df['percentages'] = test_df['acousticness'] * 100
+        result = self.data_smells.check_suspect_precision(test_df, 'percentages')
+        assert result is False, "Test Case 18 Failed: Should detect smell in percentage calculations"
+        print_and_log("Test Case 18 Passed: Detected percentage calculation issues")
+
+        # Test 19: Test long chain of operations
+        test_df['operation_chain'] = test_df.apply(
+            lambda row: (row['tempo'] / 60) * row['danceability'] + np.sqrt(abs(row['loudness'])), axis=1
+        )
+        result = self.data_smells.check_suspect_precision(test_df, 'operation_chain')
+        assert result is False, "Test Case 19 Failed: Should detect smell in operation chains"
+        print_and_log("Test Case 19 Passed: Detected operation chain issues")
+
+        # Test 20: Test small number divisions
+        test_df['small_divisions'] = test_df['speechiness'] / 1000
+        result = self.data_smells.check_suspect_precision(test_df, 'small_divisions')
+        assert result is False, "Test Case 20 Failed: Should detect smell in small number divisions"
+        print_and_log("Test Case 20 Passed: Detected small number division issues")
+
+        # Test 21: Test recurring decimal patterns
+        test_df['recurring_decimals'] = test_df['key'].apply(lambda x: (x + 1)/7)
+        result = self.data_smells.check_suspect_precision(test_df, 'recurring_decimals')
+        assert result is False, "Test Case 21 Failed: Should detect smell in recurring decimals"
+        print_and_log("Test Case 21 Passed: Detected recurring decimal issues")
+
+        # Test 22: Test geometric calculations
+        test_df['geometric_calcs'] = test_df['tempo'].apply(lambda x: np.pi * (x/100)**2)
+        result = self.data_smells.check_suspect_precision(test_df, 'geometric_calcs')
+        assert result is False, "Test Case 22 Failed: Should detect smell in geometric calculations"
+        print_and_log("Test Case 22 Passed: Detected geometric calculation issues")
+
+        # Test 23: Test compound numeric operations
+        test_df['compound_ops'] = (test_df['danceability'] * test_df['energy']) / (test_df['valence'] + 0.1)
+        result = self.data_smells.check_suspect_precision(test_df, 'compound_ops')
+        assert result is False, "Test Case 23 Failed: Should detect smell in compound operations"
+        print_and_log("Test Case 23 Passed: Detected compound operation issues")
+
+        # Test 24: Test extreme value calculations
+        test_df['extreme_values'] = test_df['duration_ms'].apply(lambda x: x**3 / 1e9)
+        result = self.data_smells.check_suspect_precision(test_df, 'extreme_values')
+        assert result is False, "Test Case 24 Failed: Should detect smell in extreme value calculations"
+        print_and_log("Test Case 24 Passed: Detected extreme value calculation issues")
+
+        # Test 25: Test mixed precision operations
+        test_df['mixed_precision'] = test_df.apply(
+            lambda row: row['tempo'] + row['danceability'] * 1000 + row['loudness'] / 10,
+            axis=1
+        )
+        result = self.data_smells.check_suspect_precision(test_df, 'mixed_precision')
+        assert result is False, "Test Case 25 Failed: Should detect smell in mixed precision operations"
+        print_and_log("Test Case 25 Passed: Detected mixed precision operation issues")
+
+        # Test 26: Test potential cancellation errors
+        test_df['cancellation'] = test_df['duration_ms'].apply(lambda x: (x + 1e10) - 1e10)
+        result = self.data_smells.check_suspect_precision(test_df, 'cancellation')
+        assert result is True, "Test Case 26 Failed: Should not detect smell in cancellation prone operations"
+        print_and_log("Test Case 26 Passed: Correctly handled cancellation error issues")
 
         print_and_log("\nFinished testing check_suspect_precision function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")

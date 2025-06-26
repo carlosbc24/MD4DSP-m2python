@@ -327,6 +327,7 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
     """
 
     def check_column(col_name):
+        # Check if the column is of a float type
         if pd.api.types.is_float_dtype(data_dictionary[col_name]):
             col = data_dictionary[col_name]
             for v in col:

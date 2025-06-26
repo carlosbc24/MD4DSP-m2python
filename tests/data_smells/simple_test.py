@@ -822,22 +822,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
     def execute_check_suspect_precision_SimpleTests(self):
         """
         Execute simple tests for check_suspect_precision function.
-        Tests the following cases:
-        1. Column with non-significant zeros (smell)
-        2. Column with proper precision (no smell)
-        3. Column with mixed precision (smell)
-        4. Non-float column (no smell)
-        5. Empty column
-        6. Column with NaN values
-        7. Column with None values
-        8. Column with very large numbers
-        9. Column with very small numbers
-        10. Column with negative numbers
-        11. Non-existent field
-        12. Empty DataFrame
-        13. Column with scientific notation
-        14. Column with mixed significant and non-significant digits
-        15. Check all float columns at once
+        Tests cases for decimal and numeric precision issues
         """
         print_and_log("")
         print_and_log("Testing check_suspect_precision function...")
@@ -928,6 +913,131 @@ class DataSmellsSimpleTest(unittest.TestCase):
         result = self.data_smells.check_suspect_precision(df)
         assert result is True, "Test Case 15 Failed: Should not detect smell in at least one column"
         print_and_log("Test Case 15 Passed: All columns check successful")
+
+        # New tests for suspect precision
+        # Test 16: Periodic decimal numbers
+        df_periodic = pd.DataFrame({
+            'periodic': [1/3, 2/3, 1/6]  # Will generate periodic decimals
+        })
+        result = self.data_smells.check_suspect_precision(df_periodic, 'periodic')
+        assert result is False, "Test Case 16 Failed: Should detect smell for periodic decimals"
+        print_and_log("Test Case 16 Passed: Periodic decimals detected")
+
+        # Test 17: Long float chain (>15 decimals)
+        df_long = pd.DataFrame({
+            'long_decimals': [
+                1.123456789012345,
+                2.123456789012345,
+                3.123456789012345
+            ]
+        })
+        result = self.data_smells.check_suspect_precision(df_long, 'long_decimals')
+        assert result is False, "Test Case 17 Failed: Should detect smell for long decimals"
+        print_and_log("Test Case 17 Passed: Long decimal chain detected")
+
+        # Test 18: Mixed periodic and non-periodic
+        df_mixed_periodic = pd.DataFrame({
+            'mixed_periodic': [1/3, 0.5, 1/6]
+        })
+        result = self.data_smells.check_suspect_precision(df_mixed_periodic, 'mixed_periodic')
+        assert result is False, "Test Case 18 Failed: Should detect smell for mixed periodic decimals"
+        print_and_log("Test Case 18 Passed: Mixed periodic decimals detected")
+
+        # Test 19: Pure periodic decimals
+        df_pure_periodic = pd.DataFrame({
+            'pure_periodic': [1/11, 2/11, 3/11]  # Pure periodic decimal
+        })
+        result = self.data_smells.check_suspect_precision(df_pure_periodic, 'pure_periodic')
+        assert result is False, "Test Case 19 Failed: Should detect smell for pure periodic decimals"
+        print_and_log("Test Case 19 Passed: Pure periodic decimals detected")
+
+        # Test 20: Mixed periodic decimals
+        df_mixed_type_periodic = pd.DataFrame({
+            'mixed_type_periodic': [1/6, 1/7, 1/13]  # Different types of periodic decimals
+        })
+        result = self.data_smells.check_suspect_precision(df_mixed_type_periodic, 'mixed_type_periodic')
+        assert result is False, "Test Case 20 Failed: Should detect smell for mixed type periodic decimals"
+        print_and_log("Test Case 20 Passed: Mixed type periodic decimals detected")
+
+        # Test 21: Very small numbers close to floating point precision limit
+        df_tiny = pd.DataFrame({
+            'tiny_numbers': [1e-15, 2e-15, 3e-15]
+        })
+        result = self.data_smells.check_suspect_precision(df_tiny, 'tiny_numbers')
+        assert result is True, "Test Case 21 Failed: Should not detect smell for very small numbers"
+        print_and_log("Test Case 21 Passed: Very small numbers handled correctly")
+
+        # Test 22: Numbers requiring high precision arithmetic
+        df_high_precision = pd.DataFrame({
+            'high_precision': [np.pi, np.e, np.sqrt(2)]
+        })
+        result = self.data_smells.check_suspect_precision(df_high_precision, 'high_precision')
+        assert result is False, "Test Case 22 Failed: Should detect smell for high precision numbers"
+        print_and_log("Test Case 22 Passed: High precision numbers detected")
+
+        # Test 23: Numbers with potential rounding errors
+        df_rounding = pd.DataFrame({
+            'rounding_errors': [0.1 + 0.2, 0.7 + 0.1, 0.3 + 0.6]  # Known floating point precision issues
+        })
+        result = self.data_smells.check_suspect_precision(df_rounding, 'rounding_errors')
+        assert result is False, "Test Case 23 Failed: Should detect smell for numbers with rounding errors"
+        print_and_log("Test Case 23 Passed: Rounding errors detected")
+
+        # Test 24: Recurring decimal patterns
+        df_recurring = pd.DataFrame({
+            'recurring': [1/7, 2/7, 3/7]  # Numbers with recurring decimal patterns
+        })
+        result = self.data_smells.check_suspect_precision(df_recurring, 'recurring')
+        assert result is False, "Test Case 24 Failed: Should detect smell for recurring decimals"
+        print_and_log("Test Case 24 Passed: Recurring decimals detected")
+
+        # Test 25: Numbers requiring arbitrary precision
+        df_arbitrary = pd.DataFrame({
+            'arbitrary_precision': [np.sqrt(3), np.sqrt(5), np.sqrt(7)]
+        })
+        result = self.data_smells.check_suspect_precision(df_arbitrary, 'arbitrary_precision')
+        assert result is False, "Test Case 25 Failed: Should detect smell for arbitrary precision numbers"
+        print_and_log("Test Case 25 Passed: Arbitrary precision numbers detected")
+
+        # Test 26: Numbers with floating point representation issues
+        df_float_issues = pd.DataFrame({
+            'float_issues': [0.1234567890123456, 1.2345678901234567, 2.3456789012345678]
+        })
+        result = self.data_smells.check_suspect_precision(df_float_issues, 'float_issues')
+        assert result is False, "Test Case 26 Failed: Should detect smell for float representation issues"
+        print_and_log("Test Case 26 Passed: Float representation issues detected")
+
+        # Test 27: Numbers requiring extended precision
+        df_extended = pd.DataFrame({
+            'extended_precision': [np.exp(1), np.log(10), np.sin(np.pi/6)]
+        })
+        result = self.data_smells.check_suspect_precision(df_extended, 'extended_precision')
+        assert result is False, "Test Case 27 Failed: Should detect smell for extended precision numbers"
+        print_and_log("Test Case 27 Passed: Extended precision numbers detected")
+
+        # Test 28: Irrational numbers
+        df_irrational = pd.DataFrame({
+            'irrational': [np.pi, np.e, np.sqrt(2)]
+        })
+        result = self.data_smells.check_suspect_precision(df_irrational, 'irrational')
+        assert result is False, "Test Case 28 Failed: Should detect smell for irrational numbers"
+        print_and_log("Test Case 28 Passed: Irrational numbers detected")
+
+        # Test 29: Numbers with potential cancellation errors
+        df_cancellation = pd.DataFrame({
+            'cancellation': [(1e20 + 1) - 1e20, (1e15 + 1) - 1e15, (1e10 + 1) - 1e10]
+        })
+        result = self.data_smells.check_suspect_precision(df_cancellation, 'cancellation')
+        assert result is True, "Test Case 29 Failed: Should not detect smell for cancellation errors"
+        print_and_log("Test Case 29 Passed: Cancellation errors handled correctly")
+
+        # Test 30: Numbers with precision accumulation issues
+        df_accumulation = pd.DataFrame({
+            'accumulation': [sum([0.1] * 10), sum([0.1] * 100), sum([0.1] * 1000)]
+        })
+        result = self.data_smells.check_suspect_precision(df_accumulation, 'accumulation')
+        assert result is False, "Test Case 30 Failed: Should detect smell for precision accumulation"
+        print_and_log("Test Case 30 Passed: Precision accumulation issues detected")
 
         print_and_log("\nFinished testing check_suspect_precision function")
         print_and_log("")
