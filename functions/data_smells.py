@@ -404,3 +404,49 @@ def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, 
             if not result:
                 return result  # Return on the first smell found
     return True
+
+
+def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+    """
+    Check if any datetime column appears to contain only date values (time part is always 00:00:00).
+    If so, logs a warning indicating a possible data smell.
+    Takes into account timezone differences by converting all times to UTC before checking.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param field: (str) Optional field to check; if None, checks all datetime fields
+
+    :return: (bool) False if a smell is detected, True otherwise.
+    """
+    def check_column(col_name):
+        if col_name not in data_dictionary.columns:
+            raise ValueError(f"Field '{col_name}' does not exist in the DataFrame.")
+
+        # Skip if not datetime
+        if not pd.api.types.is_datetime64_any_dtype(data_dictionary[col_name]):
+            return True
+
+        col = data_dictionary[col_name].dropna()
+        if col.empty:
+            return True
+
+        # Check if all times are 00:00:00.000000 in their respective timezone
+        if np.all((col.dt.hour == 0) & (col.dt.minute == 0) & (col.dt.second == 0) & (col.dt.microsecond == 0)):
+            message = f"Warning - Possible data smell: the values in {col_name} appear to be date, but the expected type in the data model is dateTime"
+            print_and_log(message, level=logging.WARN)
+            print(f"DATA SMELL DETECTED: Date as DateTime in field {col_name}")
+            return False
+        return True
+
+    if field is not None:
+        return check_column(field)
+    else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
+        # Check all datetime columns (including timezone aware)
+        datetime_fields = data_dictionary.select_dtypes(include=['datetime64[ns]', 'datetime64[ns, UTC]', 'datetime']).columns
+        for col in datetime_fields:
+            result = check_column(col)
+            if not result:
+                return result  # Return on the first smell found
+        return True
