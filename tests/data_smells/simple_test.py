@@ -46,7 +46,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
             self.execute_check_special_character_spacing_SimpleTests,
             self.execute_check_suspect_distribution_SimpleTests,
             self.execute_check_suspect_precision_SimpleTests,
-            self.execute_check_date_as_datetime_SimpleTests
+            self.execute_check_date_as_datetime_SimpleTests,
+            self.execute_check_separating_consistency_SimpleTests
         ]
 
         print_and_log("")
@@ -1066,4 +1067,110 @@ class DataSmellsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 14 Passed: Smell detected for leap year dates")
 
         print_and_log("\nFinished testing check_date_as_datetime function")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_separating_consistency_SimpleTests(self):
+        """
+        Execute simple tests for check_separating_consistency function.
+        Tests various scenarios with different decimal and thousands separators.
+        """
+        print_and_log("")
+        print_and_log("Testing check_separating_consistency function...")
+
+        # Test data with various separator cases
+        data = {
+            'correct_format': [1234.56, 2345.67, 3456.78],
+            'wrong_decimal': ['1234,56', '2345,67', '3456,78'],
+            'mixed_decimal': ['1234.56', '2345,67', '3456.78'],
+            'with_thousands': ['1,234.56', '2,345.67', '3,456.78'],
+            'true_thousands': ['1.234,56', '2.345,67', '3.456,78'],
+            'mixed_separators': ['1,234.56', '2.345,67', '3,456.78'],
+            'no_decimal': [1234, 2345, 3456],
+            'scientific': [1.234e3, 2.345e3, 3.456e3],
+            'negative': [-1234.56, -2345.67, -3456.78],
+            'zero_values': [0.00, 0.0, 0],
+            'large_numbers': [1234567.89, 2345678.90, 3456789.01],
+            'small_decimals': [0.0001, 0.0002, 0.0003],
+            'wrong_grouping': ['1,23,456.78', '2,34,567.89', '3,45,678.90'],
+            'non_numeric': ['abc', 'def', 'ghi'],
+            'mixed_types': [1234.56, '2,345.67', 3456.78]
+        }
+        df = pd.DataFrame(data)
+
+        # Test 1: Default separators (decimal=".", thousands="")
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'correct_format')
+        assert result is True, "Test Case 1 Failed"
+        print_and_log("Test Case 1 Passed: Default separators check successful")
+
+        # Test 2: Wrong decimal separator
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'wrong_decimal')
+        assert result is False, "Test Case 2 Failed"
+        print_and_log("Test Case 2 Passed: Wrong decimal separator detected")
+
+        # Test 3: Mixed decimal separators
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'mixed_decimal')
+        assert result is False, "Test Case 3 Failed"
+        print_and_log("Test Case 3 Passed: Mixed decimal separators detected")
+
+        # Test 4: With thousands separator
+        result = self.data_smells.check_separating_consistency(df, ".", ",", 'with_thousands')
+        assert result is True, "Test Case 4 Failed"
+        print_and_log("Test Case 4 Passed: Thousands separator check successful")
+
+        # Test 5: Wrong thousands separator
+        result = self.data_smells.check_separating_consistency(df, ",", ".", 'true_thousands')
+        assert result is True, "Test Case 5 Failed"
+        print_and_log("Test Case 5 Passed: True thousands separator check successful")
+
+        # Test 6: Mixed separators
+        result = self.data_smells.check_separating_consistency(df, ".", ",", 'mixed_separators')
+        assert result is False, "Test Case 6 Failed"
+        print_and_log("Test Case 6 Passed: Mixed separators detected")
+
+        # Test 7: No decimal values
+        result = self.data_smells.check_separating_consistency(df, ".", ",", 'no_decimal')
+        assert result is True, "Test Case 7 Failed"
+        print_and_log("Test Case 7 Passed: No decimal values check successful")
+
+        # Test 8: Scientific notation
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'scientific')
+        assert result is True, "Test Case 8 Failed"
+        print_and_log("Test Case 8 Passed: Scientific notation check successful")
+
+        # Test 9: Negative numbers
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'negative')
+        assert result is True, "Test Case 9 Failed"
+        print_and_log("Test Case 9 Passed: Negative numbers check successful")
+
+        # Test 10: Zero values
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'zero_values')
+        assert result is True, "Test Case 10 Failed"
+        print_and_log("Test Case 10 Passed: Zero values check successful")
+
+        # Test 11: Large numbers
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'large_numbers')
+        assert result is True, "Test Case 11 Failed"
+        print_and_log("Test Case 11 Passed: Large numbers check successful")
+
+        # Test 12: Small decimals
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'small_decimals')
+        assert result is True, "Test Case 12 Failed"
+        print_and_log("Test Case 12 Passed: Small decimals check successful")
+
+        # Test 13: Wrong grouping with thousands separator
+        result = self.data_smells.check_separating_consistency(df, ".", ",", 'wrong_grouping')
+        assert result is False, "Test Case 13 Failed"
+        print_and_log("Test Case 13 Passed: Wrong grouping detected")
+
+        # Test 14: Non-numeric column
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'non_numeric')
+        assert result is True, "Test Case 14 Failed"
+        print_and_log("Test Case 14 Passed: Non-numeric column check successful")
+
+        # Test 15: Mixed types
+        result = self.data_smells.check_separating_consistency(df, ".", "", 'mixed_types')
+        assert result is False, "Test Case 15 Failed"
+        print_and_log("Test Case 15 Passed: Mixed types detected")
+
+        print_and_log("\nFinished testing check_separating_consistency function")
         print_and_log("-----------------------------------------------------------")

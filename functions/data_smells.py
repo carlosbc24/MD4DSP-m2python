@@ -325,6 +325,7 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
     :param field: (str) Optional field to check; if None, checks all float columns
     :return: (bool) False if a smell is detected, True otherwise
     """
+
     def check_column(col_name):
         if pd.api.types.is_float_dtype(data_dictionary[col_name]):
             col = data_dictionary[col_name]
@@ -356,7 +357,8 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
     return True
 
 
-def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, max_value: float, field: str = None) -> bool:
+def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, max_value: float,
+                               field: str = None) -> bool:
     """
     Checks if continuous data fields have values outside the range defined in the data model.
     If so, logs a warning indicating a possible data smell.
@@ -398,7 +400,8 @@ def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, 
         if data_dictionary.empty:
             return True
         # Check all numeric columns
-        numeric_fields = data_dictionary.select_dtypes(include=['number', 'float64', 'float32', 'int64', 'int32']).columns
+        numeric_fields = data_dictionary.select_dtypes(
+            include=['number', 'float64', 'float32', 'int64', 'int32']).columns
         for col in numeric_fields:
             result = check_column(col)
             if not result:
@@ -417,6 +420,7 @@ def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> 
 
     :return: (bool) False if a smell is detected, True otherwise.
     """
+
     def check_column(col_name):
         if col_name not in data_dictionary.columns:
             raise ValueError(f"Field '{col_name}' does not exist in the DataFrame.")
@@ -444,8 +448,175 @@ def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> 
         if data_dictionary.empty:
             return True
         # Check all datetime columns (including timezone aware)
-        datetime_fields = data_dictionary.select_dtypes(include=['datetime64[ns]', 'datetime64[ns, UTC]', 'datetime']).columns
+        datetime_fields = data_dictionary.select_dtypes(
+            include=['datetime64[ns]', 'datetime64[ns, UTC]', 'datetime']).columns
         for col in datetime_fields:
+            result = check_column(col)
+            if not result:
+                return result  # Return on the first smell found
+        return True
+
+
+def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str = ".", thousands_sep: str = "",
+                                 field: str = None) -> bool:
+    """
+    Check if the decimal and thousands separators in float fields align with the data model definitions.
+    If they don't match, logs a warning indicating a possible data smell.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param decimal_sep: (str) Expected decimal separator (default ".")
+    :param thousands_sep: (str) Expected thousands separator (default "")
+    :param field: (str) Optional field to check; if None, checks all float fields
+
+    :return: bool indicating if the separators are consistent
+    """
+
+    def split_scientific_notation(val: str):
+        """
+        Helper function to split scientific notation into mantissa and exponent.
+        Returns the mantissa part and exponent part (if exists)
+        """
+        parts = val.lower().split('e')
+        return parts[0], parts[1] if len(parts) > 1 else None
+
+    def is_valid_number_format(val: str, decimal_sep: str, thousands_sep: str) -> bool:
+        """
+        Helper function to check if a string value follows the correct number format.
+
+        :param val: (str) Value to check
+        :param decimal_sep: (str) Expected decimal separator
+        :param thousands_sep: (str) Expected thousands separator
+        :return: bool indicating if the format is valid
+        """
+        # Handle scientific notation: check only mantissa part
+        mantissa, _ = split_scientific_notation(val)
+
+        # If it's an integer without separators, it's valid
+        if mantissa.replace('-', '').isdigit():
+            return True
+
+        # Split mantissa by decimal separator
+        parts = mantissa.split(decimal_sep)
+
+        # Must have exactly one integer part and one decimal part
+        if len(parts) != 2:
+            return False
+
+        integer_part, decimal_part = parts
+
+        # Verify that decimal part contains only digits
+        if not decimal_part.isdigit():
+            return False
+
+        # If there's a thousands separator, verify its format
+        if thousands_sep:
+            # Only process integer part for thousands separator
+            groups = integer_part.split(thousands_sep)
+
+            # First group can have 1-3 digits, rest must have exactly 3
+            if not groups[0].replace('-', '').isdigit() or not all(len(g) == 3 and g.isdigit() for g in groups[1:]):
+                return False
+        else:
+            # Without thousands separator, integer part must be only digits
+            if not integer_part.replace('-', '').isdigit():
+                return False
+
+        return True
+
+    def looks_like_number(val: str) -> bool:
+        """
+        Helper function to check if a string looks like a number.
+        Handles regular numbers, scientific notation, and various formats.
+        """
+        # Remove potential separators and signs
+        cleaned = val.replace('.', '').replace(',', '').replace('-', '').replace('+', '').lower()
+
+        # Handle scientific notation
+        if 'e' in cleaned:
+            parts = cleaned.split('e')
+            if len(parts) != 2:  # Must have exactly one 'e' for scientific notation
+                return False
+            mantissa, exp = parts
+            # Exponente puede estar vacío o ser un número
+            return mantissa.isdigit() and (exp.isdigit() or exp == '')
+
+        # Si no hay notación científica, debe ser un número simple
+        return cleaned.isdigit()
+
+    def check_column(col_name):
+        """
+        Helper function to check a single column's separators
+        """
+        # Convert values to string, remove NaN and strip whitespace
+        values = data_dictionary[col_name].replace('nan', np.nan).dropna().astype(str).str.strip()
+        if values.empty:
+            return True
+
+        # Filter only values that look like numbers
+        numeric_values = values[values.apply(looks_like_number)]
+        if numeric_values.empty:
+            return True
+
+        # Possible separators that could appear in numbers
+        possible_seps = {'.', ','}
+
+        for val in numeric_values:
+            mantissa, _ = split_scientific_notation(val)
+
+            # Check if there are unexpected separators in use in the mantissa
+            used_seps = {sep for sep in possible_seps if sep in mantissa}
+
+            if thousands_sep:
+                # If there's a thousands separator, it must be present and use correct format
+                if thousands_sep not in mantissa:
+                    # It's valid to have numbers without thousands separator
+                    if decimal_sep in mantissa and not is_valid_number_format(val, decimal_sep, ''):
+                        print_and_log(
+                            f"Warning - Possible data smell: invalid decimal format in value {val} of dataField {col_name}",
+                            level=logging.WARN)
+                        print(f"DATA SMELL DETECTED: Invalid Decimal Format in field {col_name}")
+                        return False
+                    continue
+
+                if not is_valid_number_format(val, decimal_sep, thousands_sep):
+                    print_and_log(
+                        f"Warning - Possible data smell: invalid number format or wrong separators in value {val} of dataField {col_name}",
+                        level=logging.WARN)
+                    print(f"DATA SMELL DETECTED: Invalid Number Format in field {col_name}")
+                    return False
+
+            else:
+                # Without thousands separator, verify decimal format is correct
+                if used_seps - {decimal_sep}:  # If there are separators different from decimal
+                    print_and_log(
+                        f"Warning - Possible data smell: wrong decimal separator used in value {val} of dataField {col_name}",
+                        level=logging.WARN)
+                    print(f"DATA SMELL DETECTED: Wrong Decimal Separator in field {col_name}")
+                    return False
+
+                if decimal_sep in mantissa and not is_valid_number_format(val, decimal_sep, ''):
+                    print_and_log(
+                        f"Warning - Possible data smell: invalid decimal format in value {val} of dataField {col_name}",
+                        level=logging.WARN)
+                    print(f"DATA SMELL DETECTED: Invalid Decimal Format in field {col_name}")
+                    return False
+
+        return True
+
+    if field is not None:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        return check_column(field)
+    else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
+        # Check both float columns and string columns that might contain numbers
+        float_fields = data_dictionary.select_dtypes(include=['float', 'float64', 'float32']).columns
+        object_fields = data_dictionary.select_dtypes(include=['object']).columns
+        fields_to_check = list(float_fields) + list(object_fields)
+
+        for col in fields_to_check:
             result = check_column(col)
             if not result:
                 return result  # Return on the first smell found

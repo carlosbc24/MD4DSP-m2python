@@ -47,7 +47,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_special_character_spacing_ExternalDatasetTests,
             self.execute_check_suspect_precision_ExternalDatasetTests,
             self.execute_check_suspect_distribution_ExternalDatasetTests,
-            self.execute_check_date_as_datetime_ExternalDatasetTests
+            self.execute_check_date_as_datetime_ExternalDatasetTests,
+            self.execute_check_separating_consistency_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -969,4 +970,94 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         print_and_log("Test Case 16 Passed: No smell detected for track_album_release_date with NaN")
 
         print_and_log("\nFinished testing check_date_as_datetime function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_separating_consistency_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_separating_consistency function
+        Tests various scenarios with the Spotify dataset.
+        """
+        print_and_log("Testing check_separating_consistency Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Check danceability with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'danceability')
+        assert result is True, "Test Case 1 Failed"
+        print_and_log("Test Case 1 Passed: Default separators check on danceability successful")
+
+        # Test 2: Check energy with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'energy')
+        assert result is True, "Test Case 2 Failed"
+        print_and_log("Test Case 2 Passed: Default separators check on energy successful")
+
+        # Test 3: Check loudness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'loudness')
+        assert result is True, "Test Case 3 Failed"
+        print_and_log("Test Case 3 Passed: Default separators check on loudness successful")
+
+        # Test 4: Create column with comma decimal separator
+        test_df['loudness_comma'] = test_df['loudness'].apply(lambda x: str(x).replace('.', ','))
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'loudness_comma')
+        assert result is False, "Test Case 4 Failed"
+        print_and_log("Test Case 4 Passed: Wrong decimal separator detected")
+
+        # Test 5: Create column with thousands separator
+        test_df['duration_formatted'] = test_df['duration_ms'].apply(lambda x: f"{x:,}")
+        result = self.data_smells.check_separating_consistency(test_df, ".", ",", 'duration_formatted')
+        assert result is True, "Test Case 5 Failed"
+        print_and_log("Test Case 5 Passed: Thousands separator check successful")
+
+        # Test 6: Check tempo with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'tempo')
+        assert result is True, "Test Case 6 Failed"
+        print_and_log("Test Case 6 Passed: Default separators check on tempo successful")
+
+        # Test 7: Create column with mixed separators
+        test_df['mixed_separators'] = test_df['loudness'].apply(lambda x: str(x).replace('.', ','))
+        test_df.loc[0:10, 'mixed_separators'] = test_df.loc[0:10, 'loudness']
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'mixed_separators')
+        assert result is False, "Test Case 7 Failed"
+        print_and_log("Test Case 7 Passed: Mixed separators detected")
+
+        # Test 8: Check speechiness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'speechiness')
+        assert result is True, "Test Case 8 Failed"
+        print_and_log("Test Case 8 Passed: Default separators check on speechiness successful")
+
+        # Test 9: Create column with wrong thousands grouping
+        test_df['wrong_grouping'] = test_df['duration_ms'].apply(lambda x: f"{x:,}".replace(',', '.'))
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'wrong_grouping')
+        assert result is False, "Test Case 9 Failed"
+        print_and_log("Test Case 9 Passed: Wrong thousands grouping detected")
+
+        # Test 10: Check liveness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'liveness')
+        assert result is True, "Test Case 10 Failed"
+        print_and_log("Test Case 10 Passed: Default separators check on liveness successful")
+
+        # Test 11: Create column with scientific notation
+        test_df['scientific'] = test_df['loudness'].apply(lambda x: f"{x:e}")
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'scientific')
+        assert result is True, "Test Case 11 Failed"
+        print_and_log("Test Case 11 Passed: Scientific notation check successful")
+
+        # Test 12: Check instrumentalness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'instrumentalness')
+        assert result is True, "Test Case 12 Failed"
+        print_and_log("Test Case 12 Passed: Default separators check on instrumentalness successful")
+
+        # Test 13: Check valence with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'valence')
+        assert result is True, "Test Case 13 Failed"
+        print_and_log("Test Case 13 Passed: Default separators check on valence successful")
+
+        # Test 14: Check all numeric columns at once
+        result = self.data_smells.check_separating_consistency(test_df)
+        assert result is False, "Test Case 14 Failed"
+        print_and_log("Test Case 14 Passed: All columns check successful")
+
+        print_and_log("\nFinished testing check_separating_consistency function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")
