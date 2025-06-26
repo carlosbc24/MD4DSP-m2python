@@ -45,7 +45,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_integer_as_floating_point_ExternalDatasetTests,
             self.execute_check_types_as_string_ExternalDatasetTests,
             self.execute_check_special_character_spacing_ExternalDatasetTests,
-            self.execute_check_suspect_distribution_ExternalDatasetTests
+            self.execute_check_suspect_distribution_ExternalDatasetTests,
+            self.execute_check_ambiguous_datetime_format_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -767,3 +768,132 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         result = self.data_smells.check_suspect_distribution(test_df, -50, 5, 'loudness')
         self.assertTrue(result, "Test Case 15 Failed: Expected no smell for loudness in reasonable range")
         print_and_log("Test Case 15 Passed: Expected no smell, got no smell")
+
+    def execute_check_ambiguous_datetime_format_ExternalDatasetTests(self):
+        """
+        Execute external dataset tests for check_ambiguous_datetime_format function.
+        Tests various scenarios with the Spotify dataset by adding datetime columns with different formats.
+        """
+        print_and_log("Testing check_ambiguous_datetime_format Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+        n_rows = len(test_df)
+
+        # Test 1: Column with 12-hour format values (smell detected)
+        print_and_log("\nTest 1: Check column with 12-hour AM/PM format")
+        test_df['datetime_12h'] = ['01/15/2023 02:30 PM'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_12h')
+        self.assertFalse(result, "Test Case 1 Failed: Expected smell for 12-hour format")
+        print_and_log("Test Case 1 Passed: Expected smell, got smell")
+
+        # Test 2: Column with 24-hour format values (no smell)
+        print_and_log("\nTest 2: Check column with 24-hour format")
+        test_df['datetime_24h'] = ['2023-01-15 14:30:00'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_24h')
+        self.assertTrue(result, "Test Case 2 Failed: Expected no smell for 24-hour format")
+        print_and_log("Test Case 2 Passed: Expected no smell, got no smell")
+
+        # Test 3: Column with a.m./p.m. format (smell detected)
+        print_and_log("\nTest 3: Check column with a.m./p.m. format")
+        test_df['datetime_am_pm'] = ['01/15/2023 02:30 a.m.'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_am_pm')
+        self.assertFalse(result, "Test Case 3 Failed: Expected smell for a.m./p.m. format")
+        print_and_log("Test Case 3 Passed: Expected smell, got smell")
+
+        # Test 4: Column with mixed 12-hour patterns (smell detected)
+        print_and_log("\nTest 4: Check column with mixed 12-hour patterns")
+        # Create a mixed pattern by cycling through different values
+        patterns = ['2:30 PM', '9:15am', '11:45 p.m.', '1:00 AM']
+        test_df['datetime_mixed'] = [patterns[i % len(patterns)] for i in range(n_rows)]
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_mixed')
+        self.assertFalse(result, "Test Case 4 Failed: Expected smell for mixed 12-hour patterns")
+        print_and_log("Test Case 4 Passed: Expected smell, got smell")
+
+        # Test 5: Column with date-only values (no smell)
+        print_and_log("\nTest 5: Check column with date-only values")
+        test_df['date_only'] = ['2023-01-15'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'date_only')
+        self.assertTrue(result, "Test Case 5 Failed: Expected no smell for date-only format")
+        print_and_log("Test Case 5 Passed: Expected no smell, got no smell")
+
+        # Test 6: Column with time patterns that could be 12-hour but without AM/PM (no smell)
+        print_and_log("\nTest 6: Check column with ambiguous time patterns without AM/PM")
+        test_df['time_no_ampm'] = ['02:30'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'time_no_ampm')
+        self.assertTrue(result, "Test Case 6 Failed: Expected no smell for time without AM/PM indicators")
+        print_and_log("Test Case 6 Passed: Expected no smell, got no smell")
+
+        # Test 7: Column with mixed 24-hour and 12-hour formats (smell detected)
+        print_and_log("\nTest 7: Check column with mixed 24-hour and 12-hour formats")
+        # Create a mix where some values have AM/PM (will trigger smell)
+        mixed_patterns = ['2023-01-15 14:30:00', '01/15/2023 02:30 PM', '2023-01-15 23:45:00']
+        test_df['mixed_formats'] = [mixed_patterns[i % len(mixed_patterns)] for i in range(n_rows)]
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'mixed_formats')
+        self.assertFalse(result, "Test Case 7 Failed: Expected smell for mixed formats")
+        print_and_log("Test Case 7 Passed: Expected smell, got smell")
+
+        # Test 8: Non-existent column (error)
+        print_and_log("\nTest 8: Check with non-existent column")
+        with self.assertRaises(ValueError):
+            self.data_smells.check_ambiguous_datetime_format(test_df, 'non_existent_column')
+        print_and_log("Test Case 8 Passed: Expected ValueError for non-existent column")
+
+        # Test 9: Column with non-datetime string values (no smell)
+        print_and_log("\nTest 9: Check column with non-datetime string values")
+        test_df['non_datetime'] = ['hello world'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'non_datetime')
+        self.assertTrue(result, "Test Case 9 Failed: Expected no smell for non-datetime values")
+        print_and_log("Test Case 9 Passed: Expected no smell, got no smell")
+
+        # Test 10: Column with 12-hour format with seconds (smell detected)
+        print_and_log("\nTest 10: Check column with 12-hour format including seconds")
+        test_df['datetime_12h_seconds'] = ['01/15/2023 02:30:45 PM'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_12h_seconds')
+        self.assertFalse(result, "Test Case 10 Failed: Expected smell for 12-hour format with seconds")
+        print_and_log("Test Case 10 Passed: Expected smell, got smell")
+
+        # Test 11: Column with uppercase AM/PM (smell detected)
+        print_and_log("\nTest 11: Check column with uppercase AM/PM")
+        test_df['datetime_upper'] = ['01/15/2023 02:30 PM'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_upper')
+        self.assertFalse(result, "Test Case 11 Failed: Expected smell for uppercase AM/PM")
+        print_and_log("Test Case 11 Passed: Expected smell, got smell")
+
+        # Test 12: Column with numeric values (using existing numeric column - no smell)
+        print_and_log("\nTest 12: Check column with numeric values")
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'danceability')
+        self.assertTrue(result, "Test Case 12 Failed: Expected no smell for numeric values")
+        print_and_log("Test Case 12 Passed: Expected no smell, got no smell")
+
+        # Test 13: Column with NaN and valid 12-hour format (smell detected)
+        print_and_log("\nTest 13: Check column with NaN and 12-hour format")
+        # Create a pattern with mostly NaN but some 12-hour format
+        test_values = [np.nan] * n_rows
+        test_values[0] = '01/15/2023 02:30 PM'
+        test_values[1] = '01/15/2023 09:15 AM'
+        test_df['datetime_with_nan'] = test_values
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_with_nan')
+        self.assertFalse(result, "Test Case 13 Failed: Expected smell for 12-hour format with NaN")
+        print_and_log("Test Case 13 Passed: Expected smell, got smell")
+
+        # Test 14: Column with empty strings and 24-hour format (no smell)
+        print_and_log("\nTest 14: Check column with empty strings and 24-hour format")
+        test_values_empty = [''] * n_rows
+        test_values_empty[0] = '2023-01-15 14:30:00'
+        test_values_empty[1] = '2023-01-15 09:15:00'
+        test_df['datetime_with_empty'] = test_values_empty
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'datetime_with_empty')
+        self.assertTrue(result, "Test Case 14 Failed: Expected no smell for 24-hour format with empty strings")
+        print_and_log("Test Case 14 Passed: Expected no smell, got no smell")
+
+        # Test 15: Column with only time in 12-hour format (smell detected)
+        print_and_log("\nTest 15: Check column with only time in 12-hour format")
+        test_df['time_12h_only'] = ['02:30 PM'] * n_rows
+        result = self.data_smells.check_ambiguous_datetime_format(test_df, 'time_12h_only')
+        self.assertFalse(result, "Test Case 15 Failed: Expected smell for 12-hour time only")
+        print_and_log("Test Case 15 Passed: Expected smell, got smell")
+
+        print_and_log("\nFinished testing check_ambiguous_datetime_format function with Spotify Dataset")
+        print_and_log("--------------------------------------------------------------------------")

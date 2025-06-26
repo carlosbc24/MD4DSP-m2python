@@ -44,7 +44,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
             self.execute_check_integer_as_floating_point_SimpleTests,
             self.execute_check_types_as_string_SimpleTests,
             self.execute_check_special_character_spacing_SimpleTests,
-            self.execute_check_suspect_distribution_SimpleTests
+            self.execute_check_suspect_distribution_SimpleTests,
+            self.execute_check_ambiguous_datetime_format_SimpleTests
         ]
 
         print_and_log("")
@@ -815,3 +816,110 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         print_and_log("\nFinished testing check_types_as_string function")
         print_and_log("")
+
+    def execute_check_ambiguous_datetime_format_SimpleTests(self):
+        """
+        Execute simple tests for check_ambiguous_datetime_format function.
+        """
+        print_and_log("")
+        print_and_log("Testing check_ambiguous_datetime_format function...")
+
+        # Test 1: Column with AM/PM times (smell)
+        df1 = pd.DataFrame({'datetime_col': ['2025-06-26 02:30 PM', '2025-06-26 09:15 AM', '2025-06-26 11:45 PM']})
+        result = self.data_smells.check_ambiguous_datetime_format(df1, 'datetime_col')
+        self.assertFalse(result, "Test Case 1 Failed: Expected smell for AM/PM format")
+        print_and_log("Test Case 1 Passed: Expected smell, got smell")
+
+        # Test 2: Column with 24-hour format (no smell)
+        df2 = pd.DataFrame({'datetime_col': ['2025-06-26 14:30:00', '2025-06-26 09:15:30', '2025-06-26 23:45:15']})
+        result = self.data_smells.check_ambiguous_datetime_format(df2, 'datetime_col')
+        self.assertTrue(result, "Test Case 2 Failed: Expected no smell for 24-hour format")
+        print_and_log("Test Case 2 Passed: Expected no smell, got no smell")
+
+        # Test 3: Column with lowercase am/pm (smell)
+        df3 = pd.DataFrame({'datetime_col': ['02:30 pm', '09:15 am', '11:45 pm']})
+        result = self.data_smells.check_ambiguous_datetime_format(df3, 'datetime_col')
+        self.assertFalse(result, "Test Case 3 Failed: Expected smell for lowercase am/pm")
+        print_and_log("Test Case 3 Passed: Expected smell, got smell")
+
+        # Test 4: Column with dates only (no smell)
+        df4 = pd.DataFrame({'datetime_col': ['2025-06-26', '2025-12-31', '2024-01-01']})
+        result = self.data_smells.check_ambiguous_datetime_format(df4, 'datetime_col')
+        self.assertTrue(result, "Test Case 4 Failed: Expected no smell for date-only format")
+        print_and_log("Test Case 4 Passed: Expected no smell, got no smell")
+
+        # Test 5: Non-existent field
+        with self.assertRaises(ValueError):
+            self.data_smells.check_ambiguous_datetime_format(df1, 'non_existent_field')
+        print_and_log("Test Case 5 Passed: Expected ValueError for non-existent field")
+
+        # Test 6: Column with mixed formats including AM/PM (smell)
+        df6 = pd.DataFrame({'datetime_col': ['2025-06-26 14:30:00', '2025-06-26 02:30 PM', '2025-06-26 23:45:15']})
+        result = self.data_smells.check_ambiguous_datetime_format(df6, 'datetime_col')
+        self.assertFalse(result, "Test Case 6 Failed: Expected smell for mixed formats with AM/PM")
+        print_and_log("Test Case 6 Passed: Expected smell, got smell")
+
+        # Test 7: Numeric column (no smell)
+        df7 = pd.DataFrame({'numeric_col': [1, 2, 3, 4, 5]})
+        result = self.data_smells.check_ambiguous_datetime_format(df7, 'numeric_col')
+        self.assertTrue(result, "Test Case 7 Failed: Expected no smell for numeric column")
+        print_and_log("Test Case 7 Passed: Expected no smell, got no smell")
+
+        # Test 8: Empty DataFrame
+        empty_df = pd.DataFrame({'datetime_col': []})
+        result = self.data_smells.check_ambiguous_datetime_format(empty_df, 'datetime_col')
+        self.assertTrue(result, "Test Case 8 Failed: Expected no smell for empty DataFrame")
+        print_and_log("Test Case 8 Passed: Expected no smell, got no smell")
+
+        # Test 9: Column with NaN values only
+        df9 = pd.DataFrame({'datetime_col': [np.nan, np.nan, np.nan]})
+        result = self.data_smells.check_ambiguous_datetime_format(df9, 'datetime_col')
+        self.assertTrue(result, "Test Case 9 Failed: Expected no smell for NaN-only column")
+        print_and_log("Test Case 9 Passed: Expected no smell, got no smell")
+
+        # Test 10: Column with a.m./p.m. format (smell)
+        df10 = pd.DataFrame({'datetime_col': ['02:30 a.m.', '09:15 p.m.', '11:45 a.m.']})
+        result = self.data_smells.check_ambiguous_datetime_format(df10, 'datetime_col')
+        self.assertFalse(result, "Test Case 10 Failed: Expected smell for a.m./p.m. format")
+        print_and_log("Test Case 10 Passed: Expected smell, got smell")
+
+        # Test 11: Check all columns at once with mixed data
+        df11 = pd.DataFrame({
+            'time_24h': ['14:30:00', '09:15:30'],
+            'time_12h': ['02:30 PM', '09:15 AM'],
+            'dates': ['2025-06-26', '2025-12-31']
+        })
+        result = self.data_smells.check_ambiguous_datetime_format(df11)  # Check all columns
+        self.assertFalse(result, "Test Case 11 Failed: Expected smell when checking all columns")
+        print_and_log("Test Case 11 Passed: Expected smell, got smell")
+
+        # Test 12: Check all columns with only 24h format (no smell)
+        df12 = pd.DataFrame({
+            'time_24h': ['14:30:00', '09:15:30'],
+            'dates': ['2025-06-26', '2025-12-31'],
+            'numeric': [1, 2]
+        })
+        result = self.data_smells.check_ambiguous_datetime_format(df12)  # Check all columns
+        self.assertTrue(result, "Test Case 12 Failed: Expected no smell when all columns are valid")
+        print_and_log("Test Case 12 Passed: Expected no smell, got no smell")
+
+        # Test 13: Time only with 12-hour format (smell)
+        df13 = pd.DataFrame({'time_col': ['2:30 PM', '9:15 AM', '11:45 PM']})
+        result = self.data_smells.check_ambiguous_datetime_format(df13, 'time_col')
+        self.assertFalse(result, "Test Case 13 Failed: Expected smell for time-only 12h format")
+        print_and_log("Test Case 13 Passed: Expected smell, got smell")
+
+        # Test 14: Column with irregular text but no time format (no smell)
+        df14 = pd.DataFrame({'text_col': ['hello world', 'test case', 'random text']})
+        result = self.data_smells.check_ambiguous_datetime_format(df14, 'text_col')
+        self.assertTrue(result, "Test Case 14 Failed: Expected no smell for non-time text")
+        print_and_log("Test Case 14 Passed: Expected no smell, got no smell")
+
+        # Test 15: Column with timestamps in 12-hour format (smell)
+        df15 = pd.DataFrame({'timestamp_col': ['06/26/2025 2:30:15 PM', '12/31/2024 9:15:30 AM']})
+        result = self.data_smells.check_ambiguous_datetime_format(df15, 'timestamp_col')
+        self.assertFalse(result, "Test Case 15 Failed: Expected smell for 12h timestamps")
+        print_and_log("Test Case 15 Passed: Expected smell, got smell")
+
+        print_and_log("\nFinished testing check_ambiguous_datetime_format function")
+        print_and_log("-----------------------------------------------------------")
