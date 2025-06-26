@@ -45,7 +45,7 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_integer_as_floating_point_ExternalDatasetTests,
             self.execute_check_types_as_string_ExternalDatasetTests,
             self.execute_check_special_character_spacing_ExternalDatasetTests,
-            self.execute_check_suspect_precision_ExternalDatasetTests
+            self.execute_check_suspect_precision_ExternalDatasetTests,
             self.execute_check_special_character_spacing_ExternalDatasetTests,
             self.execute_check_suspect_distribution_ExternalDatasetTests
         ]

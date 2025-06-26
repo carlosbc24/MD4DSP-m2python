@@ -356,7 +356,6 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
     return True
 
 
-
 def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, max_value: float, field: str = None) -> bool:
     """
     Checks if continuous data fields have values outside the range defined in the data model.

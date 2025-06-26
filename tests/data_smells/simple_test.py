@@ -44,7 +44,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
             self.execute_check_integer_as_floating_point_SimpleTests,
             self.execute_check_types_as_string_SimpleTests,
             self.execute_check_special_character_spacing_SimpleTests,
-            self.execute_check_suspect_precision_SimpleTests
+            self.execute_check_suspect_precision_SimpleTests,
             self.execute_check_special_character_spacing_SimpleTests,
             self.execute_check_suspect_distribution_SimpleTests
         ]
