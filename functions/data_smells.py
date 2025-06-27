@@ -348,33 +348,49 @@ def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, 
     return True
 
 
-def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str, datetime_format: str) -> bool:
+def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str = None) -> bool:
     """
-    Checks if the datetime format string contains patterns that represent a 12-hour clock format.
+    Checks if datetime/time fields contain values that suggest they might be using a 12-hour clock format.
     If so, logs a warning indicating a possible data smell.
-
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data.
-    :param field: (str) Name of the data field to check.
-    :param datetime_format: (str) The datetime format string to check for 12-hour patterns.
+    :param field: (str) Name of the data field; if None, checks all datetime/string fields.
     :return: (bool) False if a smell is detected, True otherwise.
     """
-    
-    # Check if the field exists in the DataFrame
-    if field not in data_dictionary.columns:
-        raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
-    
-    # Validate format string
-    if not isinstance(datetime_format, str) or not datetime_format.strip():
-        raise ValueError("datetime_format must be a non-empty string.")
-    
-    # Check if the format contains the specific 12-hour clock pattern
-    # According to the specification: "%I:%M %p"
-    if "%I:%M %p" in datetime_format:
-        message = f"Possible data smell: The format of date of dataField {field} is represented in 12-hour clock format"
-        print_and_log(message, level=logging.WARN)
-        print(f"DATA SMELL DETECTED: Ambiguous Date/Time Format in field {field}")
-        return False
-    
+
+    def check_column(col_name):
+        # Check if the column contains datetime-like strings that suggest 12-hour format
+        if pd.api.types.is_string_dtype(data_dictionary[col_name]) or data_dictionary[col_name].dtype == 'object':
+            col = data_dictionary[col_name].dropna()
+            if not col.empty:
+                # Convert to string and check for 12-hour format patterns
+                str_values = col.astype(str)
+                # Look for common 12-hour format indicators (AM/PM, a.m./p.m.)
+                has_am_pm = str_values.str.contains(r'\b(?:AM|PM|am|pm|a\.m\.|p\.m\.)\b', regex=True, na=False).any()
+                # Also check for time patterns that commonly indicate 12-hour format
+                # Like times starting with 1-12: followed by AM/PM context
+                twelve_hour_indicators = str_values.str.contains(r'\b(?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:AM|PM|am|pm|a\.m\.|p\.m\.)', regex=True, na=False).any()
+                if has_am_pm or twelve_hour_indicators:
+                    message = f"Possible data smell: The format of date of dataField {col_name} is represented in 12-hour clock format"
+                    print_and_log(message, level=logging.WARN)
+                    print(f"DATA SMELL DETECTED: Ambiguous Date/Time Format in field {col_name}")
+                    return False
+        return True
+
+    if field is not None:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        return check_column(field)
+    else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
+        # Check all string/object columns that might contain datetime values
+        string_fields = data_dictionary.select_dtypes(include=['object', 'string']).columns
+        for col in string_fields:
+            result = check_column(col)
+            if not result:
+                return result  # Return on the first smell found
+
     return True
 
 
