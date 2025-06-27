@@ -716,3 +716,61 @@ def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str = 
     return True
 
 
+def check_suspect_date_value(data_dictionary: pd.DataFrame, min_date: str, max_date: str, field: str = None) -> bool:
+    """
+    Checks if date/datetime fields have values outside the range defined in the data model.
+    If so, logs a warning indicating a possible data smell.
+
+    :param data_dictionary: (pd.DataFrame) DataFrame containing the data
+    :param min_date: (str) Minimum date allowed (e.g., 'YYYY-MM-DD')
+    :param max_date: (str) Maximum date allowed (e.g., 'YYYY-MM-DD')
+    :param field: (str) Optional field to check; if None, checks all datetime fields
+    :return: (bool) False if a smell is detected, True otherwise.
+    """
+    try:
+        min_date_dt = pd.to_datetime(min_date)
+        max_date_dt = pd.to_datetime(max_date)
+    except ValueError:
+        raise ValueError("Invalid min_date or max_date format. Please use a format recognizable by pandas.to_datetime.")
+
+    if min_date_dt > max_date_dt:
+        raise ValueError("min_date cannot be greater than max_date")
+
+    def check_column(col_name):
+        # Only check datetime columns
+        if pd.api.types.is_datetime64_any_dtype(data_dictionary[col_name]):
+            col = data_dictionary[col_name].dropna()
+            if col.empty:
+                return True
+
+            # If column is timezone-aware, convert to naive for comparison to avoid errors
+            if col.dt.tz is not None:
+                col = col.dt.tz_localize(None)
+
+            # Check if any values are outside the defined range
+            out_of_range = (col < min_date_dt) | (col > max_date_dt)
+            if out_of_range.any():
+                message = f"Possible data smell: The range of date of dataField {col_name} do not align with the definitions in the data-model"
+                print_and_log(message, level=logging.WARN)
+                print(f"DATA SMELL DETECTED: Suspect Date Value in field {col_name}")
+                return False
+        return True
+
+    if field is not None:
+        if field not in data_dictionary.columns:
+            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        return check_column(field)
+    else:
+        # If DataFrame is empty, return True (no smell)
+        if data_dictionary.empty:
+            return True
+        # Check all datetime columns
+        datetime_fields = data_dictionary.select_dtypes(
+            include=['datetime64[ns]', 'datetime64[ns, UTC]', 'datetime']).columns
+        for col in datetime_fields:
+            result = check_column(col)
+            if not result:
+                return result  # Return on the first smell found
+    return True
+
+

@@ -51,7 +51,8 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_separating_consistency_ExternalDatasetTests,
             self.execute_check_date_time_consistency_ExternalDatasetTests,
             self.execute_check_suspect_distribution_ExternalDatasetTests,
-            self.execute_check_ambiguous_datetime_format_ExternalDatasetTests
+            self.execute_check_ambiguous_datetime_format_ExternalDatasetTests,
+            self.execute_check_suspect_date_value_ExternalDatasetTests
         ]
 
         print_and_log("")
@@ -1284,7 +1285,6 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         print_and_log("\nFinished testing check_date_time_consistency function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")
 
-
     def execute_check_ambiguous_datetime_format_ExternalDatasetTests(self):
         """
         Execute external dataset tests for check_ambiguous_datetime_format function.
@@ -1426,5 +1426,98 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         print_and_log("\nFinished testing check_ambiguous_datetime_format function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")
 
-        print_and_log("\nFinished testing check_ambiguous_datetime_format function with Spotify Dataset")
+    def execute_check_suspect_date_value_ExternalDatasetTests(self):
+        """
+        Execute tests for check_suspect_date_value function with Spotify dataset.
+        Since the Spotify dataset doesn't have date columns, we'll create synthetic date columns
+        to test the function with realistic data.
+        """
+        print_and_log("\n-----------------------------------------------------------")
+        print_and_log("Testing check_suspect_date_value function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
+        # Get a sample of the dataset for testing
+        n_rows = min(1000, len(self.data_dictionary))
+        test_df = self.data_dictionary.sample(n=n_rows, random_state=42).copy()
+
+        print_and_log("\nTest 1: Check dates within valid range (no smell)")
+        # Create a date column with dates within range
+        date_range = pd.date_range(start='2020-01-01', end='2023-12-31', periods=n_rows)
+        test_df['release_date'] = date_range
+        result = self.data_smells.check_suspect_date_value(test_df, '2020-01-01', '2024-01-01', 'release_date')
+        self.assertTrue(result, "Test Case 1 Failed: Expected no smell for dates within range")
+        print_and_log("Test Case 1 Passed: Expected no smell, got no smell")
+
+        print_and_log("\nTest 2: Check dates with some outside range (smell detected)")
+        # Create dates with some outside the valid range
+        early_dates = pd.date_range(start='2010-01-01', end='2019-12-31', periods=n_rows//3)
+        valid_dates = pd.date_range(start='2020-01-01', end='2023-12-31', periods=n_rows//3)
+        late_dates = pd.date_range(start='2025-01-01', end='2030-12-31', periods=n_rows - 2*(n_rows//3))
+        all_dates = list(early_dates) + list(valid_dates) + list(late_dates)
+        np.random.shuffle(all_dates)
+        test_df['release_date_mixed'] = all_dates
+        result = self.data_smells.check_suspect_date_value(test_df, '2020-01-01', '2024-01-01', 'release_date_mixed')
+        self.assertFalse(result, "Test Case 2 Failed: Expected smell for dates outside range")
+        print_and_log("Test Case 2 Passed: Expected smell, got smell")
+
+        print_and_log("\nTest 3: Check date strings in object column (should pass - not datetime)")
+        # Create string dates - these should be ignored by the function
+        date_strings = ['2019-06-15', '2021-03-20', '2025-11-10'] * (n_rows // 3 + 1)
+        test_df['release_date_string'] = date_strings[:n_rows]
+        result = self.data_smells.check_suspect_date_value(test_df, '2020-01-01', '2024-01-01', 'release_date_string')
+        self.assertTrue(result, "Test Case 3 Failed: Expected no smell for string dates (not datetime column)")
+        print_and_log("Test Case 3 Passed: Expected no smell, got no smell")
+
+        print_and_log("\nTest 4: Check all date columns at once (only datetime columns)")
+        # Add multiple date columns and check all - only datetime columns should be checked
+        test_df['album_date'] = pd.date_range(start='2018-01-01', end='2025-12-31', periods=n_rows)
+        test_df['chart_date'] = pd.date_range(start='2021-01-01', end='2023-12-31', periods=n_rows)
+        # Add string dates that should be ignored
+        string_dates_list = ['2030-01-01', '2030-06-15', '2030-12-31'] * (n_rows // 3 + 1)
+        test_df['string_dates'] = string_dates_list[:n_rows]
+        result = self.data_smells.check_suspect_date_value(test_df, '2020-01-01', '2024-01-01')
+        self.assertFalse(result, "Test Case 4 Failed: Expected smell when checking datetime columns only")
+        print_and_log("Test Case 4 Passed: Expected smell, got smell")
+
+        print_and_log("\nTest 5: Check timezone-aware dates")
+        # Create timezone-aware dates
+        tz_dates = pd.date_range(start='2019-01-01', end='2025-12-31', periods=n_rows, tz='UTC')
+        test_df['tz_date'] = tz_dates
+        result = self.data_smells.check_suspect_date_value(test_df, '2020-01-01', '2024-01-01', 'tz_date')
+        self.assertFalse(result, "Test Case 5 Failed: Expected smell for timezone-aware dates outside range")
+        print_and_log("Test Case 5 Passed: Expected smell, got smell")
+
+        print_and_log("\nTest 6: Check edge case - exact boundary dates")
+        # Test with dates exactly at the boundaries
+        boundary_dates = pd.to_datetime(['2020-01-01', '2024-01-01', '2022-06-15'] * (n_rows // 3 + 1))[:n_rows]
+        test_df['boundary_dates'] = boundary_dates
+        result = self.data_smells.check_suspect_date_value(test_df, '2020-01-01', '2024-01-01', 'boundary_dates')
+        self.assertTrue(result, "Test Case 6 Failed: Expected no smell for boundary dates")
+        print_and_log("Test Case 6 Passed: Expected no smell, got no smell")
+
+        print_and_log("\nTest 7: Check with NaN/NaT values mixed in")
+        # Create dates with some NaN values
+        mixed_dates = pd.date_range(start='2019-01-01', end='2025-12-31', periods=n_rows)
+        # Replace some values with NaT
+        mask = np.random.choice([True, False], size=n_rows, p=[0.1, 0.9])  # 10% NaT values
+        mixed_dates_with_nat = mixed_dates.to_series()
+        mixed_dates_with_nat[mask] = pd.NaT
+        test_df['dates_with_nat'] = mixed_dates_with_nat.values
+        result = self.data_smells.check_suspect_date_value(test_df, '2020-01-01', '2024-01-01', 'dates_with_nat')
+        self.assertFalse(result, "Test Case 7 Failed: Expected smell for dates with NaT values outside range")
+        print_and_log("Test Case 7 Passed: Expected smell, got smell")
+
+        print_and_log("\nTest 8: Check performance with large dataset")
+        # Use the full dataset size for performance testing
+        if len(self.data_dictionary) > 1000:
+            large_df = self.data_dictionary.copy()
+            large_date_range = pd.date_range(start='2020-01-01', end='2023-12-31', periods=len(large_df))
+            large_df['performance_test_date'] = large_date_range
+            result = self.data_smells.check_suspect_date_value(large_df, '2020-01-01', '2024-01-01', 'performance_test_date')
+            self.assertTrue(result, "Test Case 8 Failed: Expected no smell for performance test")
+            print_and_log("Test Case 8 Passed: Performance test completed successfully")
+        else:
+            print_and_log("Test Case 8 Skipped: Dataset too small for performance testing")
+
+        print_and_log("\nFinished testing check_suspect_date_value function with Spotify Dataset")
         print_and_log("-----------------------------------------------------------")

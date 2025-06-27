@@ -50,7 +50,8 @@ class DataSmellsSimpleTest(unittest.TestCase):
             self.execute_check_separating_consistency_SimpleTests,
             self.execute_check_date_time_consistency_SimpleTests,
             self.execute_check_suspect_distribution_SimpleTests,
-            self.execute_check_ambiguous_datetime_format_SimpleTests
+            self.execute_check_ambiguous_datetime_format_SimpleTests,
+            self.execute_check_suspect_date_value_SimpleTests
         ]
 
         print_and_log("")
@@ -1319,7 +1320,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
         assert result is True, "Test Case 1 Failed: Should not detect smell for pure dates with Date type"
         print_and_log("Test Case 1 Passed: No smell detected for pure dates with Date type")
 
-        # Test 2: Dates with time in Date type column (smell)
+        # Test  2: Dates with time in Date type column (smell)
         df_dates_with_time = pd.DataFrame({
             'dates_with_time': [
                 pd.Timestamp('2024-01-01 10:30:00'),
@@ -1345,9 +1346,9 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         # Test 4: Non-datetime column (no smell)
         df_non_datetime = pd.DataFrame({
-            'string_dates': ['2024-01-01', '2024-01-02', '2024-01-03']
+            'strings': ['2024-01-01', '2024-01-02', '2024-01-03']
         })
-        result = self.data_smells.check_date_time_consistency(df_non_datetime, DataType.DATE, 'string_dates')
+        result = self.data_smells.check_date_time_consistency(df_non_datetime, DataType.DATE, 'strings')
         assert result is True, "Test Case 4 Failed: Should not detect smell for non-datetime column"
         print_and_log("Test Case 4 Passed: No smell detected for non-datetime column")
 
@@ -1359,7 +1360,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         # Test 6: Column with NaN values
         df_with_nan = pd.DataFrame({
-            'dates_with_nan': [pd.Timestamp('2024-01-01'), pd.NaT, pd.Timestamp('2024-01-03')]
+            'dates_with_nan': [pd.Timestamp('2024-01-01'), np.nan, pd.Timestamp('2024-01-03')]
         })
         result = self.data_smells.check_date_time_consistency(df_with_nan, DataType.DATE, 'dates_with_nan')
         assert result is True, "Test Case 6 Failed: Should not detect smell for dates with NaN"
@@ -1367,7 +1368,7 @@ class DataSmellsSimpleTest(unittest.TestCase):
 
         # Test 7: Non-existent column
         with self.assertRaises(ValueError):
-            self.data_smells.check_date_time_consistency(df_empty, DataType.DATE, 'non_existent')
+            self.data_smells.check_date_time_consistency(df_pure_dates, 'non_existent')
         print_and_log("Test Case 7 Passed: ValueError raised for non-existent column")
 
         # Test 8: Invalid DataType
@@ -1575,4 +1576,117 @@ class DataSmellsSimpleTest(unittest.TestCase):
         print_and_log("Test Case 20 Passed: Expected no smell, got no smell")
 
         print_and_log("\nFinished testing check_ambiguous_datetime_format function")
-        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_suspect_date_value_SimpleTests(self):
+        """
+        Execute simple tests for check_suspect_date_value function.
+        Tests the following cases:
+        1. Invalid date format in parameters
+        2. min_date greater than max_date
+        3. Non-existent field
+        4. Valid dates within range (no smell)
+        5. Dates outside range (smell detected)
+        6. Mixed dates - some in range, some out of range (smell detected)
+        7. Empty DataFrame
+        8. Column with all NaN/NaT values
+        9. Non-datetime column (should pass)
+        10. Object column with date strings
+        11. Timezone-aware datetime column
+        12. Check all datetime columns at once
+        """
+        print_and_log("")
+        print_and_log("Testing check_suspect_date_value function...")
+
+        # Test 1: Invalid date format in parameters
+        df1 = pd.DataFrame({'date_col': pd.to_datetime(['2023-01-01', '2023-06-15', '2023-12-31'])})
+        try:
+            result = self.data_smells.check_suspect_date_value(df1, 'invalid-date', '2023-12-31')
+            self.fail("Test Case 1 Failed: Expected ValueError for invalid date format")
+        except ValueError:
+            print_and_log("Test Case 1 Passed: Expected ValueError for invalid date format")
+
+        # Test 2: min_date greater than max_date
+        try:
+            result = self.data_smells.check_suspect_date_value(df1, '2023-12-31', '2023-01-01')
+            self.fail("Test Case 2 Failed: Expected ValueError for min_date > max_date")
+        except ValueError:
+            print_and_log("Test Case 2 Passed: Expected ValueError for min_date > max_date")
+
+        # Test 3: Non-existent field
+        try:
+            result = self.data_smells.check_suspect_date_value(df1, '2023-01-01', '2023-12-31', 'non_existent')
+            self.fail("Test Case 3 Failed: Expected ValueError for non-existent field")
+        except ValueError:
+            print_and_log("Test Case 3 Passed: Expected ValueError for non-existent field")
+
+        # Test 4: Valid dates within range (no smell)
+        df4 = pd.DataFrame({'date_col': pd.to_datetime(['2023-01-01', '2023-06-15', '2023-12-31'])})
+        result = self.data_smells.check_suspect_date_value(df4, '2022-01-01', '2024-01-01', 'date_col')
+        self.assertTrue(result, "Test Case 4 Failed: Expected no smell for dates within range")
+        print_and_log("Test Case 4 Passed: Expected no smell, got no smell")
+
+        # Test 5: Dates outside range (smell detected)
+        df5 = pd.DataFrame({'date_col': pd.to_datetime(['2021-01-01', '2023-06-15', '2025-12-31'])})
+        result = self.data_smells.check_suspect_date_value(df5, '2022-01-01', '2024-01-01', 'date_col')
+        self.assertFalse(result, "Test Case 5 Failed: Expected smell for dates outside range")
+        print_and_log("Test Case 5 Passed: Expected smell, got smell")
+
+        # Test 6: Mixed dates - some in range, some out of range (smell detected)
+        df6 = pd.DataFrame({'date_col': pd.to_datetime(['2023-01-01', '2025-06-15', '2023-12-31'])})
+        result = self.data_smells.check_suspect_date_value(df6, '2023-01-01', '2023-12-31', 'date_col')
+        self.assertFalse(result, "Test Case 6 Failed: Expected smell for mixed dates")
+        print_and_log("Test Case 6 Passed: Expected smell, got smell")
+
+        # Test 7: Empty DataFrame
+        df7 = pd.DataFrame()
+        result = self.data_smells.check_suspect_date_value(df7, '2023-01-01', '2023-12-31')
+        self.assertTrue(result, "Test Case 7 Failed: Expected no smell for empty DataFrame")
+        print_and_log("Test Case 7 Passed: Expected no smell, got no smell")
+
+        # Test 8: Column with all NaN/NaT values
+        df8 = pd.DataFrame({'date_col': pd.to_datetime([None, np.nan, pd.NaT])})
+        result = self.data_smells.check_suspect_date_value(df8, '2023-01-01', '2023-12-31', 'date_col')
+        self.assertTrue(result, "Test Case 8 Failed: Expected no smell for all NaN/NaT values")
+        print_and_log("Test Case 8 Passed: Expected no smell, got no smell")
+
+        # Test 9: Non-datetime column (should pass)
+        df9 = pd.DataFrame({'non_date_col': [1, 2, 3, 4, 5]})
+        result = self.data_smells.check_suspect_date_value(df9, '2023-01-01', '2023-12-31', 'non_date_col')
+        self.assertTrue(result, "Test Case 9 Failed: Expected no smell for non-datetime column")
+        print_and_log("Test Case 9 Passed: Expected no smell, got no smell")
+
+        # Test 10: Object column with date strings (should pass - not datetime column)
+        df10 = pd.DataFrame({'date_col': ['2023-01-01', '2025-06-15', '2023-12-31']})
+        result = self.data_smells.check_suspect_date_value(df10, '2023-01-01', '2023-12-31', 'date_col')
+        self.assertTrue(result, "Test Case 10 Failed: Expected no smell for object column with date strings (not datetime)")
+        print_and_log("Test Case 10 Passed: Expected no smell, got no smell")
+
+        # Test 11: Timezone-aware datetime column
+        df11 = pd.DataFrame({'date_col': pd.to_datetime(['2023-01-01', '2025-06-15', '2023-12-31'], utc=True)})
+        result = self.data_smells.check_suspect_date_value(df11, '2023-01-01', '2023-12-31', 'date_col')
+        self.assertFalse(result, "Test Case 11 Failed: Expected smell for timezone-aware dates outside range")
+        print_and_log("Test Case 11 Passed: Expected smell, got smell")
+
+        # Test 12: Check all datetime columns at once
+        df12 = pd.DataFrame({
+            'date_col1': pd.to_datetime(['2023-01-01', '2023-06-15', '2023-12-31']),
+            'date_col2': pd.to_datetime(['2022-01-01', '2023-06-15', '2025-12-31']),
+            'non_date_col': [1, 2, 3],
+            'string_dates': ['2025-01-01', '2025-06-15', '2025-12-31']  # This should be ignored
+        })
+        result = self.data_smells.check_suspect_date_value(df12, '2023-01-01', '2023-12-31')
+        self.assertFalse(result, "Test Case 12 Failed: Expected smell when checking datetime columns only")
+        print_and_log("Test Case 12 Passed: Expected smell, got smell")
+
+        # Test 13: All datetime columns within range
+        df13 = pd.DataFrame({
+            'date_col1': pd.to_datetime(['2023-01-01', '2023-06-15', '2023-12-31']),
+            'date_col2': pd.to_datetime(['2023-02-01', '2023-07-15', '2023-11-30']),
+            'non_date_col': [1, 2, 3],
+            'string_dates': ['2025-01-01', '2025-06-15', '2025-12-31']  # This should be ignored
+        })
+        result = self.data_smells.check_suspect_date_value(df13, '2023-01-01', '2023-12-31')
+        self.assertTrue(result, "Test Case 13 Failed: Expected no smell when all datetime columns within range")
+        print_and_log("Test Case 13 Passed: Expected no smell, got no smell")
+
+        print_and_log("\nFinished testing check_suspect_date_value function")
