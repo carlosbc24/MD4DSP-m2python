@@ -49,7 +49,7 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_suspect_distribution_ExternalDatasetTests,
             self.execute_check_date_as_datetime_ExternalDatasetTests,
             self.execute_check_separating_consistency_ExternalDatasetTests,
-            self.execute_check_date_time_consistency_ExternalDatasetTests
+            self.execute_check_date_time_consistency_ExternalDatasetTests,
             self.execute_check_suspect_distribution_ExternalDatasetTests,
             self.execute_check_ambiguous_datetime_format_ExternalDatasetTests
         ]
