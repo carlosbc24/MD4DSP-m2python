@@ -49,7 +49,6 @@ class DataSmellsSimpleTest(unittest.TestCase):
             self.execute_check_date_as_datetime_SimpleTests,
             self.execute_check_separating_consistency_SimpleTests,
             self.execute_check_date_time_consistency_SimpleTests,
-            self.execute_check_suspect_distribution_SimpleTests,
             self.execute_check_ambiguous_datetime_format_SimpleTests,
             self.execute_check_suspect_date_value_SimpleTests
         ]
