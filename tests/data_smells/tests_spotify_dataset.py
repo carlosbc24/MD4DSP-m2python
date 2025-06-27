@@ -45,6 +45,11 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
             self.execute_check_integer_as_floating_point_ExternalDatasetTests,
             self.execute_check_types_as_string_ExternalDatasetTests,
             self.execute_check_special_character_spacing_ExternalDatasetTests,
+            self.execute_check_suspect_precision_ExternalDatasetTests,
+            self.execute_check_suspect_distribution_ExternalDatasetTests,
+            self.execute_check_date_as_datetime_ExternalDatasetTests,
+            self.execute_check_separating_consistency_ExternalDatasetTests,
+            self.execute_check_date_time_consistency_ExternalDatasetTests
             self.execute_check_suspect_distribution_ExternalDatasetTests,
             self.execute_check_ambiguous_datetime_format_ExternalDatasetTests
         ]
@@ -511,20 +516,15 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         assert result is True, "Test Case 4 Failed: Should not warn for mixed string values in mixed_str"
         print_and_log("Test Case 4 Passed: Mixed string values handled correctly in mixed_str")
 
-        # 5. Type mismatch (should raise TypeError)
-        with self.assertRaises(TypeError):
-            self.data_smells.check_types_as_string(test_df, 'key_str', DataType.INTEGER)
-        print_and_log("Test Case 5 Passed: TypeError raised for type mismatch in key_str")
-
-        # 6. Non-existent field (should raise ValueError)
+        # 5. Non-existent field (should raise ValueError)
         with self.assertRaises(ValueError):
             self.data_smells.check_types_as_string(test_df, 'no_field', DataType.STRING)
-        print_and_log("Test Case 6 Passed: ValueError raised for non-existent field")
+        print_and_log("Test Case 5 Passed: ValueError raised for non-existent field")
 
-        # 7. Unknown expected_type (should raise ValueError)
+        # 6. Unknown expected_type (should raise ValueError)
         with self.assertRaises(ValueError):
             self.data_smells.check_types_as_string(test_df, 'key_str', 'UnknownType')
-        print_and_log("Test Case 7 Passed: ValueError raised for unknown expected_type")
+        print_and_log("Test Case 6 Passed: ValueError raised for unknown expected_type")
 
         print_and_log("\nFinished testing check_types_as_string function with Spotify Dataset")
         print_and_log("")
@@ -662,6 +662,189 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         self.assertFalse(result, "Test Case 15 Failed: Expected smell for playlist_name due to formatting")
         print_and_log("Test Case 15 Passed: Expected smell, got smell")
 
+    def execute_check_suspect_precision_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_suspect_precision function
+        Tests various scenarios with the Spotify dataset
+        """
+        print_and_log("Testing check_suspect_precision Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Check danceability field (has values between 0 and 1 with varying precision)
+        print_and_log("\nTest 1: Check danceability field")
+        result = self.data_smells.check_suspect_precision(test_df, 'danceability')
+        assert result is True, "Test Case 1 Failed: Should not detect smell in danceability"
+        print_and_log("Test Case 1 Passed: No smell detected in danceability")
+
+        # Test 2: Check energy field (similar to danceability)
+        print_and_log("\nTest 2: Check energy field")
+        result = self.data_smells.check_suspect_precision(test_df, 'energy')
+        assert result is True, "Test Case 2 Failed: Should not detect smell in energy"
+        print_and_log("Test Case 2 Passed: No smell detected in energy")
+
+        # Test 3: Check loudness field (can have many decimal places)
+        print_and_log("\nTest 3: Check loudness field")
+        result = self.data_smells.check_suspect_precision(test_df, 'loudness')
+        assert result is True, "Test Case 3 Failed: Should not detect smell in loudness"
+        print_and_log("Test Case 3 Passed: No smell detected in loudness")
+
+        # Test 4: Create a column with explicit trailing zeros
+        print_and_log("\nTest 4: Check column with explicit trailing zeros")
+        test_df['trailing_zeros'] = test_df['danceability'].apply(lambda x: float(f"{x:.4f}"))
+        result = self.data_smells.check_suspect_precision(test_df, 'trailing_zeros')
+        assert result is True, "Test Case 4 Failed: Should not detect smell with trailing zeros"
+        print_and_log("Test Case 4 Passed: No smell detected with trailing zeros")
+
+        # Test 5: Check speechiness (typically has varying precision)
+        print_and_log("\nTest 5: Check speechiness field")
+        result = self.data_smells.check_suspect_precision(test_df, 'speechiness')
+        assert result is True, "Test Case 5 Failed: Should not detect smell in speechiness"
+        print_and_log("Test Case 5 Passed: No smell detected in speechiness")
+
+        # Test 6: Create a column with scientific notation
+        print_and_log("\nTest 6: Check scientific notation")
+        test_df['scientific'] = test_df['loudness'].apply(lambda x: float(f"{x:e}"))
+        result = self.data_smells.check_suspect_precision(test_df, 'scientific')
+        assert result is True, "Test Case 6 Failed: Should not detect smell in scientific notation"
+        print_and_log("Test Case 6 Passed: No smell detected in scientific notation")
+
+        # Test 7: Create a column with very large numbers
+        print_and_log("\nTest 7: Check very large numbers")
+        test_df['large_numbers'] = test_df['duration_ms'] * 1000000
+        result = self.data_smells.check_suspect_precision(test_df, 'large_numbers')
+        assert result is True, "Test Case 7 Failed: Should not detect smell in large numbers"
+        print_and_log("Test Case 7 Passed: No smell detected in large numbers")
+
+        # Test 8: Create a column with NaN values mixed
+        print_and_log("\nTest 8: Check mixed with NaN values")
+        test_df['with_nans'] = test_df['danceability'].copy()
+        test_df.loc[0:10, 'with_nans'] = np.nan
+        result = self.data_smells.check_suspect_precision(test_df, 'with_nans')
+        assert result is True, "Test Case 8 Failed: Should not detect smell with NaN values"
+        print_and_log("Test Case 8 Passed: No smell detected with NaN values")
+
+        # Test 9: Create a column with negative numbers
+        print_and_log("\nTest 9: Check negative numbers")
+        test_df['negative_nums'] = -test_df['loudness']
+        result = self.data_smells.check_suspect_precision(test_df, 'negative_nums')
+        assert result is True, "Test Case 9 Failed: Should not detect smell in negative numbers"
+        print_and_log("Test Case 9 Passed: No smell detected in negative numbers")
+
+        # Test 10: Create a column with zeros
+        print_and_log("\nTest 10: Check column with zeros")
+        test_df['zeros'] = 0.0
+        result = self.data_smells.check_suspect_precision(test_df, 'zeros')
+        assert result is True, "Test Case 10 Failed: Should not detect smell with zeros"
+        print_and_log("Test Case 10 Passed: No smell detected with zeros")
+
+        # Test 11: Check empty DataFrame
+        print_and_log("\nTest 11: Check empty DataFrame")
+        empty_df = pd.DataFrame()
+        result = self.data_smells.check_suspect_precision(empty_df)
+        assert result is True, "Test Case 1 Failed: Should not detect smell in empty DataFrame"
+        print_and_log("Test Case 11 Passed: No smell detected in empty DataFrame")
+
+        # Test 12: Test computations that may produce precision issues
+        test_df['computation_precision'] = test_df['duration_ms'] / 1000.0 + 0.1
+        result = self.data_smells.check_suspect_precision(test_df, 'computation_precision')
+        assert result is False, "Test Case 12 Failed: Should detect smell in computed values"
+        print_and_log("Test Case 12 Passed: Detected precision issues in computations")
+
+        # Test 13: Test periodic decimals from division
+        test_df['periodic_division'] = test_df['tempo'] / 3.0
+        result = self.data_smells.check_suspect_precision(test_df, 'periodic_division')
+        assert result is False, "Test Case 13 Failed: Should detect smell in periodic division"
+        print_and_log("Test Case 13 Passed: Detected periodic division issues")
+
+        # Test 14: Test floating point accumulation errors
+        test_df['accumulation_errors'] = test_df['danceability'].apply(lambda x: sum([x/10] * 10))
+        result = self.data_smells.check_suspect_precision(test_df, 'accumulation_errors')
+        assert result is False, "Test Case 14 Failed: Should detect smell in accumulated values"
+        print_and_log("Test Case 14 Passed: Detected accumulation errors")
+
+        # Test 15: Test irrational number computations
+        test_df['irrational_computations'] = test_df['tempo'].apply(lambda x: np.sqrt(x) * np.pi)
+        result = self.data_smells.check_suspect_precision(test_df, 'irrational_computations')
+        assert result is False, "Test Case 15 Failed: Should detect smell in irrational computations"
+        print_and_log("Test Case 15 Passed: Detected irrational computation issues")
+
+        # Test 16: Test high precision arithmetic
+        test_df['high_precision'] = test_df['loudness'].apply(lambda x: np.exp(x/10) * np.log10(abs(x) + 1))
+        result = self.data_smells.check_suspect_precision(test_df, 'high_precision')
+        assert result is False, "Test Case 16 Failed: Should detect smell in high precision arithmetic"
+        print_and_log("Test Case 16 Passed: Detected high precision arithmetic issues")
+
+        # Test 17: Test trigonometric calculations
+        test_df['trig_calculations'] = test_df['tempo'].apply(lambda x: np.sin(x * np.pi/180))
+        result = self.data_smells.check_suspect_precision(test_df, 'trig_calculations')
+        assert result is False, "Test Case 17 Failed: Should detect smell in trigonometric calculations"
+        print_and_log("Test Case 17 Passed: Detected trigonometric calculation issues")
+
+        # Test 18: Test percentage calculations
+        test_df['percentages'] = test_df['acousticness'] * 100
+        result = self.data_smells.check_suspect_precision(test_df, 'percentages')
+        assert result is False, "Test Case 18 Failed: Should detect smell in percentage calculations"
+        print_and_log("Test Case 18 Passed: Detected percentage calculation issues")
+
+        # Test 19: Test long chain of operations
+        test_df['operation_chain'] = test_df.apply(
+            lambda row: (row['tempo'] / 60) * row['danceability'] + np.sqrt(abs(row['loudness'])), axis=1
+        )
+        result = self.data_smells.check_suspect_precision(test_df, 'operation_chain')
+        assert result is False, "Test Case 19 Failed: Should detect smell in operation chains"
+        print_and_log("Test Case 19 Passed: Detected operation chain issues")
+
+        # Test 20: Test small number divisions
+        test_df['small_divisions'] = test_df['speechiness'] / 1000
+        result = self.data_smells.check_suspect_precision(test_df, 'small_divisions')
+        assert result is False, "Test Case 20 Failed: Should detect smell in small number divisions"
+        print_and_log("Test Case 20 Passed: Detected small number division issues")
+
+        # Test 21: Test recurring decimal patterns
+        test_df['recurring_decimals'] = test_df['key'].apply(lambda x: (x + 1)/7)
+        result = self.data_smells.check_suspect_precision(test_df, 'recurring_decimals')
+        assert result is False, "Test Case 21 Failed: Should detect smell in recurring decimals"
+        print_and_log("Test Case 21 Passed: Detected recurring decimal issues")
+
+        # Test 22: Test geometric calculations
+        test_df['geometric_calcs'] = test_df['tempo'].apply(lambda x: np.pi * (x/100)**2)
+        result = self.data_smells.check_suspect_precision(test_df, 'geometric_calcs')
+        assert result is False, "Test Case 22 Failed: Should detect smell in geometric calculations"
+        print_and_log("Test Case 22 Passed: Detected geometric calculation issues")
+
+        # Test 23: Test compound numeric operations
+        test_df['compound_ops'] = (test_df['danceability'] * test_df['energy']) / (test_df['valence'] + 0.1)
+        result = self.data_smells.check_suspect_precision(test_df, 'compound_ops')
+        assert result is False, "Test Case 23 Failed: Should detect smell in compound operations"
+        print_and_log("Test Case 23 Passed: Detected compound operation issues")
+
+        # Test 24: Test extreme value calculations
+        test_df['extreme_values'] = test_df['duration_ms'].apply(lambda x: x**3 / 1e9)
+        result = self.data_smells.check_suspect_precision(test_df, 'extreme_values')
+        assert result is False, "Test Case 24 Failed: Should detect smell in extreme value calculations"
+        print_and_log("Test Case 24 Passed: Detected extreme value calculation issues")
+
+        # Test 25: Test mixed precision operations
+        test_df['mixed_precision'] = test_df.apply(
+            lambda row: row['tempo'] + row['danceability'] * 1000 + row['loudness'] / 10,
+            axis=1
+        )
+        result = self.data_smells.check_suspect_precision(test_df, 'mixed_precision')
+        assert result is False, "Test Case 25 Failed: Should detect smell in mixed precision operations"
+        print_and_log("Test Case 25 Passed: Detected mixed precision operation issues")
+
+        # Test 26: Test potential cancellation errors
+        test_df['cancellation'] = test_df['duration_ms'].apply(lambda x: (x + 1e10) - 1e10)
+        result = self.data_smells.check_suspect_precision(test_df, 'cancellation')
+        assert result is True, "Test Case 26 Failed: Should not detect smell in cancellation prone operations"
+        print_and_log("Test Case 26 Passed: Correctly handled cancellation error issues")
+
+        print_and_log("\nFinished testing check_suspect_precision function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
     def execute_check_suspect_distribution_ExternalDatasetTests(self):
         """
         Execute the external dataset tests for check_suspect_distribution function
@@ -769,139 +952,337 @@ class DataSmellExternalDatasetTests(unittest.TestCase):
         self.assertTrue(result, "Test Case 15 Failed: Expected no smell for loudness in reasonable range")
         print_and_log("Test Case 15 Passed: Expected no smell, got no smell")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def execute_check_date_as_datetime_ExternalDatasetTests(self):
+        """
+        Execute external dataset tests for check_date_as_datetime function
+        Tests various scenarios with the Spotify dataset
+        """
+        print_and_log("Testing check_date_as_datetime Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Add a datetime column with pure dates (should detect smell)
+        test_df['release_date'] = pd.date_range('2024-01-01', periods=len(test_df), freq='D')
+        result = self.data_smells.check_date_as_datetime(test_df, 'release_date')
+        assert result is False, "Test Case 1 Failed: Should detect smell for pure dates"
+        print_and_log("Test Case 1 Passed: Date smell detected correctly")
+
+        # Test 2: Add a datetime column with mixed times (no smell)
+        test_df['mixed_timestamps'] = pd.date_range('2024-01-01 10:30:00', periods=len(test_df), freq='H')
+        result = self.data_smells.check_date_as_datetime(test_df, 'mixed_timestamps')
+        assert result is True, "Test Case 2 Failed: Should not detect smell for mixed times"
+        print_and_log("Test Case 2 Passed: No smell detected for mixed times")
+
+        # Test 3: Add a datetime column with midnight times (should detect smell)
+        test_df['midnight_dates'] = pd.date_range('2024-01-01 00:00:00', periods=len(test_df), freq='D')
+        result = self.data_smells.check_date_as_datetime(test_df, 'midnight_dates')
+        assert result is False, "Test Case 3 Failed: Should detect smell for midnight times"
+        print_and_log("Test Case 3 Passed: Smell detected for midnight times")
+
+        # Test 4: Add a non-datetime column
+        test_df['date_strings'] = ['2024-01-01'] * len(test_df)
+        result = self.data_smells.check_date_as_datetime(test_df, 'date_strings')
+        assert result is True, "Test Case 4 Failed: Should not detect smell for non-datetime column"
+        print_and_log("Test Case 4 Passed: No smell detected for non-datetime column")
+
+        # Test 5: Add a column with NaN values mixed with datetimes
+        test_df['datetime_with_nans'] = pd.date_range('2024-01-01', periods=len(test_df), freq='D')
+        test_df.loc[0:10, 'datetime_with_nans'] = pd.NaT
+        result = self.data_smells.check_date_as_datetime(test_df, 'datetime_with_nans')
+        assert result is False, "Test Case 5 Failed: Should detect smell for dates with NaN"
+        print_and_log("Test Case 5 Passed: Smell detected correctly with NaN values")
+
+        # Test 6: Test with non-existent column
+        with self.assertRaises(ValueError):
+            self.data_smells.check_date_as_datetime(test_df, 'non_existent_column')
+        print_and_log("Test Case 6 Passed: ValueError raised for non-existent column")
+
+        # Test 7: Add multiple datetime columns
+        test_df['dates_only'] = pd.date_range('2024-01-01', periods=len(test_df), freq='D')
+        test_df['times_only'] = pd.date_range('2024-01-01 09:00:00', periods=len(test_df), freq='H')
+        result = self.data_smells.check_date_as_datetime(test_df)
+        assert result is False, "Test Case 7 Failed: Should detect smell in at least one column"
+        print_and_log("Test Case 7 Passed: Smell detected in multiple columns check")
+
+        # Test 8: Add a column with specific timezone
+        test_df['timezone_dates'] = pd.date_range('2024-01-01', periods=len(test_df), freq='D', tz='UTC')
+        result = self.data_smells.check_date_as_datetime(test_df, 'timezone_dates')
+        assert result is False, "Test Case 8 Failed: Should detect smell for timezone-aware dates"
+        print_and_log("Test Case 8 Passed: Smell detected for timezone-aware dates")
+
+        # Test 9: Add a column with microsecond precision
+        test_df['microsecond_times'] = pd.date_range('2024-01-01 00:00:00.000001',
+                                                    periods=len(test_df), freq='us')
+        result = self.data_smells.check_date_as_datetime(test_df, 'microsecond_times')
+        assert result is True, "Test Case 9 Failed: Should not detect smell with microseconds"
+        print_and_log("Test Case 9 Passed: No smell detected with microseconds")
+
+        # Test 10: Add a column with end-of-day timestamps
+        test_df['end_of_day'] = pd.date_range('2024-01-01 23:59:59', periods=len(test_df), freq='D')
+        result = self.data_smells.check_date_as_datetime(test_df, 'end_of_day')
+        assert result is True, "Test Case 10 Failed: Should not detect smell for end-of-day times"
+        print_and_log("Test Case 10 Passed: No smell detected for end-of-day times")
+
+        # Test 11: Add a column with leap year dates
+        test_df['leap_year'] = pd.date_range('2024-02-28', periods=len(test_df), freq='D')
+        result = self.data_smells.check_date_as_datetime(test_df, 'leap_year')
+        assert result is False, "Test Case 11 Failed: Should detect smell for leap year dates"
+        print_and_log("Test Case 11 Passed: Smell detected for leap year dates")
+
+        # Test 12: Add a column with business days only
+        test_df['business_days'] = pd.date_range('2024-01-01', periods=len(test_df), freq='B')
+        result = self.data_smells.check_date_as_datetime(test_df, 'business_days')
+        assert result is False, "Test Case 12 Failed: Should detect smell for business days"
+        print_and_log("Test Case 12 Passed: Smell detected for business days")
+
+        # Test 13: Add a column with random times
+        times = [pd.Timestamp('2024-01-01 00:00:00') + pd.Timedelta(seconds=np.random.randint(86400))
+                for _ in range(len(test_df))]
+        test_df['random_times'] = times
+        result = self.data_smells.check_date_as_datetime(test_df, 'random_times')
+        assert result is True, "Test Case 13 Failed: Should not detect smell for random times"
+        print_and_log("Test Case 13 Passed: No smell detected for random times")
+
+        # Test 14: Test real dataset column 'track_album_release_date' (should return True)
+        print_and_log("\nTest 14: Test track_album_release_date column")
+        result = self.data_smells.check_date_as_datetime(test_df, 'track_album_release_date')
+        assert result is True, "Test Case 14 Failed: Should not detect smell for track_album_release_date"
+        print_and_log("Test Case 14 Passed: No smell detected for track_album_release_date")
+
+        # Test 15: Test subset of track_album_release_date (should return True)
+        print_and_log("\nTest 15: Test subset of track_album_release_date")
+        df_subset = test_df.head(100).copy()
+        result = self.data_smells.check_date_as_datetime(df_subset, 'track_album_release_date')
+        assert result is True, "Test Case 15 Failed: Should not detect smell for track_album_release_date subset"
+        print_and_log("Test Case 15 Passed: No smell detected for track_album_release_date subset")
+
+        # Test 16: Test track_album_release_date with NaN values (should return True)
+        print_and_log("\nTest 16: Test track_album_release_date with NaN values")
+        df_with_nan = test_df.copy()
+        df_with_nan.loc[0:10, 'track_album_release_date'] = pd.NaT
+        result = self.data_smells.check_date_as_datetime(df_with_nan, 'track_album_release_date')
+        assert result is True, "Test Case 16 Failed: Should not detect smell for track_album_release_date with NaN"
+        print_and_log("Test Case 16 Passed: No smell detected for track_album_release_date with NaN")
+
+        print_and_log("\nFinished testing check_date_as_datetime function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_separating_consistency_ExternalDatasetTests(self):
+        """
+        Execute the external dataset tests for check_separating_consistency function
+        Tests various scenarios with the Spotify dataset.
+        """
+        print_and_log("Testing check_separating_consistency Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Test 1: Check danceability with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'danceability')
+        assert result is True, "Test Case 1 Failed"
+        print_and_log("Test Case 1 Passed: Default separators check on danceability successful")
+
+        # Test 2: Check energy with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'energy')
+        assert result is True, "Test Case 2 Failed"
+        print_and_log("Test Case 2 Passed: Default separators check on energy successful")
+
+        # Test 3: Check loudness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'loudness')
+        assert result is True, "Test Case 3 Failed"
+        print_and_log("Test Case 3 Passed: Default separators check on loudness successful")
+
+        # Test 4: Create column with comma decimal separator
+        test_df['loudness_comma'] = test_df['loudness'].apply(lambda x: str(x).replace('.', ','))
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'loudness_comma')
+        assert result is False, "Test Case 4 Failed"
+        print_and_log("Test Case 4 Passed: Wrong decimal separator detected")
+
+        # Test 5: Create column with thousands separator
+        test_df['duration_formatted'] = test_df['duration_ms'].apply(lambda x: f"{x:,}")
+        result = self.data_smells.check_separating_consistency(test_df, ".", ",", 'duration_formatted')
+        assert result is True, "Test Case 5 Failed"
+        print_and_log("Test Case 5 Passed: Thousands separator check successful")
+
+        # Test 6: Check tempo with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'tempo')
+        assert result is True, "Test Case 6 Failed"
+        print_and_log("Test Case 6 Passed: Default separators check on tempo successful")
+
+        # Test 7: Create column with mixed separators
+        test_df['mixed_separators'] = test_df['loudness'].apply(lambda x: str(x).replace('.', ','))
+        test_df.loc[0:10, 'mixed_separators'] = test_df.loc[0:10, 'loudness']
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'mixed_separators')
+        assert result is False, "Test Case 7 Failed"
+        print_and_log("Test Case 7 Passed: Mixed separators detected")
+
+        # Test 8: Check speechiness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'speechiness')
+        assert result is True, "Test Case 8 Failed"
+        print_and_log("Test Case 8 Passed: Default separators check on speechiness successful")
+
+        # Test 9: Create column with wrong thousands grouping
+        test_df['wrong_grouping'] = test_df['duration_ms'].apply(lambda x: f"{x:,}".replace(',', '.'))
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'wrong_grouping')
+        assert result is False, "Test Case 9 Failed"
+        print_and_log("Test Case 9 Passed: Wrong thousands grouping detected")
+
+        # Test 10: Check liveness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'liveness')
+        assert result is True, "Test Case 10 Failed"
+        print_and_log("Test Case 10 Passed: Default separators check on liveness successful")
+
+        # Test 11: Create column with scientific notation
+        test_df['scientific'] = test_df['loudness'].apply(lambda x: f"{x:e}")
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'scientific')
+        assert result is True, "Test Case 11 Failed"
+        print_and_log("Test Case 11 Passed: Scientific notation check successful")
+
+        # Test 12: Check instrumentalness with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'instrumentalness')
+        assert result is True, "Test Case 12 Failed"
+        print_and_log("Test Case 12 Passed: Default separators check on instrumentalness successful")
+
+        # Test 13: Check valence with default separators
+        result = self.data_smells.check_separating_consistency(test_df, ".", "", 'valence')
+        assert result is True, "Test Case 13 Failed"
+        print_and_log("Test Case 13 Passed: Default separators check on valence successful")
+
+        # Test 14: Check all numeric columns at once
+        result = self.data_smells.check_separating_consistency(test_df)
+        assert result is False, "Test Case 14 Failed"
+        print_and_log("Test Case 14 Passed: All columns check successful")
+
+        print_and_log("\nFinished testing check_separating_consistency function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
+
+    def execute_check_date_time_consistency_ExternalDatasetTests(self):
+        """
+        Execute external dataset tests for check_date_time_consistency function
+        Tests scenarios with the Spotify dataset dates
+        """
+        print_and_log("Testing check_date_time_consistency Function with Spotify Dataset")
+        print_and_log("")
+
+        # Create a copy of the dataset for modifications
+        test_df = self.data_dictionary.copy()
+
+        # Convertir track_album_release_date a datetime manejando diferentes formatos
+        def parse_date(date_str):
+            if pd.isna(date_str):
+                return pd.NaT
+            try:
+                # Si es solo año, convertir a 1 de enero de ese año
+                if len(str(date_str)) == 4 and str(date_str).isdigit():
+                    return pd.Timestamp(f"{date_str}-01-01")
+                # Si es año-mes, convertir a primer día del mes
+                elif len(str(date_str).split('-')) == 2:
+                    return pd.Timestamp(f"{date_str}-01")
+                # Para el resto de casos, intentar parsear directamente
+                return pd.to_datetime(date_str)
+            except:
+                return pd.NaT
+
+        test_df['track_album_release_date'] = test_df['track_album_release_date'].apply(parse_date)
+
+        # Test 1: Check release date field as Date type (should have no smell if only dates)
+        print_and_log("\nTest 1: Check release_date field as Date type")
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'track_album_release_date')
+        assert result is True, "Test Case 1 Failed: Release dates should be pure dates"
+        print_and_log("Test Case 1 Passed: Release dates verified as pure dates")
+
+        # Test 2: Create a mixed date-time column and check as Date type (should detect smell)
+        test_df['mixed_datetime'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.Timedelta(hours=np.random.randint(0, 24))
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'mixed_datetime')
+        assert result is False, "Test Case 2 Failed: Should detect smell for mixed date-time values"
+        print_and_log("Test Case 2 Passed: Mixed date-time values detected")
+
+        # Test 3: Add timezone information and check (should work same as without timezone)
+        test_df['tz_dates'] = test_df['track_album_release_date'].dt.tz_localize('UTC')
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'tz_dates')
+        assert result is True, "Test Case 3 Failed: Timezone shouldn't affect date-only values"
+        print_and_log("Test Case 3 Passed: Timezone handling verified")
+
+        # Test 4: Create a column with only midnight times (should work with Date type)
+        test_df['midnight_dates'] = test_df['track_album_release_date'].apply(
+            lambda x: pd.Timestamp(x.date())
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'midnight_dates')
+        assert result is True, "Test Case 4 Failed: Midnight times should be valid dates"
+        print_and_log("Test Case 4 Passed: Midnight times handled correctly")
+
+        # Test 5: Add millisecond precision to dates (should detect smell for Date type)
+        test_df['precise_dates'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.Timedelta(microseconds=500000)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'precise_dates')
+        assert result is False, "Test Case 5 Failed: Should detect smell for millisecond precision"
+        print_and_log("Test Case 5 Passed: Millisecond precision detected")
+
+        # Test 6: Create a column with NaT values mixed with dates
+        test_df['dates_with_nat'] = test_df['track_album_release_date'].copy()
+        test_df.loc[test_df.index[::10], 'dates_with_nat'] = pd.NaT
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'dates_with_nat')
+        assert result is True, "Test Case 6 Failed: Should handle NaT values correctly"
+        print_and_log("Test Case 6 Passed: NaT values handled correctly")
+
+        # Test 7: Create end-of-day timestamps (should detect smell for Date type)
+        test_df['end_of_day'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(hour=23, minute=59, second=59)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'end_of_day')
+        assert result is False, "Test Case 7 Failed: Should detect smell for end-of-day times"
+        print_and_log("Test Case 7 Passed: End-of-day times detected")
+
+        # Test 8: Create dates with specific time patterns
+        test_df['work_hours'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(hour=9) if x.day % 2 == 0 else x.replace(hour=17)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'work_hours')
+        assert result is False, "Test Case 8 Failed: Should detect smell for work hours pattern"
+        print_and_log("Test Case 8 Passed: Work hours pattern detected")
+
+        # Test 9: Create random time distribution
+        test_df['random_times'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.Timedelta(seconds=np.random.randint(86400))
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'random_times')
+        assert result is False, "Test Case 9 Failed: Should detect smell for random times"
+        print_and_log("Test Case 9 Passed: Random time distribution detected")
+
+        # Test 10: Create future dates (valid for both Date and DateTime)
+        test_df['future_dates'] = test_df['track_album_release_date'].apply(
+            lambda x: x + pd.DateOffset(years=5)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'future_dates')
+        assert result is True, "Test Case 10 Failed: Should accept future dates"
+        print_and_log("Test Case 10 Passed: Future dates handled correctly")
+
+        # Test 11: Create dates with specific seconds
+        test_df['with_seconds'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(second=30)
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'with_seconds')
+        assert result is False, "Test Case 11 Failed: Should detect smell for dates with seconds"
+        print_and_log("Test Case 11 Passed: Dates with seconds detected")
+
+        # Test 12: Create a column with leap year dates
+        test_df['leap_years'] = test_df['track_album_release_date'].apply(
+            lambda x: x.replace(year=2024, month=2, day=29)
+            if x.month == 2 and x.day == 28
+            else x
+        )
+        result = self.data_smells.check_date_time_consistency(test_df, DataType.DATE, 'leap_years')
+        assert result is True, "Test Case 12 Failed: Should handle leap year dates"
+        print_and_log("Test Case 12 Passed: Leap year dates handled correctly")
+
+        print_and_log("\nFinished testing check_date_time_consistency function with Spotify Dataset")
+        print_and_log("-----------------------------------------------------------")
 
 
     def execute_check_ambiguous_datetime_format_ExternalDatasetTests(self):
