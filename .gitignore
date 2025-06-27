@@ -45,5 +45,5 @@ logs/
 # Settings de vscode
 .vscode
 
-# Avoid updating .github/ directory
-/.github/*
+# Avoid updating .github/ directory files
+/.github/workflows/*.yml
