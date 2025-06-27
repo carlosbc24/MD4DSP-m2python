@@ -44,3 +44,6 @@ logs/
 
 # Settings de vscode
 .vscode
+
+# Avoid updating .github/workflows/python-app.yml
+.github/workflows/python-app.yml
