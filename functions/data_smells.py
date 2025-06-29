@@ -39,11 +39,11 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
     # If a specific field is provided, check that field
     else:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame. Skipping precision check.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame. Skipping precision check.")
         elif not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             # Case 1: The field is not numeric
-            print_and_log(f"Warning - Field {field} is not numeric. Skipping precision check.", level=logging.WARN)
-            print(f"DATA SMELL DETECTED: Precision Inconsistency in field {field}")
+            print_and_log(f"Warning - DataField {field} is not numeric. Skipping precision check.", level=logging.WARN)
+            print(f"DATA SMELL DETECTED: Precision Inconsistency in DataField {field}")
             return False
 
         # DataSmell - Precision Inconsistency
@@ -59,16 +59,16 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
             if num_unique_decimals > 1:
                 # Case 2: Inconsistent decimal places
                 print_and_log(
-                    f"Warning - Column {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
+                    f"Warning - DataField {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
                     f"different decimal lengths.", level=logging.WARN)
-                print(f"DATA SMELL DETECTED: Precision Inconsistency in field {field}")
+                print(f"DATA SMELL DETECTED: Precision Inconsistency in DataField {field}")
                 return False
             elif num_unique_decimals == 1 and unique_decimals[0] != expected_decimals:
                 # Case 3: Wrong number of decimals
                 print_and_log(
-                    f"Warning - Column {field} has {unique_decimals[0]} decimal places but {expected_decimals} were "
+                    f"Warning - DataField {field} has {unique_decimals[0]} decimal places but {expected_decimals} were "
                     f"expected.", level=logging.WARN)
-                print(f"DATA SMELL DETECTED: Precision Inconsistency in field {field}")
+                print(f"DATA SMELL DETECTED: Precision Inconsistency in DataField {field}")
                 return False
 
         return True
@@ -103,7 +103,7 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
         """
         # Error case: Field does not exist in the DataFrame
         if field_name not in data_dictionary.columns:
-            raise ValueError(f"Field '{field_name}' does not exist in the DataFrame. Skipping check.")
+            raise ValueError(f"DataField '{field_name}' does not exist in the DataFrame. Skipping check.")
 
         # Convert column values to string and get unique values
         unique_values = set(data_dictionary[field_name].unique())
@@ -117,7 +117,7 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
                        f"do not align with the definitions in the data model: {list(missing_invalid_set)}")
             print_and_log(message, level=logging.WARN)
             # Case 1: Values in the field are not aligned with the data model definitions
-            print(f"DATA SMELL DETECTED: Missing or Invalid Value Inconsistency in field {field_name}")
+            print(f"DATA SMELL DETECTED: Missing or Invalid Value Inconsistency in DataField {field_name}")
             return False
         # Case 2: All values in the field are aligned with the data model definitions
         return True
@@ -145,15 +145,15 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
             if not col.empty:
                 # Check if all values in the column are integers
                 if np.all((col.values == np.floor(col.values))):
-                    message = f"Warning - Column '{col_name}' may be an integer disguised as a float."
+                    message = f"Warning - DataField '{col_name}' may be an integer disguised as a float."
                     print_and_log(message, level=logging.WARN)
-                    print(f"DATA SMELL DETECTED: Integer as Floating Point in field {col_name}")
+                    print(f"DATA SMELL DETECTED: Integer as Floating Point in DataField {col_name}")
                     return False
         return True
 
     if field is not None:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
         # If DataFrame is empty, return True (no smell)
@@ -181,7 +181,7 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
 
     # Check if the field exists in the DataFrame
     if field not in data_dictionary.columns:
-        raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+        raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
 
     col_dtype = data_dictionary[field].dtype
 
@@ -193,24 +193,24 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
 
         # Detect if the original column is numeric (int or float)
         if pd.api.types.is_integer_dtype(col_dtype) or values.apply(is_integer_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Integer, but the field is defined as String in the data model", level=logging.WARN)
-            print(f"DATA SMELL DETECTED: Integer as String in field {field}")
+            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Integer, but the DataField is defined as String in the data model", level=logging.WARN)
+            print(f"DATA SMELL DETECTED: Integer as String in DataField {field}")
             return False
         elif pd.api.types.is_float_dtype(col_dtype) or values.apply(is_float_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Float, but the field is defined as String in the data model", level=logging.WARN)
-            print(f"DATA SMELL DETECTED: Float as String in field {field}")
+            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Float, but the DataField is defined as String in the data model", level=logging.WARN)
+            print(f"DATA SMELL DETECTED: Float as String in DataField {field}")
             return False
         elif values.apply(is_time_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Time, but the field is defined as String in the data model", level=logging.WARN)
-            print(f"DATA SMELL DETECTED: Time as String in field {field}")
+            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Time, but the DataField is defined as String in the data model", level=logging.WARN)
+            print(f"DATA SMELL DETECTED: Time as String in DataField {field}")
             return False
         elif values.apply(is_date_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type Date, but the field is defined as String in the data model", level=logging.WARN)
-            print(f"DATA SMELL DETECTED: Date as String in field {field}")
+            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Date, but the DataField is defined as String in the data model", level=logging.WARN)
+            print(f"DATA SMELL DETECTED: Date as String in DataField {field}")
             return False
         elif values.apply(is_datetime_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in {field} are of type DateTime, but the field is defined as String in the data model", level=logging.WARN)
-            print(f"DATA SMELL DETECTED: DateTime as String in field {field}")
+            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type DateTime, but the DataField is defined as String in the data model", level=logging.WARN)
+            print(f"DATA SMELL DETECTED: DateTime as String in DataField {field}")
             return False
         # No data smell detected, values are not all of a single other type
         return True
@@ -240,11 +240,11 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
 
         checker = type_checkers.get(expected_type)
         if checker is None:
-            raise ValueError(f"Unknown expected_type '{expected_type}' for field '{field}'")
+            raise ValueError(f"Unknown expected_type '{expected_type}' for DataField '{field}'")
         if not checker(values):
-            print_and_log(f"Warning: Expected data for column {field} is {expected_type.name}, "
+            print_and_log(f"Warning: Expected data for DataField {field} is {expected_type.name}, "
                           f"but got {col_dtype.name}", level=logging.WARN)
-            print(f"Warning: Type mismatch in field {field} (expected {expected_type.name}, got {col_dtype.name})")
+            print(f"Warning: Type mismatch in DataField {field} (expected {expected_type.name}, got {col_dtype.name})")
             return False
         return True
 
@@ -281,13 +281,13 @@ def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = 
                 if not (col == cleaned_values).all():
                     message = f"Warning - Possible data smell: the values in {col_name} contain accents, uppercase letters, extra spaces, or special characters that do not align with the recommended data format for string operations."
                     print_and_log(message, level=logging.WARN)
-                    print(f"DATA SMELL DETECTED: Special Character/Spacing in field {col_name}")
+                    print(f"DATA SMELL DETECTED: Special Character/Spacing in DataField {col_name}")
                     return False
         return True
 
     if field is not None:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
         # If DataFrame is empty, return True (no smell)
@@ -327,7 +327,7 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
                     if v != float(format(v, 'g')):
                         print_and_log(f"Warning - Possible data smell: The dataField {col_name} contains "
                                       f"non-significant digits: {v} -> {float(format(v, 'g'))}", level=logging.WARN)
-                        print(f"DATA SMELL DETECTED: Suspect Precision in field {col_name}")
+                        print(f"DATA SMELL DETECTED: Suspect Precision in DataField {col_name}")
                         return False
                 except Exception:
                     continue
@@ -335,7 +335,7 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
 
     if field is not None:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
         if data_dictionary.empty:
@@ -378,13 +378,13 @@ def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, 
                 if out_of_range.any():
                     message = f"Warning - Possible data smell: The range of values of dataField {col_name} do not align with the definitions in the data-model"
                     print_and_log(message, level=logging.WARN)
-                    print(f"DATA SMELL DETECTED: Suspect Distribution in field {col_name}")
+                    print(f"DATA SMELL DETECTED: Suspect Distribution in DataField {col_name}")
                     return False
         return True
 
     if field is not None:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
         # If DataFrame is empty, return True (no smell)
@@ -414,7 +414,7 @@ def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> 
 
     def check_column(col_name):
         if col_name not in data_dictionary.columns:
-            raise ValueError(f"Field '{col_name}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{col_name}' does not exist in the DataFrame.")
 
         # Skip if not datetime
         if not pd.api.types.is_datetime64_any_dtype(data_dictionary[col_name]):
@@ -428,7 +428,7 @@ def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> 
         if np.all((col.dt.hour == 0) & (col.dt.minute == 0) & (col.dt.second == 0) & (col.dt.microsecond == 0)):
             message = f"Warning - Possible data smell: the values in {col_name} appear to be date, but the expected type in the data model is dateTime"
             print_and_log(message, level=logging.WARN)
-            print(f"DATA SMELL DETECTED: Date as DateTime in field {col_name}")
+            print(f"DATA SMELL DETECTED: Date as DateTime in DataField {col_name}")
             return False
         return True
 
@@ -565,7 +565,7 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
                         print_and_log(
                             f"Warning - Possible data smell: invalid decimal format in value {val} of dataField {col_name}",
                             level=logging.WARN)
-                        print(f"DATA SMELL DETECTED: Invalid Decimal Format in field {col_name}")
+                        print(f"DATA SMELL DETECTED: Invalid Decimal Format in DataField {col_name}")
                         return False
                     continue
 
@@ -573,7 +573,7 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
                     print_and_log(
                         f"Warning - Possible data smell: invalid number format or wrong separators in value {val} of dataField {col_name}",
                         level=logging.WARN)
-                    print(f"DATA SMELL DETECTED: Invalid Number Format in field {col_name}")
+                    print(f"DATA SMELL DETECTED: Invalid Number Format in DataField {col_name}")
                     return False
 
             else:
@@ -582,21 +582,21 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
                     print_and_log(
                         f"Warning - Possible data smell: wrong decimal separator used in value {val} of dataField {col_name}",
                         level=logging.WARN)
-                    print(f"DATA SMELL DETECTED: Wrong Decimal Separator in field {col_name}")
+                    print(f"DATA SMELL DETECTED: Wrong Decimal Separator in DataField {col_name}")
                     return False
 
                 if decimal_sep in mantissa and not is_valid_number_format(val, decimal_sep, ''):
                     print_and_log(
                         f"Warning - Possible data smell: invalid decimal format in value {val} of dataField {col_name}",
                         level=logging.WARN)
-                    print(f"DATA SMELL DETECTED: Invalid Decimal Format in field {col_name}")
+                    print(f"DATA SMELL DETECTED: Invalid Decimal Format in DataField {col_name}")
                     return False
 
         return True
 
     if field is not None:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
         # If DataFrame is empty, return True (no smell)
@@ -632,7 +632,7 @@ def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: Da
     def check_column(col_name):
         # Check if column exists
         if col_name not in data_dictionary.columns:
-            raise ValueError(f"Field '{col_name}' does not exist in the DataFrame")
+            raise ValueError(f"DataField '{col_name}' does not exist in the DataFrame")
 
         # Get column data
         col_data = data_dictionary[col_name]
@@ -656,7 +656,7 @@ def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: Da
             if has_time:
                 message = f"Warning - Possible data smell: The format of date of dataField {col_name} do not align with the definitions in the data-model (contains time information)"
                 print_and_log(message, level=logging.WARN)
-                print(f"DATA SMELL DETECTED: Date/Time Format Inconsistency in field {col_name}")
+                print(f"DATA SMELL DETECTED: Date/Time Format Inconsistency in DataField {col_name}")
                 return False
 
         return True
@@ -694,13 +694,13 @@ def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str = 
                 if has_am_pm or twelve_hour_indicators:
                     message = f"Possible data smell: The format of date of dataField {col_name} is represented in 12-hour clock format"
                     print_and_log(message, level=logging.WARN)
-                    print(f"DATA SMELL DETECTED: Ambiguous Date/Time Format in field {col_name}")
+                    print(f"DATA SMELL DETECTED: Ambiguous Date/Time Format in DataField {col_name}")
                     return False
         return True
 
     if field is not None:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
         # If DataFrame is empty, return True (no smell)
@@ -752,13 +752,13 @@ def check_suspect_date_value(data_dictionary: pd.DataFrame, min_date: str, max_d
             if out_of_range.any():
                 message = f"Possible data smell: The range of date of dataField {col_name} do not align with the definitions in the data-model"
                 print_and_log(message, level=logging.WARN)
-                print(f"DATA SMELL DETECTED: Suspect Date Value in field {col_name}")
+                print(f"DATA SMELL DETECTED: Suspect Date Value in DataField {col_name}")
                 return False
         return True
 
     if field is not None:
         if field not in data_dictionary.columns:
-            raise ValueError(f"Field '{field}' does not exist in the DataFrame.")
+            raise ValueError(f"DataField '{field}' does not exist in the DataFrame.")
         return check_column(field)
     else:
         # If DataFrame is empty, return True (no smell)

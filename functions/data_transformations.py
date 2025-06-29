@@ -87,7 +87,7 @@ def transform_fix_value_fix_value(data_dictionary: pd.DataFrame, input_values_li
                 mapped_val = apply_mapping(original_val)
                 data_dictionary.at[idx, field_out] = mapped_val
         else:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
 
     return data_dictionary
 
@@ -155,7 +155,7 @@ def transform_fix_value_derived_value(data_dictionary: pd.DataFrame, fix_value_i
                 raise ValueError("The axis cannot be None when applying the NEXT operation")
     elif field_in is not None:
         if field_in not in data_dictionary.columns or field_out not in data_dictionary.columns:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
 
         if derived_type_output == DerivedType.MOSTFREQUENT:
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].apply(
@@ -324,9 +324,9 @@ def transform_fix_value_num_op(data_dictionary: pd.DataFrame, fix_value_input, n
             raise ValueError("No valid operator")
     elif field_in is not None:
         if field_in not in data_dictionary.columns or field_out not in data_dictionary.columns:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
         if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
-            raise ValueError("The field is not numeric")
+            raise ValueError("The DataField is not numeric")
 
         if num_op_output == Operation.INTERPOLATION:
             data_dictionary_copy_copy = data_dictionary_copy.copy()
@@ -410,7 +410,7 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
 
     elif field_in is not None:
         if field_in not in data_dictionary.columns:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
 
         elif field_in in data_dictionary.columns:
             # Reemplaza np.issubdtype(...) por pd.api.types.is_numeric_dtype(...)
@@ -448,7 +448,7 @@ def transform_interval_fix_value(data_dictionary: pd.DataFrame, left_margin: flo
                         else:
                             data_dictionary_copy.loc[i, field_out] = data_dictionary_copy.loc[i, field_out]
             else:
-                raise ValueError("The field is not numeric")
+                raise ValueError("The DataField is not numeric")
 
     return data_dictionary_copy
 
@@ -531,7 +531,7 @@ def transform_interval_derived_value(data_dictionary: pd.DataFrame, left_margin:
 
     elif field_in is not None:
         if field_in not in data_dictionary.columns or field_out not in data_dictionary.columns:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
 
         if derived_type_output == DerivedType.MOSTFREQUENT:
             most_frequent = data_dictionary_copy[field_in].value_counts().idxmax()
@@ -758,9 +758,9 @@ def transform_interval_num_op(data_dictionary: pd.DataFrame, left_margin: float,
 
     elif field_in is not None:
         if field_in not in data_dictionary.columns or field_out not in data_dictionary.columns:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
         if not np.issubdtype(data_dictionary_copy[field_in].dtype, np.number):
-            raise ValueError("The field is not numeric")
+            raise ValueError("The DataField is not numeric")
 
         if num_op_output == Operation.INTERPOLATION:
             data_dictionary_copy_copy = data_dictionary_copy.copy()
@@ -897,7 +897,7 @@ def transform_special_value_fix_value(data_dictionary: pd.DataFrame, special_typ
 
     elif field_in is not None:
         if field_in not in data_dictionary.columns or field_out not in data_dictionary.columns:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
 
         if special_type_input == SpecialType.MISSING:
             data_dictionary_copy[field_out] = data_dictionary_copy[field_in].replace(np.nan, fix_value_output)
@@ -920,7 +920,7 @@ def transform_special_value_fix_value(data_dictionary: pd.DataFrame, special_typ
                 data_dictionary_copy[field_out] = np.where(outlier_condition, fix_value_output,
                                                            data_dictionary_copy[field_in])
             else:
-                raise ValueError("The field is not numeric")
+                raise ValueError("The DataField is not numeric")
 
     return data_dictionary_copy
 
@@ -966,7 +966,7 @@ def transform_special_value_derived_value(data_dictionary: pd.DataFrame, special
 
     elif field_in is not None:
         if field_in not in data_dictionary.columns or field_out not in data_dictionary.columns:
-            raise ValueError("The field does not exist in the dataframe")
+            raise ValueError("The DataField does not exist in the dataframe")
 
         if special_type_input == SpecialType.MISSING or special_type_input == SpecialType.INVALID:
             data_dictionary_copy = apply_derived_type(special_type_input, derived_type_output, data_dictionary_copy,
@@ -1044,7 +1044,7 @@ def transform_derived_field(data_dictionary: pd.DataFrame, field_in: str, field_
     data_dictionary_copy = data_dictionary.copy()
 
     if field_in not in data_dictionary.columns:
-        raise ValueError("The field does not exist in the dataframe")
+        raise ValueError("The DataField does not exist in the dataframe")
 
     def cast_type_column():
         """
@@ -1110,7 +1110,7 @@ def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataTyp
     data_dictionary_copy = data_dictionary.copy()
 
     if field not in data_dictionary.columns:
-        raise ValueError("The field does not exist in the dataframe")
+        raise ValueError("The DataField does not exist in the dataframe")
 
     if data_dictionary[field].dtype == 'object' or data_dictionary[field].dtype == 'string':
         if data_type_output == DataType.INTEGER:
@@ -1121,9 +1121,9 @@ def transform_cast_type(data_dictionary: pd.DataFrame, data_type_output: DataTyp
             raise ValueError("The data type is not numeric")
 
     elif data_dictionary[field].dtype == int or data_dictionary[field].dtype == float:
-        print_and_log(f"Error in function:  {origin_function}, the field is already a numeric type")
+        print_and_log(f"Error in function:  {origin_function}, the DataField is already a numeric type")
     else:
-        print_and_log(f"Error in function:  {origin_function}, the field is not a string or object")
+        print_and_log(f"Error in function:  {origin_function}, the DataField is not a string or object")
 
     return data_dictionary_copy
 
@@ -1148,7 +1148,7 @@ def transform_filter_rows_primitive(data_dictionary: pd.DataFrame, columns: list
 
         # If column doesn't exist in the dataframe, raise an error
         if current_column not in data_dictionary_copy.columns:
-            raise ValueError(f"The column {current_column} does not exist in the dataframe")
+            raise ValueError(f"The DataField {current_column} does not exist in the dataframe")
 
         if filter_fix_value_list is not None:
             # Remove the rows with the value fix_value_output in the column
@@ -1186,7 +1186,7 @@ def transform_filter_rows_special_values(data_dictionary: pd.DataFrame, cols_spe
 
         # If column doesn't exist in the dataframe, raise an error
         if column_name not in data_dictionary_copy.columns:
-            raise ValueError(f"The column {column_name} does not exist in the dataframe")
+            raise ValueError(f"The DataField {column_name} does not exist in the dataframe")
 
         # Check if there is a missing values list for the current column
         for key in cols_special_type_values[column_name].keys():
@@ -1256,7 +1256,7 @@ def transform_filter_rows_range(data_dictionary: pd.DataFrame, columns: list[str
 
             # If column doesn't exist in the dataframe, raise an error
             if current_column not in data_dictionary_copy.columns:
-                raise ValueError(f"The column {current_column} does not exist in the dataframe")
+                raise ValueError(f"The DataField {current_column} does not exist in the dataframe")
 
             # Exclude or include the values within the interval [left_margin, right_margin] in the column
             if filter_type == FilterType.INCLUDE:
@@ -1293,10 +1293,10 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
     data_dictionary_copy = data_dictionary.copy()
 
     if field_out is None:
-        raise ValueError("The output field cannot be None")
+        raise ValueError("The output DataField cannot be None")
     if ((isFieldFirst is True and (not np.issubdtype(data_dictionary_copy[firstOperand].dtype, np.number))) or
             (isFieldSecond is True and (not np.issubdtype(data_dictionary_copy[secondOperand].dtype, np.number)))):
-        raise ValueError("The field to operate is not numeric")
+        raise ValueError("The DataField to operate is not numeric")
     if ((isFieldFirst is False and (not np.issubdtype(type(firstOperand), np.number))) or
             (isFieldSecond is False and (not np.issubdtype(type(secondOperand), np.number)))):
         raise ValueError("The value to operate is not numeric")
@@ -1334,7 +1334,7 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
     elif math_op == MathOperator.DIVIDE:
         if isFieldFirst and isFieldSecond:
             if (data_dictionary_copy[secondOperand] == 0).any():
-                warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
+                warnings.warn(f"Division by zero encountered in DataField '{secondOperand}'. Result will be NaN where divisor is 0.")
             data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] / data_dictionary_copy[secondOperand]
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace([np.inf, -np.inf], np.nan)
         elif isFieldFirst and not isFieldSecond:
@@ -1345,7 +1345,7 @@ def transform_math_operation(data_dictionary: pd.DataFrame, math_op: MathOperato
                 data_dictionary_copy[field_out] = data_dictionary_copy[firstOperand] / secondOperand
         elif not isFieldFirst and isFieldSecond:
             if (data_dictionary_copy[secondOperand] == 0).any():
-                warnings.warn(f"Division by zero encountered in column '{secondOperand}'. Result will be NaN where divisor is 0.")
+                warnings.warn(f"Division by zero encountered in DataField '{secondOperand}'. Result will be NaN where divisor is 0.")
             data_dictionary_copy[field_out] = firstOperand / data_dictionary_copy[secondOperand]
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out].replace([np.inf, -np.inf], np.nan)
         elif not isFieldFirst and not isFieldSecond:
@@ -1370,9 +1370,9 @@ def transform_join(data_dictionary: pd.DataFrame, dictionary: dict, field_out: s
     """
 
     if field_out is None:
-        raise ValueError(f"The output field {field_out} cannot be None")
+        raise ValueError(f"The output DataField {field_out} cannot be None")
     elif field_out not in data_dictionary.columns:
-        raise ValueError(f"The output field {field_out} is not in dataDictionary")
+        raise ValueError(f"The output DataField {field_out} is not in dataDictionary")
 
     data_dictionary_copy = data_dictionary.copy()
     data_dictionary_copy[field_out] = ''
@@ -1380,7 +1380,7 @@ def transform_join(data_dictionary: pd.DataFrame, dictionary: dict, field_out: s
     for key, value in dictionary.items():
         if value:  # It is a column
             if key not in data_dictionary_copy.columns:
-                raise ValueError(f"Column {key} doesn't exist in DataFrame")
+                raise ValueError(f"DataField {key} doesn't exist in DataFrame")
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + data_dictionary[key].fillna('').astype(str)
         elif not value:  # It is fix value
             data_dictionary_copy[field_out] = data_dictionary_copy[field_out].fillna('') + str(key)
