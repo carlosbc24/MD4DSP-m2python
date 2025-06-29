@@ -10,7 +10,8 @@ from helpers.logger import print_and_log
 from helpers.enumerations import DataType
 
 
-def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals: int, field: str = None) -> bool:
+def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals: int, field: str = None,
+                                origin_function: str = None) -> bool:
     """
     Check if the precision of the data is consistent with the expected precision.
     This function checks if the number of decimal places in a numeric field matches the expected number of decimals.
@@ -19,6 +20,7 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param expected_decimals: (int) Expected number of decimal places
     :param field: (str) Optional field to check; if None, checks all numeric fields
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
 
     :return: bool indicating if the precision is consistent
     """
@@ -42,8 +44,8 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
             raise ValueError(f"DataField '{field}' does not exist in the DataFrame. Skipping precision check.")
         elif not pd.api.types.is_numeric_dtype(data_dictionary[field]):
             # Case 1: The field is not numeric
-            print_and_log(f"Warning - DataField {field} is not numeric. Skipping precision check.", level=logging.WARN)
-            print(f"DATA SMELL DETECTED: Precision Inconsistency in DataField {field}")
+            print_and_log(f"Warning: DataField {field} is not numeric. Skipping precision data smell check.",
+                          level=logging.WARN)
             return False
 
         # DataSmell - Precision Inconsistency
@@ -59,14 +61,16 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
             if num_unique_decimals > 1:
                 # Case 2: Inconsistent decimal places
                 print_and_log(
-                    f"Warning - DataField {field} has inconsistent number of decimal places. Found {num_unique_decimals} "
+                    f"Warning in function: {origin_function} - Possible data smell: DataField {field} has "
+                    f"inconsistent number of decimal places. Found {num_unique_decimals}"
                     f"different decimal lengths.", level=logging.WARN)
                 print(f"DATA SMELL DETECTED: Precision Inconsistency in DataField {field}")
                 return False
             elif num_unique_decimals == 1 and unique_decimals[0] != expected_decimals:
                 # Case 3: Wrong number of decimals
                 print_and_log(
-                    f"Warning - DataField {field} has {unique_decimals[0]} decimal places but {expected_decimals} were "
+                    f"Warning in function: {origin_function} - Possible data smell: DataField {field} has "
+                    f"{unique_decimals[0]} decimal places but {expected_decimals} were"
                     f"expected.", level=logging.WARN)
                 print(f"DATA SMELL DETECTED: Precision Inconsistency in DataField {field}")
                 return False
@@ -75,7 +79,8 @@ def check_precision_consistency(data_dictionary: pd.DataFrame, expected_decimals
 
 
 def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missing_invalid_list: list,
-                                            common_missing_invalid_list: list, field: str = None) -> bool:
+                                            common_missing_invalid_list: list, field: str = None,
+                                            origin_function: str = None) -> bool:
     """
     Check if there are any missing or invalid values in the DataFrame that are not aligned with the data model definitions.
 
@@ -83,6 +88,7 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
     :param missing_invalid_list: (list) List of values defined as missing or invalid in the data model
     :param common_missing_invalid_list: (list) List of common missing or invalid values to compare against
     :param field: (str) Optional field to check; if None, checks all fields
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
 
     :return: bool indicating if the field values are consistent with the data model
     """
@@ -112,8 +118,8 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
         undefined_values = unique_values.intersection(common_set) - missing_invalid_set
 
         if undefined_values:
-            message = (f"Warning - Possible data smell: The missing or invalid values {list(undefined_values)} in "
-                       f"the dataField {field_name} "
+            message = (f"Warning in function: {origin_function} - Possible data smell: The missing or invalid "
+                       f"values {list(undefined_values)} in the dataField {field_name} "
                        f"do not align with the definitions in the data model: {list(missing_invalid_set)}")
             print_and_log(message, level=logging.WARN)
             # Case 1: Values in the field are not aligned with the data model definitions
@@ -127,13 +133,15 @@ def check_missing_invalid_value_consistency(data_dictionary: pd.DataFrame, missi
     return all(check_field_values(f) for f in fields_to_check)
 
 
-def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = None,
+                                    origin_function: str = None) -> bool:
     """
     Checks if any float column in the DataFrame contains only integer values (decimals always .00).
     If so, logs a warning indicating a possible data smell.
 
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param field: (str) Optional field to check; if None, checks all float columns
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
 
     :return: (bool) False if a smell is detected, True otherwise.
     """
@@ -145,7 +153,8 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
             if not col.empty:
                 # Check if all values in the column are integers
                 if np.all((col.values == np.floor(col.values))):
-                    message = f"Warning - DataField '{col_name}' may be an integer disguised as a float."
+                    message = (f"Warning in function: {origin_function} - Possible data smell: DataField '{col_name}' "
+                               f"may be an integer disguised as a float.")
                     print_and_log(message, level=logging.WARN)
                     print(f"DATA SMELL DETECTED: Integer as Floating Point in DataField {col_name}")
                     return False
@@ -167,7 +176,8 @@ def check_integer_as_floating_point(data_dictionary: pd.DataFrame, field: str = 
     return True
 
 
-def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_type: DataType) -> bool:
+def check_types_as_string(data_dictionary: pd.DataFrame, field: str,
+                          expected_type: DataType, origin_function: str = None) -> bool:
     """
     Check if a column defined as String actually contains only integers, floats, times, dates, or datetimes as string representations.
     If the expected type is not String, check that the values match the expected type.
@@ -176,6 +186,8 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param field: (str) Name of the field (column) to check
     :param expected_type: (DataType) Expected data type as defined in the data model (from helpers.enumerations.DataType)
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
+
     :return: (bool) True if the column matches the expected type or no data smell is found, False otherwise
     """
 
@@ -193,23 +205,33 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
 
         # Detect if the original column is numeric (int or float)
         if pd.api.types.is_integer_dtype(col_dtype) or values.apply(is_integer_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Integer, but the DataField is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning in function: {origin_function} - Possible data smell: all values in "
+                          f"DataField {field} are of type Integer, but the DataField is defined as "
+                          f"String in the data model", level=logging.WARN)
             print(f"DATA SMELL DETECTED: Integer as String in DataField {field}")
             return False
         elif pd.api.types.is_float_dtype(col_dtype) or values.apply(is_float_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Float, but the DataField is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning in function: {origin_function} - Possible data smell: all values in "
+                          f"DataField {field} are of type Float, but the DataField is defined as "
+                          f"String in the data model", level=logging.WARN)
             print(f"DATA SMELL DETECTED: Float as String in DataField {field}")
             return False
         elif values.apply(is_time_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Time, but the DataField is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning in function: {origin_function} - Possible data smell: all values in "
+                          f"DataField {field} are of type Time, but the DataField is defined as "
+                          f"String in the data model", level=logging.WARN)
             print(f"DATA SMELL DETECTED: Time as String in DataField {field}")
             return False
         elif values.apply(is_date_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type Date, but the DataField is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning in function: {origin_function} - Possible data smell: all values in "
+                          f"DataField {field} are of type Date, but the DataField is defined as "
+                          f"String in the data model", level=logging.WARN)
             print(f"DATA SMELL DETECTED: Date as String in DataField {field}")
             return False
         elif values.apply(is_datetime_string).all():
-            print_and_log(f"Warning - Possible data smell: all values in DataField {field} are of type DateTime, but the DataField is defined as String in the data model", level=logging.WARN)
+            print_and_log(f"Warning in function: {origin_function} - Possible data smell: all values in "
+                          f"DataField {field} are of type DateTime, but the DataField is defined as "
+                          f"String in the data model", level=logging.WARN)
             print(f"DATA SMELL DETECTED: DateTime as String in DataField {field}")
             return False
         # No data smell detected, values are not all of a single other type
@@ -242,20 +264,24 @@ def check_types_as_string(data_dictionary: pd.DataFrame, field: str, expected_ty
         if checker is None:
             raise ValueError(f"Unknown expected_type '{expected_type}' for DataField '{field}'")
         if not checker(values):
-            print_and_log(f"Warning: Expected data for DataField {field} is {expected_type.name}, "
+            print_and_log(f"Warning in function: {origin_function} - Possible data smell: Expected data "
+                          f"for DataField {field} is {expected_type.name}, "
                           f"but got {col_dtype.name}", level=logging.WARN)
             print(f"Warning: Type mismatch in DataField {field} (expected {expected_type.name}, got {col_dtype.name})")
             return False
         return True
 
 
-def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = None,
+                                    origin_function: str = None) -> bool:
     """
     Checks if string columns contain accents, uppercase letters, extra spaces, or special characters
     that do not align with the recommended data format for string operations.
 
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param field: (str) Optional field to check; if None, checks all string columns
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
+
     :return: (bool) False if a smell is detected, True otherwise.
     """
 
@@ -279,7 +305,9 @@ def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = 
 
                 # Check if any value changed after cleaning (indicating presence of special chars, spaces, etc.)
                 if not (col == cleaned_values).all():
-                    message = f"Warning - Possible data smell: the values in {col_name} contain accents, uppercase letters, extra spaces, or special characters that do not align with the recommended data format for string operations."
+                    message = (f"Warning in function: {origin_function} - Possible data smell: the values "
+                               f"in {col_name} contain accents, uppercase letters, extra spaces, or special "
+                               f"characters that do not align with the recommended data format for string operations.")
                     print_and_log(message, level=logging.WARN)
                     print(f"DATA SMELL DETECTED: Special Character/Spacing in DataField {col_name}")
                     return False
@@ -302,7 +330,7 @@ def check_special_character_spacing(data_dictionary: pd.DataFrame, field: str = 
     return True
 
 
-def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None, origin_function: str = None) -> bool:
     """
     Check if float columns contain non-significant digits (suspect precision).
     This function validates if the values in float columns remain the same after removing non-significant digits
@@ -313,6 +341,8 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
 
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param field: (str) Optional field to check; if None, checks all float columns
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
+
     :return: (bool) False if a smell is detected, True otherwise
     """
 
@@ -325,7 +355,8 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
                     continue
                 try:
                     if v != float(format(v, 'g')):
-                        print_and_log(f"Warning - Possible data smell: The dataField {col_name} contains "
+                        print_and_log(f"Warning in function: {origin_function} - Possible data smell: "
+                                      f"The dataField {col_name} contains "
                                       f"non-significant digits: {v} -> {float(format(v, 'g'))}", level=logging.WARN)
                         print(f"DATA SMELL DETECTED: Suspect Precision in DataField {col_name}")
                         return False
@@ -349,7 +380,7 @@ def check_suspect_precision(data_dictionary: pd.DataFrame, field: str = None) ->
 
 
 def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, max_value: float,
-                               field: str = None) -> bool:
+                               field: str = None, origin_function: str = None) -> bool:
     """
     Checks if continuous data fields have values outside the range defined in the data model.
     If so, logs a warning indicating a possible data smell.
@@ -358,6 +389,8 @@ def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, 
     :param min_value: (float) Minimum value allowed according to the data model
     :param max_value: (float) Maximum value allowed according to the data model
     :param field: (str) Optional field to check; if None, checks all numeric fields
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
+
     :return: (bool) False if a smell is detected, True otherwise.
     """
 
@@ -376,7 +409,8 @@ def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, 
                 # Check if any values are outside the defined range
                 out_of_range = (col < min_value) | (col > max_value)
                 if out_of_range.any():
-                    message = f"Warning - Possible data smell: The range of values of dataField {col_name} do not align with the definitions in the data-model"
+                    message = (f"Warning in function: {origin_function} - Possible data smell: The range of values of "
+                               f"dataField {col_name} do not align with the definitions in the data-model")
                     print_and_log(message, level=logging.WARN)
                     print(f"DATA SMELL DETECTED: Suspect Distribution in DataField {col_name}")
                     return False
@@ -400,7 +434,7 @@ def check_suspect_distribution(data_dictionary: pd.DataFrame, min_value: float, 
     return True
 
 
-def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None, origin_function: str = None) -> bool:
     """
     Check if any datetime column appears to contain only date values (time part is always 00:00:00).
     If so, logs a warning indicating a possible data smell.
@@ -408,6 +442,7 @@ def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> 
 
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param field: (str) Optional field to check; if None, checks all datetime fields
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
 
     :return: (bool) False if a smell is detected, True otherwise.
     """
@@ -426,7 +461,8 @@ def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> 
 
         # Check if all times are 00:00:00.000000 in their respective timezone
         if np.all((col.dt.hour == 0) & (col.dt.minute == 0) & (col.dt.second == 0) & (col.dt.microsecond == 0)):
-            message = f"Warning - Possible data smell: the values in {col_name} appear to be date, but the expected type in the data model is dateTime"
+            message = (f"Warning in function: {origin_function} - Possible data smell: the values in {col_name} appear "
+                       f"to be date, but the expected type in the data model is dateTime")
             print_and_log(message, level=logging.WARN)
             print(f"DATA SMELL DETECTED: Date as DateTime in DataField {col_name}")
             return False
@@ -449,7 +485,7 @@ def check_date_as_datetime(data_dictionary: pd.DataFrame, field: str = None) -> 
 
 
 def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str = ".", thousands_sep: str = "",
-                                 field: str = None) -> bool:
+                                 field: str = None, origin_function: str = None) -> bool:
     """
     Check if the decimal and thousands separators in float fields align with the data model definitions.
     If they don't match, logs a warning indicating a possible data smell.
@@ -458,6 +494,7 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
     :param decimal_sep: (str) Expected decimal separator (default ".")
     :param thousands_sep: (str) Expected thousands separator (default "")
     :param field: (str) Optional field to check; if None, checks all float fields
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
 
     :return: bool indicating if the separators are consistent
     """
@@ -563,7 +600,8 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
                     # It's valid to have numbers without thousands separator
                     if decimal_sep in mantissa and not is_valid_number_format(val, decimal_sep, ''):
                         print_and_log(
-                            f"Warning - Possible data smell: invalid decimal format in value {val} of dataField {col_name}",
+                            f"Warning in function: {origin_function} - Possible data smell: invalid decimal format in "
+                            f"value {val} of dataField {col_name}",
                             level=logging.WARN)
                         print(f"DATA SMELL DETECTED: Invalid Decimal Format in DataField {col_name}")
                         return False
@@ -571,7 +609,8 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
 
                 if not is_valid_number_format(val, decimal_sep, thousands_sep):
                     print_and_log(
-                        f"Warning - Possible data smell: invalid number format or wrong separators in value {val} of dataField {col_name}",
+                        f"Warning in function: {origin_function} - Possible data smell: invalid number format or "
+                        f"wrong separators in value {val} of dataField {col_name}",
                         level=logging.WARN)
                     print(f"DATA SMELL DETECTED: Invalid Number Format in DataField {col_name}")
                     return False
@@ -580,14 +619,15 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
                 # Without thousands separator, verify decimal format is correct
                 if used_seps - {decimal_sep}:  # If there are separators different from decimal
                     print_and_log(
-                        f"Warning - Possible data smell: wrong decimal separator used in value {val} of dataField {col_name}",
+                        f"Warning in function: {origin_function} - Possible data smell: wrong decimal separator used "
+                        f"in value {val} of dataField {col_name}",
                         level=logging.WARN)
                     print(f"DATA SMELL DETECTED: Wrong Decimal Separator in DataField {col_name}")
                     return False
 
                 if decimal_sep in mantissa and not is_valid_number_format(val, decimal_sep, ''):
                     print_and_log(
-                        f"Warning - Possible data smell: invalid decimal format in value {val} of dataField {col_name}",
+                        f"Warning in function: {origin_function} - Possible data smell: invalid decimal format in value {val} of dataField {col_name}",
                         level=logging.WARN)
                     print(f"DATA SMELL DETECTED: Invalid Decimal Format in DataField {col_name}")
                     return False
@@ -614,7 +654,8 @@ def check_separating_consistency(data_dictionary: pd.DataFrame, decimal_sep: str
         return True
 
 
-def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: DataType, field: str = None) -> bool:
+def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: DataType,
+                                field: str = None, origin_function: str = None) -> bool:
     """
     Check if datetime/date fields comply with the expected format according to the data model.
     For fields defined as Date type, it checks that no time information is present.
@@ -623,6 +664,7 @@ def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: Da
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data
     :param expected_type: (DataType) Expected data type (Date or DateTime)
     :param field: (str) Optional field to check; if None, checks all datetime fields
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
 
     :return: (bool) True if format is consistent, False otherwise
     """
@@ -654,7 +696,9 @@ def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: Da
                           (col_data.dt.microsecond == 0)).all()
 
             if has_time:
-                message = f"Warning - Possible data smell: The format of date of dataField {col_name} do not align with the definitions in the data-model (contains time information)"
+                message = (f"Warning in function: {origin_function} - Possible data smell: The format of date of "
+                           f"dataField {col_name} do not align with the definitions in "
+                           f"the data-model (contains time information)")
                 print_and_log(message, level=logging.WARN)
                 print(f"DATA SMELL DETECTED: Date/Time Format Inconsistency in DataField {col_name}")
                 return False
@@ -670,12 +714,15 @@ def check_date_time_consistency(data_dictionary: pd.DataFrame, expected_type: Da
         return all(results)
 
 
-def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str = None) -> bool:
+def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str = None,
+                                    origin_function: str = None) -> bool:
     """
     Checks if datetime/time fields contain values that suggest they might be using a 12-hour clock format.
     If so, logs a warning indicating a possible data smell.
     :param data_dictionary: (pd.DataFrame) DataFrame containing the data.
     :param field: (str) Name of the data field; if None, checks all datetime/string fields.
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes.
+
     :return: (bool) False if a smell is detected, True otherwise.
     """
 
@@ -692,7 +739,8 @@ def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str = 
                 # Like times starting with 1-12: followed by AM/PM context
                 twelve_hour_indicators = str_values.str.contains(r'\b(?:1[0-2]|0?[1-9]):[0-5][0-9]\s*(?:AM|PM|am|pm|a\.m\.|p\.m\.)', regex=True, na=False).any()
                 if has_am_pm or twelve_hour_indicators:
-                    message = f"Possible data smell: The format of date of dataField {col_name} is represented in 12-hour clock format"
+                    message = (f"Warning in function: {origin_function} - Possible data smell: The format of date "
+                               f"of dataField {col_name} is represented in 12-hour clock format")
                     print_and_log(message, level=logging.WARN)
                     print(f"DATA SMELL DETECTED: Ambiguous Date/Time Format in DataField {col_name}")
                     return False
@@ -716,7 +764,8 @@ def check_ambiguous_datetime_format(data_dictionary: pd.DataFrame, field: str = 
     return True
 
 
-def check_suspect_date_value(data_dictionary: pd.DataFrame, min_date: str, max_date: str, field: str = None) -> bool:
+def check_suspect_date_value(data_dictionary: pd.DataFrame, min_date: str, max_date: str,
+                             field: str = None, origin_function: str = None) -> bool:
     """
     Checks if date/datetime fields have values outside the range defined in the data model.
     If so, logs a warning indicating a possible data smell.
@@ -725,6 +774,8 @@ def check_suspect_date_value(data_dictionary: pd.DataFrame, min_date: str, max_d
     :param min_date: (str) Minimum date allowed (e.g., 'YYYY-MM-DD')
     :param max_date: (str) Maximum date allowed (e.g., 'YYYY-MM-DD')
     :param field: (str) Optional field to check; if None, checks all datetime fields
+    :param origin_function: (str) Optional name of the function that called this function, for logging purposes
+
     :return: (bool) False if a smell is detected, True otherwise.
     """
     try:
@@ -750,7 +801,8 @@ def check_suspect_date_value(data_dictionary: pd.DataFrame, min_date: str, max_d
             # Check if any values are outside the defined range
             out_of_range = (col < min_date_dt) | (col > max_date_dt)
             if out_of_range.any():
-                message = f"Possible data smell: The range of date of dataField {col_name} do not align with the definitions in the data-model"
+                message = (f"Warning in function: {origin_function} - Possible data smell: The range of date of "
+                           f"dataField {col_name} do not align with the definitions in the data-model")
                 print_and_log(message, level=logging.WARN)
                 print(f"DATA SMELL DETECTED: Suspect Date Value in DataField {col_name}")
                 return False
