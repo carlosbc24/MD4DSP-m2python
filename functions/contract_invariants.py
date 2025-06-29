@@ -1696,11 +1696,27 @@ def check_inv_filter_rows_special_values(data_dictionary_in: pd.DataFrame,
             if pd.isna(key):
                 counts_out['NaN'] = counts_out.pop(key)
 
-        # Compare the frequency counts; if they don't match, the invariant is not satisfied.
+        # Compare the frequency counts and identify differences
         if counts_in != counts_out:
-            print_and_log(f"Error in function: {origin_function} Error in DataField: {col}")
-            print_and_log(f"Expected counts: {counts_out}")
-            print_and_log(f"Actual counts: {counts_in}")
+            # Find values that were incorrectly filtered
+            incorrectly_filtered = []
+            all_values = set(counts_in.keys()) | set(counts_out.keys())
+
+            for value in all_values:
+                count_in = counts_in.get(value, 0)
+                count_out = counts_out.get(value, 0)
+                if count_in != count_out:
+                    if filter_type == FilterType.INCLUDE:
+                        if count_in > count_out:  # Should have been included but was filtered out
+                            incorrectly_filtered.append(f"{value}({count_in-count_out} times)")
+                    else:  # EXCLUDE
+                        if count_out > count_in:  # Should have been filtered but wasn't
+                            incorrectly_filtered.append(f"{value}({count_out-count_in} times)")
+
+            print_and_log(f"Error in function: {origin_function} and in DataField: {col}")
+            print_and_log(f"Values incorrectly filtered: {', '.join(str(x) for x in incorrectly_filtered)}")
+            print_and_log(f"Expected counts: {counts_in}")
+            print_and_log(f"Actual counts: {counts_out}")
             return False
 
     return True
@@ -1796,9 +1812,26 @@ def check_inv_filter_rows_range(data_dictionary_in: pd.DataFrame,
             if pd.isna(key):
                 counts_out['NaN'] = counts_out.pop(key)
 
-        # Compare the frequency counts; if they don't match, the invariant is not satisfied.
+        # Compare the frequency counts and identify differences
         if counts_in != counts_out:
-            print_and_log(f"Error in function:  {origin_function} Error in DataField: {col} ")
+            # Find values that were incorrectly filtered based on the range conditions
+            incorrectly_filtered = []
+            all_values = set(counts_in.keys()) | set(counts_out.keys())
+
+            for value in all_values:
+                count_in = counts_in.get(value, 0)
+                count_out = counts_out.get(value, 0)
+                if count_in != count_out:
+                    if filter_type == FilterType.INCLUDE:
+                        if count_in > count_out:  # Should have been included but was filtered out
+                            incorrectly_filtered.append(f"{value}({count_in-count_out} times)")
+                    else:  # EXCLUDE
+                        if count_out > count_in:  # Should have been filtered but wasn't
+                            incorrectly_filtered.append(f"{value}({count_out-count_in} times)")
+
+            range_info = f"[{left_margin_list[idx]}, {right_margin_list[idx]}] with {closure_type_list[idx]}"
+            print_and_log(f"Error in function: {origin_function} and in DataField: {col}")
+            print_and_log(f"For range {range_info}, values incorrectly filtered: {', '.join(str(x) for x in incorrectly_filtered)}")
             return False
 
     return True
@@ -1850,8 +1883,26 @@ def check_inv_filter_rows_primitive(data_dictionary_in: pd.DataFrame,
         counts_in = filtered_in.value_counts(dropna=False).to_dict()
         counts_out = data_dictionary_out[col].value_counts(dropna=False).to_dict()
 
+        # Compare the frequency counts and identify differences
         if counts_in != counts_out:
-            print_and_log(f"Error in function:  {origin_function} Error in DataField: {col} ")
+            # Find values that were incorrectly filtered
+            incorrectly_filtered = []
+            all_values = set(counts_in.keys()) | set(counts_out.keys())
+
+            for value in all_values:
+                count_in = counts_in.get(value, 0)
+                count_out = counts_out.get(value, 0)
+                if count_in != count_out:
+                    if filter_type == FilterType.INCLUDE:
+                        if count_in > count_out:  # Should have been included but was filtered out
+                            incorrectly_filtered.append(f"{value}({count_in-count_out} times)")
+                    else:  # EXCLUDE
+                        if count_out > count_in:  # Should have been filtered but wasn't
+                            incorrectly_filtered.append(f"{value}({count_out-count_in} times)")
+
+            filter_values = f"filter values {filter_fix_value_list}"
+            print_and_log(f"Error in function: {origin_function} and in DataField: {col}")
+            print_and_log(f"For {filter_values}, values incorrectly filtered: {', '.join(str(x) for x in incorrectly_filtered)}")
             return False
 
     return True
